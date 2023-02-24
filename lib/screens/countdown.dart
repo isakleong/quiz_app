@@ -1,0 +1,155 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:quiz_app/common/configuration.dart';
+import 'dart:math' as math;
+
+import 'package:quiz_app/screens/quiz.dart';
+
+class Countdown extends StatefulWidget {
+  const Countdown({super.key});
+
+  @override
+  State<Countdown> createState() => _CountdownState();
+}
+
+
+class _CountdownState extends State<Countdown> with TickerProviderStateMixin {
+  late AnimationController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 6),
+    )..addStatusListener((AnimationStatus status){
+        if (status == AnimationStatus.dismissed) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const Quiz()));
+        }
+    });
+
+    // controller.reverse(from: controller.value == 0 ? 1 : controller.value);
+    controller.reverse(from: 1);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  String get timerCountdown {
+    Duration duration = controller.duration! * controller.value;
+    return (duration.inSeconds % 60).toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppConfig.mainGreenColor,
+      body: WillPopScope(
+        onWillPop: () => Future.value(false),
+        child: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 30),
+              child: AnimatedBuilder(
+                animation: controller,
+                builder: (context, child) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        const Text('Selamat mengerjakan!', style: TextStyle(color: Colors.white, fontSize: 25)),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Stack(
+                                children: <Widget>[
+                                  Positioned.fill(
+                                    child:
+                                    AnimatedBuilder(
+                                      animation: controller,
+                                      builder:(BuildContext context, Widget? child) {
+                                        return CustomPaint(
+                                          painter: CustomTimerPainter(
+                                            animation: controller,
+                                            backgroundColor: AppConfig.mainGreenColor,
+                                            color: Colors.white,
+                                          )
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        AnimatedBuilder(
+                                          animation: controller,
+                                          builder: (BuildContext context, Widget? child) {
+                                            return Text(timerCountdown, style: const TextStyle(color: Colors.white, fontSize: 100));
+                                          }
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            ),
+          )
+        ),
+      ),
+    );
+  }
+  
+  Future<bool> onWillPop() async {
+    return true;
+  }
+}
+
+
+class CustomTimerPainter extends CustomPainter {
+  CustomTimerPainter({
+    required this.animation,
+    required this.backgroundColor,
+    required this.color,
+  }) : super(repaint: animation);
+
+  final Animation<double> animation;
+  final Color backgroundColor, color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = backgroundColor
+      ..strokeWidth = 10.0
+      ..strokeCap = StrokeCap.butt
+      ..style = PaintingStyle.stroke;
+    
+    canvas.drawCircle(size.center(Offset.zero), size.width / 2.0, paint);
+    paint.color = color;
+    double progress = (1.0 - animation.value) * 2 * math.pi;
+    canvas.drawArc(Offset.zero & size, math.pi * 1.5, -progress, false, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomTimerPainter oldDelegate) {
+    return animation.value != oldDelegate.animation.value ||
+        color != oldDelegate.color ||
+        backgroundColor != oldDelegate.backgroundColor;
+  }
+}
