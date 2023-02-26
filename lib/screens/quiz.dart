@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:quiz_app/common/configuration.dart';
+import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/models/question.dart';
 import 'package:quiz_app/screens/dashboard.dart';
 import 'package:quiz_app/screens/summary.dart';

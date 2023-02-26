@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:quiz_app/common/configuration.dart';
+import 'package:quiz_app/common/app_config.dart';
 import 'dart:math' as math;
 
 import 'package:quiz_app/screens/countdown.dart';
