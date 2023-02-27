@@ -1,12 +1,22 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:quiz_app/common/app_config.dart';
 
 class ApiClient {
   Future getData(String path) async {
     try {
-      final response = await Dio(
+      final dio = Dio(
         BaseOptions(baseUrl: AppConfig.baseUrl)
-      ).get(path);
+      );
+      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
+        client.badCertificateCallback=(X509Certificate cert, String host, int port){
+            return true;
+        };
+      };
+
+      final response = await dio.get(path);
 
       return response.data;
     } on DioError catch (e) {

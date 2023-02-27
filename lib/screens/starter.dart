@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:quiz_app/common/app_config.dart';
+import 'package:quiz_app/common/route_config.dart';
 import 'dart:math' as math;
 
 import 'package:quiz_app/screens/countdown.dart';
@@ -26,11 +28,8 @@ class _StartQuizState extends State<StartQuiz> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConfig.lightGreenColor,
-      body: WillPopScope(
-        onWillPop: () => Future.value(false),
-        child: const Center(
-          child: CircularButton()
-        ),
+      body: const Center(
+        child: CircularButton()
       ),
     );
   }
@@ -72,9 +71,10 @@ class CircularButton extends StatelessWidget {
                 splashColor: AppConfig.lightGreenColor,
                 customBorder: const CircleBorder(),
                 onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => const Countdown()));
+                  // Navigator.of(context).pop();
+                  // Navigator.of(context).pushReplacement(
+                  //       MaterialPageRoute(builder: (context) => const Countdown()));
+                  Get.offAndToNamed(RouteName.countdown);
                 },
                 child: Ink(
                   decoration: const BoxDecoration(

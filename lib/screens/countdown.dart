@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:quiz_app/common/app_config.dart';
+import 'package:quiz_app/common/route_config.dart';
 import 'dart:math' as math;
 
 import 'package:quiz_app/screens/quiz.dart';
@@ -24,8 +26,9 @@ class _CountdownState extends State<Countdown> with TickerProviderStateMixin {
       duration: const Duration(seconds: 6),
     )..addStatusListener((AnimationStatus status){
         if (status == AnimationStatus.dismissed) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const Quiz()));
+          // Navigator.of(context).pushReplacement(
+          //   MaterialPageRoute(builder: (context) => const Quiz()));
+          Get.offAndToNamed(RouteName.quiz);
         }
     });
 

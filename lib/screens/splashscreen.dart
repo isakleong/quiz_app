@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/config_controller.dart';
 import 'package:quiz_app/screens/dashboard.dart';
@@ -13,12 +14,36 @@ class SplashScreen extends StatelessWidget {
   void openDialog() {
     Get.dialog(
       AlertDialog(
-        title: const Text('Dialog'),
-        content: const Text('This is a dialog'),
-        actions: [
-          TextButton(
-            child: const Text("Close"),
-            onPressed: () => Get.back(),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Lottie.asset(
+                'assets/lottie/error.json',
+                width: 100,
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Obx(() => Text(
+                  "Error message :\n${configController.errorMessage.value.capitalize}"
+                  )
+                )
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: TextButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+              ),
+              child: const Text('OK', style: TextStyle(fontSize: 16, color: Colors.white)),
+              onPressed: () {
+                Get.back();
+              },
+            ),
           ),
         ],
       ),
@@ -29,6 +54,12 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double mediaWidth = MediaQuery.of(context).size.width;
     double mediaHeight = MediaQuery.of(context).size.height;
+
+    ever(configController.isError, (bool success) {
+      if (success) {
+          openDialog();
+      }
+    });
 
     return Scaffold(
       body: SizedBox(
@@ -56,6 +87,22 @@ class SplashScreen extends StatelessWidget {
               // ),
               // Obx(() => Text("${configController.configData}"))
 
+              // GetX<ConfigController>(
+              //   builder: (sController) => Flexible(
+              //   child: Text(
+              //     sController.isLoading.value ? 'Open' : 'Closed',
+              //     textAlign: TextAlign.start,
+              //     style: TextStyle(
+              //       color: sController.isLoading.value
+              //       ? Colors.green.shade700
+              //       : Colors.red,
+              //       fontSize: 22,
+              //       fontWeight: FontWeight.bold), 
+              //       ),
+              //     fit: FlexFit.tight, 
+              //   ),
+              // ),
+
               Obx(() {
                 if (configController.isLoading.value) {
                   return Lottie.asset(
@@ -63,8 +110,22 @@ class SplashScreen extends StatelessWidget {
                     width: 60,
                   );
                 } else if (configController.isError.value) {
-                  return Text(
-                    "Error: ${configController.errorMessage.value.capitalize}"
+                  return ElevatedButton(
+                    onPressed: () {
+                      configController.getConfigData();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppConfig.darkGreenColor,
+                      padding: const EdgeInsets.all(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.history),
+                        SizedBox(width: 10),
+                        Text("Coba Lagi", style: TextStyle(fontSize: 16)),
+                      ],
+                    ),
                   );
                 } else {
                   return Text("");

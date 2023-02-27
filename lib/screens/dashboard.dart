@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:jovial_svg/jovial_svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quiz_app/common/app_route.dart';
+import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/screens/starter.dart';
 
 class Dashboard extends StatefulWidget {
@@ -73,8 +76,10 @@ class _DashboardState extends State<Dashboard> {
                     highlightColor: Colors.blue.withOpacity(0.3),
                     splashColor: Colors.blue.withOpacity(0.3),
                     onTap: (){
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => const StartQuiz()));
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(builder: (context) => const StartQuiz()));
+
+                      // Get.toNamed(RouteName.starter);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
