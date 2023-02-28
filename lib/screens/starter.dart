@@ -17,6 +17,7 @@ class _StartQuizState extends State<StartQuiz> {
 
   @override
   void initState() {
+    print(Get.parameters);
     super.initState();
   }
   @override

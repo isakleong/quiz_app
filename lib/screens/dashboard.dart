@@ -6,6 +6,7 @@ import 'package:jovial_svg/jovial_svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quiz_app/common/app_route.dart';
 import 'package:quiz_app/common/route_config.dart';
+import 'package:quiz_app/controllers/quiz_controller.dart';
 import 'package:quiz_app/screens/starter.dart';
 
 class Dashboard extends StatefulWidget {
@@ -22,6 +23,8 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     WidgetsFlutterBinding.ensureInitialized();
   }
+
+  final quizController = Get.find<QuizController>();
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +82,7 @@ class _DashboardState extends State<Dashboard> {
                       // Navigator.of(context).push(
                       //   MaterialPageRoute(builder: (context) => const StartQuiz()));
 
-                      // Get.toNamed(RouteName.starter);
+                      Get.toNamed(RouteName.starter, arguments: quizController.quizModel);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
