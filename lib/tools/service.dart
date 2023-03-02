@@ -10,16 +10,17 @@ class ApiClient {
       final dio = Dio(
         BaseOptions(baseUrl: AppConfig.baseUrl)
       );
-      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
-        client.badCertificateCallback=(X509Certificate cert, String host, int port){
-            return true;
-        };
-      };
+      // (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
+      //   client.badCertificateCallback=(X509Certificate cert, String host, int port){
+      //       return true;
+      //   };
+      // };
 
       final response = await dio.get(path);
 
       return response.data;
     } on DioError catch (e) {
+      print("exc ${e.message.toString()}");
       throw Exception(e.message);
     }
   }

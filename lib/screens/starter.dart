@@ -1,43 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
-import 'dart:math' as math;
+import 'package:quiz_app/controllers/quiz_controller.dart';
 
-import 'package:quiz_app/screens/countdown.dart';
-
-class StartQuiz extends StatefulWidget {
-  const StartQuiz({super.key});
-  @override
-  State<StartQuiz> createState() => _StartQuizState();
-}
-
-class _StartQuizState extends State<StartQuiz> {
-
-  @override
-  void initState() {
-    print(Get.parameters);
-    super.initState();
-  }
-  @override
-  void dispose() {
-    super.dispose();
-  }
+class StartQuiz extends GetView<QuizController>  {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConfig.lightGreenColor,
-      body: const Center(
-        child: CircularButton()
+      body: controller.obx(
+        (state)=> CircularButton(),
+        // here you can put your custom loading indicator, but
+        // by default would be Center(child:CircularProgressIndicator())
+        onLoading: Center(child: Lottie.asset('assets/lottie/loading.json', width: 60)),
+        onEmpty: const Text('No data found'),
+        // here also you can set your own error widget, but by
+        // default will be an Center(child:Text(error))
+        onError: (error)=>const Text("error"),
       ),
     );
   }
 }
 
 class CircularButton extends StatelessWidget {
-  const CircularButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +60,6 @@ class CircularButton extends StatelessWidget {
                 splashColor: AppConfig.lightGreenColor,
                 customBorder: const CircleBorder(),
                 onTap: () {
-                  // Navigator.of(context).pop();
-                  // Navigator.of(context).pushReplacement(
-                  //       MaterialPageRoute(builder: (context) => const Countdown()));
                   Get.offAndToNamed(RouteName.countdown);
                 },
                 child: Ink(
@@ -92,44 +77,6 @@ class CircularButton extends StatelessWidget {
               ),
             ),
           ),
-
-        // Center(
-        //   child: ClipOval(
-        //     child: Container(
-        //       color: const Color(0xFF7E89FE),
-        //       height: 200,
-        //       width: 200,
-        //     ),
-        //   ),
-        // ),
-
-        // Center(
-        //   child: GestureDetector(
-        //   onTap: () {},
-        //   child: ClipOval(
-        //     child: Container(
-        //       height: 180,
-        //       width: 180,
-        //       decoration: BoxDecoration(
-        //         color: const Color(0xFF7E89FE),
-        //         border: Border.all(
-        //           color: Colors.white,
-        //           width: 10.0,
-        //           style: BorderStyle.solid),
-        //           boxShadow: const [
-        //             BoxShadow(
-        //                 color: Colors.grey,
-        //                 offset: Offset(21.0, 10.0),
-        //                 blurRadius: 20.0,
-        //                 spreadRadius: 40.0)
-        //           ],
-        //           shape: BoxShape.circle),
-        //           child: const Center(
-        //             child: Text('START',
-        //             style: TextStyle(color: Colors.white, fontSize: 20))),
-        //     ),
-        //   ),
-        // )),
       ],
     );
   }

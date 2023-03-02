@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:quiz_app/bindings/dashboard_binding.dart';
+import 'package:quiz_app/bindings/starter_binding.dart';
 import 'package:quiz_app/bindings/splashscreen_binding.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/config_controller.dart';
@@ -25,9 +25,9 @@ class AppRoute {
     //   }),
     // ),
 
-    GetPage(name: RouteName.dashboard, page: () => Dashboard(), binding: DashboardBinding(),),
-    GetPage(name: RouteName.starter, page: () => StartQuiz()),
-    GetPage(name: RouteName.starter, page: () => StartQuiz()),
+    GetPage(name: RouteName.dashboard, page: () => Dashboard()),
+    GetPage(name: RouteName.starter, page: () => StartQuiz(), binding: StarterBinding()),
+    // GetPage(name: RouteName.starter, page: () => StartQuiz()),
     GetPage(name: RouteName.countdown, page: () => Countdown()),
     GetPage(name: RouteName.quiz, page: () => Quiz()),
   ];

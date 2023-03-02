@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:quiz_app/bindings/splashscreen_binding.dart';
+import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/app_route.dart';
 import 'package:quiz_app/screens/splashscreen.dart';
 
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        // canvasColor: AppConfig.lightGreenColor
       ),
       // home: SplashScreen(),
       // initialBinding: SplashScreenBinding(),

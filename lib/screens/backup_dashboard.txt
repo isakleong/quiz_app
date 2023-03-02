@@ -1,8 +1,28 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:jovial_svg/jovial_svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quiz_app/common/app_route.dart';
 import 'package:quiz_app/common/route_config.dart';
+import 'package:quiz_app/controllers/quiz_controller.dart';
+import 'package:quiz_app/screens/starter.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsFlutterBinding.ensureInitialized();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +77,9 @@ class Dashboard extends StatelessWidget {
                     highlightColor: Colors.blue.withOpacity(0.3),
                     splashColor: Colors.blue.withOpacity(0.3),
                     onTap: (){
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(builder: (context) => const StartQuiz()));
+
                       Get.toNamed(RouteName.starter);
                     },
                     child: Column(
@@ -90,11 +113,34 @@ class Dashboard extends StatelessWidget {
                     ),
                   ),
                 ),
+          
               ],
             ),
           ),
+          
+          
         ],
       )
+      
+      // Container(
+      //   height: mediaHeight*0.5,
+      //   decoration: BoxDecoration(
+      //     borderRadius: BorderRadius.only(
+      //       bottomLeft: Radius.elliptical(
+      //           MediaQuery.of(context).size.width * 0.5, 80),
+      //       bottomRight: Radius.elliptical(
+      //           MediaQuery.of(context).size.width * 0.5, 80),
+      //     ),
+      //     image: DecorationImage(
+      //       fit: BoxFit.cover,
+      //       image: AssetImage('assets/images/bg.png'),
+      //     ),
+      //   ),
+      // ),
+
+      
+
+      
     );
   }
 }

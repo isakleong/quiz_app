@@ -1,81 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:quiz_app/common/app_config.dart';
+import 'package:quiz_app/common/route_config.dart';
+import 'package:quiz_app/controllers/quiz_controller.dart';
 import 'package:quiz_app/models/question.dart';
 import 'package:quiz_app/screens/dashboard.dart';
-import 'package:quiz_app/screens/summary.dart';
 
 
-class Quiz extends StatefulWidget {
-  const Quiz({super.key});
+class Quiz extends StatelessWidget{
 
-  @override
-  State<Quiz> createState() => _QuizState();
-}
-
-class _QuizState extends State<Quiz> {
-  List<Question> questionList = [];
+  final quizController = Get.find<QuizController>();
+  
+  // List<Question> questionList = [];
   List<Widget> questionWidget = [];
 
-  int currentQuestion = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    questionList.clear();
-
-    for(int i=0; i<25; i++) {
-      List<String> answer = [
-        lorem(paragraphs: 1, words: 8),
-        lorem(paragraphs: 1, words: 4),
-        lorem(paragraphs: 1, words: 6),
-        lorem(paragraphs: 1, words: 5)
-      ];
-
-      String questionText = lorem(paragraphs: 2, words: 60);
-      Question question = Question(id: i+1, question: questionText, answer: answer, answerSelected: -1, correctAnswer:2);
-      questionList.add(question);
-    }
-    setState(() {
-      questionList = questionList;
-    });
-  }
-
   nextQuestion() async {
-    if (currentQuestion != questionList.length - 1) {
-      currentQuestion += 1;
-      loadAnswers(currentQuestion);
-      setState(() {
-        currentQuestion = currentQuestion;
-      });
-
+    if (quizController.currentQuestion.value != quizController.quizModel.length - 1) {
+      quizController.increment();
       await Future.delayed(const Duration(milliseconds: 100));
     }
   }
 
   previousQuestion() async {
-    currentQuestion -= 1;
-    loadAnswers(currentQuestion);
-    setState(() {
-      currentQuestion = currentQuestion;
-    });
-
+    quizController.decrement();
     await Future.delayed(const Duration(milliseconds: 100));
   }
 
   finishQuestion() {
     List<int> arrInvalidQuestion = [];
     bool isValid = true;
-    for(int i=0; i<questionList.length; i++) {
+    for(int i=0; i<quizController.quizModel.length; i++) {
       isValid = true;
-      if(questionList[i].answerSelected < 0) {
+      if(quizController.quizModel[i].answerSelected < 0) {
         isValid = false;
         arrInvalidQuestion.add(i+1);
       }
@@ -84,234 +42,186 @@ class _QuizState extends State<Quiz> {
     String strInvalidQuestion = arrInvalidQuestion.join(", ");
 
     if(arrInvalidQuestion.isEmpty) {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (ctx) => WillPopScope(
-          onWillPop: () => Future.value(false),
-          child: AlertDialog(
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  // SvgPicture.asset(
-                  //   'assets/images/confirm.svg', 
-                  //   semanticsLabel: 'secret',
-                  //   fit: BoxFit.cover,
-                  //   width: 250,
-                  //   height: 250,
-                  // ),
-                  Image.asset('assets/images/confirm.png', width: 220, height: 220),
-                  const SizedBox(height: 30),
-                  const Text('Apakah Anda yakin ingin mengumpulkan kuis?', style: TextStyle(fontSize: 16), textAlign: TextAlign.center),
-                ],
+      Get.dialog(
+        AlertDialog(
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Image.asset('assets/images/confirm.png', width: 220, height: 220),
+                const SizedBox(height: 30),
+                const Text('Apakah Anda yakin ingin mengumpulkan kuis?', style: TextStyle(fontSize: 16), textAlign: TextAlign.center),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                ),
+                child: const Text('Tidak', style: TextStyle(fontSize: 16, color: Colors.white)),
+                onPressed: () {
+                  Get.back();
+                },
               ),
             ),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
-                  ),
-                  child: const Text('Tidak', style: TextStyle(fontSize: 16, color: Colors.white)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   PageRouteBuilder(
-                    //     // transitionDuration: Duration(seconds: 3),
-                    //     pageBuilder: (_, __, ___) => const Summary(mode: 1)
-                    //   )
-                    // );
-                  },
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
                 ),
+                child: const Text('Ya, Kumpul', style: TextStyle(fontSize: 16, color: Colors.white)),
+                onPressed: () {
+                  Get.back();
+                  quizSummary();
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
-                  ),
-                  child: const Text('Ya, Kumpul', style: TextStyle(fontSize: 16, color: Colors.white)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    quizSummary();
-                  },
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
+
     } else {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (ctx) => WillPopScope(
-          onWillPop: () => Future.value(false),
-          child: AlertDialog(
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Image.asset('assets/images/warning.png', width: 220, height: 220),
-                  const SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child:  RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: 'Gagal menyimpan, pastikan Anda sudah menjawab semua pertanyaan kuis yang disediakan.\n\n',
-                        style: const TextStyle(fontSize: 16, color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(text: 'Pertanyaan yang belum dijawab adalah nomor :\n$strInvalidQuestion', style: const TextStyle(fontWeight: FontWeight.bold)),
-                        ],
-                      ),
+      Get.dialog(
+        AlertDialog(
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Image.asset('assets/images/warning.png', width: 220, height: 220),
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text: 'Gagal menyimpan, pastikan Anda sudah menjawab semua pertanyaan kuis yang disediakan.\n\n',
+                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                      children: <TextSpan>[
+                        TextSpan(text: 'Pertanyaan yang belum dijawab adalah nomor :\n$strInvalidQuestion', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      ],
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                ),
+                child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
+                onPressed: () {
+                  Get.back();
+                },
               ),
             ),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
-                  ),
-                  child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ],
-          ),
+          ],
         ),
-      );
+      ); 
     }
   }
 
   quizSummary() {
     int score = 0;
-    for(int i=0; i<questionList.length; i++) {
-      if(questionList[i].answerSelected == questionList[i].correctAnswer) {
+    for(int i=0; i<quizController.quizModel.length; i++) {
+      if(quizController.quizModel[i].answerSelected == int.parse(quizController.quizModel[i].correctAnswerList[i])) {
         score++;
       }
     }
 
     if(score >= 3) {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (ctx) => WillPopScope(
-          onWillPop: () => Future.value(false),
-          child: AlertDialog(
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Image.asset('assets/images/fireworks.png', width: 220, height: 220),
-                  const SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child:  RichText(
-                      textAlign: TextAlign.center,
-                      text: const TextSpan(
-                        text: 'Selamat! Anda dinyatakan ',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(text: 'LULUS', style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: ' kuis periode ini'),
-                        ],
-                      ),
+      Get.dialog(
+        AlertDialog(
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Image.asset('assets/images/fireworks.png', width: 220, height: 220),
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:  RichText(
+                    textAlign: TextAlign.center,
+                    text: const TextSpan(
+                      text: 'Selamat! Anda dinyatakan ',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      children: <TextSpan>[
+                        TextSpan(text: 'LULUS', style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: ' kuis periode ini'),
+                      ],
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                ),
+                child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
+                onPressed: () {
+                  Get.back();
+                  Get.offNamed(RouteName.dashboard);
+                },
               ),
             ),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
-                  ),
-                  child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => const Dashboard()
-                      )
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+          ],
         ),
       );
+
     } else {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (ctx) => WillPopScope(
-          onWillPop: () => Future.value(false),
-          child: AlertDialog(
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Image.asset('assets/images/failed.png', width: 220, height: 220),
-                  const SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child:  RichText(
-                      textAlign: TextAlign.center,
-                      text: const TextSpan(
-                        text: 'Mohon maaf, Anda dinyatakan ',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang di esok hari'),
-                        ],
-                      ),
+      Get.dialog(
+        AlertDialog(
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Image.asset('assets/images/failed.png', width: 220, height: 220),
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:  RichText(
+                    textAlign: TextAlign.center,
+                    text: const TextSpan(
+                      text: 'Mohon maaf, Anda dinyatakan ',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      children: <TextSpan>[
+                        TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang di esok hari'),
+                      ],
                     ),
-                    
-                    // Text('Mohon maaf, Anda dinyatakan BELUM LULUS kuis periode ini. Silahkan kembali mencoba mengerjakan di esok hari', style: TextStyle(fontSize: 16), textAlign: TextAlign.center),
                   ),
-                ],
+                  
+                  // Text('Mohon maaf, Anda dinyatakan BELUM LULUS kuis periode ini. Silahkan kembali mencoba mengerjakan di esok hari', style: TextStyle(fontSize: 16), textAlign: TextAlign.center),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                ),
+                child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
+                onPressed: () {
+                  Get.back();
+                  Get.offNamed(RouteName.dashboard);
+                },
               ),
             ),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
-                  ),
-                  child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => const Dashboard()
-                      )
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+          ],
         ),
       );
     }
-
-    
-  }
-
-  void loadAnswers(int currentQuestion) async {
-    
   }
 
   int value = -1;
@@ -321,22 +231,21 @@ class _QuizState extends State<Quiz> {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       child: OutlinedButton(
         onPressed: () {
-          setState(() {
-            questionList[currentQuestion].answerSelected = index;
-          });
+          quizController.chooseQuestion(index);
+          quizController.quizModel.refresh();
+          // quizController.quizModel[quizController.currentQuestion.value].answerSelected = index;
         },
-        // 0xFF1B8C5C
         style: OutlinedButton.styleFrom(
           foregroundColor: AppConfig.darkGreenColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          side: BorderSide(color: (questionList[currentQuestion].answerSelected == index) ? AppConfig.mainGreenColor : Colors.black),
+          side: BorderSide(color: (quizController.quizModel[quizController.currentQuestion.value].answerSelected == index) ? AppConfig.mainGreenColor : Colors.black),
         ),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
             text,
             style: TextStyle(
-              color: (questionList[currentQuestion].answerSelected == index) ? AppConfig.mainGreenColor : Colors.black,
+              color: (quizController.quizModel[quizController.currentQuestion.value].answerSelected == index) ? AppConfig.mainGreenColor : Colors.black,
               fontSize: 16,
             ),
           ),
@@ -344,8 +253,6 @@ class _QuizState extends State<Quiz> {
       ),
     );
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -355,10 +262,6 @@ class _QuizState extends State<Quiz> {
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: const BoxDecoration(
           color: Colors.white,
-          // borderRadius: BorderRadius.only(
-          //   topLeft: Radius.circular(15),
-          //   topRight: Radius.circular(15),
-          // ),
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 0),
@@ -370,22 +273,24 @@ class _QuizState extends State<Quiz> {
         child: Row(
           children: [
             Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  currentQuestion == 0 ? null : previousQuestion();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: currentQuestion == 0
-                  ? Colors.grey
-                  : AppConfig.darkGreenColor,
-                  elevation: 0,
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(12),
-                ),
-                child: const Icon(
-                  FontAwesomeIcons.arrowLeft,
-                  size: 25,
-                  color:Colors.white,
+              child: Obx(
+                () => ElevatedButton(
+                  onPressed: () {
+                    quizController.currentQuestion.value == 0 ? null : quizController.decrement();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: quizController.currentQuestion.value == 0
+                    ? Colors.grey
+                    : AppConfig.darkGreenColor,
+                    elevation: 0,
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(12),
+                  ),
+                  child: const Icon(
+                    FontAwesomeIcons.arrowLeft,
+                    size: 25,
+                    color:Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -394,88 +299,80 @@ class _QuizState extends State<Quiz> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // InkWell(
-                  //   onTap: (){
-                  //     print('fungsi modal');
-                  //   },
-                  //   child: const Icon(Icons.arrow_drop_up, color: Colors.blue),
-                  // ),
                   IconButton(
                     onPressed: (){
-                      showModalBottomSheet(
-                        backgroundColor: const Color(0xFFE0F6E3),
-                        context: context,
-                        builder: (context) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight: MediaQuery.of(context).size.height / 4 * 3,
-                                minHeight: MediaQuery.of(context).size.height / 3,
-                              ),
-                              child: Column(
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 15, bottom: 20),
-                                    child: Text('Pilih Soal No', style: TextStyle(fontSize: 16)),
-                                  ),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      physics: const BouncingScrollPhysics(),
-                                      scrollDirection: Axis.vertical,
-                                      child: Wrap(
-                                        direction: Axis.horizontal,
-                                        spacing: 20,
-                                        runSpacing: 15,
-                                        children: List.generate(questionList.length, (index) => InkWell(
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            setState(() {
-                                              currentQuestion = index;
-                                            });
-                                          },
-                                          child: CircleAvatar(
-                                            radius: 40,
-                                            backgroundColor: index == currentQuestion ? AppConfig.darkGreenColor : Colors.white,
-                                            child: Text(
-                                              '${index + 1}',
-                                              style: TextStyle(
-                                                color: index == currentQuestion ? Colors.white : Colors.black,
-                                                fontWeight: FontWeight.bold, fontSize: 20
-                                              )
-                                            ),
+                      Get.bottomSheet(
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxHeight: MediaQuery.of(context).size.height / 4 * 3,
+                              minHeight: MediaQuery.of(context).size.height / 3,
+                            ),
+                            child: Column(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 15, bottom: 20),
+                                  child: Text('Pilih Soal No', style: TextStyle(fontSize: 16)),
+                                ),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    physics: const BouncingScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    child: Wrap(
+                                      direction: Axis.horizontal,
+                                      spacing: 20,
+                                      runSpacing: 15,
+                                      children: List.generate(quizController.quizModel.length, (index) => InkWell(
+                                        onTap: () {
+                                          Get.back();
+                                          quizController.updateIndex(index);
+                                        },
+                                        child: CircleAvatar(
+                                          radius: 40,
+                                          backgroundColor: index == quizController.currentQuestion.value ? AppConfig.darkGreenColor : Colors.white,
+                                          child: Text(
+                                            '${index + 1}',
+                                            style: TextStyle(
+                                              color: index == quizController.currentQuestion.value ? Colors.white : Colors.black,
+                                              fontWeight: FontWeight.bold, fontSize: 20
+                                            )
                                           ),
-                                        )),
-                                      ),
+                                        ),
+                                      )),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          );
-                        });
+                          ),
+                        ),
+                        backgroundColor: const Color(0xFFE0F6E3),
+                      );
                     }, 
                     icon: const Icon(FontAwesomeIcons.circleArrowUp, size: 30,),
                   ),
-                  Text('${currentQuestion+1} / ${questionList.length}', style: const TextStyle(fontSize: 16))
+                  Obx(() => Text('${quizController.currentQuestion.value+1} / ${quizController.quizModel.length}', style: const TextStyle(fontSize: 16)))
                 ],
               ),
             ),
             Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  currentQuestion == questionList.length-1 ? finishQuestion() : nextQuestion();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppConfig.darkGreenColor,
-                  elevation: 0,
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(12),
-                ),
-                child: Icon(
-                  currentQuestion == questionList.length-1 ? FontAwesomeIcons.check : FontAwesomeIcons.arrowRight,
-                  size: 25,
-                  color: Colors.white,
+              child: Obx(
+                () => ElevatedButton(
+                  onPressed: () {
+                    quizController.currentQuestion.value == quizController.quizModel.length-1 ? finishQuestion() : quizController.increment();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppConfig.darkGreenColor,
+                    elevation: 0,
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(12),
+                  ),
+                  child: Icon(
+                    quizController.currentQuestion.value == quizController.quizModel.length-1 ? FontAwesomeIcons.check : FontAwesomeIcons.arrowRight,
+                    size: 25,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -490,17 +387,13 @@ class _QuizState extends State<Quiz> {
                 height: constraints.maxHeight * .45,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 alignment: Alignment.center,
-                child: Text(questionList[currentQuestion].question, style: const TextStyle(fontSize: 20)),
+                child: Obx(() =>Text(quizController.quizModel[quizController.currentQuestion.value].question, style: const TextStyle(fontSize: 20))),
               ),
               Expanded(
                 child: Container(
                   height: constraints.maxHeight, // will get by column
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    // image: DecorationImage(
-                    //   image: AssetImage('assets/bg.png'),
-                    //   fit: BoxFit.cover,
-                    // ),
                     borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(60),
                     topRight: Radius.circular(60),
@@ -508,60 +401,13 @@ class _QuizState extends State<Quiz> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
-                    child: ListView.builder(
+                    child: Obx(() => ListView.builder(
                       physics: const BouncingScrollPhysics(),
-                      itemCount: questionList[currentQuestion].answer.length,
+                      itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return CustomRadioButton(questionList[currentQuestion].answer[index], index);
-                        
-                        // Padding(
-                        //   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        //   child: Container(
-                        //     width: MediaQuery.of(context).size.width,
-                        //     decoration: BoxDecoration(
-                        //       borderRadius: BorderRadius.circular(16),
-                        //     ),
-                        //     child: ElevatedButton(
-                        //       style: ElevatedButton.styleFrom(
-                        //         padding: const EdgeInsets.all(0),
-                        //         backgroundColor: Colors.white,
-                        //         foregroundColor: const AppConfig.darkGreenColor,
-                        //         shape: RoundedRectangleBorder(
-                        //           borderRadius: BorderRadius.circular(5),
-                        //           side: const BorderSide(color:AppConfig.darkGreenColor)
-                        //         ),
-                        //       ),
-                        //       onPressed: () async{
-                                
-                        //       },
-                        //       child: Row(
-                        //         children: <Widget>[
-                        //           Expanded(
-                        //             child: Stack(
-                        //               children: <Widget>[
-                        //                 Container(
-                        //                   padding: const EdgeInsets.all(10),
-                        //                   child: Center(
-                        //                     child: Text(questionList[currentQuestion].answer[index], style: const TextStyle(color:Color(0xFF404040)))
-                        //                   ),
-                        //                 ),
-                        //                 const Positioned(
-                        //                   top: 0,
-                        //                   right: 0,
-                        //                   width: 35,
-                        //                   child: _Triangle(color: Colors.blue),
-                        //                 )
-                        //               ],
-                        //             )
-                        //           )
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ),
-                        // );
-
-
+                        return CustomRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} -- ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerList[index]}", index);
                       }),
+                    ), 
                   ),
                 ),
               ),
@@ -569,55 +415,6 @@ class _QuizState extends State<Quiz> {
           ),
         ),
       ),
-      
-      // body: Center(
-      //   child: Container(
-      //     child: Padding(
-      //       padding: const EdgeInsets.all(30),
-      //       child: Container(
-      //         width: MediaQuery.of(context).size.width,
-      //         decoration: BoxDecoration(
-      //           borderRadius: BorderRadius.circular(16),
-      //         ),
-      //         child: ElevatedButton(
-      //           onPressed: () async{},
-      //           style: ElevatedButton.styleFrom(
-      //             backgroundColor: Colors.green,
-      //             shape: RoundedRectangleBorder(
-      //               borderRadius: BorderRadius.circular(5),
-      //               side: const BorderSide(color: Colors.blue)
-      //             ),
-      //           ),
-      //           child: Row(
-      //             children: <Widget>[
-      //               Expanded(
-      //                 child: Stack(
-      //                   children: <Widget>[
-      //                     Container(
-      //                       padding: const EdgeInsets.all(10),
-      //                       child: const Center(
-      //                         child: Text('answer.rightAnswer', style: TextStyle(color: Colors.red)
-      //                         )
-      //                       ),
-      //                     ),
-      //                     const Positioned(
-      //                       top: 0,
-      //                       right: 0,
-      //                       width: 35,
-      //                       child: _Triangle(color: Colors.blue),
-      //                     )
-      //                   ],
-      //                 )
-      //               )
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      // ),
-
-
     );
   }
 }
@@ -640,10 +437,6 @@ class _Triangle extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(left: 20.0, bottom: 16),
             child: Icon(Icons.check, color: Colors.white, size: 15),
-            // Transform.rotate(
-            //   angle: math.pi / 4,
-            //   child: Icon(Icons.check, color: Colors.white),
-            // )
           )
         )
       )
