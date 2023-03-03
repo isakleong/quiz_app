@@ -1,34 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/quiz_controller.dart';
-import 'package:quiz_app/models/question.dart';
-import 'package:quiz_app/screens/dashboard.dart';
 
 
 class Quiz extends StatelessWidget{
 
   final quizController = Get.find<QuizController>();
   
-  // List<Question> questionList = [];
   List<Widget> questionWidget = [];
 
-  nextQuestion() async {
-    if (quizController.currentQuestion.value != quizController.quizModel.length - 1) {
-      quizController.increment();
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-  }
-
-  previousQuestion() async {
-    quizController.decrement();
-    await Future.delayed(const Duration(milliseconds: 100));
-  }
-
-  finishQuestion() {
+  finishQuiz() {
     List<int> arrInvalidQuestion = [];
     bool isValid = true;
     for(int i=0; i<quizController.quizModel.length; i++) {
@@ -74,8 +58,9 @@ class Quiz extends StatelessWidget{
                 ),
                 child: const Text('Ya, Kumpul', style: TextStyle(fontSize: 16, color: Colors.white)),
                 onPressed: () {
+                  print(quizController.quizTarget.value);
                   Get.back();
-                  quizSummary();
+                  // quizSummary();
                 },
               ),
             ),
@@ -276,7 +261,7 @@ class Quiz extends StatelessWidget{
               child: Obx(
                 () => ElevatedButton(
                   onPressed: () {
-                    quizController.currentQuestion.value == 0 ? null : quizController.decrement();
+                    quizController.currentQuestion.value == 0 ? null : quizController.previousQuestion();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: quizController.currentQuestion.value == 0
@@ -360,7 +345,7 @@ class Quiz extends StatelessWidget{
               child: Obx(
                 () => ElevatedButton(
                   onPressed: () {
-                    quizController.currentQuestion.value == quizController.quizModel.length-1 ? finishQuestion() : quizController.increment();
+                    quizController.currentQuestion.value == quizController.quizModel.length-1 ? finishQuiz() : quizController.nextQuestion();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppConfig.darkGreenColor,
@@ -405,7 +390,7 @@ class Quiz extends StatelessWidget{
                       physics: const BouncingScrollPhysics(),
                       itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return CustomRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} -- ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerList[index]}", index);
+                        return CustomRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} -- ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex}", index);
                       }),
                     ), 
                   ),

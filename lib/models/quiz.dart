@@ -1,30 +1,40 @@
 
+import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:quiz_app/models/answer.dart';
 part 'quiz.g.dart';
 
 @JsonSerializable()
+@HiveType(typeId: 0)
 class Quiz {
+  @HiveField(0)
   @JsonKey(name: "QuestionID")
   String questionID = "";
   
+  @HiveField(1)
   @JsonKey(name: "Question")
   String question = "";
 
-  @JsonKey(name: "Kategori")
+  @HiveField(2)
+  @JsonKey(name: "Category")
   String category = "";
 
+  @HiveField(3)
   @JsonKey(name: "AnswerSelected")
   int answerSelected = 0;
 
+  @HiveField(4)
   @JsonKey(name: 'AnswerText')
   List<String> answerList = [];
 
+  @HiveField(5)
   @JsonKey(name: 'Correct')
   List<String> correctAnswerList = [];
 
-  Quiz({required this.questionID, required this.question, required this.category, required this.answerSelected, 
-  required this.answerList, required this.correctAnswerList});
+  @HiveField(6)
+  @JsonKey(name: "CorrectAnswerIndex")
+  int correctAnswerIndex = 0;
+
+  Quiz({required this.questionID, required this.question, required this.category, required this.answerSelected, required this.answerList, required this.correctAnswerList, required this.correctAnswerIndex});
 
   factory Quiz.from(Map<String, dynamic> json) => _$QuizFromJson(json);
 

@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:quiz_app/bindings/splashscreen_binding.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/app_route.dart';
 import 'package:quiz_app/screens/splashscreen.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   // SystemChrome.setSystemUIChangeCallback((systemOverlaysAreVisible) async {
@@ -17,6 +21,11 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  Directory directory = await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(directory.path);
+
+
   runApp(MyApp());
 }
 

@@ -5,7 +5,7 @@ import 'package:quiz_app/controllers/quiz_controller.dart';
 class StarterBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put<QuizController>(QuizController(), permanent: true);
+    Get.put<QuizController>(QuizController());
   }
 
 }
