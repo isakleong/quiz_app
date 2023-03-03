@@ -29,6 +29,6 @@ class AppRoute {
     GetPage(name: RouteName.starter, page: () => StartQuiz(), binding: StarterBinding()),
     // GetPage(name: RouteName.starter, page: () => StartQuiz()),
     GetPage(name: RouteName.countdown, page: () => Countdown()),
-    GetPage(name: RouteName.quiz, page: () => Quiz()),
+    GetPage(name: RouteName.quiz, page: () => QuizPage()),
   ];
 }

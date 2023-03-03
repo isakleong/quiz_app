@@ -5,7 +5,10 @@ import 'package:quiz_app/controllers/quiz_controller.dart';
 class StarterBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put<QuizController>(QuizController());
+    // Get.reset();
+    Get.put<QuizController>( QuizController(), permanent: true);
+    // Get.lazyPut<QuizController>(() => QuizController(), fenix: true);
+    // Get.create(() => QuizController(), permanent: true);
   }
 
 }
