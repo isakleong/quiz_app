@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/config_controller.dart';
@@ -40,7 +42,16 @@ class SplashScreen extends StatelessWidget {
                   backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
               ),
               child: const Text('OK', style: TextStyle(fontSize: 16, color: Colors.white)),
-              onPressed: () {
+              onPressed: () async {
+                // String? deviceId;
+                // // Platform messages may fail, so we use a try/catch PlatformException.
+                // try {
+                //   deviceId = await PlatformDeviceId.getDeviceId;
+                // } on PlatformException {
+                //   deviceId = 'Failed to get deviceId.';
+                // }
+
+                // print(deviceId);
                 Get.back();
               },
             ),

@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/tools/service.dart';
@@ -17,6 +19,7 @@ class QuizController extends GetxController with StateMixin {
 
   var quizModel = <Quiz>[].obs;
   var quizTarget = 0.obs;
+  var isPassed = false.obs;
   var currentQuestion = 0.obs;
 
   @override
@@ -31,8 +34,6 @@ class QuizController extends GetxController with StateMixin {
       resetQuiz();
     });
   }
-
-  
 
   nextQuestion() {
     currentQuestion++;
@@ -119,7 +120,7 @@ class QuizController extends GetxController with StateMixin {
         print(quizBox.getAt(0));
 
         // if done, change status to success
-        change(null, status: RxStatus.success());
+        // change(null, status: RxStatus.success());
         
       } catch(e) {
         print("masuk catch");
@@ -136,29 +137,37 @@ class QuizController extends GetxController with StateMixin {
     change(null, status: RxStatus.loading());
 
     try {
-      //submit quiz data
-      var result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=2023-02-24");
-      var data = jsonDecode(result.toString());
-      data.map((item) {
-        quizModel.add(Quiz.from(item));
-      }).toList();
+      var now = DateTime.now();
+      var formatter = DateFormat('yyyy-MM-dd H:m:s');
+      String formattedDate = formatter.format(now);
 
-      for(int i=0; i<quizModel.length; i++) {
-        quizModel[i].answerList.shuffle();
+      int passed = 0;
+      if(isPassed.value) {
+        passed = 1;
+      } else {
+        passed = 0;
       }
 
-      //stored quiz config data to hive
-      var quizBox = await Hive.openBox<Quiz>('quizBox');
-      for(int i=0; i<quizModel.length; i++) {
-        await quizBox.add(quizModel[i]);
-      }
-      print(quizBox.getAt(0));
+      var params =  {
+        'sales_id': '00AC1A0103',
+        'quiz_id': 'Quiz-001',
+        'date': formattedDate,
+        'passed': passed,
+        'model': quizModel
+      };
+      var bodyData = jsonEncode(params);
+
+      var result = await ApiClient().postData(
+        '/quiz/submit',
+        bodyData,
+        Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
+      );
 
       // if done, change status to success
       change(null, status: RxStatus.success());
       
     } catch(e) {
-      print("masuk catch");
+      print("masuk catch "+errorMessage.value.toString());
       isError(true);
       errorMessage.value = e.toString();
       // if done, change status to success

@@ -24,4 +24,25 @@ class ApiClient {
       throw Exception(e.message);
     }
   }
+
+  Future postData(String path, var formData, var options) async {
+    try {
+      final dio = Dio(
+        BaseOptions(baseUrl: AppConfig.baseUrl)
+      );
+      // (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
+      //   client.badCertificateCallback=(X509Certificate cert, String host, int port){
+      //       return true;
+      //   };
+      // };
+
+      final response = await dio.post(path, data: formData, options: options);
+
+      return response.data;
+    } on DioError catch (e) {
+      print("exc ${e.message.toString()}");
+      throw Exception(e.message);
+    }
+  }
+
 }

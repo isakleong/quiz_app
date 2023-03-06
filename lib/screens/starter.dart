@@ -8,7 +8,7 @@ import 'package:quiz_app/controllers/quiz_controller.dart';
 
 class StartQuiz extends GetView<QuizController>  {
 
-  void openDialog(String errorMessage) {
+  openDialog(String errorMessage) {
     Get.dialog(
       AlertDialog(
         content: SingleChildScrollView(
@@ -47,6 +47,23 @@ class StartQuiz extends GetView<QuizController>  {
     );
   }
 
+  exLoading() {
+    Get.dialog(
+      AlertDialog(
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Lottie.asset(
+                'assets/lottie/loading.json',
+                width: 100,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double mediaWidth = MediaQuery.of(context).size.width;
@@ -63,6 +80,7 @@ class StartQuiz extends GetView<QuizController>  {
           controller.obx(
             (state) => CircularButton(),
             onLoading: Center(child: Lottie.asset('assets/lottie/loading.json', width: 60)),
+            // onLoading: exLoading(),
             onEmpty: const Text('No data found'),
             onError: (error) => Center(
               child: SingleChildScrollView(
