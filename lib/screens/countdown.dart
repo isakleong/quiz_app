@@ -4,15 +4,15 @@ import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'dart:math' as math;
 
-class Countdown extends StatefulWidget {
-  const Countdown({super.key});
+class CountdownPage extends StatefulWidget {
+  const CountdownPage({super.key});
 
   @override
-  State<Countdown> createState() => _CountdownState();
+  State<CountdownPage> createState() => _CountdownPageState();
 }
 
 
-class _CountdownState extends State<Countdown> with TickerProviderStateMixin {
+class _CountdownPageState extends State<CountdownPage> with TickerProviderStateMixin {
   late AnimationController controller;
 
   @override

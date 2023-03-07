@@ -9,7 +9,9 @@ import 'package:quiz_app/controllers/quiz_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
 
 
+// ignore: must_be_immutable
 class QuizPage extends GetView<QuizController>{
+  QuizPage({super.key});
 
   final quizController = Get.find<QuizController>();
   
@@ -83,7 +85,7 @@ class QuizPage extends GetView<QuizController>{
                   child:  RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
-                      text: 'Gagal menyimpan, pastikan Anda sudah menjawab semua pertanyaan kuis yang disediakan.\n\n',
+                      text: 'Gagal mengumpulkan kuis, pastikan Anda sudah menjawab semua pertanyaan kuis yang disediakan.\n\n',
                       style: const TextStyle(fontSize: 16, color: Colors.black),
                       children: <TextSpan>[
                         TextSpan(text: 'Pertanyaan yang belum dijawab adalah nomor :\n$strInvalidQuestion', style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -124,7 +126,8 @@ class QuizPage extends GetView<QuizController>{
     var target = ((quizController.quizTarget.value/100) * quizController.quizModel.length);
     var arrTarget = target.toString().split(".");
 
-    print("total score "+score.toString());
+    print("total score $score");
+    print("total target ${arrTarget[0]}");
 
     await quizController.submitQuiz();
 
@@ -134,7 +137,7 @@ class QuizPage extends GetView<QuizController>{
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Image.asset('assets/images/fireworks.png', width: 220, height: 220),
+                Image.asset('assets/images/fireworks.png', width: 250, height: 250),
                 const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.all(10),
@@ -205,8 +208,9 @@ class QuizPage extends GetView<QuizController>{
                     backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
                 ),
                 child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
-                onPressed: () async {
-                  await quizController.retryQuiz();
+                onPressed: () {
+                  // await quizController.retryQuiz();
+                  quizController.isReset(!(quizController.isReset.value));
                   Get.back();
                   Get.offNamed(RouteName.dashboard);
                 },
@@ -228,8 +232,8 @@ class QuizPage extends GetView<QuizController>{
           quizController.chooseQuestion(index);
           quizController.quizModel.refresh();
 
-          var quizBox = await Hive.openBox<Quiz>('quizBox');
-          quizBox.putAt(quizController.currentQuestion.value, quizController.quizModel[quizController.currentQuestion.value]);
+          var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+          quizModelBox.putAt(quizController.currentQuestion.value, quizController.quizModel[quizController.currentQuestion.value]);
         },
         style: OutlinedButton.styleFrom(
           foregroundColor: AppConfig.darkGreenColor,
@@ -384,81 +388,39 @@ class QuizPage extends GetView<QuizController>{
             ],
           ),
         ),
-        body: controller.obx(
-          onLoading: Center(child: Lottie.asset('assets/lottie/loading.json', width: 60)),
-          onEmpty: const Text('No data found'),
-          onError: (error) => Center(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Lottie.asset(
-                    'assets/lottie/error.json',
-                    width: mediaWidth*0.5,
-                  ),
-                  const SizedBox(height: 15),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Text("Error :\n${controller.errorMessage.value}", style: TextStyle(fontSize: 16)),
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: () {
-                      final QuizController quizController = Get.find();
-                      quizController.fetchQuizData();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppConfig.darkGreenColor,
-                      padding: const EdgeInsets.all(12),
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) => Column(
+              children: [
+                Container(
+                  height: constraints.maxHeight * .45,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  alignment: Alignment.center,
+                  child: Obx(() =>Text(quizController.quizModel[quizController.currentQuestion.value].question, style: const TextStyle(fontSize: 20))),
+                ),
+                Expanded(
+                  child: Container(
+                    height: constraints.maxHeight, // will get by column
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(60),
+                      topRight: Radius.circular(60),
+                      )
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(Icons.history),
-                        SizedBox(width: 10),
-                        Text("Coba Lagi", style: TextStyle(fontSize: 16)),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
+                      child: Obx(() => ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return CustomRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} -- ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex}", index);
+                        }),
+                      ), 
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          (state) => SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) => Column(
-                children: [
-                  Container(
-                    height: constraints.maxHeight * .45,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    alignment: Alignment.center,
-                    child: Obx(() =>Text(quizController.quizModel[quizController.currentQuestion.value].question, style: const TextStyle(fontSize: 20))),
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: constraints.maxHeight, // will get by column
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(60),
-                        topRight: Radius.circular(60),
-                        )
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
-                        child: Obx(() => ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return CustomRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} -- ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex}", index);
-                          }),
-                        ), 
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

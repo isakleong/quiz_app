@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
-import 'package:quiz_app/bindings/starter_binding.dart';
+import 'package:quiz_app/bindings/history_page_binding.dart';
+import 'package:quiz_app/bindings/starter_page_binding.dart';
 import 'package:quiz_app/bindings/splashscreen_binding.dart';
 import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/controllers/config_controller.dart';
 import 'package:quiz_app/screens/countdown.dart';
 import 'package:quiz_app/screens/dashboard.dart';
+import 'package:quiz_app/screens/history.dart';
 import 'package:quiz_app/screens/quiz.dart';
 import 'package:quiz_app/screens/splashscreen.dart';
 import 'package:quiz_app/screens/starter.dart';
@@ -25,10 +26,11 @@ class AppRoute {
     //   }),
     // ),
 
-    GetPage(name: RouteName.dashboard, page: () => Dashboard()),
-    GetPage(name: RouteName.starter, page: () => StartQuiz(), binding: StarterBinding()),
+    GetPage(name: RouteName.dashboard, page: () => const Dashboard()),
+    GetPage(name: RouteName.starter, page: () => StartQuiz(), binding: StarterPageBinding()),
     // GetPage(name: RouteName.starter, page: () => StartQuiz()),
-    GetPage(name: RouteName.countdown, page: () => Countdown()),
+    GetPage(name: RouteName.countdown, page: () => const CountdownPage()),
     GetPage(name: RouteName.quiz, page: () => QuizPage()),
+    GetPage(name: RouteName.history, page: () => const HistoryPage(), binding: HistoryPageBinding()),
   ];
 }

@@ -4,5 +4,6 @@ abstract class RouteName {
   static const starter = "/start-quiz";
   static const countdown = "/countdown";
   static const quiz = "/quiz";
+  static const history = "/history";
 
 }

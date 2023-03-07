@@ -6,31 +6,35 @@ part 'quiz.g.dart';
 @JsonSerializable()
 @HiveType(typeId: 0)
 class Quiz {
-  @HiveField(0)
+  @HiveField(1)
+  @JsonKey(name: "QuizID")
+  String quizID = "";
+
+  @HiveField(1)
   @JsonKey(name: "QuestionID")
   String questionID = "";
   
-  @HiveField(1)
+  @HiveField(2)
   @JsonKey(name: "Question")
   String question = "";
 
-  @HiveField(2)
+  @HiveField(3)
   @JsonKey(name: "Category")
   String category = "";
 
-  @HiveField(3)
+  @HiveField(4)
   @JsonKey(name: "AnswerSelected")
   int answerSelected = 0;
 
-  @HiveField(4)
+  @HiveField(5)
   @JsonKey(name: 'AnswerText')
   List<String> answerList = [];
 
-  @HiveField(5)
+  @HiveField(6)
   @JsonKey(name: 'Correct')
   List<String> correctAnswerList = [];
 
-  @HiveField(6)
+  @HiveField(7)
   @JsonKey(name: "CorrectAnswerIndex")
   int correctAnswerIndex = 0;
 

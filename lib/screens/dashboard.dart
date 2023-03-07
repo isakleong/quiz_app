@@ -4,6 +4,7 @@ import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/quiz_controller.dart';
 
 class Dashboard extends StatelessWidget {
+  const Dashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,9 @@ class Dashboard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100),
                     highlightColor: Colors.blue.withOpacity(0.3),
                     splashColor: Colors.blue.withOpacity(0.3),
-                    onTap: (){},
+                    onTap: (){
+                      Get.toNamed(RouteName.history);
+                    },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [

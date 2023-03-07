@@ -4,12 +4,10 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/controllers/quiz_controller.dart';
+import 'package:quiz_app/controllers/history_controller.dart';
 
-class StartQuiz extends GetView<QuizController>  {
-  StartQuiz({super.key});
-
-  final QuizController quizController = Get.find();
+class HistoryPage extends GetView<HistoryController>  {
+  const HistoryPage({super.key});
 
   openDialog(String errorMessage) {
     Get.dialog(
@@ -50,23 +48,6 @@ class StartQuiz extends GetView<QuizController>  {
     );
   }
 
-  exLoading() {
-    Get.dialog(
-      AlertDialog(
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Lottie.asset(
-                'assets/lottie/loading.json',
-                width: 100,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double mediaWidth = MediaQuery.of(context).size.width;
@@ -81,10 +62,9 @@ class StartQuiz extends GetView<QuizController>  {
             fit: BoxFit.cover,
           ),
           controller.obx(
-            (state) => CircularButton(),
-            onLoading: Center(child: Lottie.asset('assets/lottie/loading.json', width: 60)),
-            // onLoading: exLoading(),
-            // onEmpty: quizController.showEmptyDataDialog(),
+            // onLoading: Center(child: Lottie.asset('assets/lottie/loading.json', width: 60)),
+            onLoading: CircularButton(),
+            onEmpty: const Text('No data found'),
             onError: (error) => Center(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -103,7 +83,8 @@ class StartQuiz extends GetView<QuizController>  {
                     const SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () {
-                        quizController.fetchQuizData();
+                        // final HistoryController historyController = Get.find();
+                        // quizController.fetchQuizData();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppConfig.darkGreenColor,
@@ -121,13 +102,19 @@ class StartQuiz extends GetView<QuizController>  {
                   ],
                 ),
               ),
-            )
+            ),
+            (state) => Column(
+              children: [
+                Text("haha"),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 }
+
 
 class CircularButton extends StatelessWidget {
 

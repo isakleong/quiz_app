@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
+import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/tools/service.dart';
@@ -37,6 +39,7 @@ class QuizController extends GetxController with StateMixin {
 
   nextQuestion() {
     currentQuestion++;
+    print("target "+quizTarget.value.toString());
     // updateIndex(currentQuestion.value);
   }
 
@@ -56,23 +59,23 @@ class QuizController extends GetxController with StateMixin {
     currentQuestion.value = 0;
   }
 
-  retryQuiz() async {
-    resetQuestion();
+  // retryQuiz() async {
+  //   resetQuestion();
 
-    for(int i=0; i<quizModel.length; i++) {
-      quizModel[i].answerSelected = -1;
-    }
-    var quizBox = await Hive.openBox<Quiz>('quizBox');
-    for(int i=0; i<quizBox.length; i++) {
-      quizBox.putAt(i, quizModel[i]);
-    }
-  }
+  //   for(int i=0; i<quizModel.length; i++) {
+  //     quizModel[i].answerSelected = -1;
+  //   }
+  //   var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+  //   for(int i=0; i<quizModelBox.length; i++) {
+  //     quizModelBox.putAt(i, quizModel[i]);
+  //   }
+  // }
 
   resetQuiz() async {
     resetQuestion();
 
-    var quizBox = await Hive.openBox<Quiz>('quizBox');
-    await quizBox.deleteFromDisk();
+    var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+    await quizModelBox.deleteFromDisk();
 
     await fetchQuizData();
   }
@@ -81,13 +84,16 @@ class QuizController extends GetxController with StateMixin {
     print("MASUK FETCH DATA");
     quizModel.clear();
 
-    var quizBox = await Hive.openBox<Quiz>('quizBox');
-    if(quizBox.length > 0) {
+    var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+    if(quizModelBox.length > 0) {
       change(null, status: RxStatus.loading());
 
-      quizModel.addAll(quizBox.values);
+      quizModel.addAll(quizModelBox.values);
       print("MASUK SINI");
       currentQuestion.value = 0;
+
+      var quizConfigBox = await Hive.openBox('quizConfigBox');
+      quizTarget.value = quizConfigBox.get("target");
 
       change(null, status: RxStatus.success());
 
@@ -100,27 +106,40 @@ class QuizController extends GetxController with StateMixin {
         var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
         var data = jsonDecode(result.toString());
         quizTarget.value = int.parse(data[0]["Value"].toString());
+        var quizConfigBox = await Hive.openBox('quizConfigBox');
+        quizConfigBox.put("target", quizTarget.value);
 
+        var now = DateTime.now();
+        var formatter = DateFormat('yyyy-MM-dd');
+        String formattedDate = formatter.format(now);
         //fetch quiz data
-        result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=2023-02-24");
+        result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
         data = jsonDecode(result.toString());
-        data.map((item) {
-          quizModel.add(Quiz.from(item));
-        }).toList();
 
-        for(int i=0; i<quizModel.length; i++) {
-          quizModel[i].answerList.shuffle();
+        if(data.length > 0) {
+          data.map((item) {
+            quizModel.add(Quiz.from(item));
+          }).toList();
+
+          for(int i=0; i<quizModel.length; i++) {
+            quizModel[i].answerList.shuffle();
+          }
+
+          //stored quiz config data to hive
+          var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+          for(int i=0; i<quizModel.length; i++) {
+            await quizModelBox.add(quizModel[i]);
+          }
+          print(quizModelBox.getAt(0));
+
+          // if done, change status to success
+          change(null, status: RxStatus.success());
+
+        } else {
+          // if done, change status to empty
+          // change(null, status: RxStatus.empty());
+          openEmptyDataDialog();
         }
-
-        //stored quiz config data to hive
-        var quizBox = await Hive.openBox<Quiz>('quizBox');
-        for(int i=0; i<quizModel.length; i++) {
-          await quizBox.add(quizModel[i]);
-        }
-        print(quizBox.getAt(0));
-
-        // if done, change status to success
-        // change(null, status: RxStatus.success());
         
       } catch(e) {
         print("masuk catch");
@@ -132,11 +151,72 @@ class QuizController extends GetxController with StateMixin {
     }
   }
 
-  submitQuiz() async {
-    // make status to loading
-    change(null, status: RxStatus.loading());
+  openEmptyDataDialog() {
+    Get.dialog(
+      AlertDialog(
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Lottie.asset(
+                'assets/lottie/submitting.json',
+                width: 220,
+                height: 220,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 30),
+              const Text("Mohon maaf, tidak ada kuis yang aktif", style: TextStyle(fontSize: 16), textAlign: TextAlign.center)
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: TextButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+              ),
+              child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
+  }
 
+  openSubmitDialog() {
+    Get.dialog(
+      AlertDialog(
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Lottie.asset(
+                'assets/lottie/submitting.json',
+                width: 220,
+                height: 220,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 30),
+              const Text("Mohon tunggu, sedang proses mengumpulkan kuis", style: TextStyle(fontSize: 16), textAlign: TextAlign.center)
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  closeSubmitDialog() {
+    Get.back();
+  }
+
+  submitQuiz() async {
     try {
+      openSubmitDialog();
+
       var now = DateTime.now();
       var formatter = DateFormat('yyyy-MM-dd H:m:s');
       String formattedDate = formatter.format(now);
@@ -150,7 +230,7 @@ class QuizController extends GetxController with StateMixin {
 
       var params =  {
         'sales_id': '00AC1A0103',
-        'quiz_id': 'Quiz-001',
+        'quiz_id': quizModel[0].quizID,
         'date': formattedDate,
         'passed': passed,
         'model': quizModel
@@ -163,8 +243,7 @@ class QuizController extends GetxController with StateMixin {
         Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
       );
 
-      // if done, change status to success
-      change(null, status: RxStatus.success());
+      closeSubmitDialog();
       
     } catch(e) {
       print("masuk catch "+errorMessage.value.toString());

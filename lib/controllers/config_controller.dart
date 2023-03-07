@@ -1,13 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
-
-import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'package:get/get.dart';
-import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/tools/service.dart';
-import 'package:http/http.dart' as http;
 
 class ConfigController extends GetxController {
   var isLoading = true.obs;
@@ -56,7 +50,7 @@ class ConfigController extends GetxController {
     } catch(e) {
       isLoading(false);
       isError(true);
-      errorMessage("heehuuuu "+e.toString());
+      errorMessage(e.toString());
       // throw Exception(e);
     }
     return configData.value;
