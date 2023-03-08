@@ -10,31 +10,31 @@ class Quiz {
   @JsonKey(name: "QuizID")
   String quizID = "";
 
-  @HiveField(1)
+  @HiveField(2)
   @JsonKey(name: "QuestionID")
   String questionID = "";
   
-  @HiveField(2)
+  @HiveField(3)
   @JsonKey(name: "Question")
   String question = "";
 
-  @HiveField(3)
+  @HiveField(4)
   @JsonKey(name: "Category")
   String category = "";
 
-  @HiveField(4)
+  @HiveField(5)
   @JsonKey(name: "AnswerSelected")
   int answerSelected = 0;
 
-  @HiveField(5)
+  @HiveField(6)
   @JsonKey(name: 'AnswerText')
   List<String> answerList = [];
 
-  @HiveField(6)
+  @HiveField(7)
   @JsonKey(name: 'Correct')
   List<String> correctAnswerList = [];
 
-  @HiveField(7)
+  @HiveField(8)
   @JsonKey(name: "CorrectAnswerIndex")
   int correctAnswerIndex = 0;
 

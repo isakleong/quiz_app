@@ -91,39 +91,37 @@ class QuizController extends GetxController with StateMixin {
     print("MASUK FETCH DATA");
     quizModel.clear();
 
-    var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-    if(quizModelBox.length > 0) {
-      change(null, status: RxStatus.loading());
+    change(null, status: RxStatus.loading());
 
-      quizModel.addAll(quizModelBox.values);
-      print("MASUK SINI");
-      currentQuestion.value = 0;
-
+    try {
+      //fetch quiz config data
+      var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
+      var data = jsonDecode(result.toString());
+      quizTarget.value = int.parse(data[0]["Value"].toString());
       var quizConfigBox = await Hive.openBox('quizConfigBox');
-      quizTarget.value = quizConfigBox.get("target");
+      quizConfigBox.put("target", quizTarget.value);
 
-      change(null, status: RxStatus.success());
+      var now = DateTime.now();
+      var formatter = DateFormat('yyyy-MM-dd');
+      String formattedDate = formatter.format(now);
+      //fetch quiz data
+      result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
+      data = jsonDecode(result.toString());
 
-    } else {
-      // make status to loading
-      change(null, status: RxStatus.loading());
+      if(data.length > 0) {
+        //check if draft data is exist
+        var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+        if(quizModelBox.length > 0) {
+          quizModel.addAll(quizModelBox.values);
+          print("MASUK SINI");
+          currentQuestion.value = 0;
 
-      try {
-        //fetch quiz config data
-        var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
-        var data = jsonDecode(result.toString());
-        quizTarget.value = int.parse(data[0]["Value"].toString());
-        var quizConfigBox = await Hive.openBox('quizConfigBox');
-        quizConfigBox.put("target", quizTarget.value);
+          var quizConfigBox = await Hive.openBox('quizConfigBox');
+          quizTarget.value = quizConfigBox.get("target");
 
-        var now = DateTime.now();
-        var formatter = DateFormat('yyyy-MM-dd');
-        String formattedDate = formatter.format(now);
-        //fetch quiz data
-        result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
-        data = jsonDecode(result.toString());
+          change(null, status: RxStatus.success());
 
-        if(data.length > 0) {
+        } else {
           data.map((item) {
             quizModel.add(Quiz.from(item));
           }).toList();
@@ -137,26 +135,90 @@ class QuizController extends GetxController with StateMixin {
           for(int i=0; i<quizModel.length; i++) {
             await quizModelBox.add(quizModel[i]);
           }
-          print(quizModelBox.getAt(0));
 
-          // if done, change status to success
           change(null, status: RxStatus.success());
-
-        } else {
-          // if done, change status to empty
-          // change(null, status: RxStatus.empty());
-          openEmptyDataDialog();
         }
-        
-      } catch(e) {
-        print("masuk catch");
-        isError(true);
-        errorMessage.value = e.toString();
-        // if done, change status to success
-        change(null, status: RxStatus.error(errorMessage.value));
+      } else {
+        openEmptyDataDialog();
       }
-    }
+    } catch(e) {
+      print("masuk catch");
+      isError(true);
+      errorMessage.value = e.toString();
+      change(null, status: RxStatus.error(errorMessage.value));
+    } 
   }
+
+  // fetchQuizData() async {
+  //   print("MASUK FETCH DATA");
+  //   quizModel.clear();
+
+  //   var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+  //   if(quizModelBox.length > 0) {
+  //     change(null, status: RxStatus.loading());
+
+  //     quizModel.addAll(quizModelBox.values);
+  //     print("MASUK SINI");
+  //     currentQuestion.value = 0;
+
+  //     var quizConfigBox = await Hive.openBox('quizConfigBox');
+  //     quizTarget.value = quizConfigBox.get("target");
+
+  //     change(null, status: RxStatus.success());
+
+  //   } else {
+  //     // make status to loading
+  //     change(null, status: RxStatus.loading());
+
+  //     try {
+  //       //fetch quiz config data
+  //       var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
+  //       var data = jsonDecode(result.toString());
+  //       quizTarget.value = int.parse(data[0]["Value"].toString());
+  //       var quizConfigBox = await Hive.openBox('quizConfigBox');
+  //       quizConfigBox.put("target", quizTarget.value);
+
+  //       var now = DateTime.now();
+  //       var formatter = DateFormat('yyyy-MM-dd');
+  //       String formattedDate = formatter.format(now);
+  //       //fetch quiz data
+  //       result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
+  //       data = jsonDecode(result.toString());
+
+  //       if(data.length > 0) {
+  //         data.map((item) {
+  //           quizModel.add(Quiz.from(item));
+  //         }).toList();
+
+  //         for(int i=0; i<quizModel.length; i++) {
+  //           quizModel[i].answerList.shuffle();
+  //         }
+
+  //         //stored quiz config data to hive
+  //         var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+  //         for(int i=0; i<quizModel.length; i++) {
+  //           await quizModelBox.add(quizModel[i]);
+  //         }
+  //         print(quizModelBox.getAt(0));
+
+  //         // if done, change status to success
+  //         change(null, status: RxStatus.success());
+
+  //       } else {
+  //         // if done, change status to empty
+  //         // change(null, status: RxStatus.empty());
+  //         openEmptyDataDialog();
+  //       }
+        
+  //     } catch(e) {
+  //       print("masuk catch");
+  //       isError(true);
+  //       errorMessage.value = e.toString();
+  //       // if done, change status to success
+  //       change(null, status: RxStatus.error(errorMessage.value));
+  //     }
+  //   }
+  // }
 
   openEmptyDataDialog() {
     Get.dialog(

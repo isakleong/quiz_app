@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:quiz_app/bindings/history_page_binding.dart';
+import 'package:quiz_app/bindings/quiz_page_binding.dart';
 import 'package:quiz_app/bindings/starter_page_binding.dart';
 import 'package:quiz_app/bindings/splashscreen_binding.dart';
 import 'package:quiz_app/common/route_config.dart';
@@ -30,7 +31,8 @@ class AppRoute {
     GetPage(name: RouteName.starter, page: () => StartQuiz(), binding: StarterPageBinding()),
     // GetPage(name: RouteName.starter, page: () => StartQuiz()),
     GetPage(name: RouteName.countdown, page: () => const CountdownPage()),
-    GetPage(name: RouteName.quiz, page: () => QuizPage()),
-    GetPage(name: RouteName.history, page: () => const HistoryPage(), binding: HistoryPageBinding()),
+    // GetPage(name: RouteName.quiz, page: () => QuizPage()), uncomment
+    GetPage(name: RouteName.quiz, page: () => QuizPage(), binding: QuizPageBinding()),
+    GetPage(name: RouteName.history, page: () => HistoryPage(), binding: HistoryPageBinding()),
   ];
 }

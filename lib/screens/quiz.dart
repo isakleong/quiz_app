@@ -265,162 +265,205 @@ class QuizPage extends GetView<QuizController>{
         quizController.resetQuestion();
         return Future.value(true);
       },
-      child: Scaffold(
-        backgroundColor: AppConfig.lightGreenColor,
-        bottomNavigationBar: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                offset: Offset(0, 0),
-                blurRadius: 0,
-                color: Colors.white,
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Obx(
-                  () => ElevatedButton(
-                    onPressed: () {
-                      quizController.currentQuestion.value == 0 ? null : quizController.previousQuestion();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: quizController.currentQuestion.value == 0
-                      ? Colors.grey
-                      : AppConfig.darkGreenColor,
-                      elevation: 0,
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(12),
-                    ),
-                    child: const Icon(
-                      FontAwesomeIcons.arrowLeft,
-                      size: 25,
-                      color:Colors.white,
-                    ),
+      child: controller.obx(
+        onLoading: Scaffold(
+          backgroundColor: AppConfig.mainGreenColor,
+          body: Center(child: Lottie.asset('assets/lottie/loading.json', width: 60)),
+        ),
+        onError: (error) => Center(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Lottie.asset(
+                  'assets/lottie/error.json',
+                  width: mediaWidth*0.5,
+                ),
+                const SizedBox(height: 15),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Text("Error :\n${controller.errorMessage.value}", style: TextStyle(fontSize: 16)),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () {
+                    quizController.fetchQuizData();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppConfig.darkGreenColor,
+                    padding: const EdgeInsets.all(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.history),
+                      SizedBox(width: 10),
+                      Text("Coba Lagi", style: TextStyle(fontSize: 16)),
+                    ],
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      onPressed: (){
-                        Get.bottomSheet(
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight: MediaQuery.of(context).size.height / 4 * 3,
-                                minHeight: MediaQuery.of(context).size.height / 3,
-                              ),
-                              child: Column(
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 15, bottom: 20),
-                                    child: Text('Pilih Soal No', style: TextStyle(fontSize: 16)),
-                                  ),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      physics: const BouncingScrollPhysics(),
-                                      scrollDirection: Axis.vertical,
-                                      child: Wrap(
-                                        direction: Axis.horizontal,
-                                        spacing: 20,
-                                        runSpacing: 15,
-                                        children: List.generate(quizController.quizModel.length, (index) => InkWell(
-                                          onTap: () {
-                                            Get.back();
-                                            quizController.updateIndex(index);
-                                          },
-                                          child: CircleAvatar(
-                                            radius: 40,
-                                            backgroundColor: index == quizController.currentQuestion.value ? AppConfig.darkGreenColor : Colors.white,
-                                            child: Text(
-                                              '${index + 1}',
-                                              style: TextStyle(
-                                                color: index == quizController.currentQuestion.value ? Colors.white : Colors.black,
-                                                fontWeight: FontWeight.bold, fontSize: 20
-                                              )
-                                            ),
-                                          ),
-                                        )),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          backgroundColor: const Color(0xFFE0F6E3),
-                        );
-                      }, 
-                      icon: const Icon(FontAwesomeIcons.circleArrowUp, size: 30,),
-                    ),
-                    Obx(() => Text('${quizController.currentQuestion.value+1} / ${quizController.quizModel.length}', style: const TextStyle(fontSize: 16)))
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Obx(
-                  () => ElevatedButton(
-                    onPressed: () {
-                      quizController.currentQuestion.value == quizController.quizModel.length-1 ? finishQuiz() : quizController.nextQuestion();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppConfig.darkGreenColor,
-                      elevation: 0,
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(12),
-                    ),
-                    child: Icon(
-                      quizController.currentQuestion.value == quizController.quizModel.length-1 ? FontAwesomeIcons.check : FontAwesomeIcons.arrowRight,
-                      size: 25,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) => Column(
+        (state) => Scaffold(
+          backgroundColor: AppConfig.lightGreenColor,
+          bottomNavigationBar: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  offset: Offset(0, 0),
+                  blurRadius: 0,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+            child: Row(
               children: [
-                Container(
-                  height: constraints.maxHeight * .45,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  alignment: Alignment.center,
-                  child: Obx(() =>Text(quizController.quizModel[quizController.currentQuestion.value].question, style: const TextStyle(fontSize: 20))),
+                Expanded(
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed: () {
+                        quizController.currentQuestion.value == 0 ? null : quizController.previousQuestion();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: quizController.currentQuestion.value == 0
+                        ? Colors.grey
+                        : AppConfig.darkGreenColor,
+                        elevation: 0,
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(12),
+                      ),
+                      child: const Icon(
+                        FontAwesomeIcons.arrowLeft,
+                        size: 25,
+                        color:Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
                 Expanded(
-                  child: Container(
-                    height: constraints.maxHeight, // will get by column
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(60),
-                      topRight: Radius.circular(60),
-                      )
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
-                      child: Obx(() => ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return CustomRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} -- ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex}", index);
-                        }),
-                      ), 
+                  flex: 3,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: (){
+                          Get.bottomSheet(
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxHeight: MediaQuery.of(context).size.height / 4 * 3,
+                                  minHeight: MediaQuery.of(context).size.height / 3,
+                                ),
+                                child: Column(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 15, bottom: 20),
+                                      child: Text('Pilih Soal No', style: TextStyle(fontSize: 16)),
+                                    ),
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        physics: const BouncingScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        child: Wrap(
+                                          direction: Axis.horizontal,
+                                          spacing: 20,
+                                          runSpacing: 15,
+                                          children: List.generate(quizController.quizModel.length, (index) => InkWell(
+                                            onTap: () {
+                                              Get.back();
+                                              quizController.updateIndex(index);
+                                            },
+                                            child: CircleAvatar(
+                                              radius: 40,
+                                              backgroundColor: index == quizController.currentQuestion.value ? AppConfig.darkGreenColor : Colors.white,
+                                              child: Text(
+                                                '${index + 1}',
+                                                style: TextStyle(
+                                                  color: index == quizController.currentQuestion.value ? Colors.white : Colors.black,
+                                                  fontWeight: FontWeight.bold, fontSize: 20
+                                                )
+                                              ),
+                                            ),
+                                          )),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            backgroundColor: const Color(0xFFE0F6E3),
+                          );
+                        }, 
+                        icon: const Icon(FontAwesomeIcons.circleArrowUp, size: 30,),
+                      ),
+                      Obx(() => Text('${quizController.currentQuestion.value+1} / ${quizController.quizModel.length}', style: const TextStyle(fontSize: 16)))
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed: () {
+                        quizController.currentQuestion.value == quizController.quizModel.length-1 ? finishQuiz() : quizController.nextQuestion();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppConfig.darkGreenColor,
+                        elevation: 0,
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(12),
+                      ),
+                      child: Icon(
+                        quizController.currentQuestion.value == quizController.quizModel.length-1 ? FontAwesomeIcons.check : FontAwesomeIcons.arrowRight,
+                        size: 25,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
               ],
+            ),
+          ),
+          body: SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) => Column(
+                children: [
+                  Container(
+                    height: constraints.maxHeight * .45,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    alignment: Alignment.center,
+                    child: Obx(() =>Text(quizController.quizModel[quizController.currentQuestion.value].question, style: const TextStyle(fontSize: 20))),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: constraints.maxHeight, // will get by column
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(60),
+                        topRight: Radius.circular(60),
+                        )
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
+                        child: Obx(() => ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return CustomRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} -- ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex}", index);
+                          }),
+                        ), 
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

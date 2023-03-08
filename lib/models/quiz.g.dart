@@ -17,33 +17,35 @@ class QuizAdapter extends TypeAdapter<Quiz> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Quiz(
-      questionID: fields[0] as String,
-      question: fields[1] as String,
-      category: fields[2] as String,
-      answerSelected: fields[3] as int,
-      answerList: (fields[4] as List).cast<String>(),
-      correctAnswerList: (fields[5] as List).cast<String>(),
-      correctAnswerIndex: fields[6] as int,
-    );
+      questionID: fields[2] as String,
+      question: fields[3] as String,
+      category: fields[4] as String,
+      answerSelected: fields[5] as int,
+      answerList: (fields[6] as List).cast<String>(),
+      correctAnswerList: (fields[7] as List).cast<String>(),
+      correctAnswerIndex: fields[8] as int,
+    )..quizID = fields[1] as String;
   }
 
   @override
   void write(BinaryWriter writer, Quiz obj) {
     writer
-      ..writeByte(7)
-      ..writeByte(0)
-      ..write(obj.questionID)
+      ..writeByte(8)
       ..writeByte(1)
-      ..write(obj.question)
+      ..write(obj.quizID)
       ..writeByte(2)
-      ..write(obj.category)
+      ..write(obj.questionID)
       ..writeByte(3)
-      ..write(obj.answerSelected)
+      ..write(obj.question)
       ..writeByte(4)
-      ..write(obj.answerList)
+      ..write(obj.category)
       ..writeByte(5)
-      ..write(obj.correctAnswerList)
+      ..write(obj.answerSelected)
       ..writeByte(6)
+      ..write(obj.answerList)
+      ..writeByte(7)
+      ..write(obj.correctAnswerList)
+      ..writeByte(8)
       ..write(obj.correctAnswerIndex);
   }
 
@@ -73,9 +75,10 @@ Quiz _$QuizFromJson(Map<String, dynamic> json) => Quiz(
       correctAnswerList:
           (json['Correct'] as List<dynamic>).map((e) => e as String).toList(),
       correctAnswerIndex: json['CorrectAnswerIndex'] as int,
-    );
+    )..quizID = json['QuizID'] as String;
 
 Map<String, dynamic> _$QuizToJson(Quiz instance) => <String, dynamic>{
+      'QuizID': instance.quizID,
       'QuestionID': instance.questionID,
       'Question': instance.question,
       'Category': instance.category,
