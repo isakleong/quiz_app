@@ -6,6 +6,7 @@ class StarterPageBinding implements Bindings {
   void dependencies() {
     // Get.reset();
     Get.put<QuizController>( QuizController(), permanent: true);
+    // Get.put<QuizController>( QuizController());
     // Get.lazyPut<QuizController>(() => QuizController(), fenix: true);
     // Get.create(() => QuizController(), permanent: true);
   }

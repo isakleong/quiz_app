@@ -15,7 +15,10 @@ import 'package:quiz_app/tools/service.dart';
 class QuizController extends GetxController with StateMixin {
   var isLoading = true.obs;
   var isError = false.obs;
+  
   var isReset = false.obs;
+  var isRetryFetch = false.obs;
+
 
   var errorMessage = "".obs;
 
@@ -34,6 +37,10 @@ class QuizController extends GetxController with StateMixin {
       Get.offNamed(RouteName.dashboard);
       print("AFTER WORKER");
       resetQuiz();
+    });
+
+    ever(isRetryFetch, (callback) {
+      fetchQuizData();
     });
   }
 
@@ -158,7 +165,7 @@ class QuizController extends GetxController with StateMixin {
           child: ListBody(
             children: <Widget>[
               Lottie.asset(
-                'assets/lottie/submitting.json',
+                'assets/lottie/search_2.json',
                 width: 220,
                 height: 220,
                 fit: BoxFit.contain,
@@ -178,6 +185,7 @@ class QuizController extends GetxController with StateMixin {
               child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
               onPressed: () {
                 Get.back();
+                Get.offAndToNamed(RouteName.dashboard);
               },
             ),
           ),
