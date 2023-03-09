@@ -268,7 +268,7 @@ class QuizPage extends GetView<QuizController>{
       child: controller.obx(
         onLoading: Scaffold(
           backgroundColor: AppConfig.mainGreenColor,
-          body: Center(child: Lottie.asset('assets/lottie/loading.json', width: 60)),
+          body: Center(child: Lottie.asset('assets/lottie/loading_white.json', width: 60)),
         ),
         onError: (error) => Center(
           child: SingleChildScrollView(
@@ -358,13 +358,43 @@ class QuizPage extends GetView<QuizController>{
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
                                   maxHeight: MediaQuery.of(context).size.height / 4 * 3,
-                                  minHeight: MediaQuery.of(context).size.height / 3,
+                                  minHeight: mediaHeight / 3,
                                 ),
                                 child: Column(
                                   children: [
                                     const Padding(
-                                      padding: EdgeInsets.only(top: 15, bottom: 20),
-                                      child: Text('Pilih Soal No', style: TextStyle(fontSize: 16)),
+                                      padding: EdgeInsets.only(top: 15, bottom: 10),
+                                      child: Text('Pilih Soal No', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 20),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor: Colors.red.shade400,
+                                                maxRadius: 10,
+                                              ),
+                                              const SizedBox(width: 15),
+                                              const Text("Belum memilih jawaban"),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 15),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor: AppConfig.mainGreenColor,
+                                                maxRadius: 10,
+                                              ),
+                                              const SizedBox(width: 15),
+                                              const Text("Sudah memilih jawaban"),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     Expanded(
                                       child: SingleChildScrollView(
@@ -373,7 +403,7 @@ class QuizPage extends GetView<QuizController>{
                                         child: Wrap(
                                           direction: Axis.horizontal,
                                           spacing: 20,
-                                          runSpacing: 15,
+                                          runSpacing: 30,
                                           children: List.generate(quizController.quizModel.length, (index) => InkWell(
                                             onTap: () {
                                               Get.back();
@@ -381,11 +411,13 @@ class QuizPage extends GetView<QuizController>{
                                             },
                                             child: CircleAvatar(
                                               radius: 40,
-                                              backgroundColor: index == quizController.currentQuestion.value ? AppConfig.darkGreenColor : Colors.white,
+                                              // backgroundColor: index == quizController.currentQuestion.value ? AppConfig.darkGreenColor : Colors.white,
+                                              backgroundColor: (quizController.quizModel[index].answerSelected != -1) ? AppConfig.darkGreenColor : Colors.red.shade400,
                                               child: Text(
                                                 '${index + 1}',
-                                                style: TextStyle(
-                                                  color: index == quizController.currentQuestion.value ? Colors.white : Colors.black,
+                                                style: const TextStyle(
+                                                  // color: index == quizController.currentQuestion.value ? Colors.white : Colors.black,
+                                                  color: Colors.white,
                                                   fontWeight: FontWeight.bold, fontSize: 20
                                                 )
                                               ),
@@ -399,6 +431,13 @@ class QuizPage extends GetView<QuizController>{
                               ),
                             ),
                             backgroundColor: const Color(0xFFE0F6E3),
+                            isScrollControlled: true, //set to true to automatically expand according to height dynamically
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(60),
+                                topRight: Radius.circular(60),
+                              )
+                            ),
                           );
                         }, 
                         icon: const Icon(FontAwesomeIcons.circleArrowUp, size: 30,),
@@ -438,7 +477,7 @@ class QuizPage extends GetView<QuizController>{
                     height: constraints.maxHeight * .45,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
-                    child: Obx(() =>Text(quizController.quizModel[quizController.currentQuestion.value].question, style: const TextStyle(fontSize: 20))),
+                    child: Obx(() =>Text(quizController.quizModel[quizController.currentQuestion.value].question, textAlign: TextAlign.center, style: const TextStyle(fontSize: 20))),
                   ),
                   Expanded(
                     child: Container(

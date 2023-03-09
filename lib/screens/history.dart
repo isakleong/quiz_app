@@ -65,7 +65,7 @@ class HistoryPage extends GetView<HistoryController>  {
             fit: BoxFit.cover,
           ),
           controller.obx(
-            onLoading: CircularButton(),
+            onLoading: Center(child: Lottie.asset('assets/lottie/loading.json', width: 60)),
             onEmpty: const Text('No data found'),
             onError: (error) => Center(
               child: SingleChildScrollView(
@@ -106,58 +106,105 @@ class HistoryPage extends GetView<HistoryController>  {
               ),
             ),
             (state) => Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
               child: Obx(() => ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 itemCount: historyController.quizHistoryModel.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Stack(
-                    children: [
-                      Container(
-                        height: 150,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          gradient: const LinearGradient(
-                            colors: [Colors.pink, Colors.red],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            gradient: LinearGradient(
+                              colors: historyController.quizHistoryModel[index].passed == "1" ? 
+                              [const Color(0xFF11998E), const Color(0xFF38EF7D)]
+                              : 
+                              [const Color(0xFFEB3349), const Color(0xFFF45C43)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 3,
+                                offset: Offset(0, 3)
+                              )
+                            ],
                           ),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.red,
-                              blurRadius: 12,
-                              offset: Offset(0,6)
-                            )
-                          ],
+                          child: Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(historyController.quizHistoryModel[index].salesID, style: const TextStyle(fontSize: 16, color: Colors.white)),
+                                        const SizedBox(height: 20),
+                                        Text(historyController.quizHistoryModel[index].name, style: const TextStyle(fontSize: 16, color: Colors.white)),
+                                        // Text("historyController.quizHistoryModel[index].nameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasa", style: const TextStyle(fontSize: 16, color: Colors.white)),
+                                        const SizedBox(height: 20),
+                                        Text(historyController.quizHistoryModel[index].tanggal, style: const TextStyle(fontSize: 16, color: Colors.white)),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      historyController.quizHistoryModel[index].passed == "1" ? 
+                                      "LULUS"
+                                      :
+                                      "TIDAK LULUS", 
+                                      style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        top: 0,
-                        child: CustomPaint(
-                          size: const Size(100,150),
-                          painter: CustomCardShapePainter(24.0, Colors.pink, Colors.red)
+                        Positioned(
+                          right: 0,
+                          bottom: 0,
+                          top: 0,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children:[
+                              CustomPaint(
+                                size: const Size(100, double.infinity),
+                                painter: historyController.quizHistoryModel[index].passed == "1" ? 
+                                CustomCardShapePainter(24.0, const Color(0xFF11998E), const Color(0xFF38EF7D))
+                                :
+                                CustomCardShapePainter(24.0, const Color(0xFFEB3349), const Color(0xFFF45C43))
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  historyController.quizHistoryModel[index].passed == "1" ? 
+                                  Icons.check
+                                  :
+                                  Icons.close,
+                                  color: historyController.quizHistoryModel[index].passed == "1" ? 
+                                  AppConfig.mainGreenColor
+                                  :
+                                  Colors.red,
+                                )
+                              )
+                            ] 
+                          ),
                         ),
-                      )
-                    ],
+                        
+                      ],
+                    ),
                   );
-                  
-                  // Card(
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       Column(
-                  //         children: [
-                  //           Text(historyController.quizHistoryModel[index].salesID),
-                  //           Text(historyController.quizHistoryModel[index].name),
-                  //         ],
-                  //       ),
-                  //       Text(historyController.quizHistoryModel[index].tanggal),
-                  //     ],
-                  //   )
-                  // );
-
                 }),
               ), 
             ),

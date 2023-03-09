@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:quiz_app/models/quiz_history.dart';
 import 'package:quiz_app/tools/service.dart';
 
@@ -26,6 +27,14 @@ class HistoryController extends GetxController with StateMixin {
       data.map((item) {
         quizHistoryModel.add(QuizHistory.from(item));
       }).toList();
+
+      for(int i=0; i<quizHistoryModel.length; i++) {
+        var formatter = DateFormat('yyyy-MM-dd H:m:s');
+        DateTime dateTime = formatter.parse(quizHistoryModel[i].tanggal);
+        formatter = DateFormat('dd-MM-yyyy H:m');
+        String formattedDate = formatter.format(dateTime);
+        quizHistoryModel[i].tanggal = formattedDate;
+      }
 
       print(data[0]);
       
