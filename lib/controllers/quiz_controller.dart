@@ -34,7 +34,7 @@ class QuizController extends GetxController with StateMixin {
 
     ever(isReset, (callback) {
       print("MASUK WORKER");
-      Get.offNamed(RouteName.dashboard);
+      Get.offAllNamed(RouteName.dashboard);
       print("AFTER WORKER");
       resetQuiz();
     });
@@ -78,147 +78,237 @@ class QuizController extends GetxController with StateMixin {
   //   }
   // }
 
+  lulusQuiz() async {
+    resetQuestion();
+
+    var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+    await quizModelBox.deleteFromDisk();
+  }
+
   resetQuiz() async {
     resetQuestion();
 
     var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
     await quizModelBox.deleteFromDisk();
-
-    await fetchQuizData();
   }
 
-  fetchQuizData() async {
-    print("MASUK FETCH DATA");
-    quizModel.clear();
+  // resetQuiz() async {
+  //   resetQuestion();
 
-    change(null, status: RxStatus.loading());
+  //   var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+  //   await quizModelBox.deleteFromDisk();
 
-    try {
-      //fetch quiz config data
-      var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
-      var data = jsonDecode(result.toString());
-      quizTarget.value = int.parse(data[0]["Value"].toString());
-      var quizConfigBox = await Hive.openBox('quizConfigBox');
-      quizConfigBox.put("target", quizTarget.value);
+  //   await fetchQuizData();
+  // }
 
-      var now = DateTime.now();
-      var formatter = DateFormat('yyyy-MM-dd');
-      String formattedDate = formatter.format(now);
-      //fetch quiz data
-      result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
-      data = jsonDecode(result.toString());
-
-      if(data.length > 0) {
-        //check if draft data is exist
-        var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-        if(quizModelBox.length > 0) {
-          quizModel.addAll(quizModelBox.values);
-          print("MASUK SINI");
-          currentQuestion.value = 0;
-
-          var quizConfigBox = await Hive.openBox('quizConfigBox');
-          quizTarget.value = quizConfigBox.get("target");
-
-          change(null, status: RxStatus.success());
-
-        } else {
-          data.map((item) {
-            quizModel.add(Quiz.from(item));
-          }).toList();
-
-          for(int i=0; i<quizModel.length; i++) {
-            quizModel[i].answerList.shuffle();
-          }
-
-          //stored quiz config data to hive
-          var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-          for(int i=0; i<quizModel.length; i++) {
-            await quizModelBox.add(quizModel[i]);
-          }
-
-          change(null, status: RxStatus.success());
-        }
-      } else {
-        openEmptyDataDialog();
-      }
-    } catch(e) {
-      print("masuk catch");
-      isError(true);
-      errorMessage.value = e.toString();
-      change(null, status: RxStatus.error(errorMessage.value));
-    } 
-  }
-
+  //uncomment
   // fetchQuizData() async {
   //   print("MASUK FETCH DATA");
   //   quizModel.clear();
 
-  //   var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-  //   if(quizModelBox.length > 0) {
-  //     change(null, status: RxStatus.loading());
+  //   change(null, status: RxStatus.loading());
 
-  //     quizModel.addAll(quizModelBox.values);
-  //     print("MASUK SINI");
-  //     currentQuestion.value = 0;
-
+  //   try {
+  //     //fetch quiz config data
+  //     var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
+  //     var data = jsonDecode(result.toString());
+  //     quizTarget.value = int.parse(data[0]["Value"].toString());
   //     var quizConfigBox = await Hive.openBox('quizConfigBox');
-  //     quizTarget.value = quizConfigBox.get("target");
+  //     quizConfigBox.put("target", quizTarget.value);
 
-  //     change(null, status: RxStatus.success());
+  //     var now = DateTime.now();
+  //     var formatter = DateFormat('yyyy-MM-dd');
+  //     String formattedDate = formatter.format(now);
+  //     //fetch quiz data
+  //     result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
+  //     data = jsonDecode(result.toString());
 
-  //   } else {
-  //     // make status to loading
-  //     change(null, status: RxStatus.loading());
+  //     if(data.length > 0) {
+  //       //check if draft data is exist
+  //       var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+  //       if(quizModelBox.length > 0) {
+  //         //check kuis yang belum dikerjakan sama sekali
+  //         int cntValid = 0;
+  //         for(int i=0; i<quizModelBox.length; i++) {
+  //           if(quizModelBox.getAt(i)!.answerSelected >= 0) {
+  //             cntValid++;
+  //             break;
+  //           }
+  //         }
 
-  //     try {
-  //       //fetch quiz config data
-  //       var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
-  //       var data = jsonDecode(result.toString());
-  //       quizTarget.value = int.parse(data[0]["Value"].toString());
-  //       var quizConfigBox = await Hive.openBox('quizConfigBox');
-  //       quizConfigBox.put("target", quizTarget.value);
+  //         if(cntValid > 0) {
+  //           quizModelBox.clear(); //buggy
 
-  //       var now = DateTime.now();
-  //       var formatter = DateFormat('yyyy-MM-dd');
-  //       String formattedDate = formatter.format(now);
-  //       //fetch quiz data
-  //       result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
-  //       data = jsonDecode(result.toString());
+  //           quizModel.addAll(quizModelBox.values);
+  //           print("MASUK SINI LESGOO");
+  //           currentQuestion.value = 0;
 
-  //       if(data.length > 0) {
+  //           var quizConfigBox = await Hive.openBox('quizConfigBox');
+  //           quizTarget.value = quizConfigBox.get("target");
+
+  //         } else {
+  //           data.map((item) {
+  //             quizModel.add(Quiz.from(item));
+  //           }).toList();
+
+  //           // for(int i=0; i<quizModel.length; i++) {
+  //           //   quizModel[i].answerList.shuffle();
+  //           // }
+
+  //           //stored quiz config data to hive
+  //           var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+  //           for(int i=0; i<quizModel.length; i++) {
+  //             await quizModelBox.add(quizModel[i]);
+  //           }
+  //         }
+
+  //         change(null, status: RxStatus.success());
+
+  //       } else {
   //         data.map((item) {
   //           quizModel.add(Quiz.from(item));
   //         }).toList();
 
-  //         for(int i=0; i<quizModel.length; i++) {
-  //           quizModel[i].answerList.shuffle();
-  //         }
+  //         // for(int i=0; i<quizModel.length; i++) {
+  //         //   quizModel[i].answerList.shuffle();
+  //         // }
 
   //         //stored quiz config data to hive
   //         var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
   //         for(int i=0; i<quizModel.length; i++) {
   //           await quizModelBox.add(quizModel[i]);
   //         }
-  //         print(quizModelBox.getAt(0));
 
-  //         // if done, change status to success
   //         change(null, status: RxStatus.success());
-
-  //       } else {
-  //         // if done, change status to empty
-  //         // change(null, status: RxStatus.empty());
-  //         openEmptyDataDialog();
   //       }
-        
-  //     } catch(e) {
-  //       print("masuk catch");
-  //       isError(true);
-  //       errorMessage.value = e.toString();
-  //       // if done, change status to success
-  //       change(null, status: RxStatus.error(errorMessage.value));
+  //     } else {
+  //       openEmptyDataDialog();
   //     }
-  //   }
+  //   } catch(e) {
+  //     print("masuk catch");
+  //     isError(true);
+  //     errorMessage.value = e.toString();
+  //     change(null, status: RxStatus.error(errorMessage.value));
+  //   } 
   // }
+
+  fetchQuizData() async {
+    print("MASUK FETCH DATA");
+    quizModel.clear();
+
+    var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+    if(quizModelBox.length > 0) {
+      change(null, status: RxStatus.loading());
+
+      //check invalid draft (belum diisi sama sekali, maka harus load data baru)
+      int cntValid = 0;
+      for(int i=0; i<quizModelBox.length; i++) {
+        if(quizModelBox.getAt(i)!.answerSelected >= 0) {
+          cntValid++;
+          break;
+        }
+      }
+
+      if(cntValid > 0) {
+        quizModel.addAll(quizModelBox.values);
+        print("MASUK SINI LESGOO");
+        currentQuestion.value = 0;
+
+        var quizConfigBox = await Hive.openBox('quizConfigBox');
+        quizTarget.value = quizConfigBox.get("target");
+
+      } else {
+        quizModelBox.clear(); //buggy
+        
+        try {
+          //fetch quiz config data
+          var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
+          var data = jsonDecode(result.toString());
+          quizTarget.value = int.parse(data[0]["Value"].toString());
+          var quizConfigBox = await Hive.openBox('quizConfigBox');
+          quizConfigBox.put("target", quizTarget.value);
+
+          var now = DateTime.now();
+          var formatter = DateFormat('yyyy-MM-dd');
+          String formattedDate = formatter.format(now);
+          //fetch quiz data
+          result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
+          data = jsonDecode(result.toString());
+
+          if(data.length > 0) {
+            data.map((item) {
+              quizModel.add(Quiz.from(item));
+            }).toList();
+
+            //stored quiz config data to hive
+            var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+            for(int i=0; i<quizModel.length; i++) {
+              await quizModelBox.add(quizModel[i]);
+            }
+            print(quizModelBox.getAt(0));
+
+            change(null, status: RxStatus.success());
+
+          } else {
+            openEmptyDataDialog();
+          }
+          
+        } catch(e) {
+          print("masuk catch");
+          isError(true);
+          errorMessage.value = e.toString();
+
+          change(null, status: RxStatus.error(errorMessage.value));
+        }
+      }
+
+      change(null, status: RxStatus.success());
+
+    } else {
+      change(null, status: RxStatus.loading());
+
+      try {
+        //fetch quiz config data
+        var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
+        var data = jsonDecode(result.toString());
+        quizTarget.value = int.parse(data[0]["Value"].toString());
+        var quizConfigBox = await Hive.openBox('quizConfigBox');
+        quizConfigBox.put("target", quizTarget.value);
+
+        var now = DateTime.now();
+        var formatter = DateFormat('yyyy-MM-dd');
+        String formattedDate = formatter.format(now);
+        //fetch quiz data
+        result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
+        data = jsonDecode(result.toString());
+
+        if(data.length > 0) {
+          data.map((item) {
+            quizModel.add(Quiz.from(item));
+          }).toList();
+
+          //stored quiz config data to hive
+          var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+          for(int i=0; i<quizModel.length; i++) {
+            await quizModelBox.add(quizModel[i]);
+          }
+          print(quizModelBox.getAt(0));
+
+          change(null, status: RxStatus.success());
+
+        } else {
+          openEmptyDataDialog();
+        }
+        
+      } catch(e) {
+        print("masuk catch");
+        isError(true);
+        errorMessage.value = e.toString();
+
+        change(null, status: RxStatus.error(errorMessage.value));
+      }
+    }
+  }
 
   openEmptyDataDialog() {
     Get.dialog(
@@ -247,7 +337,7 @@ class QuizController extends GetxController with StateMixin {
               child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
               onPressed: () {
                 Get.back();
-                Get.offAndToNamed(RouteName.dashboard);
+                Get.offAllNamed(RouteName.dashboard);
               },
             ),
           ),
@@ -292,7 +382,7 @@ class QuizController extends GetxController with StateMixin {
       String formattedDate = formatter.format(now);
 
       int passed = 0;
-      if(isPassed.value) {
+      if(isPassed.value == true) {
         passed = 1;
       } else {
         passed = 0;

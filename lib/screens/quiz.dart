@@ -129,6 +129,11 @@ class QuizPage extends GetView<QuizController>{
     print("total score $score");
     print("total target ${arrTarget[0]}");
 
+    if(score >= int.parse(arrTarget[0])) {
+      quizController.isPassed(true);
+    } else {
+      quizController.isPassed(false);
+    }
     await quizController.submitQuiz();
 
     if(score >= int.parse(arrTarget[0])) {
@@ -164,9 +169,10 @@ class QuizPage extends GetView<QuizController>{
                     backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
                 ),
                 child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
-                onPressed: () {
+                onPressed: () async {
                   Get.back();
                   quizController.isReset(!(quizController.isReset.value));
+                  // await quizController.lulusQuiz();
                   // Get.until((route) => Get.currentRoute == RouteName.dashboard);
                 },
               ),
@@ -192,7 +198,7 @@ class QuizPage extends GetView<QuizController>{
                       style: TextStyle(fontSize: 16, color: Colors.black),
                       children: <TextSpan>[
                         TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang di esok hari'),
+                        TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya'),
                       ],
                     ),
                   ),
@@ -212,7 +218,7 @@ class QuizPage extends GetView<QuizController>{
                   // await quizController.retryQuiz();
                   quizController.isReset(!(quizController.isReset.value));
                   Get.back();
-                  Get.offNamed(RouteName.dashboard);
+                  Get.offAllNamed(RouteName.dashboard);
                 },
               ),
             ),
@@ -367,7 +373,7 @@ class QuizPage extends GetView<QuizController>{
                                       child: Text('Pilih Soal No', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(bottom: 20),
+                                      padding: const EdgeInsets.only(bottom: 40),
                                       child: Column(
                                         children: [
                                           Row(

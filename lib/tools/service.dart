@@ -10,11 +10,11 @@ class ApiClient {
       final dio = Dio(
         BaseOptions(baseUrl: AppConfig.baseUrl)
       );
-      // (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
-      //   client.badCertificateCallback=(X509Certificate cert, String host, int port){
-      //       return true;
-      //   };
-      // };
+      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
+        client.badCertificateCallback=(X509Certificate cert, String host, int port){
+            return true;
+        };
+      };
 
       final response = await dio.get(path);
 
@@ -30,11 +30,11 @@ class ApiClient {
       final dio = Dio(
         BaseOptions(baseUrl: AppConfig.baseUrl)
       );
-      // (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
-      //   client.badCertificateCallback=(X509Certificate cert, String host, int port){
-      //       return true;
-      //   };
-      // };
+      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
+        client.badCertificateCallback=(X509Certificate cert, String host, int port){
+            return true;
+        };
+      };
 
       final response = await dio.post(path, data: formData, options: options);
 

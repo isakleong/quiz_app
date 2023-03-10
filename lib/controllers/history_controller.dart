@@ -31,7 +31,7 @@ class HistoryController extends GetxController with StateMixin {
       for(int i=0; i<quizHistoryModel.length; i++) {
         var formatter = DateFormat('yyyy-MM-dd H:m:s');
         DateTime dateTime = formatter.parse(quizHistoryModel[i].tanggal);
-        formatter = DateFormat('dd-MM-yyyy H:m');
+        formatter = DateFormat('dd-MM-yyyy HH:mm');
         String formattedDate = formatter.format(dateTime);
         quizHistoryModel[i].tanggal = formattedDate;
       }

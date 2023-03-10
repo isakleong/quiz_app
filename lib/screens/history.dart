@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_svg/svg.dart';
@@ -116,7 +117,7 @@ class HistoryPage extends GetView<HistoryController>  {
                     child: Stack(
                       children: [
                         Container(
-                          width: double.infinity,
+                          height: 150,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
                             gradient: LinearGradient(
@@ -135,37 +136,6 @@ class HistoryPage extends GetView<HistoryController>  {
                               )
                             ],
                           ),
-                          child: Positioned.fill(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(historyController.quizHistoryModel[index].salesID, style: const TextStyle(fontSize: 16, color: Colors.white)),
-                                        const SizedBox(height: 20),
-                                        Text(historyController.quizHistoryModel[index].name, style: const TextStyle(fontSize: 16, color: Colors.white)),
-                                        // Text("historyController.quizHistoryModel[index].nameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasanameasasasa", style: const TextStyle(fontSize: 16, color: Colors.white)),
-                                        const SizedBox(height: 20),
-                                        Text(historyController.quizHistoryModel[index].tanggal, style: const TextStyle(fontSize: 16, color: Colors.white)),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      historyController.quizHistoryModel[index].passed == "1" ? 
-                                      "LULUS"
-                                      :
-                                      "TIDAK LULUS", 
-                                      style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
                         ),
                         Positioned(
                           right: 0,
@@ -175,7 +145,7 @@ class HistoryPage extends GetView<HistoryController>  {
                             alignment: Alignment.center,
                             children:[
                               CustomPaint(
-                                size: const Size(100, double.infinity),
+                                size: const Size(100, 150),
                                 painter: historyController.quizHistoryModel[index].passed == "1" ? 
                                 CustomCardShapePainter(24.0, const Color(0xFF11998E), const Color(0xFF38EF7D))
                                 :
@@ -199,6 +169,36 @@ class HistoryPage extends GetView<HistoryController>  {
                                 )
                               )
                             ] 
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(historyController.quizHistoryModel[index].salesID, style: const TextStyle(fontSize: 16, color: Colors.white)),
+                                      const SizedBox(height: 20),
+                                      AutoSizeText(historyController.quizHistoryModel[index].name, maxLines: 1, style: const TextStyle(fontSize: 16, color: Colors.white)),
+                                      const SizedBox(height: 20),
+                                      Text(historyController.quizHistoryModel[index].tanggal, style: const TextStyle(fontSize: 16, color: Colors.white)),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    historyController.quizHistoryModel[index].passed == "1" ? 
+                                    "LULUS"
+                                    :
+                                    "TIDAK LULUS", 
+                                    style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         
