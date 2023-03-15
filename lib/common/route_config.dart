@@ -1,5 +1,6 @@
 abstract class RouteName {
-  static const home = "/";
+  static const splashscreen = "/";
+  static const homepage = "/homepage";
   static const dashboard = "/dashboard";
   static const starter = "/start-quiz";
   static const countdown = "/countdown";
