@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:quiz_app/bindings/splashscreen_binding.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/app_route.dart';
+import 'package:quiz_app/models/module.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/screens/splashscreen.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -25,6 +26,7 @@ void main() async {
 
   Directory directory = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(directory.path);
+  Hive.registerAdapter(ModuleAdapter());
   Hive.registerAdapter(QuizAdapter());
 
   runApp(MyApp());
