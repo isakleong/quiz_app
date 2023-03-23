@@ -2,63 +2,38 @@ import 'package:flutter/material.dart';
 
 class TextView extends StatelessWidget {
 
+  final String? headings;
   final String? text;
   final Color? color;
-  final FontWeight? fontWeight;
-  final FontStyle? fontStyle;
   final TextAlign? textAlign;
-  final double? size;
-  final bool? isCapslock;
+  final double? fontSize;
+  final bool? capslock;
 
-  const TextView({super.key, this.text, this.color, this.fontWeight, this.fontStyle, this.textAlign, this.size, this.isCapslock});
-
-  // String? text, family, fontFamilyUsed;
-  // Color? color, labelColorUsed;
-  // FontWeight? fontWeight, fontWeightUsed;
-  // FontStyle fontStyle;
-  // TextAlign align;
-  // double? size, fontSizeUsed, lineHeight;
-  // int maxLines;
-  // String type;
-  // bool? caps, italic;
-  // TextDecoration? decoration;
-  // TextOverflow? overflow;
-
-  // TextView(this.text, this.type, {
-  //   this.align = TextAlign.left,
-  //   this.color,
-  //   this.size,
-  //   this.caps = false,
-  //   this.fontStyle = FontStyle.normal,
-  //   this.family,
-  //   this.lineHeight = 1.2,
-  //   this.maxLines = 9999,
-  //   this.decoration,
-  //   this.fontWeight,
-  // });
-
-  
-
-  
+  const TextView({super.key, this.headings, this.text, this.color, this.textAlign, this.fontSize, this.capslock = false});
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      this.text,
-      overflow: TextOverflow.ellipsis,
+      capslock! ? text!.toUpperCase() : text!,
       style: TextStyle(
-        color: this.labelColorUsed,
-        fontFamily: this.fontFamilyUsed,
-        fontWeight: this.fontWeightUsed,
-        fontSize: this.fontSizeUsed,
-        height: this.lineHeight,
-        fontStyle: this.fontStyle,
-        decoration: this.decoration,
-        decorationThickness: 2,
-        letterSpacing: space
+        color: color,
+        fontWeight: headings == "H1" ?
+        FontWeight.w700
+        :
+        headings == "H2" ?
+        FontWeight.w600
+        :
+        headings == "H3" ?
+        FontWeight.w500
+        :
+        headings == "H4" ?
+        FontWeight.w400
+        :
+        FontWeight.w300,
+        fontFamily: 'Poppins',
+        fontSize: fontSize,
       ),
-      textAlign: this.align,
-      maxLines: this.maxLines,
+      textAlign: textAlign ?? TextAlign.center,
     );
   }
 }

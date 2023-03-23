@@ -4,8 +4,11 @@ import 'dart:ui';
 import 'package:quiz_app/tools/utils.dart';
 
 class AppConfig {
-  static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
-  // static const String baseUrl = "http://192.168.10.213/QuizApp/public/api";
+  static const String appsName = "Kuis";
+
+  // static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
+  static const String baseUrl = "http://192.168.10.213/QuizApp/public/api";
+  static const String initUrl = "http://192.168.10.213/QuizApp";
   static const int connectTimeout = 15000;
   static const int receiveTimeout = 15000;
 

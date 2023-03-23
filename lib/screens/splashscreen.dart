@@ -3,61 +3,17 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/controllers/config_controller.dart';
+import 'package:quiz_app/widgets/textview.dart';
 
 class SplashScreen extends StatelessWidget {
-//  SplashScreen({super.key});
+ SplashScreen({super.key});
 
   final configController = Get.find<ConfigController>();
-
-  void openDialog() {
-    Get.dialog(
-      AlertDialog(
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Lottie.asset(
-                'assets/lottie/error.json',
-                width: 100,
-              ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Obx(() => Text(
-                  "Error message :\n${configController.errorMessage.value.capitalize}"
-                  )
-                )
-              ),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: TextButton(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
-              ),
-              child: const Text('OK', style: TextStyle(fontSize: 16, color: Colors.white)),
-              onPressed: () async {
-                Get.back();
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     double mediaWidth = MediaQuery.of(context).size.width;
     double mediaHeight = MediaQuery.of(context).size.height;
-
-    ever(configController.isError, (bool success) {
-      if (success) {
-          openDialog();
-      }
-    });
 
     return Scaffold(
       body: SizedBox(
@@ -88,7 +44,7 @@ class SplashScreen extends StatelessWidget {
                 } else if (configController.isError.value) {
                   return ElevatedButton(
                     onPressed: () {
-                      configController.getConfigData();
+                      configController.getModuleData();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppConfig.darkGreenColor,
@@ -99,15 +55,14 @@ class SplashScreen extends StatelessWidget {
                       children: const [
                         Icon(Icons.history),
                         SizedBox(width: 10),
-                        Text("Coba Lagi", style: TextStyle(fontSize: 16)),
+                        TextView(headings: "H3", text: "Coba Lagi", fontSize: 16, color: Colors.white)
                       ],
                     ),
                   );
                 } else {
-                  return Text("");
+                  return const Text("");
                 }
               })
-
             ],
           ),
         ),
