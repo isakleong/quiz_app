@@ -34,7 +34,7 @@ class QuizController extends GetxController with StateMixin {
 
     ever(isReset, (callback) {
       print("MASUK WORKER");
-      Get.offAllNamed(RouteName.dashboard);
+      Get.offAllNamed(RouteName.quizDashboard);
       print("AFTER WORKER");
       resetQuiz();
     });
@@ -110,7 +110,7 @@ class QuizController extends GetxController with StateMixin {
 
   //   try {
   //     //fetch quiz config data
-  //     var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
+  //     var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
   //     var data = jsonDecode(result.toString());
   //     quizTarget.value = int.parse(data[0]["Value"].toString());
   //     var quizConfigBox = await Hive.openBox('quizConfigBox');
@@ -120,7 +120,7 @@ class QuizController extends GetxController with StateMixin {
   //     var formatter = DateFormat('yyyy-MM-dd');
   //     String formattedDate = formatter.format(now);
   //     //fetch quiz data
-  //     result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
+  //     result = await ApiClient().getData("/quiz?sales_id=01AC1A0103&date=$formattedDate");
   //     data = jsonDecode(result.toString());
 
   //     if(data.length > 0) {
@@ -222,7 +222,7 @@ class QuizController extends GetxController with StateMixin {
         
         try {
           //fetch quiz config data
-          var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
+          var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
           var data = jsonDecode(result.toString());
           quizTarget.value = int.parse(data[0]["Value"].toString());
           var quizConfigBox = await Hive.openBox('quizConfigBox');
@@ -232,7 +232,7 @@ class QuizController extends GetxController with StateMixin {
           var formatter = DateFormat('yyyy-MM-dd');
           String formattedDate = formatter.format(now);
           //fetch quiz data
-          result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
+          result = await ApiClient().getData("/quiz?sales_id=01AC1A0103&date=$formattedDate");
           data = jsonDecode(result.toString());
 
           if(data.length > 0) {
@@ -254,9 +254,10 @@ class QuizController extends GetxController with StateMixin {
           }
           
         } catch(e) {
-          print("masuk catch");
+          print("masuk catch 1");
           isError(true);
-          errorMessage.value = e.toString();
+          // errorMessage.value = e.toString();
+          errorMessage.value = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 
           change(null, status: RxStatus.error(errorMessage.value));
         }
@@ -269,7 +270,7 @@ class QuizController extends GetxController with StateMixin {
 
       try {
         //fetch quiz config data
-        var result = await ApiClient().getData("/quiz/config?sales_id=00AC1A0103");
+        var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
         var data = jsonDecode(result.toString());
         quizTarget.value = int.parse(data[0]["Value"].toString());
         var quizConfigBox = await Hive.openBox('quizConfigBox');
@@ -279,7 +280,8 @@ class QuizController extends GetxController with StateMixin {
         var formatter = DateFormat('yyyy-MM-dd');
         String formattedDate = formatter.format(now);
         //fetch quiz data
-        result = await ApiClient().getData("/quiz?sales_id=00AC1A0103&date=$formattedDate");
+
+        result = await ApiClient().getData("/quiz?sales_id=01AC1A0103&date=$formattedDate");
         data = jsonDecode(result.toString());
 
         if(data.length > 0) {
@@ -301,7 +303,7 @@ class QuizController extends GetxController with StateMixin {
         }
         
       } catch(e) {
-        print("masuk catch");
+        print("masuk catch 2");
         isError(true);
         errorMessage.value = e.toString();
 
@@ -337,7 +339,7 @@ class QuizController extends GetxController with StateMixin {
               child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
               onPressed: () {
                 Get.back();
-                Get.offAllNamed(RouteName.dashboard);
+                Get.offAllNamed(RouteName.quizDashboard);
               },
             ),
           ),
@@ -389,7 +391,7 @@ class QuizController extends GetxController with StateMixin {
       }
 
       var params =  {
-        'sales_id': '00AC1A0103',
+        'sales_id': '01AC1A0103',
         'quiz_id': quizModel[0].quizID,
         'date': formattedDate,
         'passed': passed,
@@ -406,7 +408,7 @@ class QuizController extends GetxController with StateMixin {
       closeSubmitDialog();
       
     } catch(e) {
-      print("masuk catch "+errorMessage.value.toString());
+      print("masuk catch 3 "+errorMessage.value.toString());
       isError(true);
       errorMessage.value = e.toString();
       // if done, change status to success

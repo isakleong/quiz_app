@@ -17,7 +17,7 @@ import 'package:quiz_app/tools/service.dart';
 import 'package:quiz_app/widgets/dialog.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
-class ConfigController extends GetxController {
+class SplashscreenController extends GetxController {
   var isLoading = true.obs;
   var isError = false.obs;
   var errorMessage = "".obs;
@@ -145,7 +145,7 @@ class ConfigController extends GetxController {
         );
 
       } else {
-        Get.offAndToNamed(RouteName.homepage);
+        Get.offAndToNamed(RouteName.homepage, arguments: moduleList);
       }
 
     } catch(e) {

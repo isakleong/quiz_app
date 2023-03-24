@@ -218,7 +218,7 @@ class QuizPage extends GetView<QuizController>{
                   // await quizController.retryQuiz();
                   quizController.isReset(!(quizController.isReset.value));
                   Get.back();
-                  Get.offAllNamed(RouteName.dashboard);
+                  Get.offAllNamed(RouteName.quizDashboard);
                 },
               ),
             ),

@@ -5,11 +5,11 @@ import 'package:quiz_app/bindings/starter_page_binding.dart';
 import 'package:quiz_app/bindings/splashscreen_binding.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/screens/countdown.dart';
-import 'package:quiz_app/screens/dashboard.dart';
+import 'package:quiz_app/screens/quiz_dashboard.dart';
 import 'package:quiz_app/screens/history.dart';
 import 'package:quiz_app/screens/homepage.dart';
 import 'package:quiz_app/screens/quiz.dart';
-import 'package:quiz_app/screens/splashscreen.dart';
+import 'package:quiz_app/screens/splash_screen.dart';
 import 'package:quiz_app/screens/starter.dart';
 
 class AppRoute {
@@ -27,7 +27,7 @@ class AppRoute {
     //     Get.lazyPut<ConfigController>(() => ConfigController());
     //   }),
     // ),
-    GetPage(name: RouteName.dashboard, page: () => const Dashboard()),
+    GetPage(name: RouteName.quizDashboard, page: () => const QuizDashboard()),
     GetPage(name: RouteName.homepage, page: () => Homepage()),
     GetPage(name: RouteName.starter, page: () => StartQuiz(), binding: StarterPageBinding()),
     // GetPage(name: RouteName.starter, page: () => StartQuiz()),

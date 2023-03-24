@@ -9,7 +9,7 @@ import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/app_route.dart';
 import 'package:quiz_app/models/module.dart';
 import 'package:quiz_app/models/quiz.dart';
-import 'package:quiz_app/screens/splashscreen.dart';
+import 'package:quiz_app/screens/splash_screen.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 void main() async {

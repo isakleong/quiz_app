@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/controllers/config_controller.dart';
+import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
 class SplashScreen extends StatelessWidget {
  SplashScreen({super.key});
 
-  final configController = Get.find<ConfigController>();
+  final configController = Get.find<SplashscreenController>();
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
@@ -79,6 +80,21 @@ class StartQuiz extends GetView<QuizController>  {
           SvgPicture.asset(
             'assets/images/bg-starter.svg',
             fit: BoxFit.cover,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 30, top: 40, bottom: 10),
+            child: ElevatedButton(
+              onPressed: () {
+                Get.back(result: Get.arguments);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppConfig.darkGreenColor,
+                elevation: 0,
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(16),
+              ),
+              child: const Icon(FontAwesomeIcons.arrowLeft, size: 25, color: Colors.white),
+            ),
           ),
           controller.obx(
             (state) => CircularButton(),
