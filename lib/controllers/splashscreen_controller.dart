@@ -145,7 +145,7 @@ class SplashscreenController extends GetxController {
         );
 
       } else {
-        Get.offAndToNamed(RouteName.homepage, arguments: moduleList);
+        Get.offAndToNamed(RouteName.homepage);
       }
 
     } catch(e) {

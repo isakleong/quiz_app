@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/quiz_controller.dart';
+import 'package:quiz_app/widgets/textview.dart';
 
 class QuizDashboard extends StatelessWidget {
   const QuizDashboard({super.key});
@@ -78,14 +79,15 @@ class QuizDashboard extends StatelessWidget {
                     highlightColor: AppConfig.mainGreenColor.withOpacity(0.3),
                     splashColor: AppConfig.mainGreenColor.withOpacity(0.3),
                     onTap: () async {
-                      Get.toNamed(RouteName.starter, arguments: Get.arguments);
+                      Get.toNamed(RouteName.starter);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         FaIcon(FontAwesomeIcons.filePen, color: AppConfig.darkGreenColor, size: 50),
                         const SizedBox(height: 30),
-                        const Text('Kuis', style: TextStyle(fontSize: 22)),
+                        const TextView(headings: "H2", text: "Kuis", fontSize: 26, color: Colors.black),
+                        
                       ],
                     ),
                   ),
@@ -99,15 +101,14 @@ class QuizDashboard extends StatelessWidget {
                     highlightColor: AppConfig.mainGreenColor.withOpacity(0.3),
                     splashColor: AppConfig.mainGreenColor.withOpacity(0.3),
                     onTap: (){
-                      Get.toNamed(RouteName.history, arguments: Get.arguments);
+                      Get.toNamed(RouteName.history);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Icon(Icons.history_toggle_off, size: 60, color: Colors.blue),
                         FaIcon(FontAwesomeIcons.clockRotateLeft, color: AppConfig.darkGreenColor, size: 50),
                         const SizedBox(height: 30),
-                        const Text('Riwayat', style: TextStyle(fontSize: 22)),
+                        const TextView(headings: "H2", text: "Riwayat", fontSize: 26, color: Colors.black),
                       ],
                     ),
                   ),

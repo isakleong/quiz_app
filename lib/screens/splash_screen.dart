@@ -8,7 +8,7 @@ import 'package:quiz_app/widgets/textview.dart';
 class SplashScreen extends StatelessWidget {
  SplashScreen({super.key});
 
-  final configController = Get.find<SplashscreenController>();
+  final splashscreenController = Get.find<SplashscreenController>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +36,15 @@ class SplashScreen extends StatelessWidget {
                 width: mediaWidth*0.5,
               ),
               Obx(() {
-                if (configController.isLoading.value) {
+                if (splashscreenController.isLoading.value) {
                   return Lottie.asset(
                     'assets/lottie/loading.json',
                     width: 60,
                   );
-                } else if (configController.isError.value) {
+                } else if (splashscreenController.isError.value) {
                   return ElevatedButton(
                     onPressed: () {
-                      configController.getModuleData();
+                      splashscreenController.getModuleData();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppConfig.darkGreenColor,

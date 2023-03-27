@@ -4,13 +4,13 @@ import 'package:quiz_app/bindings/quiz_page_binding.dart';
 import 'package:quiz_app/bindings/starter_page_binding.dart';
 import 'package:quiz_app/bindings/splashscreen_binding.dart';
 import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/screens/countdown.dart';
+import 'package:quiz_app/screens/quiz_countdown.dart';
 import 'package:quiz_app/screens/quiz_dashboard.dart';
-import 'package:quiz_app/screens/history.dart';
+import 'package:quiz_app/screens/quiz_history.dart';
 import 'package:quiz_app/screens/homepage.dart';
 import 'package:quiz_app/screens/quiz.dart';
 import 'package:quiz_app/screens/splash_screen.dart';
-import 'package:quiz_app/screens/starter.dart';
+import 'package:quiz_app/screens/quiz_starter.dart';
 
 class AppRoute {
   static final pages = [

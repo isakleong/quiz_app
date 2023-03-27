@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
+import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/models/module.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
@@ -11,14 +12,8 @@ class Homepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print(Get.arguments);
 
-    List<Module> moduleList = Get.arguments;
-    // for(int i=0; i<moduleList.length; i++) {
-    //   print(moduleList[i].moduleID);
-    //   print(moduleList[i].version);
-    //   print(moduleList[i].orderNumber);
-    // }
+    final splashscreenController = Get.find<SplashscreenController>();
     
     return Scaffold(
       backgroundColor: Colors.white,
@@ -34,7 +29,7 @@ class Homepage extends StatelessWidget {
               child: ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: moduleList.length,
+                itemCount: splashscreenController.moduleList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Card(
                     elevation: 12,
@@ -44,11 +39,11 @@ class Homepage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       splashColor: AppConfig.lightOpactityGreenColor,
                       onTap: () {
-                        Get.toNamed(RouteName.quizDashboard, arguments: moduleList);
+                        Get.toNamed(RouteName.quizDashboard);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(30),
-                        child: TextView(headings: "H2", text: moduleList[index].moduleID, fontSize: 30, color: Colors.black),
+                        child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 30, color: Colors.black),
                       ),
                     ),
                   );

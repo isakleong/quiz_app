@@ -1,10 +1,10 @@
 abstract class RouteName {
   static const splashscreen = "/";
   static const homepage = "/homepage";
-  static const quizDashboard = "/dashboard";
-  static const starter = "/start-quiz";
-  static const countdown = "/countdown";
+  static const quizDashboard = "/quiz-dashboard";
+  static const starter = "/quiz-starter";
+  static const countdown = "/quiz-countdown";
   static const quiz = "/quiz";
-  static const history = "/history";
+  static const history = "/quiz-history";
 
 }

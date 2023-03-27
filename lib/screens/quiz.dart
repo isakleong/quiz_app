@@ -78,7 +78,7 @@ class QuizPage extends GetView<QuizController>{
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Image.asset('assets/images/warning.png', width: 220, height: 220),
+                Image.asset('assets/images/quiz-warning.png', width: 220, height: 220),
                 const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.all(10),
@@ -294,7 +294,7 @@ class QuizPage extends GetView<QuizController>{
                 const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
-                    quizController.fetchQuizData();
+                    quizController.getQuizData();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppConfig.darkGreenColor,

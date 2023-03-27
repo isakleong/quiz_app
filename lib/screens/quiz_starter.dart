@@ -85,7 +85,7 @@ class StartQuiz extends GetView<QuizController>  {
             padding: const EdgeInsets.only(left: 30, top: 40, bottom: 10),
             child: ElevatedButton(
               onPressed: () {
-                Get.back(result: Get.arguments);
+                Get.back();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppConfig.darkGreenColor,
@@ -119,7 +119,7 @@ class StartQuiz extends GetView<QuizController>  {
                     const SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () {
-                        quizController.fetchQuizData();
+                        quizController.getQuizData();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppConfig.darkGreenColor,

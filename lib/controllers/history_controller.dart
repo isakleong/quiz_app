@@ -14,30 +14,31 @@ class HistoryController extends GetxController with StateMixin {
   @override
   void onInit() {
     super.onInit();
-    fetchDataHistory();
+    getHistoryData();
   }
 
-  fetchDataHistory() async {
+  getHistoryData() async {
     change(null, status: RxStatus.loading());
 
     try {
-      //fetch quiz history data
       var result = await ApiClient().getData("/quiz/history?sales_id=00AC1A0103");
       var data = jsonDecode(result.toString());
-      data.map((item) {
-        quizHistoryModel.add(QuizHistory.from(item));
-      }).toList();
 
-      for(int i=0; i<quizHistoryModel.length; i++) {
-        var formatter = DateFormat('yyyy-MM-dd H:m:s');
-        DateTime dateTime = formatter.parse(quizHistoryModel[i].tanggal);
-        formatter = DateFormat('dd-MM-yyyy HH:mm');
-        String formattedDate = formatter.format(dateTime);
-        quizHistoryModel[i].tanggal = formattedDate;
+      if(data.length > 0) {
+        data.map((item) {
+          quizHistoryModel.add(QuizHistory.from(item));
+        }).toList();
+
+        for(int i=0; i<quizHistoryModel.length; i++) {
+          var formatter = DateFormat('yyyy-MM-dd H:m:s');
+          DateTime dateTime = formatter.parse(quizHistoryModel[i].tanggal);
+          formatter = DateFormat('dd-MM-yyyy HH:mm');
+          String formattedDate = formatter.format(dateTime);
+          quizHistoryModel[i].tanggal = formattedDate;
+        }
+      } else {
+        change(null, status: RxStatus.empty());    
       }
-
-      print(data[0]);
-      
     } catch(e) {
       print("masuk catch" );
       errorMessage.value = e.toString();

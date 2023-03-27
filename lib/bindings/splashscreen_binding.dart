@@ -5,7 +5,9 @@ class SplashScreenBinding implements Bindings {
   @override
   void dependencies() {
     // Get.lazyPut(() => SplashscreenController());
-    Get.put(() => SplashscreenController(), permanent: true);
+    
+    // Get.put(() => SplashscreenController(), permanent: true);
+    Get.put<SplashscreenController>(SplashscreenController(), permanent: true);
   }
 
 }

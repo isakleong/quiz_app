@@ -75,7 +75,7 @@ class HistoryPage extends GetView<HistoryController>  {
               padding: const EdgeInsets.only(left: 30, top: 40, bottom: 10),
               child: ElevatedButton(
                 onPressed: () {
-                  Get.back(result: Get.arguments);
+                  Get.back();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppConfig.darkGreenColor,

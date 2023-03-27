@@ -11,6 +11,8 @@ import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/tools/service.dart';
+import 'package:quiz_app/widgets/dialog.dart';
+import 'package:quiz_app/widgets/textview.dart';
 
 class QuizController extends GetxController with StateMixin {
   var isLoading = true.obs;
@@ -30,7 +32,7 @@ class QuizController extends GetxController with StateMixin {
   @override
   void onInit() {
     super.onInit();
-    fetchQuizData();
+    getQuizData();
 
     ever(isReset, (callback) {
       print("MASUK WORKER");
@@ -40,7 +42,7 @@ class QuizController extends GetxController with StateMixin {
     });
 
     ever(isRetryFetch, (callback) {
-      fetchQuizData();
+      getQuizData();
     });
   }
 
@@ -101,251 +103,72 @@ class QuizController extends GetxController with StateMixin {
   //   await fetchQuizData();
   // }
 
-  //uncomment
-  // fetchQuizData() async {
-  //   print("MASUK FETCH DATA");
-  //   quizModel.clear();
+  getQuizConfig() async {
+    var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
+    var data = jsonDecode(result.toString());
+    quizTarget.value = int.parse(data[0]["Value"].toString());
+    
+    var quizConfigBox = await Hive.openBox('quizConfigBox');
+    if(quizConfigBox.get("target") != data[0]["Value"].toString()) {
+      quizConfigBox.put("target", quizTarget.value);
+    } else {
+      quizTarget.value = quizConfigBox.get("target");
+    }
+  }
 
-  //   change(null, status: RxStatus.loading());
+  getQuizData() async {
+    change(null, status: RxStatus.loading());
 
-  //   try {
-  //     //fetch quiz config data
-  //     var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
-  //     var data = jsonDecode(result.toString());
-  //     quizTarget.value = int.parse(data[0]["Value"].toString());
-  //     var quizConfigBox = await Hive.openBox('quizConfigBox');
-  //     quizConfigBox.put("target", quizTarget.value);
-
-  //     var now = DateTime.now();
-  //     var formatter = DateFormat('yyyy-MM-dd');
-  //     String formattedDate = formatter.format(now);
-  //     //fetch quiz data
-  //     result = await ApiClient().getData("/quiz?sales_id=01AC1A0103&date=$formattedDate");
-  //     data = jsonDecode(result.toString());
-
-  //     if(data.length > 0) {
-  //       //check if draft data is exist
-  //       var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-  //       if(quizModelBox.length > 0) {
-  //         //check kuis yang belum dikerjakan sama sekali
-  //         int cntValid = 0;
-  //         for(int i=0; i<quizModelBox.length; i++) {
-  //           if(quizModelBox.getAt(i)!.answerSelected >= 0) {
-  //             cntValid++;
-  //             break;
-  //           }
-  //         }
-
-  //         if(cntValid > 0) {
-  //           quizModelBox.clear(); //buggy
-
-  //           quizModel.addAll(quizModelBox.values);
-  //           print("MASUK SINI LESGOO");
-  //           currentQuestion.value = 0;
-
-  //           var quizConfigBox = await Hive.openBox('quizConfigBox');
-  //           quizTarget.value = quizConfigBox.get("target");
-
-  //         } else {
-  //           data.map((item) {
-  //             quizModel.add(Quiz.from(item));
-  //           }).toList();
-
-  //           // for(int i=0; i<quizModel.length; i++) {
-  //           //   quizModel[i].answerList.shuffle();
-  //           // }
-
-  //           //stored quiz config data to hive
-  //           var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-  //           for(int i=0; i<quizModel.length; i++) {
-  //             await quizModelBox.add(quizModel[i]);
-  //           }
-  //         }
-
-  //         change(null, status: RxStatus.success());
-
-  //       } else {
-  //         data.map((item) {
-  //           quizModel.add(Quiz.from(item));
-  //         }).toList();
-
-  //         // for(int i=0; i<quizModel.length; i++) {
-  //         //   quizModel[i].answerList.shuffle();
-  //         // }
-
-  //         //stored quiz config data to hive
-  //         var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-  //         for(int i=0; i<quizModel.length; i++) {
-  //           await quizModelBox.add(quizModel[i]);
-  //         }
-
-  //         change(null, status: RxStatus.success());
-  //       }
-  //     } else {
-  //       openEmptyDataDialog();
-  //     }
-  //   } catch(e) {
-  //     print("masuk catch");
-  //     isError(true);
-  //     errorMessage.value = e.toString();
-  //     change(null, status: RxStatus.error(errorMessage.value));
-  //   } 
-  // }
-
-  fetchQuizData() async {
-    print("MASUK FETCH DATA");
     quizModel.clear();
+    
+    var now = DateTime.now();
+    var formatter = DateFormat('yyyy-MM-dd');
+    String formattedDate = formatter.format(now);
+    var result = await ApiClient().getData("/quiz?sales_id=01AC1A0103&date=$formattedDate");
+    var data = jsonDecode(result.toString());
 
-    var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-    if(quizModelBox.length > 0) {
-      change(null, status: RxStatus.loading());
+    if(data.length > 0) {
+      List<Quiz> tempQuizList = [];
+      data.map((item) {
+        tempQuizList.add(Quiz.from(item));
+      }).toList();
 
-      //check invalid draft (belum diisi sama sekali, maka harus load data baru)
-      int cntValid = 0;
-      for(int i=0; i<quizModelBox.length; i++) {
-        if(quizModelBox.getAt(i)!.answerSelected >= 0) {
-          cntValid++;
-          break;
-        }
-      }
+      //check draft is exist or not
+      var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+      if(quizModelBox.length > 0) {
+        //check whether the draft is valid or not
+        //the draft still valid
+        if(quizModelBox.getAt(0)?.quizID == tempQuizList[0].quizID) {
+          quizModel.addAll(quizModelBox.values);
+        } else { //the draft was invalid
+          quizModel.addAll(tempQuizList);
 
-      if(cntValid > 0) {
-        quizModel.addAll(quizModelBox.values);
-        print("MASUK SINI LESGOO");
-        currentQuestion.value = 0;
-
-        var quizConfigBox = await Hive.openBox('quizConfigBox');
-        quizTarget.value = quizConfigBox.get("target");
-
-      } else {
-        quizModelBox.clear(); //buggy
-        
-        try {
-          //fetch quiz config data
-          var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
-          var data = jsonDecode(result.toString());
-          quizTarget.value = int.parse(data[0]["Value"].toString());
-          var quizConfigBox = await Hive.openBox('quizConfigBox');
-          quizConfigBox.put("target", quizTarget.value);
-
-          var now = DateTime.now();
-          var formatter = DateFormat('yyyy-MM-dd');
-          String formattedDate = formatter.format(now);
-          //fetch quiz data
-          result = await ApiClient().getData("/quiz?sales_id=01AC1A0103&date=$formattedDate");
-          data = jsonDecode(result.toString());
-
-          if(data.length > 0) {
-            data.map((item) {
-              quizModel.add(Quiz.from(item));
-            }).toList();
-
-            //stored quiz config data to hive
-            var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-            for(int i=0; i<quizModel.length; i++) {
-              await quizModelBox.add(quizModel[i]);
-            }
-            print(quizModelBox.getAt(0));
-
-            change(null, status: RxStatus.success());
-
-          } else {
-            openEmptyDataDialog();
-          }
-          
-        } catch(e) {
-          print("masuk catch 1");
-          isError(true);
-          // errorMessage.value = e.toString();
-          errorMessage.value = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-
-          change(null, status: RxStatus.error(errorMessage.value));
+          await quizModelBox.clear();
+          await quizModelBox.addAll(quizModel);
         }
       }
 
       change(null, status: RxStatus.success());
 
     } else {
-      change(null, status: RxStatus.loading());
+      var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+      await quizModelBox.clear();
 
-      try {
-        //fetch quiz config data
-        var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
-        var data = jsonDecode(result.toString());
-        quizTarget.value = int.parse(data[0]["Value"].toString());
-        var quizConfigBox = await Hive.openBox('quizConfigBox');
-        quizConfigBox.put("target", quizTarget.value);
-
-        var now = DateTime.now();
-        var formatter = DateFormat('yyyy-MM-dd');
-        String formattedDate = formatter.format(now);
-        //fetch quiz data
-
-        result = await ApiClient().getData("/quiz?sales_id=01AC1A0103&date=$formattedDate");
-        data = jsonDecode(result.toString());
-
-        if(data.length > 0) {
-          data.map((item) {
-            quizModel.add(Quiz.from(item));
-          }).toList();
-
-          //stored quiz config data to hive
-          var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-          for(int i=0; i<quizModel.length; i++) {
-            await quizModelBox.add(quizModel[i]);
-          }
-          print(quizModelBox.getAt(0));
-
-          change(null, status: RxStatus.success());
-
-        } else {
-          openEmptyDataDialog();
-        }
-        
-      } catch(e) {
-        print("masuk catch 2");
-        isError(true);
-        errorMessage.value = e.toString();
-
-        change(null, status: RxStatus.error(errorMessage.value));
-      }
+      openEmptyDataDialog();
     }
+    
   }
 
   openEmptyDataDialog() {
-    Get.dialog(
-      AlertDialog(
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Lottie.asset(
-                'assets/lottie/search_2.json',
-                width: 220,
-                height: 220,
-                fit: BoxFit.contain,
-              ),
-              const SizedBox(height: 30),
-              const Text("Mohon maaf, tidak ada kuis yang aktif", style: TextStyle(fontSize: 16), textAlign: TextAlign.center)
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: TextButton(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
-              ),
-              child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
-              onPressed: () {
-                Get.back();
-                Get.offAllNamed(RouteName.quizDashboard);
-              },
-            ),
-          ),
-        ],
-      ),
-      barrierDismissible: false,
+    appsDialog(
+      type: "quiz_inactive",
+      title: const TextView(headings: "H3", text: "Mohon maaf, belum ada kuis yang aktif untuk saat ini.", fontSize: 16, color: Colors.black),
+      animated: true,
+      leftBtnMsg: "Ok",
+      actionClick: () {
+        Get.back();
+        Get.offAllNamed(RouteName.quizDashboard);
+      }
     );
   }
 
