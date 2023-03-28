@@ -1,13 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart' hide RefreshIndicator, RefreshIndicatorState;
 import 'dart:ui' as ui;
-import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/history_controller.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
@@ -16,7 +13,7 @@ class HistoryPage extends GetView<HistoryController>  {
 
   final HistoryController historyController = Get.find();
 
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   void _onRefresh() async{
     await Future.delayed(const Duration(milliseconds: 500));
