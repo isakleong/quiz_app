@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/controllers/quiz_controller.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
 class QuizDashboard extends StatelessWidget {
@@ -11,9 +10,6 @@ class QuizDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double mediaWidth = MediaQuery.of(context).size.width;
-    double mediaHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: AppConfig.lightSoftGreen.withOpacity(1),
       body: Column(
@@ -21,12 +17,12 @@ class QuizDashboard extends StatelessWidget {
           Stack(
             children: [
               Container(
-                width: mediaWidth,
-                height: mediaHeight*0.6,
+                width: Get.width,
+                height: Get.height*0.6,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.elliptical(mediaWidth * 0.5, 80),
-                    bottomRight: Radius.elliptical(mediaWidth * 0.5, 80),
+                    bottomLeft: Radius.elliptical(Get.width * 0.5, 80),
+                    bottomRight: Radius.elliptical(Get.width * 0.5, 80),
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -37,8 +33,8 @@ class QuizDashboard extends StatelessWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.elliptical(mediaWidth * 0.5, 80),
-                    bottomRight: Radius.elliptical(mediaWidth * 0.5, 80),
+                    bottomLeft: Radius.elliptical(Get.width * 0.5, 80),
+                    bottomRight: Radius.elliptical(Get.width * 0.5, 80),
                   ),
                   // child: SvgPicture.asset('assets/images/bg-dashboard.svg', semanticsLabel: 'secret', fit: BoxFit.cover),
                   child: Image.asset('assets/images/bg_rev.png', fit: BoxFit.cover),
@@ -86,8 +82,7 @@ class QuizDashboard extends StatelessWidget {
                       children: [
                         FaIcon(FontAwesomeIcons.filePen, color: AppConfig.darkGreen, size: 50),
                         const SizedBox(height: 30),
-                        const TextView(headings: "H2", text: "Kuis", fontSize: 26, color: Colors.black),
-                        
+                        const TextView(headings: "H2", text: "Kuis", fontSize: 24, color: Colors.black),
                       ],
                     ),
                   ),
@@ -108,7 +103,7 @@ class QuizDashboard extends StatelessWidget {
                       children: [
                         FaIcon(FontAwesomeIcons.clockRotateLeft, color: AppConfig.darkGreen, size: 50),
                         const SizedBox(height: 30),
-                        const TextView(headings: "H2", text: "Riwayat", fontSize: 26, color: Colors.black),
+                        const TextView(headings: "H2", text: "Riwayat", fontSize: 24, color: Colors.black),
                       ],
                     ),
                   ),

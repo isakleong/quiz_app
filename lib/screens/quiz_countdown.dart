@@ -4,6 +4,8 @@ import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'dart:math' as math;
 
+import 'package:quiz_app/widgets/textview.dart';
+
 class CountdownPage extends StatefulWidget {
   const CountdownPage({super.key});
 
@@ -26,15 +28,11 @@ class _CountdownPageState extends State<CountdownPage> with TickerProviderStateM
           Get.offAndToNamed(RouteName.quiz);
         }
     });
-
-    // controller.reverse(from: controller.value == 0 ? 1 : controller.value);
     controller.reverse(from: 1);
   }
 
   @override
   void didChangeDependencies() {
-    // var argumentData = Get.arguments;
-    // print(argumentData[0].question);
     super.didChangeDependencies();
   }
 
@@ -67,7 +65,7 @@ class _CountdownPageState extends State<CountdownPage> with TickerProviderStateM
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        const Text('Selamat mengerjakan!', style: TextStyle(color: Colors.white, fontSize: 25)),
+                        const TextView(headings: "H2", text: "Selamat mengerjakan!", fontSize: 30, color: Colors.white),
                         Expanded(
                           child: Align(
                             alignment: Alignment.center,
@@ -99,7 +97,7 @@ class _CountdownPageState extends State<CountdownPage> with TickerProviderStateM
                                         AnimatedBuilder(
                                           animation: controller,
                                           builder: (BuildContext context, Widget? child) {
-                                            return Text(timerCountdown, style: const TextStyle(color: Colors.white, fontSize: 100));
+                                            return TextView(headings: "H2", text: timerCountdown, fontSize: 100, color: Colors.white);
                                           }
                                         ),
                                       ],

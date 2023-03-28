@@ -7,10 +7,10 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/tools/service.dart';
+import 'package:quiz_app/tools/utils.dart';
 import 'package:quiz_app/widgets/dialog.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
@@ -35,9 +35,7 @@ class QuizController extends GetxController with StateMixin {
     getQuizData();
 
     ever(isReset, (callback) {
-      print("MASUK WORKER");
       Get.offAllNamed(RouteName.quizDashboard);
-      print("AFTER WORKER");
       resetQuiz();
     });
 
@@ -48,8 +46,6 @@ class QuizController extends GetxController with StateMixin {
 
   nextQuestion() {
     currentQuestion++;
-    print("target "+quizTarget.value.toString());
-    // updateIndex(currentQuestion.value);
   }
 
   previousQuestion() {
@@ -68,18 +64,6 @@ class QuizController extends GetxController with StateMixin {
     currentQuestion.value = 0;
   }
 
-  // retryQuiz() async {
-  //   resetQuestion();
-
-  //   for(int i=0; i<quizModel.length; i++) {
-  //     quizModel[i].answerSelected = -1;
-  //   }
-  //   var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-  //   for(int i=0; i<quizModelBox.length; i++) {
-  //     quizModelBox.putAt(i, quizModel[i]);
-  //   }
-  // }
-
   lulusQuiz() async {
     resetQuestion();
 
@@ -93,15 +77,6 @@ class QuizController extends GetxController with StateMixin {
     var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
     await quizModelBox.deleteFromDisk();
   }
-
-  // resetQuiz() async {
-  //   resetQuestion();
-
-  //   var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-  //   await quizModelBox.deleteFromDisk();
-
-  //   await fetchQuizData();
-  // }
 
   getQuizConfig() async {
     var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
@@ -119,44 +94,57 @@ class QuizController extends GetxController with StateMixin {
   getQuizData() async {
     change(null, status: RxStatus.loading());
 
+    await getQuizConfig();
+
     quizModel.clear();
-    
-    var now = DateTime.now();
-    var formatter = DateFormat('yyyy-MM-dd');
-    String formattedDate = formatter.format(now);
-    var result = await ApiClient().getData("/quiz?sales_id=01AC1A0103&date=$formattedDate");
-    var data = jsonDecode(result.toString());
 
-    if(data.length > 0) {
-      List<Quiz> tempQuizList = [];
-      data.map((item) {
-        tempQuizList.add(Quiz.from(item));
-      }).toList();
+    try {
+      var now = DateTime.now();
+      var formatter = DateFormat('yyyy-MM-dd');
+      String formattedDate = formatter.format(now);
 
-      //check draft is exist or not
-      var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-      if(quizModelBox.length > 0) {
-        //check whether the draft is valid or not
-        //the draft still valid
-        if(quizModelBox.getAt(0)?.quizID == tempQuizList[0].quizID) {
-          quizModel.addAll(quizModelBox.values);
-        } else { //the draft was invalid
-          quizModel.addAll(tempQuizList);
+      var result = await ApiClient().getData("/quiz?sales_id=01AC1A0103&date=$formattedDate");
+      bool isValid = Utils.validateData(result.toString());
 
+      if(isValid) {
+        var data = jsonDecode(result.toString());
+
+        if(data.length > 0) {
+          List<Quiz> tempQuizList = [];
+          data.map((item) {
+            tempQuizList.add(Quiz.from(item));
+          }).toList();
+
+          //check draft is exist or not
+          var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+          if(quizModelBox.length > 0) {
+            //check whether the draft is valid or not
+            //the draft still valid
+            if(quizModelBox.getAt(0)?.quizID == tempQuizList[0].quizID) {
+              quizModel.addAll(quizModelBox.values);
+            } else { //the draft was invalid
+              quizModel.addAll(tempQuizList);
+
+              await quizModelBox.clear();
+              await quizModelBox.addAll(quizModel);
+            }
+          }
+
+          change(null, status: RxStatus.success());
+        } else {
+          var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
           await quizModelBox.clear();
-          await quizModelBox.addAll(quizModel);
+
+          openEmptyDataDialog();
         }
+      } else {
+        errorMessage.value = result.toString();
+        change(null, status: RxStatus.error(errorMessage.value));
       }
-
-      change(null, status: RxStatus.success());
-
-    } else {
-      var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-      await quizModelBox.clear();
-
-      openEmptyDataDialog();
+    } catch(e) {
+      errorMessage.value = e.toString();
+      change(null, status: RxStatus.error(errorMessage.value));
     }
-    
   }
 
   openEmptyDataDialog() {
@@ -185,7 +173,7 @@ class QuizController extends GetxController with StateMixin {
                 fit: BoxFit.contain,
               ),
               const SizedBox(height: 30),
-              const Text("Mohon tunggu, sedang proses mengumpulkan kuis", style: TextStyle(fontSize: 16), textAlign: TextAlign.center)
+              const TextView(headings: "H3", text: "Mohon tunggu, sedang proses mengumpulkan kuis.", fontSize: 16, color: Colors.black),
             ],
           ),
         ),
@@ -222,7 +210,7 @@ class QuizController extends GetxController with StateMixin {
       };
       var bodyData = jsonEncode(params);
 
-      var result = await ApiClient().postData(
+      await ApiClient().postData(
         '/quiz/submit',
         bodyData,
         Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
@@ -231,10 +219,8 @@ class QuizController extends GetxController with StateMixin {
       closeSubmitDialog();
       
     } catch(e) {
-      print("masuk catch 3 "+errorMessage.value.toString());
       isError(true);
       errorMessage.value = e.toString();
-      // if done, change status to success
       change(null, status: RxStatus.error(errorMessage.value));
     }
   }

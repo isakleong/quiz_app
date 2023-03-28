@@ -6,73 +6,15 @@ import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/quiz_controller.dart';
+import 'package:quiz_app/widgets/textview.dart';
 
 class StartQuiz extends GetView<QuizController>  {
   StartQuiz({super.key});
 
   final QuizController quizController = Get.find();
 
-  openDialog(String errorMessage) {
-    Get.dialog(
-      AlertDialog(
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Lottie.asset(
-                'assets/lottie/error.json',
-                width: 100,
-              ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Obx(() => Text(
-                  "Error message :\n$errorMessage"
-                  )
-                )
-              ),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: TextButton(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
-              ),
-              child: const Text('OK', style: TextStyle(fontSize: 16, color: Colors.white)),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  exLoading() {
-    Get.dialog(
-      AlertDialog(
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Lottie.asset(
-                'assets/lottie/loading.json',
-                width: 100,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    double mediaWidth = MediaQuery.of(context).size.width;
-    double mediaHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -98,9 +40,9 @@ class StartQuiz extends GetView<QuizController>  {
           ),
           controller.obx(
             (state) => CircularButton(),
-            onLoading: Center(child: Lottie.asset('assets/lottie/loading.json', width: 60)),
-            // onLoading: exLoading(),
-            // onEmpty: quizController.showEmptyDataDialog(),
+            onLoading: Center(
+              child: Lottie.asset('assets/lottie/loading.json', width: 60),
+            ),
             onError: (error) => Center(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -109,12 +51,12 @@ class StartQuiz extends GetView<QuizController>  {
                   children: [
                     Lottie.asset(
                       'assets/lottie/error.json',
-                      width: mediaWidth*0.5,
+                      width: Get.width*0.5,
                     ),
                     const SizedBox(height: 15),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Text("Error :\n${controller.errorMessage.value}", style: TextStyle(fontSize: 16)),
+                      child: TextView(headings: "H3", text: "Error :\n${controller.errorMessage.value}", fontSize: 16, color: Colors.black),
                     ),
                     const SizedBox(height: 30),
                     ElevatedButton(
@@ -130,7 +72,7 @@ class StartQuiz extends GetView<QuizController>  {
                         children: const [
                           Icon(Icons.history),
                           SizedBox(width: 10),
-                          Text("Coba Lagi", style: TextStyle(fontSize: 16)),
+                          TextView(headings: "H3", text: "Coba Lagi", fontSize: 16, color: Colors.black),
                         ],
                       ),
                     ),
@@ -146,6 +88,7 @@ class StartQuiz extends GetView<QuizController>  {
 }
 
 class CircularButton extends StatelessWidget {
+  const CircularButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -187,10 +130,7 @@ class CircularButton extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: const Center(
-                    child: Text(
-                      'MULAI',
-                      style: TextStyle(color: Colors.white, fontSize: 30)
-                      )
+                    child: TextView(headings: "H1", text: "mulai", fontSize: 40, color: Colors.white, capslock: true),
                     ),
                   ),
                 ),

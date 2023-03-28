@@ -4,11 +4,10 @@ import 'package:get/get.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
-import 'package:quiz_app/models/module.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
 class Homepage extends StatelessWidget {
-  Homepage({super.key});
+  const Homepage({super.key});
 
   @override
   Widget build(BuildContext context) {
