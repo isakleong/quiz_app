@@ -38,7 +38,7 @@ class StartQuiz extends GetView<QuizController>  {
             padding: const EdgeInsets.all(10),
             child: TextButton(
               style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
               ),
               child: const Text('OK', style: TextStyle(fontSize: 16, color: Colors.white)),
               onPressed: () {
@@ -88,7 +88,7 @@ class StartQuiz extends GetView<QuizController>  {
                 Get.back();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppConfig.darkGreenColor,
+                backgroundColor: AppConfig.darkGreen,
                 elevation: 0,
                 shape: const CircleBorder(),
                 padding: const EdgeInsets.all(16),
@@ -122,7 +122,7 @@ class StartQuiz extends GetView<QuizController>  {
                         quizController.getQuizData();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppConfig.darkGreenColor,
+                        backgroundColor: AppConfig.darkGreen,
                         padding: const EdgeInsets.all(12),
                       ),
                       child: Row(
@@ -154,7 +154,7 @@ class CircularButton extends StatelessWidget {
         Center(
           child: ClipOval(
             child: Container(
-              color: AppConfig.mainGreenColor,
+              color: AppConfig.mainGreen,
               height: 250,
               width: 250,
             ),
@@ -174,10 +174,10 @@ class CircularButton extends StatelessWidget {
               ),
             ),
             child: Material(
-              color: AppConfig.mainGreenColor,
+              color: AppConfig.mainGreen,
               shape: const CircleBorder(),
               child: InkWell(
-                splashColor: AppConfig.lightGreenColor,
+                splashColor: AppConfig.lightSoftGreen,
                 customBorder: const CircleBorder(),
                 onTap: () {
                   Get.offAndToNamed(RouteName.countdown);

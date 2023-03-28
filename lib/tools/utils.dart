@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'dart:ui';
+
+import 'package:quiz_app/tools/service.dart';
 
 class Utils {
 
@@ -12,5 +15,18 @@ class Utils {
 
     return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
-  
+
+  static validateData(var data) {
+    bool isDecodeSucceed = false;
+
+    try {
+      jsonDecode(data.toString());
+      isDecodeSucceed = true;
+    } on FormatException catch (e) {
+      isDecodeSucceed = false;
+    }
+
+    return isDecodeSucceed;
+  }
+
 }

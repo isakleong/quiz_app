@@ -63,7 +63,7 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                 padding: const EdgeInsets.all(10),
                 child: TextButton(
                   style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                   ),
                   onPressed: actionClick,
                   child: TextView(headings: "H3", text: leftBtnMsg, fontSize: 16, color: Colors.white),
@@ -73,7 +73,7 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                 padding: const EdgeInsets.all(10),
                 child: TextButton(
                   style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                   ),
                   onPressed: actionClick,
                   child: TextView(headings: "H3", text: rightBtnMsg, fontSize: 16, color: Colors.white),
@@ -88,7 +88,7 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
               child: ElevatedButton(
                 onPressed: actionClick,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppConfig.darkGreenColor,
+                  backgroundColor: AppConfig.darkGreen,
                   padding: const EdgeInsets.all(12),
                 ),
                 child: TextView(headings: "H3", text: leftBtnMsg, fontSize: 16, textAlign: TextAlign.center, color: Colors.white),

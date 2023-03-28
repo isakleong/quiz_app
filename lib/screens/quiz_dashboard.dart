@@ -15,7 +15,7 @@ class QuizDashboard extends StatelessWidget {
     double mediaHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: AppConfig.lightGreenColor.withOpacity(1),
+      backgroundColor: AppConfig.lightSoftGreen.withOpacity(1),
       body: Column(
         children: [
           Stack(
@@ -56,7 +56,7 @@ class QuizDashboard extends StatelessWidget {
                     shape: const CircleBorder(),
                     padding: const EdgeInsets.all(16),
                   ),
-                  child: Icon(FontAwesomeIcons.arrowLeft, size: 25, color:AppConfig.darkGreenColor),
+                  child: Icon(FontAwesomeIcons.arrowLeft, size: 25, color:AppConfig.darkGreen),
                 ),
               ),
             ],
@@ -76,15 +76,15 @@ class QuizDashboard extends StatelessWidget {
                   shape: const CircleBorder(),
                   child: InkWell(
                     customBorder: const CircleBorder(),
-                    highlightColor: AppConfig.mainGreenColor.withOpacity(0.3),
-                    splashColor: AppConfig.mainGreenColor.withOpacity(0.3),
+                    highlightColor: AppConfig.mainGreen.withOpacity(0.3),
+                    splashColor: AppConfig.mainGreen.withOpacity(0.3),
                     onTap: () async {
                       Get.toNamed(RouteName.starter);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        FaIcon(FontAwesomeIcons.filePen, color: AppConfig.darkGreenColor, size: 50),
+                        FaIcon(FontAwesomeIcons.filePen, color: AppConfig.darkGreen, size: 50),
                         const SizedBox(height: 30),
                         const TextView(headings: "H2", text: "Kuis", fontSize: 26, color: Colors.black),
                         
@@ -98,15 +98,15 @@ class QuizDashboard extends StatelessWidget {
                   shape: const CircleBorder(),
                   child: InkWell(
                     customBorder: const CircleBorder(),
-                    highlightColor: AppConfig.mainGreenColor.withOpacity(0.3),
-                    splashColor: AppConfig.mainGreenColor.withOpacity(0.3),
+                    highlightColor: AppConfig.mainGreen.withOpacity(0.3),
+                    splashColor: AppConfig.mainGreen.withOpacity(0.3),
                     onTap: (){
                       Get.toNamed(RouteName.history);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        FaIcon(FontAwesomeIcons.clockRotateLeft, color: AppConfig.darkGreenColor, size: 50),
+                        FaIcon(FontAwesomeIcons.clockRotateLeft, color: AppConfig.darkGreen, size: 50),
                         const SizedBox(height: 30),
                         const TextView(headings: "H2", text: "Riwayat", fontSize: 26, color: Colors.black),
                       ],

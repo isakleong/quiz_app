@@ -218,7 +218,7 @@ class SplashscreenController extends GetxController {
                                     downloadApps();
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppConfig.darkGreenColor,
+                                    backgroundColor: AppConfig.darkGreen,
                                     padding: const EdgeInsets.all(12),
                                   ),
                                   child: Row(
@@ -237,7 +237,7 @@ class SplashscreenController extends GetxController {
                       ),
                     ),
                     circularStrokeCap: CircularStrokeCap.round,
-                    progressColor: AppConfig.darkGreenColor,
+                    progressColor: AppConfig.darkGreen,
                   ),
                 ),
               ],

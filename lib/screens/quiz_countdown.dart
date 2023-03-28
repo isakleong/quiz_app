@@ -52,7 +52,7 @@ class _CountdownPageState extends State<CountdownPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppConfig.mainGreenColor,
+      backgroundColor: AppConfig.mainGreen,
       body: WillPopScope(
         onWillPop: () => Future.value(false),
         child: SafeArea(
@@ -83,7 +83,7 @@ class _CountdownPageState extends State<CountdownPage> with TickerProviderStateM
                                         return CustomPaint(
                                           painter: CustomTimerPainter(
                                             animation: controller,
-                                            backgroundColor: AppConfig.mainGreenColor,
+                                            backgroundColor: AppConfig.mainGreen,
                                             color: Colors.white,
                                           )
                                         );

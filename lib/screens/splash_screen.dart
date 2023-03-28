@@ -47,7 +47,7 @@ class SplashScreen extends StatelessWidget {
                       splashscreenController.getModuleData();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppConfig.darkGreenColor,
+                      backgroundColor: AppConfig.darkGreen,
                       padding: const EdgeInsets.all(12),
                     ),
                     child: Row(

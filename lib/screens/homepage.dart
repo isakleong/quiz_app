@@ -33,11 +33,11 @@ class Homepage extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index) {
                   return Card(
                     elevation: 12,
-                    color: AppConfig.lightGreenColor,
+                    color: AppConfig.lightSoftGreen,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(8),
-                      splashColor: AppConfig.lightOpactityGreenColor,
+                      splashColor: AppConfig.grayishGreen,
                       onTap: () {
                         Get.toNamed(RouteName.quizDashboard);
                       },

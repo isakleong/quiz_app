@@ -47,7 +47,7 @@ class QuizPage extends GetView<QuizController>{
               padding: const EdgeInsets.all(10),
               child: TextButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                 ),
                 child: const Text('Tidak', style: TextStyle(fontSize: 16, color: Colors.white)),
                 onPressed: () {
@@ -59,7 +59,7 @@ class QuizPage extends GetView<QuizController>{
               padding: const EdgeInsets.all(10),
               child: TextButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                 ),
                 child: const Text('Ya, Kumpul', style: TextStyle(fontSize: 16, color: Colors.white)),
                 onPressed: () {
@@ -101,7 +101,7 @@ class QuizPage extends GetView<QuizController>{
               padding: const EdgeInsets.all(10),
               child: TextButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                 ),
                 child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
                 onPressed: () {
@@ -166,7 +166,7 @@ class QuizPage extends GetView<QuizController>{
               padding: const EdgeInsets.all(10),
               child: TextButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                 ),
                 child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
                 onPressed: () async {
@@ -211,7 +211,7 @@ class QuizPage extends GetView<QuizController>{
               padding: const EdgeInsets.all(10),
               child: TextButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreenColor),
+                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                 ),
                 child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
                 onPressed: () {
@@ -242,16 +242,16 @@ class QuizPage extends GetView<QuizController>{
           quizModelBox.putAt(quizController.currentQuestion.value, quizController.quizModel[quizController.currentQuestion.value]);
         },
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppConfig.darkGreenColor,
+          foregroundColor: AppConfig.darkGreen,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          side: BorderSide(color: (quizController.quizModel[quizController.currentQuestion.value].answerSelected == index) ? AppConfig.mainGreenColor : Colors.black),
+          side: BorderSide(color: (quizController.quizModel[quizController.currentQuestion.value].answerSelected == index) ? AppConfig.mainGreen : Colors.black),
         ),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
             text,
             style: TextStyle(
-              color: (quizController.quizModel[quizController.currentQuestion.value].answerSelected == index) ? AppConfig.mainGreenColor : Colors.black,
+              color: (quizController.quizModel[quizController.currentQuestion.value].answerSelected == index) ? AppConfig.mainGreen : Colors.black,
               fontSize: 16,
             ),
           ),
@@ -273,7 +273,7 @@ class QuizPage extends GetView<QuizController>{
       },
       child: controller.obx(
         onLoading: Scaffold(
-          backgroundColor: AppConfig.mainGreenColor,
+          backgroundColor: AppConfig.mainGreen,
           body: Center(child: Lottie.asset('assets/lottie/loading_white.json', width: 60)),
         ),
         onError: (error) => Center(
@@ -297,7 +297,7 @@ class QuizPage extends GetView<QuizController>{
                     quizController.getQuizData();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppConfig.darkGreenColor,
+                    backgroundColor: AppConfig.darkGreen,
                     padding: const EdgeInsets.all(12),
                   ),
                   child: Row(
@@ -314,7 +314,7 @@ class QuizPage extends GetView<QuizController>{
           ),
         ),
         (state) => Scaffold(
-          backgroundColor: AppConfig.lightGreenColor,
+          backgroundColor: AppConfig.lightSoftGreen,
           bottomNavigationBar: Container(
             padding: const EdgeInsets.symmetric(vertical: 10),
             decoration: const BoxDecoration(
@@ -338,7 +338,7 @@ class QuizPage extends GetView<QuizController>{
                       style: ElevatedButton.styleFrom(
                         backgroundColor: quizController.currentQuestion.value == 0
                         ? Colors.grey
-                        : AppConfig.darkGreenColor,
+                        : AppConfig.darkGreen,
                         elevation: 0,
                         shape: const CircleBorder(),
                         padding: const EdgeInsets.all(12),
@@ -392,7 +392,7 @@ class QuizPage extends GetView<QuizController>{
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               CircleAvatar(
-                                                backgroundColor: AppConfig.mainGreenColor,
+                                                backgroundColor: AppConfig.mainGreen,
                                                 maxRadius: 10,
                                               ),
                                               const SizedBox(width: 15),
@@ -417,8 +417,8 @@ class QuizPage extends GetView<QuizController>{
                                             },
                                             child: CircleAvatar(
                                               radius: 40,
-                                              // backgroundColor: index == quizController.currentQuestion.value ? AppConfig.darkGreenColor : Colors.white,
-                                              backgroundColor: (quizController.quizModel[index].answerSelected != -1) ? AppConfig.darkGreenColor : Colors.red.shade400,
+                                              // backgroundColor: index == quizController.currentQuestion.value ? AppConfig.darkGreen : Colors.white,
+                                              backgroundColor: (quizController.quizModel[index].answerSelected != -1) ? AppConfig.darkGreen : Colors.red.shade400,
                                               child: Text(
                                                 '${index + 1}',
                                                 style: const TextStyle(
@@ -459,7 +459,7 @@ class QuizPage extends GetView<QuizController>{
                         quizController.currentQuestion.value == quizController.quizModel.length-1 ? finishQuiz() : quizController.nextQuestion();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppConfig.darkGreenColor,
+                        backgroundColor: AppConfig.darkGreen,
                         elevation: 0,
                         shape: const CircleBorder(),
                         padding: const EdgeInsets.all(12),
