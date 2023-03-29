@@ -19,6 +19,7 @@ class QuizController extends GetxController with StateMixin {
   var isError = false.obs;
   
   var isReset = false.obs;
+  var isRestart = false.obs;
   var isRetryFetch = false.obs;
 
 
@@ -33,6 +34,11 @@ class QuizController extends GetxController with StateMixin {
   void onInit() {
     super.onInit();
     getQuizConfig();
+
+    ever(isRestart, (callback) {
+      Get.offAllNamed(RouteName.quizDashboard);
+      restartQuiz();
+    });
 
     ever(isReset, (callback) {
       Get.offAllNamed(RouteName.quizDashboard);
@@ -69,6 +75,15 @@ class QuizController extends GetxController with StateMixin {
 
     var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
     await quizModelBox.deleteFromDisk();
+  }
+
+  restartQuiz() async {
+    resetQuestion();
+
+    var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+    for(int i = 0; i<quizModelBox.length; i++) {
+      quizModelBox.getAt(i)?.answerSelected = -1;
+    }
   }
 
   resetQuiz() async {
@@ -173,7 +188,7 @@ class QuizController extends GetxController with StateMixin {
       title: const TextView(headings: "H3", text: "Mohon maaf, tidak ada kuis yang aktif untuk saat ini.", fontSize: 16, color: Colors.black),
       isAnimated: true,
       leftBtnMsg: "Ok",
-      actionClick: () {
+      leftActionClick: () {
         Get.back();
         Get.offAllNamed(RouteName.quizDashboard);
       }

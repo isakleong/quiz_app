@@ -7,6 +7,7 @@ import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/quiz_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
+import 'package:quiz_app/widgets/dialog.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
 class QuizPage extends GetView<QuizController>{
@@ -26,89 +27,127 @@ class QuizPage extends GetView<QuizController>{
     String strInvalidQuestion = arrInvalidQuestion.join(", ");
 
     if(arrInvalidQuestion.isEmpty) {
-      
-
-      Get.dialog(
-        AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Image.asset('assets/images/confirm.png', width: 220, height: 220),
-                const SizedBox(height: 30),
-                const TextView(headings: "H3", text: "Apakah Anda yakin ingin mengumpulkan kuis?", fontSize: 16),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
-                ),
-                child: const TextView(headings: "H3", text: "Tidak", fontSize: 16, color: Colors.white),
-                onPressed: () {
-                  Get.back();
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
-                ),
-                child: const TextView(headings: "H3", text: "Ya, Kumpul", fontSize: 16, color: Colors.white),
-                onPressed: () {
-                  Get.back();
-                  quizSummary();
-                },
-              ),
-            ),
-          ],
-        ),
+      appsDialog(
+        type: "quiz_confirm",
+        title: const TextView(headings: "H3", text: "Apakah Anda yakin ingin mengumpulkan kuis?", fontSize: 16),
+        isAnimated: false,
+        isCancel: true,
+        leftBtnMsg: "Tidak",
+        rightBtnMsg: "Ya, Kumpul",
+        leftActionClick: () {
+          Get.back();
+        },
+        rightActionClick: () {
+          Get.back();
+          quizSummary();
+        }
       );
 
+
+      // Get.dialog(
+      //   AlertDialog(
+      //     content: SingleChildScrollView(
+      //       child: ListBody(
+      //         children: <Widget>[
+      //           Image.asset('assets/images/confirm.png', width: 220, height: 220),
+      //           const SizedBox(height: 30),
+      //           const TextView(headings: "H3", text: "Apakah Anda yakin ingin mengumpulkan kuis?", fontSize: 16),
+      //         ],
+      //       ),
+      //     ),
+      //     actions: <Widget>[
+      //       Padding(
+      //         padding: const EdgeInsets.all(10),
+      //         child: TextButton(
+      //           style: ButtonStyle(
+      //             backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+      //           ),
+      //           child: const TextView(headings: "H3", text: "Tidak", fontSize: 16, color: Colors.white),
+      //           onPressed: () {
+      //             Get.back();
+      //           },
+      //         ),
+      //       ),
+      //       Padding(
+      //         padding: const EdgeInsets.all(10),
+      //         child: TextButton(
+      //           style: ButtonStyle(
+      //             backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+      //           ),
+      //           child: const TextView(headings: "H3", text: "Ya, Kumpul", fontSize: 16, color: Colors.white),
+      //           onPressed: () {
+      //             Get.back();
+      //             quizSummary();
+      //           },
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // );
+
     } else {
-      Get.dialog(
-        AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Image.asset('assets/images/quiz-warning.png', width: 220, height: 220),
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      text: 'Gagal mengumpulkan kuis, pastikan Anda sudah menjawab semua pertanyaan kuis yang disediakan.\n\n',
-                      style: const TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
-                      children: <TextSpan>[
-                        TextSpan(text: 'Pertanyaan yang belum dijawab adalah nomor :\n$strInvalidQuestion', style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
-                      ],
-                    ),
-                  ),
-                ),
+      appsDialog(
+        type: "quiz_warning",
+        title: Padding(
+          padding: const EdgeInsets.all(10),
+          child:  RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: 'Gagal mengumpulkan kuis, pastikan Anda sudah menjawab semua pertanyaan kuis yang disediakan.\n\n',
+              style: const TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+              children: <TextSpan>[
+                TextSpan(text: 'Pertanyaan yang belum dijawab adalah nomor :\n$strInvalidQuestion', style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
               ],
             ),
           ),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: TextButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
-                ),
-                child: const TextView(headings: "H3", text: "Ok", fontSize: 16, color: Colors.white),
-                onPressed: () {
-                  Get.back();
-                },
-              ),
-            ),
-          ],
         ),
-      ); 
+        isAnimated: false,
+        leftBtnMsg: "Ok",
+        leftActionClick: () {
+          Get.back();
+        },
+      );
+
+
+      // Get.dialog(
+      //   AlertDialog(
+      //     content: SingleChildScrollView(
+      //       child: ListBody(
+      //         children: <Widget>[
+      //           Image.asset('assets/images/quiz-warning.png', width: 220, height: 220),
+      //           const SizedBox(height: 30),
+      //           Padding(
+      //             padding: const EdgeInsets.all(10),
+      //             child:  RichText(
+      //               textAlign: TextAlign.center,
+      //               text: TextSpan(
+      //                 text: 'Gagal mengumpulkan kuis, pastikan Anda sudah menjawab semua pertanyaan kuis yang disediakan.\n\n',
+      //                 style: const TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+      //                 children: <TextSpan>[
+      //                   TextSpan(text: 'Pertanyaan yang belum dijawab adalah nomor :\n$strInvalidQuestion', style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+      //                 ],
+      //               ),
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //     actions: <Widget>[
+      //       Padding(
+      //         padding: const EdgeInsets.all(10),
+      //         child: TextButton(
+      //           style: ButtonStyle(
+      //               backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+      //           ),
+      //           child: const TextView(headings: "H3", text: "Ok", fontSize: 16, color: Colors.white),
+      //           onPressed: () {
+      //             Get.back();
+      //           },
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ); 
     }
   }
 
@@ -131,94 +170,144 @@ class QuizPage extends GetView<QuizController>{
     await quizController.submitQuiz();
 
     if(score >= int.parse(arrTarget[0])) {
-      Get.dialog(
-        AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Image.asset('assets/images/fireworks.png', width: 250, height: 250),
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:  RichText(
-                    textAlign: TextAlign.center,
-                    text: const TextSpan(
-                      text: 'Selamat! Anda dinyatakan ',
-                      style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
-                      children: <TextSpan>[
-                        TextSpan(text: 'LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
-                        TextSpan(text: ' kuis periode ini', style: TextStyle(fontFamily: "Poppins")),
-                      ],
-                    ),
-                  ),
-                ),
+      appsDialog(
+        type: "quiz_success",
+        title: Padding(
+          padding: const EdgeInsets.all(10),
+          child:  RichText(
+            textAlign: TextAlign.center,
+            text: const TextSpan(
+              text: 'Selamat! Anda dinyatakan ',
+              style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+              children: <TextSpan>[
+                TextSpan(text: 'LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                TextSpan(text: ' kuis periode ini', style: TextStyle(fontFamily: "Poppins")),
               ],
             ),
           ),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: TextButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
-                ),
-                child: const TextView(headings: "H3", text: "Ok", fontSize: 16, color: Colors.white),
-                onPressed: () async {
-                  Get.back();
-                  quizController.isReset(!(quizController.isReset.value));
-                  // await quizController.lulusQuiz();
-                  // Get.until((route) => Get.currentRoute == RouteName.dashboard);
-                },
-              ),
-            ),
-          ],
         ),
+        isAnimated: false,
+        leftBtnMsg: "Ok",
+        leftActionClick: () {
+          Get.back();
+          quizController.isReset(!(quizController.isReset.value));
+        },
       );
+      
+      // Get.dialog(
+      //   AlertDialog(
+      //     content: SingleChildScrollView(
+      //       child: ListBody(
+      //         children: <Widget>[
+      //           Image.asset('assets/images/fireworks.png', width: 250, height: 250),
+      //           const SizedBox(height: 30),
+      //           Padding(
+      //             padding: const EdgeInsets.all(10),
+      //             child:  RichText(
+      //               textAlign: TextAlign.center,
+      //               text: const TextSpan(
+      //                 text: 'Selamat! Anda dinyatakan ',
+      //                 style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+      //                 children: <TextSpan>[
+      //                   TextSpan(text: 'LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+      //                   TextSpan(text: ' kuis periode ini', style: TextStyle(fontFamily: "Poppins")),
+      //                 ],
+      //               ),
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //     actions: <Widget>[
+      //       Padding(
+      //         padding: const EdgeInsets.all(10),
+      //         child: TextButton(
+      //           style: ButtonStyle(
+      //               backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+      //           ),
+      //           child: const TextView(headings: "H3", text: "Ok", fontSize: 16, color: Colors.white),
+      //           onPressed: () async {
+      //             Get.back();
+      //             quizController.isReset(!(quizController.isReset.value));
+      //             // await quizController.lulusQuiz();
+      //             // Get.until((route) => Get.currentRoute == RouteName.dashboard);
+      //           },
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // );
 
     } else {
-      Get.dialog(
-        AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Image.asset('assets/images/failed.png', width: 220, height: 220),
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:  RichText(
-                    textAlign: TextAlign.center,
-                    text: const TextSpan(
-                      text: 'Mohon maaf, Anda dinyatakan ',
-                      style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
-                      children: <TextSpan>[
-                        TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
-                        TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
-                      ],
-                    ),
-                  ),
-                ),
+      appsDialog(
+        type: "quiz_failed",
+        title: Padding(
+          padding: const EdgeInsets.all(10),
+          child:  RichText(
+            textAlign: TextAlign.center,
+            text: const TextSpan(
+              text: 'Mohon maaf, Anda dinyatakan ',
+              style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+              children: <TextSpan>[
+                TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
               ],
             ),
           ),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: TextButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
-                ),
-                child: const TextView(headings: "H3", text: "Ok", fontSize: 16, color: Colors.white),
-                onPressed: () {
-                  // await quizController.retryQuiz();
-                  quizController.isReset(!(quizController.isReset.value));
-                  Get.back();
-                  Get.offAllNamed(RouteName.quizDashboard);
-                },
-              ),
-            ),
-          ],
         ),
+        isAnimated: false,
+        leftBtnMsg: "Ok",
+        leftActionClick: () {
+          quizController.isRestart(!(quizController.isRestart.value));
+          Get.back();
+          Get.offAllNamed(RouteName.quizDashboard);
+        },
       );
+
+
+      // Get.dialog(
+      //   AlertDialog(
+      //     content: SingleChildScrollView(
+      //       child: ListBody(
+      //         children: <Widget>[
+      //           Image.asset('assets/images/failed.png', width: 220, height: 220),
+      //           const SizedBox(height: 30),
+      //           Padding(
+      //             padding: const EdgeInsets.all(10),
+      //             child:  RichText(
+      //               textAlign: TextAlign.center,
+      //               text: const TextSpan(
+      //                 text: 'Mohon maaf, Anda dinyatakan ',
+      //                 style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+      //                 children: <TextSpan>[
+      //                   TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+      //                   TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
+      //                 ],
+      //               ),
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //     actions: <Widget>[
+      //       Padding(
+      //         padding: const EdgeInsets.all(10),
+      //         child: TextButton(
+      //           style: ButtonStyle(
+      //               backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+      //           ),
+      //           child: const TextView(headings: "H3", text: "Ok", fontSize: 16, color: Colors.white),
+      //           onPressed: () {
+      //             // await quizController.retryQuiz();
+      //             quizController.isReset(!(quizController.isReset.value));
+      //             Get.back();
+      //             Get.offAllNamed(RouteName.quizDashboard);
+      //           },
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // );
     }
   }
 

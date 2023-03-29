@@ -5,7 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
-void appsDialog ({required String type, bool isDismmisible = false, required Widget title, String rightBtnMsg = '', String leftBtnMsg = '', String iconAsset = '', required bool isAnimated, bool isCancel = false, VoidCallback? actionClick}) {
+void appsDialog ({required String type, bool isDismmisible = false, required Widget title, String rightBtnMsg = '', String leftBtnMsg = '', String iconAsset = '', required bool isAnimated, bool isCancel = false, VoidCallback? leftActionClick, VoidCallback? rightActionClick}) {
   Get.dialog(
     WillPopScope(
       onWillPop: () async{
@@ -59,24 +59,28 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+                    ),
+                    onPressed: leftActionClick,
+                    child: TextView(headings: "H3", text: leftBtnMsg, fontSize: 16, color: Colors.white),
                   ),
-                  onPressed: actionClick,
-                  child: TextView(headings: "H3", text: leftBtnMsg, fontSize: 16, color: Colors.white),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+                    ),
+                    onPressed: rightActionClick,
+                    child: TextView(headings: "H3", text: rightBtnMsg, fontSize: 16, color: Colors.white),
                   ),
-                  onPressed: actionClick,
-                  child: TextView(headings: "H3", text: rightBtnMsg, fontSize: 16, color: Colors.white),
                 ),
               )
             ],
@@ -86,7 +90,7 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: ElevatedButton(
-                onPressed: actionClick,
+                onPressed: leftActionClick,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppConfig.darkGreen,
                   padding: const EdgeInsets.all(12),

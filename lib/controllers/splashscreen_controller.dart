@@ -48,7 +48,7 @@ class SplashscreenController extends GetxController {
           ),
           leftBtnMsg: "Ok",
           isAnimated: true,
-          actionClick: () {
+          leftActionClick: () {
             Get.back();
           }
         );
@@ -137,7 +137,7 @@ class SplashscreenController extends GetxController {
           ),
           leftBtnMsg: "Update",
           isAnimated: true,
-          actionClick: () {
+          leftActionClick: () {
             Get.back();
             updateApps();
           }
