@@ -42,7 +42,7 @@ class Homepage extends StatelessWidget {
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(30),
-                        child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 30, color: Colors.black),
+                        child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 30),
                       ),
                     ),
                   );

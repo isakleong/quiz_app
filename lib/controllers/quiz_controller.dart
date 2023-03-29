@@ -32,7 +32,7 @@ class QuizController extends GetxController with StateMixin {
   @override
   void onInit() {
     super.onInit();
-    getQuizData();
+    getQuizConfig();
 
     ever(isReset, (callback) {
       Get.offAllNamed(RouteName.quizDashboard);
@@ -40,7 +40,7 @@ class QuizController extends GetxController with StateMixin {
     });
 
     ever(isRetryFetch, (callback) {
-      getQuizData();
+      getQuizConfig();
     });
   }
 
@@ -79,23 +79,38 @@ class QuizController extends GetxController with StateMixin {
   }
 
   getQuizConfig() async {
-    var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
-    var data = jsonDecode(result.toString());
-    quizTarget.value = int.parse(data[0]["Value"].toString());
-    
-    var quizConfigBox = await Hive.openBox('quizConfigBox');
-    if(quizConfigBox.get("target") != data[0]["Value"].toString()) {
-      quizConfigBox.put("target", quizTarget.value);
-    } else {
-      quizTarget.value = quizConfigBox.get("target");
+    change(null, status: RxStatus.loading());
+    try {
+      var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
+      bool isValid = Utils.validateData(result.toString());
+
+      if(isValid) {
+        var data = jsonDecode(result.toString());
+        if(data.length > 0) {
+          quizTarget.value = int.parse(data[0]["Value"].toString());
+          var quizConfigBox = await Hive.openBox('quizConfigBox');
+          if(quizConfigBox.get("target") != data[0]["Value"].toString()) {
+            quizConfigBox.put("target", quizTarget.value);
+          } else {
+            quizTarget.value = quizConfigBox.get("target");
+          }
+
+          getQuizData();
+        } else {
+          errorMessage.value = "Mohon maaf, konfigurasi kuis tidak ditemukan,\nsilahkan menghubungi tim SFA.";
+          change(null, status: RxStatus.error(errorMessage.value));
+        }
+      } else {
+        errorMessage.value = result.toString();
+        change(null, status: RxStatus.error(errorMessage.value));
+      }
+    } catch (e) {
+      errorMessage.value = e.toString();
+      change(null, status: RxStatus.error(errorMessage.value));
     }
   }
 
   getQuizData() async {
-    change(null, status: RxStatus.loading());
-
-    await getQuizConfig();
-
     quizModel.clear();
 
     try {
@@ -128,6 +143,11 @@ class QuizController extends GetxController with StateMixin {
               await quizModelBox.clear();
               await quizModelBox.addAll(quizModel);
             }
+          } else {
+            quizModel.addAll(tempQuizList);
+
+            await quizModelBox.clear();
+            await quizModelBox.addAll(quizModel);
           }
 
           change(null, status: RxStatus.success());
@@ -150,8 +170,8 @@ class QuizController extends GetxController with StateMixin {
   openEmptyDataDialog() {
     appsDialog(
       type: "quiz_inactive",
-      title: const TextView(headings: "H3", text: "Mohon maaf, belum ada kuis yang aktif untuk saat ini.", fontSize: 16, color: Colors.black),
-      animated: true,
+      title: const TextView(headings: "H3", text: "Mohon maaf, tidak ada kuis yang aktif untuk saat ini.", fontSize: 16, color: Colors.black),
+      isAnimated: true,
       leftBtnMsg: "Ok",
       actionClick: () {
         Get.back();

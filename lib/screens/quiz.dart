@@ -7,23 +7,18 @@ import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/quiz_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
+import 'package:quiz_app/widgets/textview.dart';
 
-
-// ignore: must_be_immutable
 class QuizPage extends GetView<QuizController>{
   QuizPage({super.key});
 
-  final quizController = Get.find<QuizController>();
-  
-  List<Widget> questionWidget = [];
+  // final quizController = Get.find<QuizController>();
+  final QuizController quizController = Get.find();
 
   finishQuiz() {
     List<int> arrInvalidQuestion = [];
-    bool isValid = true;
     for(int i=0; i<quizController.quizModel.length; i++) {
-      isValid = true;
       if(quizController.quizModel[i].answerSelected < 0) {
-        isValid = false;
         arrInvalidQuestion.add(i+1);
       }
     }
@@ -31,6 +26,8 @@ class QuizPage extends GetView<QuizController>{
     String strInvalidQuestion = arrInvalidQuestion.join(", ");
 
     if(arrInvalidQuestion.isEmpty) {
+      
+
       Get.dialog(
         AlertDialog(
           content: SingleChildScrollView(
@@ -38,7 +35,7 @@ class QuizPage extends GetView<QuizController>{
               children: <Widget>[
                 Image.asset('assets/images/confirm.png', width: 220, height: 220),
                 const SizedBox(height: 30),
-                const Text('Apakah Anda yakin ingin mengumpulkan kuis?', style: TextStyle(fontSize: 16), textAlign: TextAlign.center),
+                const TextView(headings: "H3", text: "Apakah Anda yakin ingin mengumpulkan kuis?", fontSize: 16),
               ],
             ),
           ),
@@ -47,9 +44,9 @@ class QuizPage extends GetView<QuizController>{
               padding: const EdgeInsets.all(10),
               child: TextButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                 ),
-                child: const Text('Tidak', style: TextStyle(fontSize: 16, color: Colors.white)),
+                child: const TextView(headings: "H3", text: "Tidak", fontSize: 16, color: Colors.white),
                 onPressed: () {
                   Get.back();
                 },
@@ -59,9 +56,9 @@ class QuizPage extends GetView<QuizController>{
               padding: const EdgeInsets.all(10),
               child: TextButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
+                  backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                 ),
-                child: const Text('Ya, Kumpul', style: TextStyle(fontSize: 16, color: Colors.white)),
+                child: const TextView(headings: "H3", text: "Ya, Kumpul", fontSize: 16, color: Colors.white),
                 onPressed: () {
                   Get.back();
                   quizSummary();
@@ -86,9 +83,9 @@ class QuizPage extends GetView<QuizController>{
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       text: 'Gagal mengumpulkan kuis, pastikan Anda sudah menjawab semua pertanyaan kuis yang disediakan.\n\n',
-                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                      style: const TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
                       children: <TextSpan>[
-                        TextSpan(text: 'Pertanyaan yang belum dijawab adalah nomor :\n$strInvalidQuestion', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: 'Pertanyaan yang belum dijawab adalah nomor :\n$strInvalidQuestion', style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
                       ],
                     ),
                   ),
@@ -103,7 +100,7 @@ class QuizPage extends GetView<QuizController>{
                 style: ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                 ),
-                child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
+                child: const TextView(headings: "H3", text: "Ok", fontSize: 16, color: Colors.white),
                 onPressed: () {
                   Get.back();
                 },
@@ -126,9 +123,6 @@ class QuizPage extends GetView<QuizController>{
     var target = ((quizController.quizTarget.value/100) * quizController.quizModel.length);
     var arrTarget = target.toString().split(".");
 
-    print("total score $score");
-    print("total target ${arrTarget[0]}");
-
     if(score >= int.parse(arrTarget[0])) {
       quizController.isPassed(true);
     } else {
@@ -150,10 +144,10 @@ class QuizPage extends GetView<QuizController>{
                     textAlign: TextAlign.center,
                     text: const TextSpan(
                       text: 'Selamat! Anda dinyatakan ',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
                       children: <TextSpan>[
-                        TextSpan(text: 'LULUS', style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(text: ' kuis periode ini'),
+                        TextSpan(text: 'LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                        TextSpan(text: ' kuis periode ini', style: TextStyle(fontFamily: "Poppins")),
                       ],
                     ),
                   ),
@@ -168,7 +162,7 @@ class QuizPage extends GetView<QuizController>{
                 style: ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                 ),
-                child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
+                child: const TextView(headings: "H3", text: "Ok", fontSize: 16, color: Colors.white),
                 onPressed: () async {
                   Get.back();
                   quizController.isReset(!(quizController.isReset.value));
@@ -195,10 +189,10 @@ class QuizPage extends GetView<QuizController>{
                     textAlign: TextAlign.center,
                     text: const TextSpan(
                       text: 'Mohon maaf, Anda dinyatakan ',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
                       children: <TextSpan>[
-                        TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya'),
+                        TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                        TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
                       ],
                     ),
                   ),
@@ -213,7 +207,7 @@ class QuizPage extends GetView<QuizController>{
                 style: ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                 ),
-                child: const Text('Ok', style: TextStyle(fontSize: 16, color: Colors.white)),
+                child: const TextView(headings: "H3", text: "Ok", fontSize: 16, color: Colors.white),
                 onPressed: () {
                   // await quizController.retryQuiz();
                   quizController.isReset(!(quizController.isReset.value));
@@ -228,9 +222,7 @@ class QuizPage extends GetView<QuizController>{
     }
   }
 
-  int value = -1;
-  // ignore: non_constant_identifier_names
-  Widget CustomRadioButton(String text, int index) {
+  Widget customRadioButton(String text, int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       child: OutlinedButton(
@@ -248,12 +240,10 @@ class QuizPage extends GetView<QuizController>{
         ),
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: Text(
-            text,
-            style: TextStyle(
-              color: (quizController.quizModel[quizController.currentQuestion.value].answerSelected == index) ? AppConfig.mainGreen : Colors.black,
-              fontSize: 16,
-            ),
+          child: TextView(
+            headings: "H3",
+            text: text, fontSize: 16,
+            color: (quizController.quizModel[quizController.currentQuestion.value].answerSelected == index) ? AppConfig.mainGreen : Colors.black,
           ),
         ),
       ),
@@ -262,10 +252,6 @@ class QuizPage extends GetView<QuizController>{
 
   @override
   Widget build(BuildContext context) {
-    
-    double mediaWidth = MediaQuery.of(context).size.width;
-    double mediaHeight = MediaQuery.of(context).size.height;
-
     return WillPopScope(
       onWillPop: () {
         quizController.resetQuestion();
@@ -284,12 +270,12 @@ class QuizPage extends GetView<QuizController>{
               children: [
                 Lottie.asset(
                   'assets/lottie/error.json',
-                  width: mediaWidth*0.5,
+                  width: Get.width*0.5,
                 ),
                 const SizedBox(height: 15),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Text("Error :\n${controller.errorMessage.value}", style: TextStyle(fontSize: 16)),
+                  child: TextView(headings: "H3", text: "Error :\n${controller.errorMessage.value}", fontSize: 16, color: Colors.black),
                 ),
                 const SizedBox(height: 30),
                 ElevatedButton(
@@ -305,7 +291,7 @@ class QuizPage extends GetView<QuizController>{
                     children: const [
                       Icon(Icons.history),
                       SizedBox(width: 10),
-                      Text("Coba Lagi", style: TextStyle(fontSize: 16)),
+                      TextView(headings: "H3", text: "Coba Lagi", fontSize: 16, color: Colors.black),
                     ],
                   ),
                 ),
@@ -363,14 +349,14 @@ class QuizPage extends GetView<QuizController>{
                               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
-                                  maxHeight: MediaQuery.of(context).size.height / 4 * 3,
-                                  minHeight: mediaHeight / 3,
+                                  maxHeight: Get.height / 4 * 3,
+                                  minHeight: Get.height / 3,
                                 ),
                                 child: Column(
                                   children: [
                                     const Padding(
                                       padding: EdgeInsets.only(top: 15, bottom: 10),
-                                      child: Text('Pilih Soal No', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                      child: TextView(headings: "H2", text: "Pilih Soal No", fontSize: 18, color: Colors.black),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(bottom: 40),
@@ -380,11 +366,11 @@ class QuizPage extends GetView<QuizController>{
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               CircleAvatar(
-                                                backgroundColor: Colors.red.shade400,
+                                                backgroundColor: AppConfig.softRed,
                                                 maxRadius: 10,
                                               ),
                                               const SizedBox(width: 15),
-                                              const Text("Belum memilih jawaban"),
+                                              const TextView(headings: "H2", text: "Belum memilih jawaban", fontSize: 14, color: Colors.black),
                                             ],
                                           ),
                                           const SizedBox(height: 15),
@@ -396,7 +382,7 @@ class QuizPage extends GetView<QuizController>{
                                                 maxRadius: 10,
                                               ),
                                               const SizedBox(width: 15),
-                                              const Text("Sudah memilih jawaban"),
+                                              const TextView(headings: "H2", text: "Sudah memilih jawaban", fontSize: 14, color: Colors.black),
                                             ],
                                           ),
                                         ],
@@ -417,16 +403,8 @@ class QuizPage extends GetView<QuizController>{
                                             },
                                             child: CircleAvatar(
                                               radius: 40,
-                                              // backgroundColor: index == quizController.currentQuestion.value ? AppConfig.darkGreen : Colors.white,
-                                              backgroundColor: (quizController.quizModel[index].answerSelected != -1) ? AppConfig.darkGreen : Colors.red.shade400,
-                                              child: Text(
-                                                '${index + 1}',
-                                                style: const TextStyle(
-                                                  // color: index == quizController.currentQuestion.value ? Colors.white : Colors.black,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold, fontSize: 20
-                                                )
-                                              ),
+                                              backgroundColor: (quizController.quizModel[index].answerSelected != -1) ? AppConfig.darkGreen : AppConfig.softRed,
+                                              child: TextView(headings: "H2", text: "${index + 1}", fontSize: 20, color: Colors.white),
                                             ),
                                           )),
                                         ),
@@ -448,7 +426,7 @@ class QuizPage extends GetView<QuizController>{
                         }, 
                         icon: const Icon(FontAwesomeIcons.circleArrowUp, size: 30,),
                       ),
-                      Obx(() => Text('${quizController.currentQuestion.value+1} / ${quizController.quizModel.length}', style: const TextStyle(fontSize: 16)))
+                      Obx(() => TextView(headings: "H2", text: "${quizController.currentQuestion.value+1} / ${quizController.quizModel.length}", fontSize: 16, color: Colors.black))
                     ],
                   ),
                 ),
@@ -483,7 +461,7 @@ class QuizPage extends GetView<QuizController>{
                     height: constraints.maxHeight * .45,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
-                    child: Obx(() =>Text(quizController.quizModel[quizController.currentQuestion.value].question, textAlign: TextAlign.center, style: const TextStyle(fontSize: 20))),
+                    child: Obx(() => TextView(headings: "H3", text: quizController.quizModel[quizController.currentQuestion.value].question, fontSize: 20, color: Colors.black)),
                   ),
                   Expanded(
                     child: Container(
@@ -501,7 +479,7 @@ class QuizPage extends GetView<QuizController>{
                           physics: const BouncingScrollPhysics(),
                           itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return CustomRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} -- ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex}", index);
+                            return customRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} (CorrectAnswerIndex is: ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex})", index);
                           }),
                         ), 
                       ),
@@ -515,46 +493,4 @@ class QuizPage extends GetView<QuizController>{
       ),
     );
   }
-}
-
-class _Triangle extends StatelessWidget {
-  const _Triangle({
-    Key? key,
-    required this.color,
-  }) : super(key: key);
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _ShapesPainter(color),
-      child: Container(
-        height: 40,
-        width: 40,
-        child: const Center(
-          child: Padding(
-            padding: EdgeInsets.only(left: 20.0, bottom: 16),
-            child: Icon(Icons.check, color: Colors.white, size: 15),
-          )
-        )
-      )
-    );
-  }
-}
-
-class _ShapesPainter extends CustomPainter {
-  final Color color;
-  _ShapesPainter(this.color);
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    paint.color = color;
-    var path = Path();
-    path.lineTo(size.width, 0);
-    path.lineTo(size.height, size.width);
-    path.close();
-    canvas.drawPath(path, paint);
-  }
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

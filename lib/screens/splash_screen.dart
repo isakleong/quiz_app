@@ -12,13 +12,10 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double mediaWidth = MediaQuery.of(context).size.width;
-    double mediaHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       body: SizedBox(
-        width: mediaWidth,
-        height: mediaHeight,
+        width: Get.width,
+        height: Get.height,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 100),
           child: Column(
@@ -28,12 +25,12 @@ class SplashScreen extends StatelessWidget {
                 "assets/images/logo.png", 
                 alignment: Alignment.center, 
                 fit: BoxFit.contain,
-                // width: mediaWidth*0.6,
+                // width: Get.width*0.6,
                 width: 250,
               ),
               Lottie.asset(
                 'assets/lottie/welcome.json',
-                width: mediaWidth*0.5,
+                width: Get.width*0.5,
               ),
               Obx(() {
                 if (splashscreenController.isLoading.value) {

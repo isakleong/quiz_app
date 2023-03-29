@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/tools/logging.dart';
 
@@ -15,13 +16,14 @@ class ApiClient {
         client.badCertificateCallback=(X509Certificate cert, String host, int port){
             return true;
         };
+        return null;
       };
 
       final response = await dio.get(path);
 
       return response.data;
     } on DioError catch (e) {
-      print("exc ${e.message.toString()}");
+      debugPrint("exc ${e.message.toString()}");
       throw Exception(e.message);
     }
   }
@@ -35,13 +37,14 @@ class ApiClient {
         client.badCertificateCallback=(X509Certificate cert, String host, int port){
             return true;
         };
+        return null;
       };
 
       final response = await dio.post(path, data: formData, options: options);
 
       return response.data;
     } on DioError catch (e) {
-      print("exc ${e.message.toString()}");
+      debugPrint("exc ${e.message.toString()}");
       throw Exception(e.message);
     }
   }

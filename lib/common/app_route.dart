@@ -20,7 +20,7 @@ class AppRoute {
       binding: SplashScreenBinding(),
     ),
     GetPage(name: RouteName.quizDashboard, page: () => const QuizDashboard()),
-    GetPage(name: RouteName.homepage, page: () => Homepage()),
+    GetPage(name: RouteName.homepage, page: () => const Homepage()),
     GetPage(name: RouteName.starter, page: () => StartQuiz(), binding: StarterPageBinding()),
     GetPage(name: RouteName.countdown, page: () => const CountdownPage()),
     GetPage(name: RouteName.quiz, page: () => QuizPage(), binding: QuizPageBinding()),

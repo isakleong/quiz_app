@@ -4,12 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:quiz_app/bindings/splashscreen_binding.dart';
-import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/app_route.dart';
 import 'package:quiz_app/models/module.dart';
 import 'package:quiz_app/models/quiz.dart';
-import 'package:quiz_app/screens/splash_screen.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 void main() async {
@@ -29,11 +26,11 @@ void main() async {
   Hive.registerAdapter(ModuleAdapter());
   Hive.registerAdapter(QuizAdapter());
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // const MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {

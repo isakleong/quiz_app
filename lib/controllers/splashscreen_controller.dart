@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -48,7 +47,7 @@ class SplashscreenController extends GetxController {
             ),
           ),
           leftBtnMsg: "Ok",
-          animated: true,
+          isAnimated: true,
           actionClick: () {
             Get.back();
           }
@@ -137,7 +136,7 @@ class SplashscreenController extends GetxController {
             fontSize: 16,
           ),
           leftBtnMsg: "Update",
-          animated: true,
+          isAnimated: true,
           actionClick: () {
             Get.back();
             updateApps();

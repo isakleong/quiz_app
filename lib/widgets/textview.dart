@@ -8,16 +8,16 @@ class TextView extends StatelessWidget {
   final Color? color;
   final TextAlign? textAlign;
   final double? fontSize;
-  final bool? capslock;
-  final bool? autoSize;
+  final bool? isCapslock;
+  final bool? isAutoSize;
 
-  const TextView({super.key, this.headings, this.text, this.color, this.textAlign, this.fontSize, this.capslock = false, this.autoSize = false});
+  const TextView({super.key, this.headings, this.text, this.color = Colors.black, this.textAlign, this.fontSize, this.isCapslock = false, this.isAutoSize = false});
 
   @override
   Widget build(BuildContext context) {
-    return autoSize! ?
+    return isAutoSize! ?
     AutoSizeText(
-      capslock! ? text!.toUpperCase() : text!,
+      isCapslock! ? text!.toUpperCase() : text!,
       maxLines: 1,
       style: TextStyle(
         color: color,
@@ -41,7 +41,7 @@ class TextView extends StatelessWidget {
     )
     :
     Text(
-      capslock! ? text!.toUpperCase() : text!,
+      isCapslock! ? text!.toUpperCase() : text!,
       style: TextStyle(
         color: color,
         fontWeight: headings == "H1" ?

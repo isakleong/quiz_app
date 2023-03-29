@@ -5,7 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
-void appsDialog ({required String type, bool isDismmisible = false, required Widget title, String rightBtnMsg = '', String leftBtnMsg = '', String iconAsset = '', required bool animated, bool isCancel = false, VoidCallback? actionClick}) {
+void appsDialog ({required String type, bool isDismmisible = false, required Widget title, String rightBtnMsg = '', String leftBtnMsg = '', String iconAsset = '', required bool isAnimated, bool isCancel = false, VoidCallback? actionClick}) {
   Get.dialog(
     WillPopScope(
       onWillPop: () async{
@@ -15,7 +15,7 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              animated == true ?
+              isAnimated == true ?
               Lottie.asset(
                 type == "app_error" ? 
                 'assets/lottie/error.json'

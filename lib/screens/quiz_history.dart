@@ -92,7 +92,7 @@ class HistoryPage extends GetView<HistoryController>  {
                           children: [
                             Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
                             const SizedBox(height: 30),
-                            const TextView(headings: "H3", text: "Tidak ada data", fontSize: 18, color: Colors.black),
+                            const TextView(headings: "H3", text: "Tidak ada data", fontSize: 18),
                           ],
                         ),
                       ),
@@ -212,7 +212,7 @@ class HistoryPage extends GetView<HistoryController>  {
                                               children: [
                                                 TextView(headings: "H3", text: historyController.quizHistoryModel[index].salesID, fontSize: 16, color: Colors.white),
                                                 const SizedBox(height: 20),
-                                                TextView(headings: "H3", text: historyController.quizHistoryModel[index].name, fontSize: 16, color: Colors.white, autoSize: true),
+                                                TextView(headings: "H3", text: historyController.quizHistoryModel[index].name, fontSize: 16, color: Colors.white, isAutoSize: true),
                                                 const SizedBox(height: 20),
                                                 TextView(headings: "H3", text: historyController.quizHistoryModel[index].tanggal, fontSize: 16, color: Colors.white),
                                               ],
@@ -224,7 +224,7 @@ class HistoryPage extends GetView<HistoryController>  {
                                               text: historyController.quizHistoryModel[index].passed == "1" ? "lulus" : "tidak lulus",
                                               fontSize: 16,
                                               color: Colors.white,
-                                              capslock: true,
+                                              isCapslock: true,
                                               textAlign: TextAlign.start,
                                             ),
                                           ),

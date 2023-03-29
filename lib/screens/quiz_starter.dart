@@ -39,7 +39,7 @@ class StartQuiz extends GetView<QuizController>  {
             ),
           ),
           controller.obx(
-            (state) => CircularButton(),
+            (state) => const CircularButton(),
             onLoading: Center(
               child: Lottie.asset('assets/lottie/loading.json', width: 60),
             ),
@@ -56,12 +56,12 @@ class StartQuiz extends GetView<QuizController>  {
                     const SizedBox(height: 15),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: TextView(headings: "H3", text: "Error :\n${controller.errorMessage.value}", fontSize: 16, color: Colors.black),
+                      child: TextView(headings: "H3", text: "Error :\n${controller.errorMessage.value}", fontSize: 16, textAlign: TextAlign.start),
                     ),
                     const SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () {
-                        quizController.getQuizData();
+                        quizController.getQuizConfig();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppConfig.darkGreen,
@@ -72,7 +72,7 @@ class StartQuiz extends GetView<QuizController>  {
                         children: const [
                           Icon(Icons.history),
                           SizedBox(width: 10),
-                          TextView(headings: "H3", text: "Coba Lagi", fontSize: 16, color: Colors.black),
+                          TextView(headings: "H3", text: "Coba Lagi", fontSize: 16, color: Colors.white),
                         ],
                       ),
                     ),
@@ -130,7 +130,7 @@ class CircularButton extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: const Center(
-                    child: TextView(headings: "H1", text: "mulai", fontSize: 40, color: Colors.white, capslock: true),
+                    child: TextView(headings: "H1", text: "mulai", fontSize: 40, color: Colors.white, isCapslock: true),
                     ),
                   ),
                 ),

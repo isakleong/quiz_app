@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:quiz_app/tools/service.dart';
-
 class Utils {
 
   static Color color([String code = '#999999']) {
@@ -22,7 +20,7 @@ class Utils {
     try {
       jsonDecode(data.toString());
       isDecodeSucceed = true;
-    } on FormatException catch (e) {
+    } on FormatException {
       isDecodeSucceed = false;
     }
 

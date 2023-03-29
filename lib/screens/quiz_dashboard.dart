@@ -82,7 +82,7 @@ class QuizDashboard extends StatelessWidget {
                       children: [
                         FaIcon(FontAwesomeIcons.filePen, color: AppConfig.darkGreen, size: 50),
                         const SizedBox(height: 30),
-                        const TextView(headings: "H2", text: "Kuis", fontSize: 24, color: Colors.black),
+                        const TextView(headings: "H2", text: "Kuis", fontSize: 24),
                       ],
                     ),
                   ),
@@ -103,7 +103,7 @@ class QuizDashboard extends StatelessWidget {
                       children: [
                         FaIcon(FontAwesomeIcons.clockRotateLeft, color: AppConfig.darkGreen, size: 50),
                         const SizedBox(height: 30),
-                        const TextView(headings: "H2", text: "Riwayat", fontSize: 24, color: Colors.black),
+                        const TextView(headings: "H2", text: "Riwayat", fontSize: 24),
                       ],
                     ),
                   ),
