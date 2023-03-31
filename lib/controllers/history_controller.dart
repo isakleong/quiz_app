@@ -12,10 +12,23 @@ class HistoryController extends GetxController with StateMixin {
   var errorMessage = "".obs;
   var quizHistoryModel = <QuizHistory>[].obs;
 
+  //filter
+  var selectedLimitRequestHistoryData = <bool>[true, false, false].obs;
+
   @override
   void onInit() {
     super.onInit();
     getHistoryData();
+  }
+
+  applyFilter(int index) {
+    for (int i=0; i<selectedLimitRequestHistoryData.length; i++) {
+      if (i == index) {
+        selectedLimitRequestHistoryData[i] = true;
+      } else {
+        selectedLimitRequestHistoryData[i] = false;
+      }
+    }
   }
 
   getHistoryData() async {

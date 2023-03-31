@@ -1,3 +1,5 @@
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -75,7 +77,21 @@ class QuizDashboard extends StatelessWidget {
                     highlightColor: AppConfig.mainGreen.withOpacity(0.3),
                     splashColor: AppConfig.mainGreen.withOpacity(0.3),
                     onTap: () async {
-                      Get.toNamed(RouteName.starter);
+                      // Get.toNamed(RouteName.starter);
+
+                      AndroidIntent intent = const AndroidIntent(
+                          // action: 'android.intent.action.SEND',
+                          action: 'action_send',
+                          // arguments: {
+                          //   // 'android.content.Intent.EXTRA_TEXT': 'Create a Flutter app',
+                          // },
+                          // arguments: {'android.content.Intent.EXTRA_TEXT': 'I am the subject'},
+                          data: "ssss",
+                          type: "text/plain",
+                          package: 'com.example.get_app',
+                          componentName: 'com.example.get_app.MainActivity',
+                      );
+                      await intent.launch();
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

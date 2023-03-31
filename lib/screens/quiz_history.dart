@@ -79,6 +79,29 @@ class HistoryPage extends GetView<HistoryController>  {
                   ],
                 ),
               ),
+              Center(
+                child: LayoutBuilder(
+                  builder: (context, constraints) => Obx(() => ToggleButtons(
+                    constraints: BoxConstraints.expand(width: (constraints.maxWidth*0.8)/3),
+                    fillColor: AppConfig.softGreen,
+                    borderColor: AppConfig.darkGreen,
+                    borderWidth: 1.5,
+                    renderBorder: true,
+                    selectedBorderColor: AppConfig.darkGreen,
+                    borderRadius: BorderRadius.circular(30),
+                    // focusNodes: focusToggle,
+                    isSelected: historyController.selectedLimitRequestHistoryData,
+                    onPressed: (int index) {
+                      historyController.applyFilter(index);
+                    },
+                    children: const <Widget>[
+                      TextView(headings: "H3", text: "Branch Manager", fontSize: 16),
+                      TextView(headings: "H3", text: "Supervisor", fontSize: 16),
+                      TextView(headings: "H3", text: "Sales", fontSize: 16),
+                    ],
+                  )),
+                ),
+              ),
               Expanded(
                 child: Stack(
                   children: [
@@ -136,105 +159,8 @@ class HistoryPage extends GetView<HistoryController>  {
                           physics: const BouncingScrollPhysics(),
                           itemCount: historyController.quizHistoryModel.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              child: Stack(
-                                children: [
-                                  Material(
-                                    elevation: 3,
-                                    borderRadius: BorderRadius.circular(30),
-                                    shadowColor: Colors.grey,
-                                    child: Container(
-                                      height: 150,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(30),
-                                        gradient: LinearGradient(
-                                          colors: historyController.quizHistoryModel[index].passed == "1" ? 
-                                          [AppConfig.mainCyan, AppConfig.softCyan]
-                                          :
-                                          [AppConfig.mainRed, AppConfig.softRed],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight
-                                        ),
-                                        // boxShadow: const [
-                                        //   BoxShadow(
-                                        //     color: Colors.grey,
-                                        //     blurRadius: 7,
-                                        //     offset: Offset(0, 1)
-                                        //   )
-                                        // ],
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    bottom: 0,
-                                    top: 0,
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children:[
-                                        CustomPaint(
-                                          size: const Size(100, 150),
-                                          painter: historyController.quizHistoryModel[index].passed == "1" ? 
-                                          CustomCardShapePainter(30.0, AppConfig.mainCyan, AppConfig.softCyan)
-                                          :
-                                          CustomCardShapePainter(30.0, AppConfig.mainRed, AppConfig.softRed)
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.all(16),
-                                          decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Icon(
-                                            historyController.quizHistoryModel[index].passed == "1" ? 
-                                            Icons.check
-                                            :
-                                            Icons.close,
-                                            color: historyController.quizHistoryModel[index].passed == "1" ? 
-                                            AppConfig.mainGreen
-                                            :
-                                            Colors.red,
-                                          )
-                                        )
-                                      ] 
-                                    ),
-                                  ),
-                                  Positioned.fill(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                TextView(headings: "H3", text: historyController.quizHistoryModel[index].salesID, fontSize: 16, color: Colors.white),
-                                                const SizedBox(height: 20),
-                                                TextView(headings: "H3", text: historyController.quizHistoryModel[index].name, fontSize: 16, color: Colors.white, isAutoSize: true),
-                                                const SizedBox(height: 20),
-                                                TextView(headings: "H3", text: historyController.quizHistoryModel[index].tanggal, fontSize: 16, color: Colors.white),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: TextView(
-                                              headings: "H2",
-                                              text: historyController.quizHistoryModel[index].passed == "1" ? "lulus" : "tidak lulus",
-                                              fontSize: 16,
-                                              color: Colors.white,
-                                              isCapslock: true,
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
+                            
+                            return historyWidget(historyController, index);
                           }),
                         ), 
                       ),
@@ -248,6 +174,116 @@ class HistoryPage extends GetView<HistoryController>  {
       ),
     );
   }
+}
+
+Widget historyWidget(HistoryController historyController, int index) {
+  if(historyController.selectedLimitRequestHistoryData[0] == true) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      child: Stack(
+        children: [
+          Material(
+            elevation: 3,
+            borderRadius: BorderRadius.circular(30),
+            shadowColor: Colors.grey,
+            child: Container(
+              height: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                gradient: LinearGradient(
+                  colors: historyController.quizHistoryModel[index].passed == "1" ? 
+                  [AppConfig.mainCyan, AppConfig.softCyan]
+                  :
+                  [AppConfig.mainRed, AppConfig.softRed],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight
+                ),
+                // boxShadow: const [
+                //   BoxShadow(
+                //     color: Colors.grey,
+                //     blurRadius: 7,
+                //     offset: Offset(0, 1)
+                //   )
+                // ],
+              ),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            top: 0,
+            child: Stack(
+              alignment: Alignment.center,
+              children:[
+                CustomPaint(
+                  size: const Size(100, 150),
+                  painter: historyController.quizHistoryModel[index].passed == "1" ? 
+                  CustomCardShapePainter(30.0, AppConfig.mainCyan, AppConfig.softCyan)
+                  :
+                  CustomCardShapePainter(30.0, AppConfig.mainRed, AppConfig.softRed)
+                ),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    historyController.quizHistoryModel[index].passed == "1" ? 
+                    Icons.check
+                    :
+                    Icons.close,
+                    color: historyController.quizHistoryModel[index].passed == "1" ? 
+                    AppConfig.mainGreen
+                    :
+                    Colors.red,
+                  )
+                )
+              ] 
+            ),
+          ),
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextView(headings: "H3", text: historyController.quizHistoryModel[index].salesID, fontSize: 16, color: Colors.white),
+                        const SizedBox(height: 20),
+                        TextView(headings: "H3", text: historyController.quizHistoryModel[index].name, fontSize: 16, color: Colors.white, isAutoSize: true),
+                        const SizedBox(height: 20),
+                        TextView(headings: "H3", text: historyController.quizHistoryModel[index].tanggal, fontSize: 16, color: Colors.white),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TextView(
+                      headings: "H2",
+                      text: historyController.quizHistoryModel[index].passed == "1" ? "lulus" : "tidak lulus",
+                      fontSize: 16,
+                      color: Colors.white,
+                      isCapslock: true,
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  } else if(historyController.selectedLimitRequestHistoryData[1] == true) {
+
+  } else {
+
+  }
+
+  
 }
 
 class CustomCardShapePainter extends CustomPainter {

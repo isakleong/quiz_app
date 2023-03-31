@@ -36,6 +36,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
   cupertino_icons: ^1.0.2
   device_apps: ^2.2.0
+  android_intent_plus: ^3.1.6
 
 dev_dependencies:
   flutter_test:
