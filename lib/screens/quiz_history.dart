@@ -92,9 +92,10 @@ class HistoryPage extends GetView<HistoryController>  {
                     selectedBorderColor: AppConfig.darkGreen,
                     borderRadius: BorderRadius.circular(30),
                     // focusNodes: focusToggle,
-                    isSelected: historyController.selectedLimitRequestHistoryData,
-                    onPressed: (int i) {
-                      historyController.applyFilter(i);
+                    // isSelected: historyController.selectedLimitRequestHistoryData,
+                    isSelected: [false, false, true],
+                    onPressed: (int i) async {
+                      await historyController.applyFilter(i);
                       historyController.filterQuizHistoryModel.refresh();
                     },
                     children: const <Widget>[
