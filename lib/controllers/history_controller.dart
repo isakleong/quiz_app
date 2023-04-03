@@ -11,6 +11,7 @@ import 'package:quiz_app/tools/utils.dart';
 class HistoryController extends GetxController with StateMixin {
   var errorMessage = "".obs;
   var quizHistoryModel = <QuizHistory>[].obs;
+  var filterQuizHistoryModel = <QuizHistory>[].obs;
 
   //filter
   var selectedLimitRequestHistoryData = <bool>[true, false, false].obs;
@@ -29,6 +30,24 @@ class HistoryController extends GetxController with StateMixin {
         selectedLimitRequestHistoryData[i] = false;
       }
     }
+
+    List<QuizHistory> tempQuizHistoryModel = [];
+
+    for(int i=0; i<quizHistoryModel.length; i++) {
+      if(selectedLimitRequestHistoryData[0]){
+        if(quizHistoryModel[i].salesID.toLowerCase().contains("c100") || quizHistoryModel[i].salesID.toLowerCase().contains("c200") || quizHistoryModel[i].salesID.toLowerCase().contains("c300")) {
+          tempQuizHistoryModel.add(quizHistoryModel[i]);
+        }
+      } else if(selectedLimitRequestHistoryData[1]) {
+        if(quizHistoryModel[i].salesID.toLowerCase().contains("s")) {
+          tempQuizHistoryModel.add(quizHistoryModel[i]);
+        }
+      } else if(selectedLimitRequestHistoryData[2]) {
+        tempQuizHistoryModel.add(quizHistoryModel[i]);
+      }
+    }
+    filterQuizHistoryModel.clear();
+    filterQuizHistoryModel.addAll(tempQuizHistoryModel);
   }
 
   getHistoryData() async {
@@ -54,6 +73,24 @@ class HistoryController extends GetxController with StateMixin {
             String formattedDate = formatter.format(dateTime);
             quizHistoryModel[i].tanggal = formattedDate;
           }
+
+          List<QuizHistory> tempQuizHistoryModel = [];
+          for(int i=0; i<quizHistoryModel.length; i++) {
+            if(selectedLimitRequestHistoryData[0]){
+              if(quizHistoryModel[i].salesID.toLowerCase().contains("c100") || quizHistoryModel[i].salesID.toLowerCase().contains("c200") || quizHistoryModel[i].salesID.toLowerCase().contains("c300")) {
+                tempQuizHistoryModel.add(quizHistoryModel[i]);
+              }
+            } else if(selectedLimitRequestHistoryData[1]) {
+              if(quizHistoryModel[i].salesID.toLowerCase().contains("s")) {
+                tempQuizHistoryModel.add(quizHistoryModel[i]);
+              }
+            } else if(selectedLimitRequestHistoryData[2]) {
+              tempQuizHistoryModel.add(quizHistoryModel[i]);
+            }
+          }
+
+          filterQuizHistoryModel.clear();
+          filterQuizHistoryModel.addAll(tempQuizHistoryModel);
 
           change(null, status: RxStatus.success());
         } else {

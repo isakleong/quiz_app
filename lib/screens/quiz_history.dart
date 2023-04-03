@@ -18,6 +18,7 @@ class HistoryPage extends GetView<HistoryController>  {
   void _onRefresh() async{
     await Future.delayed(const Duration(milliseconds: 500));
     await historyController.getHistoryData();
+    historyController.filterQuizHistoryModel.refresh();
     _refreshController.refreshCompleted();
   }
 
@@ -28,7 +29,8 @@ class HistoryPage extends GetView<HistoryController>  {
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppConfig.lightGrayishGreen, AppConfig.grayishGreen, AppConfig.lightSoftGreen, AppConfig.softGreen]
+            // colors: [AppConfig.lightGrayishGreen, AppConfig.grayishGreen, AppConfig.lightSoftGreen, AppConfig.softGreen]
+            colors: [AppConfig.lightGrayishGreen, AppConfig.grayishGreen, AppConfig.softGreen, AppConfig.softCyan]
         ),
       ),
       child: Scaffold(
@@ -91,8 +93,9 @@ class HistoryPage extends GetView<HistoryController>  {
                     borderRadius: BorderRadius.circular(30),
                     // focusNodes: focusToggle,
                     isSelected: historyController.selectedLimitRequestHistoryData,
-                    onPressed: (int index) {
-                      historyController.applyFilter(index);
+                    onPressed: (int i) {
+                      historyController.applyFilter(i);
+                      historyController.filterQuizHistoryModel.refresh();
                     },
                     children: const <Widget>[
                       TextView(headings: "H3", text: "Branch Manager", fontSize: 16),
@@ -155,14 +158,26 @@ class HistoryPage extends GetView<HistoryController>  {
                       ),
                       (state) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-                        child: Obx(() => ListView.builder(
+                        child: Obx(() => 
+                        historyController.filterQuizHistoryModel.isNotEmpty ?
+                        ListView.builder(
                           physics: const BouncingScrollPhysics(),
-                          itemCount: historyController.quizHistoryModel.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            
-                            return historyWidget(historyController, index);
-                          }),
-                        ), 
+                          itemCount: historyController.filterQuizHistoryModel.length,
+                          itemBuilder: (BuildContext context, int i) {
+                            return historyWidget(historyController, i);
+                          }
+                        )
+                        :
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
+                              const SizedBox(height: 30),
+                              const TextView(headings: "H3", text: "Tidak ada data", fontSize: 18),
+                            ],
+                          ),
+                        )),
                       ),
                     ),
                   ],
@@ -176,114 +191,106 @@ class HistoryPage extends GetView<HistoryController>  {
   }
 }
 
-Widget historyWidget(HistoryController historyController, int index) {
-  if(historyController.selectedLimitRequestHistoryData[0] == true) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15),
-      child: Stack(
-        children: [
-          Material(
-            elevation: 3,
-            borderRadius: BorderRadius.circular(30),
-            shadowColor: Colors.grey,
-            child: Container(
-              height: 150,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                gradient: LinearGradient(
-                  colors: historyController.quizHistoryModel[index].passed == "1" ? 
-                  [AppConfig.mainCyan, AppConfig.softCyan]
-                  :
-                  [AppConfig.mainRed, AppConfig.softRed],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight
-                ),
-                // boxShadow: const [
-                //   BoxShadow(
-                //     color: Colors.grey,
-                //     blurRadius: 7,
-                //     offset: Offset(0, 1)
-                //   )
-                // ],
+Widget historyWidget(HistoryController historyController, int i) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 15),
+    child: Stack(
+      children: [
+        Material(
+          elevation: 3,
+          borderRadius: BorderRadius.circular(30),
+          shadowColor: Colors.grey,
+          child: Container(
+            height: 150,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              gradient: LinearGradient(
+                colors: historyController.quizHistoryModel[i].passed == "1" ? 
+                [AppConfig.mainCyan, AppConfig.softCyan]
+                :
+                [AppConfig.mainRed, AppConfig.softRed],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight
               ),
+              // boxShadow: const [
+              //   BoxShadow(
+              //     color: Colors.grey,
+              //     blurRadius: 7,
+              //     offset: Offset(0, 1)
+              //   )
+              // ],
             ),
           ),
-          Positioned(
-            right: 0,
-            bottom: 0,
-            top: 0,
-            child: Stack(
-              alignment: Alignment.center,
-              children:[
-                CustomPaint(
-                  size: const Size(100, 150),
-                  painter: historyController.quizHistoryModel[index].passed == "1" ? 
-                  CustomCardShapePainter(30.0, AppConfig.mainCyan, AppConfig.softCyan)
-                  :
-                  CustomCardShapePainter(30.0, AppConfig.mainRed, AppConfig.softRed)
+        ),
+        Positioned(
+          right: 0,
+          bottom: 0,
+          top: 0,
+          child: Stack(
+            alignment: Alignment.center,
+            children:[
+              CustomPaint(
+                size: const Size(100, 150),
+                painter: historyController.quizHistoryModel[i].passed == "1" ? 
+                CustomCardShapePainter(30.0, AppConfig.mainCyan, AppConfig.softCyan)
+                :
+                CustomCardShapePainter(30.0, AppConfig.mainRed, AppConfig.softRed)
+              ),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
                 ),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    historyController.quizHistoryModel[index].passed == "1" ? 
-                    Icons.check
-                    :
-                    Icons.close,
-                    color: historyController.quizHistoryModel[index].passed == "1" ? 
-                    AppConfig.mainGreen
-                    :
-                    Colors.red,
-                  )
+                child: Icon(
+                  historyController.quizHistoryModel[i].passed == "1" ? 
+                  Icons.check
+                  :
+                  Icons.close,
+                  color: historyController.quizHistoryModel[i].passed == "1" ? 
+                  AppConfig.mainGreen
+                  :
+                  Colors.red,
                 )
-              ] 
+              )
+            ] 
+          ),
+        ),
+        Positioned.fill(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextView(headings: "H3", text: historyController.quizHistoryModel[i].salesID, fontSize: 16, color: Colors.white),
+                      const SizedBox(height: 20),
+                      TextView(headings: "H3", text: historyController.quizHistoryModel[i].name, fontSize: 16, color: Colors.white, isAutoSize: true),
+                      const SizedBox(height: 20),
+                      TextView(headings: "H3", text: historyController.quizHistoryModel[i].tanggal, fontSize: 16, color: Colors.white),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: TextView(
+                    headings: "H2",
+                    text: historyController.quizHistoryModel[i].passed == "1" ? "lulus" : "tidak lulus",
+                    fontSize: 16,
+                    color: Colors.white,
+                    isCapslock: true,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+              ],
             ),
           ),
-          Positioned.fill(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextView(headings: "H3", text: historyController.quizHistoryModel[index].salesID, fontSize: 16, color: Colors.white),
-                        const SizedBox(height: 20),
-                        TextView(headings: "H3", text: historyController.quizHistoryModel[index].name, fontSize: 16, color: Colors.white, isAutoSize: true),
-                        const SizedBox(height: 20),
-                        TextView(headings: "H3", text: historyController.quizHistoryModel[index].tanggal, fontSize: 16, color: Colors.white),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: TextView(
-                      headings: "H2",
-                      text: historyController.quizHistoryModel[index].passed == "1" ? "lulus" : "tidak lulus",
-                      fontSize: 16,
-                      color: Colors.white,
-                      isCapslock: true,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  } else if(historyController.selectedLimitRequestHistoryData[1] == true) {
-
-  } else {
-
-  }
-
-  
+        ),
+      ],
+    ),
+  );
 }
 
 class CustomCardShapePainter extends CustomPainter {

@@ -31,18 +31,30 @@ class Homepage extends StatelessWidget {
                 itemCount: splashscreenController.moduleList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Card(
-                    elevation: 12,
-                    color: AppConfig.lightSoftGreen,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      splashColor: AppConfig.grayishGreen,
-                      onTap: () {
-                        Get.toNamed(RouteName.quizDashboard);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(30),
-                        child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 30),
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [AppConfig.softGreen, AppConfig.softCyan],
+                        ),
+                        borderRadius: BorderRadius.circular(16)
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          splashColor: AppConfig.mainGreen.withOpacity(0.5),
+                          onTap: () {
+                            Get.toNamed(RouteName.quizDashboard);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(30),
+                            child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 30),
+                          ),
+                        ),
                       ),
                     ),
                   );
