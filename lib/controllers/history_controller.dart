@@ -36,6 +36,7 @@ class HistoryController extends GetxController with StateMixin {
         selectedLimitRequestHistoryData[i] = false;
       }
     }
+    update();
 
     List<QuizHistory> tempQuizHistoryModel = [];
 

@@ -81,6 +81,34 @@ class HistoryPage extends GetView<HistoryController>  {
                   ],
                 ),
               ),
+
+              // Center(
+              //   child: GetBuilder<HistoryController>( // no need to initialize Controller ever again, just mention the type
+              //     builder: (value) => LayoutBuilder(
+              //       builder: (context, constraints) => Obx(() => ToggleButtons(
+              //         constraints: BoxConstraints.expand(width: (constraints.maxWidth*0.8)/3),
+              //         fillColor: AppConfig.softGreen,
+              //         borderColor: AppConfig.darkGreen,
+              //         borderWidth: 1.5,
+              //         renderBorder: true,
+              //         selectedBorderColor: AppConfig.darkGreen,
+              //         borderRadius: BorderRadius.circular(30),
+              //         // focusNodes: focusToggle,
+              //         isSelected: value.selectedLimitRequestHistoryData,
+              //         onPressed: (int i) async {
+              //           await value.applyFilter(i);
+              //           value.filterQuizHistoryModel.refresh();
+              //         },
+              //         children: const <Widget>[
+              //           TextView(headings: "H3", text: "Branch Manager", fontSize: 16),
+              //           TextView(headings: "H3", text: "Supervisor", fontSize: 16),
+              //           TextView(headings: "H3", text: "Sales", fontSize: 16),
+              //         ],
+              //       )),
+              //     ),
+              //   ),
+              // ),
+
               Center(
                 child: LayoutBuilder(
                   builder: (context, constraints) => Obx(() => ToggleButtons(
@@ -92,8 +120,7 @@ class HistoryPage extends GetView<HistoryController>  {
                     selectedBorderColor: AppConfig.darkGreen,
                     borderRadius: BorderRadius.circular(30),
                     // focusNodes: focusToggle,
-                    // isSelected: historyController.selectedLimitRequestHistoryData,
-                    isSelected: [false, false, true],
+                    isSelected: historyController.selectedLimitRequestHistoryData.toList(),
                     onPressed: (int i) async {
                       await historyController.applyFilter(i);
                       historyController.filterQuizHistoryModel.refresh();
