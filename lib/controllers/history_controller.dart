@@ -62,7 +62,7 @@ class HistoryController extends GetxController with StateMixin {
     quizHistoryModel.clear();
 
     try {
-      var result = await ApiClient().getData("/quiz/history?sales_id=00AC1A0103");
+      var result = await ApiClient().getData("/quiz/history?sales_id=01AC1A0103");
       bool isValid = Utils.validateData(result.toString());
 
       if(isValid) {
