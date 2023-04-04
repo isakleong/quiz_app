@@ -18,12 +18,40 @@ class AppRoute {
       name: RouteName.splashscreen,
       page: () => SplashScreen(),
       binding: SplashScreenBinding(),
+      transition: Transition.fadeIn,
     ),
-    GetPage(name: RouteName.quizDashboard, page: () => const QuizDashboard()),
-    GetPage(name: RouteName.homepage, page: () => const Homepage()),
-    GetPage(name: RouteName.starter, page: () => StartQuiz(), binding: StarterPageBinding()),
-    GetPage(name: RouteName.countdown, page: () => const CountdownPage()),
-    GetPage(name: RouteName.quiz, page: () => QuizPage(), binding: QuizPageBinding()),
-    GetPage(name: RouteName.history, page: () => HistoryPage(), binding: HistoryPageBinding()),
+    GetPage(
+      name: RouteName.quizDashboard,
+      page: () => const QuizDashboard(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: RouteName.homepage,
+      page: () => const Homepage(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: RouteName.starter,
+      page: () => StartQuiz(),
+      binding: StarterPageBinding(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: RouteName.countdown,
+      page: () => const CountdownPage(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: RouteName.quiz,
+      page: () => QuizPage(),
+      binding: QuizPageBinding(),
+      transition: Transition.noTransition,
+    ),
+    GetPage(
+      name: RouteName.history,
+      page: () => HistoryPage(),
+      binding: HistoryPageBinding(),
+      transition: Transition.fadeIn,
+    ),
   ];
 }
