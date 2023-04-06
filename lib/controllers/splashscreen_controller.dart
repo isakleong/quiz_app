@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:http/http.dart' as http;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quiz_app/common/app_config.dart';
@@ -16,7 +20,7 @@ import 'package:quiz_app/tools/service.dart';
 import 'package:quiz_app/widgets/dialog.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
-class SplashscreenController extends GetxController {
+class SplashscreenController extends FullLifeCycleController {
   var isLoading = true.obs;
   var isError = false.obs;
   var errorMessage = "".obs;
@@ -30,6 +34,7 @@ class SplashscreenController extends GetxController {
   var isRetryDownload = false.obs;
   var progress = 0.obs;
   late StateSetter _setState;
+
 
   @override
   void onInit() {
@@ -58,20 +63,37 @@ class SplashscreenController extends GetxController {
     syncAppsReady();
   }
 
+  @override
+  void dispose() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
+    super.dispose();
+  }
+
   syncAppsReady() async {
+    // if (await checkAppsPermission('STORAGE')) {
+    //   if (await checkAppsPermission('INSTALL PACKAGES')) {
+    //     if (await checkAppsPermission('EXTERNAL STORAGE')) {
+    //       await getModuleData();
+    //     } else {
+    //       syncAppsReady();
+    //     }
+    //   } else {
+    //     syncAppsReady();
+    //   }
+    // } else {
+    //   syncAppsReady();
+    // }
+
     if (await checkAppsPermission('STORAGE')) {
-      if (await checkAppsPermission('INSTALL PACKAGES')) {
-        if (await checkAppsPermission('EXTERNAL STORAGE')) {
-          await getModuleData();
-        } else {
-          syncAppsReady();
-        }
+      if (await checkAppsPermission('EXTERNAL STORAGE')) {
+        await getModuleData();
       } else {
         syncAppsReady();
       }
     } else {
       syncAppsReady();
     }
+
   }
 
   Future<bool> checkAppsPermission(String type) async {
@@ -82,7 +104,7 @@ class SplashscreenController extends GetxController {
     var status;
     if (type == 'STORAGE') {
       status = await Permission.storage.request();
-    } else if (type == 'INSTALL PACKAGES') {
+    } else if (type == 'INSTALLS PACKAGES') {
       if (sdkInt >= 26) {
         status = await Permission.requestInstallPackages.request();
       } else {
@@ -95,6 +117,20 @@ class SplashscreenController extends GetxController {
         return true;
       }
     }
+
+    if (status != PermissionStatus.granted) {
+      if (status == PermissionStatus.denied) {
+        return status == PermissionStatus.granted;
+      } else if (status == PermissionStatus.permanentlyDenied) {
+        status = await Permission.storage.status;
+
+        while (status != PermissionStatus.granted) {
+          await openAppSettings();
+          status = await Permission.storage.status;
+        }
+        return status == PermissionStatus.granted;
+      }
+    }
     return status == PermissionStatus.granted;
   }
 
@@ -102,6 +138,9 @@ class SplashscreenController extends GetxController {
     isLoading(true);
     isError(false);
 
+    var appModuleBox = await Hive.openBox<Module>('appModuleBox');
+    print("CEK LENGTH "+appModuleBox.length.toString());
+    
     try {
       final result = await ApiClient().getData("/module?sales_id=00AC1A0103");
       var data = jsonDecode(result.toString());
@@ -109,12 +148,14 @@ class SplashscreenController extends GetxController {
         moduleList.add(Module.from(item));
       }).toList();
 
-      var appModuleBox = await Hive.openBox<Module>('appModuleBox');
+      appModuleBox = await Hive.openBox<Module>('appModuleBox');
       if(appModuleBox.length > 0) {
         for(int i=0; i<appModuleBox.length; i++) {
-          if(moduleList[i].version != appModuleBox.getAt(i)?.version) {
-            isNeedUpdate(true);
-            break;
+          if(moduleList[i].moduleID == appModuleBox.getAt(i)?.moduleID) {
+            if(moduleList[i].version != appModuleBox.getAt(i)?.version) {
+              isNeedUpdate(true);
+              break;
+            }
           }
         }
       } else {
@@ -150,7 +191,7 @@ class SplashscreenController extends GetxController {
     } catch(e) {
       isLoading(false);
       isError(true);
-      errorMessage(e.toString());
+      errorMessage("modulie list length " + "--- "+ moduleList.length.toString() + " --- " + appModuleBox.length.toString() +" --- " + e.toString());
     }
   }
 
@@ -252,13 +293,14 @@ class SplashscreenController extends GetxController {
     isRetryDownload(false);
 
     final isPermissionStorageGranted = await checkAppsPermission('STORAGE');
-    final isPermissionInstallGranted = await checkAppsPermission('INSTALL PACKAGES');
+    // final isPermissionInstallGranted = await checkAppsPermission('INSTALL PACKAGES');
     final isPermissionExtStorageGranted = await checkAppsPermission('EXTERNAL STORAGE');
 
-    if (isPermissionStorageGranted && isPermissionInstallGranted && isPermissionExtStorageGranted) {
+    if (isPermissionStorageGranted && isPermissionExtStorageGranted) {
       var path = '/storage/emulated/0/Download/${AppConfig.appsName}.apk';
 
       String url = "${AppConfig.initUrl}/${AppConfig.appsName}.apk";
+      
       if (await File(path).exists()) {
         //Get downloaded file length
         int downloadFrom = File(path).lengthSync();
@@ -287,8 +329,14 @@ class SplashscreenController extends GetxController {
     var response = httpClient.send(request);
 
     if (downloadFrom == downloadUntil) {
-      OpenFile.open(saveDir);
-      getModuleData();
+      // OpenFile.open(saveDir);
+      var appModuleBox = await Hive.openBox<Module>('appModuleBox');
+      await appModuleBox.clear();
+      appModuleBox = await Hive.openBox<Module>('appModuleBox');
+      print("CEK LENGTH "+appModuleBox.length.toString());
+      
+      // await OpenFilex.open(saveDir);
+      // getModuleData();
       return;
     } else {
       RandomAccessFile raf;
@@ -319,8 +367,16 @@ class SplashscreenController extends GetxController {
               (r.contentLength != null &&
                   (r.contentLength! + downloadFrom == downloaded))) {
             Get.back();
-            OpenFile.open(saveDir);
-            getModuleData();
+            // OpenFile.open(saveDir);
+
+            var appModuleBox = await Hive.openBox<Module>('appModuleBox');
+            await appModuleBox.clear();
+
+            appModuleBox = await Hive.openBox<Module>('appModuleBox');
+            print("CEK LENGTH "+appModuleBox.length.toString());
+
+            // await OpenFilex.open(saveDir);
+            // getModuleData();
           }
           return;
         });

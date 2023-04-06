@@ -18,7 +18,7 @@ class AppRoute {
       name: RouteName.splashscreen,
       page: () => SplashScreen(),
       binding: SplashScreenBinding(),
-      transition: Transition.fadeIn,
+      // transition: Transition.fadeIn,
     ),
     GetPage(
       name: RouteName.quizDashboard,
