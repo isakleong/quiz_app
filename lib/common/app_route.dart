@@ -27,7 +27,7 @@ class AppRoute {
     ),
     GetPage(
       name: RouteName.homepage,
-      page: () => const Homepage(),
+      page: () => Homepage(),
       transition: Transition.fadeIn,
     ),
     GetPage(

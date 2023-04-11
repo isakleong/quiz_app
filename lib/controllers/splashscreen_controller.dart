@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:ui';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:http/http.dart' as http;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:open_file_plus/open_file_plus.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -70,20 +67,6 @@ class SplashscreenController extends FullLifeCycleController {
   }
 
   syncAppsReady() async {
-    // if (await checkAppsPermission('STORAGE')) {
-    //   if (await checkAppsPermission('INSTALL PACKAGES')) {
-    //     if (await checkAppsPermission('EXTERNAL STORAGE')) {
-    //       await getModuleData();
-    //     } else {
-    //       syncAppsReady();
-    //     }
-    //   } else {
-    //     syncAppsReady();
-    //   }
-    // } else {
-    //   syncAppsReady();
-    // }
-
     if (await checkAppsPermission('STORAGE')) {
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
         await getModuleData();
@@ -93,7 +76,6 @@ class SplashscreenController extends FullLifeCycleController {
     } else {
       syncAppsReady();
     }
-
   }
 
   Future<bool> checkAppsPermission(String type) async {
@@ -137,9 +119,9 @@ class SplashscreenController extends FullLifeCycleController {
   getModuleData() async {
     isLoading(true);
     isError(false);
+    moduleList.clear();
 
     var appModuleBox = await Hive.openBox<Module>('appModuleBox');
-    print("CEK LENGTH "+appModuleBox.length.toString());
     
     try {
       final result = await ApiClient().getData("/module?sales_id=00AC1A0103");
@@ -191,7 +173,8 @@ class SplashscreenController extends FullLifeCycleController {
     } catch(e) {
       isLoading(false);
       isError(true);
-      errorMessage("modulie list length " + "--- "+ moduleList.length.toString() + " --- " + appModuleBox.length.toString() +" --- " + e.toString());
+      // errorMessage("modulie list length " + "--- "+ moduleList.length.toString() + " --- " + appModuleBox.length.toString() +" --- " + e.toString());
+      errorMessage(e.toString());
     }
   }
 
@@ -332,11 +315,9 @@ class SplashscreenController extends FullLifeCycleController {
       // OpenFile.open(saveDir);
       var appModuleBox = await Hive.openBox<Module>('appModuleBox');
       await appModuleBox.clear();
-      appModuleBox = await Hive.openBox<Module>('appModuleBox');
-      print("CEK LENGTH "+appModuleBox.length.toString());
       
-      // await OpenFilex.open(saveDir);
-      // getModuleData();
+      await OpenFilex.open(saveDir);
+      getModuleData();
       return;
     } else {
       RandomAccessFile raf;
@@ -372,11 +353,8 @@ class SplashscreenController extends FullLifeCycleController {
             var appModuleBox = await Hive.openBox<Module>('appModuleBox');
             await appModuleBox.clear();
 
-            appModuleBox = await Hive.openBox<Module>('appModuleBox');
-            print("CEK LENGTH "+appModuleBox.length.toString());
-
-            // await OpenFilex.open(saveDir);
-            // getModuleData();
+            await OpenFilex.open(saveDir);
+            getModuleData();
           }
           return;
         });
