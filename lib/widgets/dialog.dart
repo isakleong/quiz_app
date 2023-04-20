@@ -28,7 +28,7 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                 'assets/lottie/search_2.json'
                 :
                 type == "quiz_warning" ? 
-                'assets/lottie/passed_4.json'
+                'assets/lottie/warning.json'
                 :
                 iconAsset,
                 width: 230,
