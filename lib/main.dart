@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:quiz_app/common/app_route.dart';
@@ -11,13 +11,15 @@ import 'package:quiz_app/models/quiz.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:quiz_app/tools/service.dart';
 
+
+_write(String text) async {
+  final Directory directory = await getApplicationDocumentsDirectory();
+  final File file = File('/storage/emulated/0/Download/my_file.txt');
+  await file.writeAsString(text);
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  // SystemChrome.setSystemUIChangeCallback((systemOverlaysAreVisible) async {
-  //   await Future.delayed(const Duration(seconds: 1));
-  //   // SystemChrome.restoreSystemUIOverlays();
-  // });
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -29,12 +31,6 @@ void main() async {
   Hive.registerAdapter(QuizAdapter());
 
   HttpOverrides.global = ApiHttpOverrides();
-
-  // Plugin must be initialized before using
-  await FlutterDownloader.initialize(
-    debug: true,
-    ignoreSsl: true
-  );
 
   runApp(const MyApp());
 }
@@ -48,10 +44,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        // canvasColor: AppConfig.lightGreenColor
+        fontFamily: "Poppins"
       ),
-      // home: SplashScreen(),
-      // initialBinding: SplashScreenBinding(),
       initialRoute: "/",
       getPages: AppRoute.pages,
     );

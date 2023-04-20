@@ -19,7 +19,6 @@ class QuizDashboard extends StatelessWidget {
         ),
       ),
       child: Scaffold(
-        // backgroundColor: AppConfig.lightSoftGreen.withOpacity(1),
         backgroundColor: Colors.transparent,
         body: Column(
           children: [
@@ -45,7 +44,6 @@ class QuizDashboard extends StatelessWidget {
                       bottomLeft: Radius.elliptical(Get.width * 0.5, 80),
                       bottomRight: Radius.elliptical(Get.width * 0.5, 80),
                     ),
-                    // child: SvgPicture.asset('assets/images/bg-dashboard.svg', semanticsLabel: 'secret', fit: BoxFit.cover),
                     child: Image.asset('assets/images/bg_rev.png', fit: BoxFit.cover),
                   ),
                 ),

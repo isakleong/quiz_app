@@ -1,19 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'dart:ui';
-import 'package:http/http.dart' as http;
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
-import 'package:open_filex/open_filex.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:quiz_app/common/app_config.dart';
+import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/models/module.dart';
 import 'package:quiz_app/tools/service.dart';
+import 'package:quiz_app/tools/utils.dart';
 import 'package:quiz_app/widgets/dialog.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
@@ -26,12 +22,10 @@ class SplashscreenController extends FullLifeCycleController {
   var moduleList = <Module>[].obs;
   var isNeedUpdate = false.obs;
 
-  var isLoadingVersion = false.obs;
-  var isDownloadNewVersion = true.obs;
-  var isRetryDownload = false.obs;
-  var progress = 0.obs;
-  late StateSetter _setState;
-
+  //parameter data
+  var salesIdParams = "".obs;
+  var customerIdParams = "".obs;
+  var isCheckInParams = "".obs;
 
   @override
   void onInit() {
@@ -43,9 +37,8 @@ class SplashscreenController extends FullLifeCycleController {
           type: "app_error",
           title:  Obx(() => TextView(
             headings: "H4",
-            text: "Error message :\n${errorMessage.value.capitalize}", 
-            textAlign: TextAlign.start,
-            fontSize: 16,
+            text: errorMessage.value,
+            textAlign: TextAlign.center,
             ),
           ),
           leftBtnMsg: "Ok",
@@ -60,16 +53,10 @@ class SplashscreenController extends FullLifeCycleController {
     syncAppsReady();
   }
 
-  @override
-  void dispose() {
-    IsolateNameServer.removePortNameMapping('downloader_send_port');
-    super.dispose();
-  }
-
   syncAppsReady() async {
     if (await checkAppsPermission('STORAGE')) {
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
-        await getModuleData();
+        await checkUpdate();
       } else {
         syncAppsReady();
       }
@@ -116,250 +103,95 @@ class SplashscreenController extends FullLifeCycleController {
     return status == PermissionStatus.granted;
   }
 
-  getModuleData() async {
+  checkUpdate() async {
     isLoading(true);
     isError(false);
-    moduleList.clear();
 
-    var appModuleBox = await Hive.openBox<Module>('appModuleBox');
-    
-    try {
-      final result = await ApiClient().getData("/module?sales_id=00AC1A0103");
-      var data = jsonDecode(result.toString());
-      data.map((item) {
-        moduleList.add(Module.from(item));
-      }).toList();
+    bool isConnected = await ApiClient().checkConnection();
+    if(isConnected) {
+      try {
+        PackageInfo packageInfo = await PackageInfo.fromPlatform();
+        String appName = packageInfo.appName;
+        String currentVersion = packageInfo.version;
 
-      appModuleBox = await Hive.openBox<Module>('appModuleBox');
-      if(appModuleBox.length > 0) {
-        for(int i=0; i<appModuleBox.length; i++) {
-          if(moduleList[i].moduleID == appModuleBox.getAt(i)?.moduleID) {
-            if(moduleList[i].version != appModuleBox.getAt(i)?.version) {
-              isNeedUpdate(true);
-              break;
+        final result = await ApiClient().getData("/config?app=$appName");
+        var data = jsonDecode(result.toString());
+
+        String latestVersion = data[0]["Value"];
+        int currentVersionConverted = Utils().convertVersionNumber(currentVersion);
+        int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
+
+        if(latestVersionConverted > currentVersionConverted) {
+          isLoading(false);
+          appsDialog(
+            type: "app_info",
+            title: const TextView(
+              headings: "H4",
+              text: "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi Utility.\n4. Tunggu hingga proses update selesai.",
+              textAlign: TextAlign.start,
+            ),
+            leftBtnMsg: "nasi goreng ok",
+            isAnimated: true,
+            leftActionClick: () {
+              Get.back();
+              SystemNavigator.pop();
+            }
+          );
+        } else {
+          //SalesID;CustID;LocCheckIn
+          String parameter = await Utils().readParameter();
+          if(parameter != "") {
+            var arrParameter = parameter.split('.');
+            for(int i=0; i<arrParameter.length; i++) {
+              if(i == 0) {
+                salesIdParams.value = arrParameter[i];
+              } else if(i == 1) {
+                customerIdParams.value = arrParameter[i];
+              } else {
+                isCheckInParams.value = arrParameter[2];
+              }
             }
           }
+
+          getModuleData();
         }
-      } else {
-        for(int i=0; i<moduleList.length; i++) {
-          await appModuleBox.add(moduleList[i]);
-        }
+      } catch(e) {
+        isLoading(false);
+        isError(true);
+        errorMessage(e.toString());
       }
-
-      isLoading(false);
-      isError(false);
-
-      if(isNeedUpdate.value) {
-        appsDialog(
-          type: "app_info",
-          title: const TextView(
-            headings: "H4",
-            text: "Terdapat versi aplikasi yang lebih baru.", 
-            textAlign: TextAlign.center,
-            fontSize: 16,
-          ),
-          leftBtnMsg: "Update",
-          isAnimated: true,
-          leftActionClick: () {
-            Get.back();
-            updateApps();
-          }
-        );
-
-      } else {
-        Get.offAndToNamed(RouteName.homepage);
-      }
-
-    } catch(e) {
+    } else {
       isLoading(false);
       isError(true);
-      // errorMessage("modulie list length " + "--- "+ moduleList.length.toString() + " --- " + appModuleBox.length.toString() +" --- " + e.toString());
-      errorMessage(e.toString());
+      errorMessage(Message.errorConnection);
     }
   }
 
-  Future<bool> isInternet() async {
-    bool isInternetCheck = true;
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        //connected to internet
-        isInternetCheck = true;
+  getModuleData() async {
+    bool isConnected = await ApiClient().checkConnection();
+    if(isConnected) {
+      moduleList.clear();
+
+      try {
+        final result = await ApiClient().getData("/module?sales_id=${salesIdParams.value}");
+        var data = jsonDecode(result.toString());
+        data.map((item) {
+          moduleList.add(Module.from(item));
+        }).toList();
+
+        isLoading(false);
+        isError(false);
+        Get.offAndToNamed(RouteName.homepage);
+
+      } catch(e) {
+        isLoading(false);
+        isError(true);
+        errorMessage(e.toString());
       }
-    } on SocketException catch (_) {
-      //not connected to internet
-      isRetryDownload(true);
-      isInternetCheck = false;
-    }
-    return isInternetCheck;
-  }
-
-  void updateApps() {
-    isLoadingVersion(false);
-    isDownloadNewVersion(true);
-
-    Timer.periodic(const Duration(seconds: 5), (Timer t) => isInternet());
-
-    downloadApps();
-
-    Get.dialog(
-      WillPopScope(
-        onWillPop: () async{
-          return false;
-        },
-        child: AlertDialog(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(7.5)),
-          ),
-          content: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-            _setState = setState;
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Center(
-                  child: CircularPercentIndicator(
-                    radius: 120,
-                    lineWidth: 10,
-                    animation: false,
-                    percent: progress / 100,
-                    center: TextView(headings: "H2", text: "${progress.toString()}%", fontSize: 30),
-                    footer: Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: Column(
-                        children: [
-                          const TextView(headings: "H3", text: "Mengunduh versi aplikasi yang baru", fontSize: 16),
-                          const SizedBox(height: 30),
-                          Obx(() => 
-                            Visibility(
-                              visible: isRetryDownload.value,
-                              child: Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                // width: MediaQuery.of(context).size.width,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    downloadApps();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppConfig.darkGreen,
-                                    padding: const EdgeInsets.all(12),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: const [
-                                      Icon(Icons.history),
-                                      SizedBox(width: 10),
-                                      TextView(headings: "H3", text: "Coba Lagi", fontSize: 16, color: Colors.white)
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    circularStrokeCap: CircularStrokeCap.round,
-                    progressColor: AppConfig.darkGreen,
-                  ),
-                ),
-              ],
-            );
-          }),
-        ),
-      ),
-      barrierDismissible: false,
-    );
-  }
-
-  Future<void> downloadApps() async {
-    isRetryDownload(false);
-
-    final isPermissionStorageGranted = await checkAppsPermission('STORAGE');
-    // final isPermissionInstallGranted = await checkAppsPermission('INSTALL PACKAGES');
-    final isPermissionExtStorageGranted = await checkAppsPermission('EXTERNAL STORAGE');
-
-    if (isPermissionStorageGranted && isPermissionExtStorageGranted) {
-      var path = '/storage/emulated/0/Download/${AppConfig.appsName}.apk';
-
-      String url = "${AppConfig.initUrl}/${AppConfig.appsName}.apk";
-      
-      if (await File(path).exists()) {
-        //Get downloaded file length
-        int downloadFrom = File(path).lengthSync();
-        downloadFile(url, path, downloadFrom: downloadFrom);
-      } else {
-        downloadFile(url, path, downloadFrom: 0);
-      }
-    }
-  }
-
-  downloadFile(String url, String saveDir, {int downloadFrom = 0}) async {
-    await Hive.openBox("appsDownloadBox");
-    var appsDownloadBox = Hive.box('appsDownloadBox');
-
-    var httpClient = http.Client();
-    var request = http.Request('GET', Uri.parse(url));
-    http.Response r = await http.head(Uri.parse(url));
-
-    int downloadUntil = int.parse(r.headers["content-length"].toString());
-    if (downloadUntil != appsDownloadBox.get("fileSize")) {
-      await appsDownloadBox.put('fileSize', downloadUntil);
-      downloadFrom = 0;
-    }
-
-    request.headers.addAll({'Range': 'bytes=$downloadFrom-'});
-    var response = httpClient.send(request);
-
-    if (downloadFrom == downloadUntil) {
-      // OpenFile.open(saveDir);
-      var appModuleBox = await Hive.openBox<Module>('appModuleBox');
-      await appModuleBox.clear();
-      
-      await OpenFilex.open(saveDir);
-      getModuleData();
-      return;
     } else {
-      RandomAccessFile raf;
-      if (downloadFrom == 0) {
-        raf = await File(saveDir).open(mode: FileMode.write);
-      } else {
-        raf = await File(saveDir).open(mode: FileMode.append);
-      }
-
-      int downloaded = downloadFrom;
-
-      response.asStream().listen((http.StreamedResponse r) {
-        r.stream.listen((List<int> chunk) async {
-          raf.setPositionSync(downloaded);
-          raf.writeFromSync(
-              chunk);
-
-          downloaded += chunk.length;
-          if (r.contentLength != null) {
-            _setState(() {
-              progress.value = (downloaded / (r.contentLength! + downloadFrom) * 100)
-                  .toInt();
-            });
-          }
-        }, onDone: () async {
-          raf.close();
-          if (r.contentLength == null ||
-              (r.contentLength != null &&
-                  (r.contentLength! + downloadFrom == downloaded))) {
-            Get.back();
-            // OpenFile.open(saveDir);
-
-            var appModuleBox = await Hive.openBox<Module>('appModuleBox');
-            await appModuleBox.clear();
-
-            await OpenFilex.open(saveDir);
-            getModuleData();
-          }
-          return;
-        });
-      });
+      isLoading(false);
+      isError(true);
+      errorMessage(Message.errorConnection);
     }
   }
-
 }

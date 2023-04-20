@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 
 class Logging extends Interceptor {
+
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     debugPrint('REQUEST[${options.method}] => PATH: ${options.path}');
@@ -20,6 +22,9 @@ class Logging extends Interceptor {
   void onError(DioError err, ErrorInterceptorHandler handler) {
     debugPrint(
       'ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}',
+    );
+    debugPrint(
+      'ERROR[${err.error}] => PATH: ${err.requestOptions.path}',
     );
     return super.onError(err, handler);
   }

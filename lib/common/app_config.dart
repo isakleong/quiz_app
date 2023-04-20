@@ -9,6 +9,7 @@ class AppConfig {
   // static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
   static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
   static const String initUrl = "https://link.tirtakencana.com/QuizApp";
+  static const String testUrl = "https://google.com";
   static const int connectTimeout = 15000;
   static const int receiveTimeout = 15000;
 

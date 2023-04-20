@@ -41,7 +41,7 @@ class SplashScreen extends StatelessWidget {
                 } else if (splashscreenController.isError.value) {
                   return ElevatedButton(
                     onPressed: () {
-                      splashscreenController.getModuleData();
+                      splashscreenController.checkUpdate();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppConfig.darkGreen,

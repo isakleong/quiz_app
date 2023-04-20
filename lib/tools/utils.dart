@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
+
+import 'package:path_provider/path_provider.dart';
 
 class Utils {
 
@@ -25,6 +28,31 @@ class Utils {
     }
 
     return isDecodeSucceed;
+  }
+
+  int convertVersionNumber(String version) {
+    var arrVersion = [];
+
+    arrVersion = version.split('.');
+    arrVersion = arrVersion.map(
+      (i) => int.parse(i)
+    ).toList();
+
+    int versionNumber = arrVersion[0] * 100000 + arrVersion[1] * 1000 + arrVersion[2];
+
+    return versionNumber;
+  }
+
+  Future<String> readParameter() async {
+    try {
+      final file = File('/storage/emulated/0/TKTW/SFATools.txt');
+
+      // Read the file
+      final contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      return "";
+    }
   }
 
 }

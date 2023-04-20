@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/tools/logging.dart';
 
@@ -23,6 +24,7 @@ class ApiClient {
 
       return response.data;
     } on DioError catch (e) {
+      debugPrint("exc code nu ${e.type.toString()}");
       debugPrint("exc ${e.message.toString()}");
       throw Exception(e.message);
     }
@@ -46,6 +48,15 @@ class ApiClient {
     } on DioError catch (e) {
       debugPrint("exc ${e.message.toString()}");
       throw Exception(e.message);
+    }
+  }
+
+  Future<bool> checkConnection() async {
+    bool result = await InternetConnectionChecker().hasConnection;
+    if (result == true) {
+      return true;
+    } else {
+      return false;
     }
   }
 

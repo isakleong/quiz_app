@@ -11,7 +11,7 @@ class TextView extends StatelessWidget {
   final bool? isCapslock;
   final bool? isAutoSize;
 
-  const TextView({super.key, this.headings, this.text, this.color = Colors.black, this.textAlign, this.fontSize, this.isCapslock = false, this.isAutoSize = false});
+  const TextView({super.key, this.headings, this.text, this.color = Colors.black, this.textAlign, this.fontSize = 14, this.isCapslock = false, this.isAutoSize = false});
 
   @override
   Widget build(BuildContext context) {

@@ -4,14 +4,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
+import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/quiz_controller.dart';
+import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
 class StartQuiz extends GetView<QuizController>  {
   StartQuiz({super.key});
 
   final QuizController quizController = Get.find();
+  final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
 
   @override
   Widget build(BuildContext context) {
@@ -56,12 +59,12 @@ class StartQuiz extends GetView<QuizController>  {
                     const SizedBox(height: 15),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: TextView(headings: "H3", text: "Error :\n${controller.errorMessage.value}", fontSize: 16, textAlign: TextAlign.start),
+                      child: TextView(headings: "H3", text: controller.errorMessage.value, textAlign: TextAlign.center),
                     ),
                     const SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () {
-                        quizController.getQuizConfig();
+                        quizController.getQuizConfig(salesIdParams.value);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppConfig.darkGreen,
@@ -72,7 +75,7 @@ class StartQuiz extends GetView<QuizController>  {
                         children: const [
                           Icon(Icons.history),
                           SizedBox(width: 10),
-                          TextView(headings: "H3", text: "Coba Lagi", fontSize: 16, color: Colors.white),
+                          TextView(headings: "H3", text: Message.retry, color: Colors.white, isCapslock: true),
                         ],
                       ),
                     ),

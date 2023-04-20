@@ -7,7 +7,9 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
+import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/tools/service.dart';
 import 'package:quiz_app/tools/utils.dart';
@@ -33,7 +35,10 @@ class QuizController extends GetxController with StateMixin {
   @override
   void onInit() {
     super.onInit();
-    getQuizConfig();
+
+    final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
+
+    getQuizConfig(salesIdParams.value);
 
     ever(isRestart, (callback) {
       Get.offAllNamed(RouteName.quizDashboard);
@@ -46,7 +51,7 @@ class QuizController extends GetxController with StateMixin {
     });
 
     ever(isRetryFetch, (callback) {
-      getQuizConfig();
+      getQuizConfig(salesIdParams.value);
     });
   }
 
@@ -93,34 +98,41 @@ class QuizController extends GetxController with StateMixin {
     await quizModelBox.deleteFromDisk();
   }
 
-  getQuizConfig() async {
+  getQuizConfig(String params) async {
     change(null, status: RxStatus.loading());
-    try {
-      var result = await ApiClient().getData("/quiz/config?sales_id=01AC1A0103");
-      bool isValid = Utils.validateData(result.toString());
+    
+    bool isConnected = await ApiClient().checkConnection();
+    if(isConnected) {
+      try {
+        var result = await ApiClient().getData("/quiz/config?sales_id=$params");
+        bool isValid = Utils.validateData(result.toString());
 
-      if(isValid) {
-        var data = jsonDecode(result.toString());
-        if(data.length > 0) {
-          quizTarget.value = int.parse(data[0]["Value"].toString());
-          var quizConfigBox = await Hive.openBox('quizConfigBox');
-          if(quizConfigBox.get("target") != data[0]["Value"].toString()) {
-            quizConfigBox.put("target", quizTarget.value);
+        if(isValid) {
+          var data = jsonDecode(result.toString());
+          if(data.length > 0) {
+            quizTarget.value = int.parse(data[0]["Value"].toString());
+            var quizConfigBox = await Hive.openBox('quizConfigBox');
+            if(quizConfigBox.get("target") != data[0]["Value"].toString()) {
+              quizConfigBox.put("target", quizTarget.value);
+            } else {
+              quizTarget.value = quizConfigBox.get("target");
+            }
+
+            getQuizData();
           } else {
-            quizTarget.value = quizConfigBox.get("target");
+            errorMessage.value = Message.errorQuizConfig;
+            change(null, status: RxStatus.error(errorMessage.value));
           }
-
-          getQuizData();
         } else {
-          errorMessage.value = "Mohon maaf, konfigurasi kuis tidak ditemukan,\nsilahkan menghubungi tim SFA.";
+          errorMessage.value = result.toString();
           change(null, status: RxStatus.error(errorMessage.value));
         }
-      } else {
-        errorMessage.value = result.toString();
+      } catch (e) {
+        errorMessage.value = e.toString();
         change(null, status: RxStatus.error(errorMessage.value));
       }
-    } catch (e) {
-      errorMessage.value = e.toString();
+    } else {
+      errorMessage(Message.errorConnection);
       change(null, status: RxStatus.error(errorMessage.value));
     }
   }
@@ -185,7 +197,7 @@ class QuizController extends GetxController with StateMixin {
   openEmptyDataDialog() {
     appsDialog(
       type: "quiz_inactive",
-      title: const TextView(headings: "H3", text: "Mohon maaf, tidak ada kuis yang aktif untuk saat ini.", fontSize: 16, color: Colors.black),
+      title: const TextView(headings: "H3", text: Message.errorActiveQuiz, fontSize: 16, color: Colors.black),
       isAnimated: true,
       leftBtnMsg: "Ok",
       leftActionClick: () {
@@ -208,7 +220,7 @@ class QuizController extends GetxController with StateMixin {
                 fit: BoxFit.contain,
               ),
               const SizedBox(height: 30),
-              const TextView(headings: "H3", text: "Mohon tunggu, sedang proses mengumpulkan kuis.", fontSize: 16, color: Colors.black),
+              const TextView(headings: "H3", text: Message.submittingQuiz, fontSize: 16, color: Colors.black),
             ],
           ),
         ),
