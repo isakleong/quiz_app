@@ -74,8 +74,8 @@ class Homepage extends StatelessWidget {
                               Get.toNamed(RouteName.quizDashboard);
                             },
                             child: Padding(
-                              padding: const EdgeInsets.all(30),
-                              child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 30),
+                              padding: const EdgeInsets.all(20),
+                              child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 20),
                             ),
                           ),
                         ),

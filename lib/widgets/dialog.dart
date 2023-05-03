@@ -71,7 +71,7 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                         backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                     ),
                     onPressed: leftActionClick,
-                    child: TextView(headings: "H3", text: leftBtnMsg, fontSize: 16, color: Colors.white, isCapslock: true),
+                    child: TextView(headings: "H3", text: leftBtnMsg, color: Colors.white, isCapslock: true),
                   ),
                 ),
               ),
@@ -83,7 +83,7 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                         backgroundColor: MaterialStatePropertyAll(AppConfig.darkGreen),
                     ),
                     onPressed: rightActionClick,
-                    child: TextView(headings: "H3", text: rightBtnMsg, fontSize: 16, color: Colors.white, isCapslock: true),
+                    child: TextView(headings: "H3", text: rightBtnMsg, color: Colors.white, isCapslock: true),
                   ),
                 ),
               )
@@ -99,10 +99,7 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                   backgroundColor: AppConfig.darkGreen,
                   padding: const EdgeInsets.all(12),
                 ),
-                // child: TextView(headings: "H3", text: leftBtnMsg, fontSize: 16, textAlign: TextAlign.center, color: Colors.white, isCapslock: true),
-                child: Text(leftBtnMsg.toUpperCase(), style: GoogleFonts.poppins(
-                  textStyle: TextStyle(fontSize: 16, color: Colors.white)
-                ), textAlign: TextAlign.center,),
+                child: TextView(headings: "H3", text: leftBtnMsg, textAlign: TextAlign.center, color: Colors.white, isCapslock: true),
               )
             ),
           ),

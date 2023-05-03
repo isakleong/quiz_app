@@ -29,7 +29,6 @@ class HistoryPage extends GetView<HistoryController>  {
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            // colors: [AppConfig.lightGrayishGreen, AppConfig.grayishGreen, AppConfig.lightSoftGreen, AppConfig.softGreen]
             colors: [AppConfig.lightGrayishGreen, AppConfig.grayishGreen, AppConfig.softGreen, AppConfig.softCyan]
         ),
       ),
@@ -74,41 +73,13 @@ class HistoryPage extends GetView<HistoryController>  {
                         children: const [
                           Icon(Icons.history),
                           SizedBox(width: 10),
-                          TextView(headings: "H3", text: "Refresh", fontSize: 16, color: Colors.white),
+                          TextView(headings: "H3", text: "Refresh", color: Colors.white),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-
-              // Center(
-              //   child: GetBuilder<HistoryController>( // no need to initialize Controller ever again, just mention the type
-              //     builder: (value) => LayoutBuilder(
-              //       builder: (context, constraints) => Obx(() => ToggleButtons(
-              //         constraints: BoxConstraints.expand(width: (constraints.maxWidth*0.8)/3),
-              //         fillColor: AppConfig.softGreen,
-              //         borderColor: AppConfig.darkGreen,
-              //         borderWidth: 1.5,
-              //         renderBorder: true,
-              //         selectedBorderColor: AppConfig.darkGreen,
-              //         borderRadius: BorderRadius.circular(30),
-              //         // focusNodes: focusToggle,
-              //         isSelected: value.selectedLimitRequestHistoryData,
-              //         onPressed: (int i) async {
-              //           await value.applyFilter(i);
-              //           value.filterQuizHistoryModel.refresh();
-              //         },
-              //         children: const <Widget>[
-              //           TextView(headings: "H3", text: "Branch Manager", fontSize: 16),
-              //           TextView(headings: "H3", text: "Supervisor", fontSize: 16),
-              //           TextView(headings: "H3", text: "Sales", fontSize: 16),
-              //         ],
-              //       )),
-              //     ),
-              //   ),
-              // ),
-
               Center(
                 child: LayoutBuilder(
                   builder: (context, constraints) => Obx(() => ToggleButtons(
@@ -126,9 +97,9 @@ class HistoryPage extends GetView<HistoryController>  {
                       historyController.filterQuizHistoryModel.refresh();
                     },
                     children: const <Widget>[
-                      TextView(headings: "H3", text: "Branch Manager", fontSize: 16),
-                      TextView(headings: "H3", text: "Supervisor", fontSize: 16),
-                      TextView(headings: "H3", text: "Sales", fontSize: 16),
+                      TextView(headings: "H3", text: "BM"),
+                      TextView(headings: "H3", text: "SPV"),
+                      TextView(headings: "H3", text: "Sales"),
                     ],
                   )),
                 ),
@@ -146,7 +117,7 @@ class HistoryPage extends GetView<HistoryController>  {
                           children: [
                             Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
                             const SizedBox(height: 30),
-                            const TextView(headings: "H3", text: "Tidak ada data", fontSize: 18),
+                            const TextView(headings: "H3", text: "Tidak ada data"),
                           ],
                         ),
                       ),
@@ -160,7 +131,7 @@ class HistoryPage extends GetView<HistoryController>  {
                               const SizedBox(height: 15),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                                child: TextView(headings: "H4", text: "Error :\n${controller.errorMessage.value}", textAlign: TextAlign.start, fontSize: 16),
+                                child: TextView(headings: "H4", text: "Error :\n${controller.errorMessage.value}", textAlign: TextAlign.start),
                               ),
                               const SizedBox(height: 30),
                               ElevatedButton(
@@ -176,7 +147,7 @@ class HistoryPage extends GetView<HistoryController>  {
                                   children: const [
                                     Icon(Icons.history),
                                     SizedBox(width: 10),
-                                    TextView(headings: "H3", text: "Coba Lagi", fontSize: 16, color: Colors.white)
+                                    TextView(headings: "H3", text: "Coba Lagi", color: Colors.white)
                                   ],
                                 ),
                               ),
@@ -185,7 +156,7 @@ class HistoryPage extends GetView<HistoryController>  {
                         ),
                       ),
                       (state) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                         child: Obx(() => 
                         historyController.filterQuizHistoryModel.isNotEmpty ?
                         ListView.builder(
@@ -202,7 +173,7 @@ class HistoryPage extends GetView<HistoryController>  {
                             children: [
                               Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
                               const SizedBox(height: 30),
-                              const TextView(headings: "H3", text: "Tidak ada data", fontSize: 18),
+                              const TextView(headings: "H3", text: "Tidak ada data"),
                             ],
                           ),
                         )),
@@ -294,24 +265,24 @@ Widget historyWidget(HistoryController historyController, int i) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextView(headings: "H3", text: historyController.quizHistoryModel[i].salesID, fontSize: 16, color: Colors.white),
+                      TextView(headings: "H3", text: historyController.quizHistoryModel[i].salesID, color: Colors.white, isAutoSize: true, textAlign: TextAlign.start),
                       const SizedBox(height: 20),
-                      TextView(headings: "H3", text: historyController.quizHistoryModel[i].name, fontSize: 16, color: Colors.white, isAutoSize: true),
+                      TextView(headings: "H3", text: historyController.quizHistoryModel[i].name, color: Colors.white, isAutoSize: true, textAlign: TextAlign.start),
                       const SizedBox(height: 20),
-                      TextView(headings: "H3", text: historyController.quizHistoryModel[i].tanggal, fontSize: 16, color: Colors.white),
+                      TextView(headings: "H3", text: historyController.quizHistoryModel[i].tanggal, color: Colors.white, isAutoSize: true, textAlign: TextAlign.start),
                     ],
                   ),
                 ),
-                Expanded(
-                  child: TextView(
-                    headings: "H2",
-                    text: historyController.quizHistoryModel[i].passed == "1" ? "lulus" : "tidak lulus",
-                    fontSize: 16,
-                    color: Colors.white,
-                    isCapslock: true,
-                    textAlign: TextAlign.start,
-                  ),
-                ),
+                // Expanded(
+                //   child: TextView(
+                //     headings: "H2",
+                //     text: historyController.quizHistoryModel[i].passed == "1" ? "lulus" : "tidak lulus",
+                //     fontSize: 16,
+                //     color: Colors.white,
+                //     isCapslock: true,
+                //     textAlign: TextAlign.start,
+                //   ),
+                // ),
               ],
             ),
           ),

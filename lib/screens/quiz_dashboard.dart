@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -51,7 +52,7 @@ class QuizDashboard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 40),
                   child: ElevatedButton(
                     onPressed: () {
-                      Get.back(result: Get.arguments);
+                      Get.back();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -96,7 +97,8 @@ class QuizDashboard extends StatelessWidget {
                             child: const FaIcon(FontAwesomeIcons.filePen, color: Colors.white, size: 50),
                           ),
                           const SizedBox(height: 30),
-                          const TextView(headings: "H2", text: "Kuis", fontSize: 24),
+                          const TextView(headings: "H2", text: "Kuis", fontSize: 20),
+                          // const Text("Kuis")
                         ],
                       ),
                     ),
@@ -124,7 +126,21 @@ class QuizDashboard extends StatelessWidget {
                             child: const FaIcon(FontAwesomeIcons.solidRectangleList, size: 50, color: Colors.white),
                           ),
                           const SizedBox(height: 30),
-                          const TextView(headings: "H2", text: "Riwayat", fontSize: 24),
+                          const TextView(headings: "H2", text: "Riwayat", fontSize: 20, isAutoSize: true),
+                          // const AutoSizeText(
+                          //   'Riwayat',
+                          //   minFontSize: 16,
+                          //   maxFontSize: 28,
+                          //   overflow: TextOverflow.ellipsis,
+                          // )
+
+                          // const FittedBox(
+                          //   fit: BoxFit.scaleDown,
+                          //   child: Text(
+                          //     'This is some text',
+                          //     style: TextStyle(fontSize: 20),
+                          //   ),
+                          // )
                         ],
                       ),
                     ),

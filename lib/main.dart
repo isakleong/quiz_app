@@ -32,6 +32,9 @@ void main() async {
 
   HttpOverrides.global = ApiHttpOverrides();
 
+  var mDeviceMediaQueryData = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
+  print("$mDeviceMediaQueryData hehe");
+
   runApp(const MyApp());
 }
 

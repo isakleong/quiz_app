@@ -11,7 +11,7 @@ class TextView extends StatelessWidget {
   final bool? isCapslock;
   final bool? isAutoSize;
 
-  const TextView({super.key, this.headings, this.text, this.color = Colors.black, this.textAlign, this.fontSize = 14, this.isCapslock = false, this.isAutoSize = false});
+  const TextView({super.key, this.headings, this.text, this.color = Colors.black, this.textAlign, this.fontSize, this.isCapslock = false, this.isAutoSize = false});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +35,11 @@ class TextView extends StatelessWidget {
         :
         FontWeight.w300,
         fontFamily: 'Poppins',
-        fontSize: fontSize,
+        fontSize: fontSize ?? 16,
       ),
+      textScaleFactor: 1.0,
       textAlign: textAlign ?? TextAlign.center,
+      overflow: TextOverflow.ellipsis,
     )
     :
     Text(
@@ -58,8 +60,9 @@ class TextView extends StatelessWidget {
         :
         FontWeight.w300,
         fontFamily: 'Poppins',
-        fontSize: fontSize,
+        fontSize: fontSize ?? 16,
       ),
+      textScaleFactor: 1.0,
       textAlign: textAlign ?? TextAlign.center,
     );
   }

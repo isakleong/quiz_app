@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
+import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
@@ -52,7 +53,7 @@ class SplashScreen extends StatelessWidget {
                       children: const [
                         Icon(Icons.history),
                         SizedBox(width: 10),
-                        TextView(headings: "H3", text: "Coba Lagi", fontSize: 16, color: Colors.white)
+                        TextView(headings: "H3", text: Message.retry, fontSize: 16, color: Colors.white, isCapslock: true),
                       ],
                     ),
                   );

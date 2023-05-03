@@ -141,7 +141,7 @@ class SplashscreenController extends FullLifeCycleController {
           //SalesID;CustID;LocCheckIn
           String parameter = await Utils().readParameter();
           if(parameter != "") {
-            var arrParameter = parameter.split('.');
+            var arrParameter = parameter.split(';');
             for(int i=0; i<arrParameter.length; i++) {
               if(i == 0) {
                 salesIdParams.value = arrParameter[i];

@@ -202,7 +202,7 @@ class QuizController extends GetxController with StateMixin {
       leftBtnMsg: "Ok",
       leftActionClick: () {
         Get.back();
-        Get.offAllNamed(RouteName.quizDashboard);
+        Get.offAndToNamed(RouteName.quizDashboard);
       }
     );
   }
