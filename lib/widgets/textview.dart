@@ -18,7 +18,7 @@ class TextView extends StatelessWidget {
     return isAutoSize! ?
     AutoSizeText(
       isCapslock! ? text!.toUpperCase() : text!,
-      maxLines: 1,
+      maxLines: 5,
       style: TextStyle(
         color: color,
         fontWeight: headings == "H1" ?
