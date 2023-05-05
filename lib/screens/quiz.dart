@@ -87,7 +87,7 @@ class QuizPage extends GetView<QuizController>{
 
     if(score >= int.parse(arrTarget[0])) {
       appsDialog(
-        type: "quiz_success",
+        type: "quiz_passed",
         title: Padding(
           padding: const EdgeInsets.all(10),
           child:  RichText(
@@ -102,7 +102,7 @@ class QuizPage extends GetView<QuizController>{
             ),
           ),
         ),
-        isAnimated: false,
+        isAnimated: true,
         leftBtnMsg: "Ok",
         leftActionClick: () {
           Get.back();
@@ -126,7 +126,7 @@ class QuizPage extends GetView<QuizController>{
             ),
           ),
         ),
-        isAnimated: false,
+        isAnimated: true,
         leftBtnMsg: "Ok",
         leftActionClick: () {
           quizController.isRestart(!(quizController.isRestart.value));
@@ -176,7 +176,7 @@ class QuizPage extends GetView<QuizController>{
       child: controller.obx(
         onLoading: Scaffold(
           backgroundColor: AppConfig.mainGreen,
-          body: Center(child: Lottie.asset('assets/lottie/loading_white.json', width: 60)),
+          body: Center(child: Lottie.asset('assets/lottie/loading-white.json', width: 60)),
         ),
         onError: (error) => Center(
           child: SingleChildScrollView(

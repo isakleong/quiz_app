@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/widgets/textview.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 void appsDialog ({required String type, bool isDismmisible = false, required Widget title, String rightBtnMsg = '', String leftBtnMsg = '', String iconAsset = '', required bool isAnimated, bool isCancel = false, VoidCallback? leftActionClick, VoidCallback? rightActionClick}) {
   Get.dialog(
@@ -25,10 +24,16 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                 'assets/lottie/info.json'
                 :
                 type == "quiz_inactive" ? 
-                'assets/lottie/search_2.json'
+                'assets/lottie/quiz-search.json'
                 :
                 type == "quiz_warning" ? 
-                'assets/lottie/warning.json'
+                'assets/lottie/quiz-warning.json'
+                :
+                type == "quiz_passed" ? 
+                'assets/lottie/quiz-passed.json' 
+                :
+                type == "quiz_failed" ? 
+                'assets/lottie/quiz-failed.json' 
                 :
                 iconAsset,
                 width: 230,
@@ -37,18 +42,6 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
               )
               :
               Image.asset(
-                type == "quiz_confirm" ?
-                'assets/images/quiz-confirm.png'
-                :
-                type == "quiz_warning" ? 
-                'assets/images/quiz-warning.png'
-                :
-                type == "quiz_success" ? 
-                'assets/images/quiz-success.png'
-                :
-                type == "quiz_failed" ? 
-                'assets/images/quiz-failed.png'
-                :
                 iconAsset,
                 width: 220,
                 height: 220

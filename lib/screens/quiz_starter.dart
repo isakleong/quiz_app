@@ -23,7 +23,7 @@ class StartQuiz extends GetView<QuizController>  {
       body: Stack(
         children:[
           SvgPicture.asset(
-            'assets/images/bg-starter.svg',
+            'assets/images/bg-quiz-starter.svg',
             fit: BoxFit.cover,
           ),
           Padding(

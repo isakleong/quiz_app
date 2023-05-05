@@ -214,7 +214,7 @@ class QuizController extends GetxController with StateMixin {
           child: ListBody(
             children: <Widget>[
               Lottie.asset(
-                'assets/lottie/submitting.json',
+                'assets/lottie/quiz-submit.json',
                 width: 220,
                 height: 220,
                 fit: BoxFit.contain,

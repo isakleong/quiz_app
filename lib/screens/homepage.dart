@@ -42,7 +42,7 @@ class Homepage extends StatelessWidget {
         body: Stack(
           children: [
             SvgPicture.asset(
-              'assets/images/bg-history.svg',
+              'assets/images/bg-homepage.svg',
               fit: BoxFit.cover,
             ),
             Padding(

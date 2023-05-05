@@ -45,7 +45,7 @@ class QuizDashboard extends StatelessWidget {
                       bottomLeft: Radius.elliptical(Get.width * 0.5, 80),
                       bottomRight: Radius.elliptical(Get.width * 0.5, 80),
                     ),
-                    child: Image.asset('assets/images/bg_rev.png', fit: BoxFit.cover),
+                    child: Image.asset('assets/images/bg-quiz-dashboard.png', fit: BoxFit.cover),
                   ),
                 ),
                 Padding(
