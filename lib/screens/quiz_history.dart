@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:quiz_app/common/app_config.dart';
+import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/controllers/history_controller.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
@@ -147,7 +148,7 @@ class HistoryPage extends GetView<HistoryController>  {
                                   children: const [
                                     Icon(Icons.history),
                                     SizedBox(width: 10),
-                                    TextView(headings: "H3", text: "Coba Lagi", color: Colors.white)
+                                    TextView(headings: "H3", text: Message.retry, color: Colors.white, isCapslock: true)
                                   ],
                                 ),
                               ),
