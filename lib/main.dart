@@ -19,7 +19,6 @@ _write(String text) async {
 }
 
 void main() async {
-  //addedd command line
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
