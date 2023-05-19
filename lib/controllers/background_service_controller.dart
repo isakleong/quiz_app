@@ -4,12 +4,16 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:quiz_app/common/app_config.dart';
-import 'package:http/http.dart' as http;
+import 'package:quiz_app/models/servicebox.dart';
 import '../models/apiresponse.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
+import '../models/module.dart';
+import '../models/quiz.dart';
 import '../tools/service.dart';
 import '../tools/utils.dart';
 
@@ -68,17 +72,19 @@ void onStart(ServiceInstance service) async {
   
 class Backgroundservicecontroller {
 
+  Future hiveInitializer() async{
+    Directory directory = await path_provider.getApplicationDocumentsDirectory();
+    Hive.init(directory.path);
+    Hive.registerAdapter(ModuleAdapter());
+    Hive.registerAdapter(QuizAdapter());
+    Hive.registerAdapter(ServiceBoxAdapter());
+  }
+
   Future writeText(String teks) async {
      File(join(
           AppConfig.filequiz))
         ..createSync(recursive: true)..writeAsString(teks);
   }
-
-  String getCurrentTimeStamp() {
-  DateTime now = DateTime.now();
-  String formattedTime = DateFormat('HH:mm:ss').format(now);
-  return formattedTime;
-}
 
   Future<void> initializeService() async {
   final service = FlutterBackgroundService();
@@ -95,6 +101,7 @@ class Backgroundservicecontroller {
       onBackground: null,
     ),
   );
+
 
   service.startService();
 }
@@ -144,15 +151,6 @@ class Backgroundservicecontroller {
     }
   }
 
-  deletefile(String files) async {
-    try {
-      final File file = File(files);
-      file.delete();
-    } catch (e) {
-      return;
-    }
-  }
-
   cekQuiz() async {
 
     if (await isSameSalesid()){
@@ -162,11 +160,13 @@ class Backgroundservicecontroller {
         DateTime now = DateTime.now();
         DateTime datetimefilequiz = DateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS").parse(_filequiz.split(";")[3]);
         Duration difference = datetimefilequiz.difference(now);
-        if(difference.inDays >= 1){
+        var dataBox = await accessBox("read", "retryApi", "");
+        if(difference.inDays >= 1 || (dataBox != null && dataBox.value == "1")){
           //sudah melewati 1 hari
-          String status = await getLatestStatusQuiz();
+          String status = await getLatestStatusQuiz(_filequiz.split(";")[2]);
           if(status != "err"){
             //status;service time;salesid;last hit api time
+            await accessBox("create", "retryApi", "0");
             await writeText("${status};${DateTime.now()};${_filequiz.split(";")[2]};${DateTime.now()}");
           } else if (status == "err"){
             await writeText("${status};${DateTime.now()};${_filequiz.split(";")[2]};${_filequiz.split(";")[3]}");
@@ -175,6 +175,7 @@ class Backgroundservicecontroller {
           await writeText("${_filequiz.split(";")[0]};${DateTime.now()};${_filequiz.split(";")[2]};${_filequiz.split(";")[3]}");
         }
       } catch (e) {
+        print(e.toString());
         return;
       }
     } else {
@@ -183,7 +184,7 @@ class Backgroundservicecontroller {
         String _salesidVendor = await Utils().readParameter();
         if(_salesidVendor!=""){
           //hit api only when there is salesid from vendor
-          String status = await getLatestStatusQuiz();
+          String status = await getLatestStatusQuiz(_salesidVendor.split(';')[0]);
           if(status != "err"){
             //status;service time;salesid;last hit api time
             await writeText("${status};${DateTime.now()};${_salesidVendor.split(';')[0]};${DateTime.now()}");
@@ -199,9 +200,10 @@ class Backgroundservicecontroller {
     }
   }
 
-  Future<String> getLatestStatusQuiz() async{
+  Future<String> getLatestStatusQuiz(String salesid) async{
     try {
-     var req = await ApiClient().getData("/quiz/status?sales_id=01AC1A0103");
+
+     var req = await ApiClient().getData("/quiz/status?sales_id=${salesid}");
       Map<String, dynamic> jsonResponse = json.decode(req);
       ApiResponse response = ApiResponse.fromJson(jsonResponse);
       if(response.code.toString() == "200"){
@@ -212,6 +214,47 @@ class Backgroundservicecontroller {
     } catch (e) {
       return "err";
     }
+  }
+
+  accessBox(String type, String key ,String value) async {
+    try {
+      await hiveInitializer();
+    } catch (e) {
+      
+    }
+    var mybox = await Hive.openBox<ServiceBox>('serviceBox');
+    if(type == "read"){
+      try {
+        var data = mybox.get(key);
+        return data;
+      } catch (e) {
+        return "err";
+      }
+    } else if (type == "create"){
+      try {
+        mybox.put(key, ServiceBox(value: value));
+        return "created";
+      } catch (e) {
+        return "err";
+      }
+    } else if (type == "update"){
+      try {
+        var boxtoupdate = mybox.get(key);
+        boxtoupdate!.value = value;
+        var newvalue = boxtoupdate.value;
+        return newvalue;
+      } catch (e) {
+        return "err";
+      }
+    } else if (type == "delete"){
+      try {
+        mybox.delete(key);
+        return "deleted";
+      } catch (e) {
+        return "err";
+      }
+    }
+    return "err";
   }
 
 }
