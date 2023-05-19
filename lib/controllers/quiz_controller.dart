@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
+import 'package:quiz_app/controllers/background_service_controller.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/tools/service.dart';
@@ -257,11 +258,21 @@ class QuizController extends GetxController with StateMixin {
       };
       var bodyData = jsonEncode(params);
 
-      await ApiClient().postData(
+     var result_submit = await ApiClient().postData(
         '/quiz/submit',
         bodyData,
         Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
       );
+
+      // print(result_submit);
+      if(result_submit == "success"){
+          var info = await Backgroundservicecontroller().getLatestStatusQuiz(); 
+          if(info != "err"){
+            String _filequiz = await Backgroundservicecontroller().readFileQuiz();
+            await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${_filequiz.split(";")[2]};${DateTime.now()}");
+          }
+      }
+
 
       closeSubmitDialog();
       
