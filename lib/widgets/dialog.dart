@@ -29,6 +29,9 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                 type == "quiz_warning" ? 
                 'assets/lottie/quiz-warning.json'
                 :
+                type == "quiz_confirm" ? 
+                'assets/lottie/quiz-confirm.json'
+                :
                 type == "quiz_passed" ? 
                 'assets/lottie/quiz-passed.json' 
                 :
