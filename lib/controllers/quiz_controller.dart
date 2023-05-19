@@ -1,6 +1,7 @@
+// ignore_for_file: non_constant_identifier_names, no_leading_underscores_for_local_identifiers, unnecessary_brace_in_string_interps
+
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -263,13 +264,12 @@ class QuizController extends GetxController with StateMixin {
         'model': quizModel
       };
       var bodyData = jsonEncode(params);
-     var result_submit = await ApiClient().postData(
+      var result_submit = await ApiClient().postData(
         '/quiz/submit',
         bodyData,
         Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
       );
-      
-      // print(result_submit);
+
       if(result_submit == "success"){
           var info = await Backgroundservicecontroller().getLatestStatusQuiz(sales_id); 
           if(info != "err"){

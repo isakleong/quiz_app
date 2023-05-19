@@ -1,3 +1,5 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers, unnecessary_brace_in_string_interps, depend_on_referenced_packages
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -46,7 +48,7 @@ void onStart(ServiceInstance service) async {
       }
     }
     // Backgroundservicecontroller().writeText("Updated at ${DateTime.now()}");
-    print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
+    // print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
 
     final deviceInfo = DeviceInfoPlugin();
     String? device;
@@ -110,7 +112,6 @@ class Backgroundservicecontroller {
     try {
       String parameter = await Utils().readParameter();
       String _salesidvendor = "";
-      // print("parameter : " + parameter);
       if(parameter != "") {
         var arrParameter = parameter.split(';');
         for(int i=0; i<arrParameter.length; i++) {
@@ -124,9 +125,9 @@ class Backgroundservicecontroller {
             }
           }
       }
-      // print("ini sales id vendor : " + _salesidvendor);
+      
       String _salesidQuiz = await readFileQuiz();
-        // print("ini sales id sfatools : " + _salesidQuiz.split(";")[2]);
+
       if (_salesidQuiz != "" && _salesidvendor != ""){
           if(_salesidQuiz.split(";")[2] == _salesidvendor){
             return true;
@@ -154,7 +155,6 @@ class Backgroundservicecontroller {
   cekQuiz() async {
 
     if (await isSameSalesid()){
-      print("sales sama ");
       try {
         String _filequiz = await readFileQuiz();
         DateTime now = DateTime.now();
@@ -175,11 +175,9 @@ class Backgroundservicecontroller {
           await writeText("${_filequiz.split(";")[0]};${DateTime.now()};${_filequiz.split(";")[2]};${_filequiz.split(";")[3]}");
         }
       } catch (e) {
-        print(e.toString());
         return;
       }
     } else {
-      print("sales tidak sama ");
       try {
         String _salesidVendor = await Utils().readParameter();
         if(_salesidVendor!=""){
@@ -220,7 +218,7 @@ class Backgroundservicecontroller {
     try {
       await hiveInitializer();
     } catch (e) {
-      
+      return;
     }
     var mybox = await Hive.openBox<ServiceBox>('serviceBox');
     if(type == "read"){

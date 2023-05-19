@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:path_provider/path_provider.dart';
-
 class Utils {
 
   static Color color([String code = '#999999']) {
