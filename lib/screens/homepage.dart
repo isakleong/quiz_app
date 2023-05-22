@@ -10,14 +10,15 @@ import 'package:quiz_app/widgets/textview.dart';
 // ignore: must_be_immutable
 class Homepage extends StatelessWidget {
   Homepage({super.key});
-  
+
   DateTime? currentBackPressTime;
 
   Future<bool> confirmExit() async {
     FocusManager.instance.primaryFocus?.unfocus();
     DateTime now = DateTime.now();
 
-    if (currentBackPressTime == null || now.difference(currentBackPressTime!) > const Duration(seconds: 3)) {
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > const Duration(seconds: 3)) {
       currentBackPressTime = now;
       Get.snackbar(
         "Yakin ingin keluar?",
@@ -32,9 +33,8 @@ class Homepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final splashscreenController = Get.find<SplashscreenController>();
-    
+
     return WillPopScope(
       onWillPop: confirmExit,
       child: Scaffold(
@@ -55,16 +55,16 @@ class Homepage extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
                       elevation: 10,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
                       child: Container(
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
+                            gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [AppConfig.softGreen, AppConfig.softCyan],
-                          ),
-                          borderRadius: BorderRadius.circular(16)
-                        ),
+                            ),
+                            borderRadius: BorderRadius.circular(16)),
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
@@ -75,7 +75,11 @@ class Homepage extends StatelessWidget {
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(20),
-                              child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 20),
+                              child: TextView(
+                                  headings: "H2",
+                                  text: splashscreenController
+                                      .moduleList[index].moduleID,
+                                  fontSize: 20),
                             ),
                           ),
                         ),
