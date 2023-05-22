@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 
 import 'package:quiz_app/tools/utils.dart';
@@ -7,11 +6,12 @@ class AppConfig {
   static const String appsName = "Kuis";
 
   // static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
-  static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
+  static const String baseUrl =
+      "https://link.tirtakencana.com/QuizApp/public/api";
   static const String initUrl = "https://link.tirtakencana.com/QuizApp";
   static const String testUrl = "https://google.com";
   static const String filevendor = '/storage/emulated/0/TKTW/SFATools.txt';
-  static const String filequiz = '/storage/emulated/0/Download/my_file.txt';
+  static const String filequiz = '/storage/emulated/0/TKTW/my_file.txt';
   static const int connectTimeout = 15000;
   static const int receiveTimeout = 15000;
 
@@ -26,5 +26,4 @@ class AppConfig {
   static Color get softCyan => Utils.color('#38EF7D');
   static Color get mainRed => Utils.color('#EB3349');
   static Color get softRed => Utils.color('#F45C43');
-  
 }
