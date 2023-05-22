@@ -151,6 +151,8 @@ class SplashscreenController extends FullLifeCycleController {
                 isCheckInParams.value = arrParameter[2];
               }
             }
+          } else { // hardcode for demo testing to DSD
+            salesIdParams.value = '01AC1A0103';
           }
 
           getModuleData();

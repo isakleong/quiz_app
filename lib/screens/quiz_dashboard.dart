@@ -96,7 +96,7 @@ class QuizDashboard extends StatelessWidget {
                             child: const FaIcon(FontAwesomeIcons.filePen, color: Colors.white, size: 50),
                           ),
                           const SizedBox(height: 30),
-                          const TextView(headings: "H2", text: "Kuis", fontSize: 20),
+                          const TextView(headings: "H2", text: "Kuis", fontSize: 20, isAutoSize: true),
                           // const Text("Kuis")
                         ],
                       ),

@@ -238,12 +238,14 @@ class QuizController extends GetxController with StateMixin {
 
   getsalesid() async {
       String sales_id = await Utils().readParameter();
-      return sales_id.split(';')[0];
+      // return sales_id.split(';')[0];
+      return '01AC1A0103';
   }
 
   submitQuiz() async {
     try {
       openSubmitDialog();
+
       String sales_id = await getsalesid();
       var now = DateTime.now();
       var formatter = DateFormat('yyyy-MM-dd H:m:s');
@@ -263,25 +265,40 @@ class QuizController extends GetxController with StateMixin {
         'passed': passed,
         'model': quizModel
       };
-      var bodyData = jsonEncode(params);
-      var result_submit = await ApiClient().postData(
-        '/quiz/submit',
-        bodyData,
-        Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
-      );
 
-      if(result_submit == "success"){
-          var info = await Backgroundservicecontroller().getLatestStatusQuiz(sales_id); 
-          if(info != "err"){
-            String _filequiz = await Backgroundservicecontroller().readFileQuiz();
-            await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${sales_id};${DateTime.now()}");
-          } else {
-            await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
-          }
+      var submitQuizBox = await Hive.openBox('submitQuizBox');
+      submitQuizBox.clear();
+      submitQuizBox.put("bodyData", params);
+
+      bool isConnected = await ApiClient().checkConnection();
+      if(isConnected) {
+        var bodyData = jsonEncode(params);
+        var result_submit = await ApiClient().postData(
+          '/quiz/submit',
+          bodyData,
+          Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
+        );
+
+        if(result_submit == "success"){
+          var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+          retrySubmitQuizBox.put("retryStatus", false);
+
+          //BUGGY
+          // var info = await Backgroundservicecontroller().getLatestStatusQuiz(sales_id); 
+          // if(info != "err"){
+          //   String _filequiz = await Backgroundservicecontroller().readFileQuiz();
+          //   await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${sales_id};${DateTime.now()}");
+          // } else {
+          //   await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
+          // }
+        }
+
+        closeSubmitDialog();
+      } else {
+        var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+        retrySubmitQuizBox.put("retryStatus", true);
       }
 
-      closeSubmitDialog();
-      
     } catch(e) {
       isError(true);
       errorMessage.value = e.toString();

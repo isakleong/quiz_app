@@ -30,7 +30,7 @@ class QuizPage extends GetView<QuizController>{
       appsDialog(
         type: "quiz_confirm",
         title: const TextView(headings: "H3", text: Message.confirmSubmitQuiz, fontSize: 16),
-        isAnimated: false,
+        isAnimated: true,
         isCancel: true,
         leftBtnMsg: "Tidak",
         rightBtnMsg: "Ya, Kumpul",
@@ -379,42 +379,63 @@ class QuizPage extends GetView<QuizController>{
             ),
             body: SafeArea(
               child: LayoutBuilder(
-                builder: (context, constraints) => Column(
-                  children: [
-                    Container(
-                      height: constraints.maxHeight * .45,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      alignment: Alignment.center,
-                      child: Obx(
-                        () => SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: TextView(headings: "H3", text: quizController.quizModel[quizController.currentQuestion.value].question, fontSize: 18, color: Colors.black),
-                        )
+                builder: (context, constraints) => Stack(
+                  children:[
+                    Positioned(
+                      top: 15,
+                      left: 15,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppConfig.darkGreen,
+                          elevation: 0,
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(12),
+                        ),
+                        child: const Icon(FontAwesomeIcons.arrowLeft, size: 25, color: Colors.white),
                       ),
                     ),
-                    Expanded(
-                      child: Container(
-                        height: constraints.maxHeight, // will get by column
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(60),
-                          topRight: Radius.circular(60),
-                          )
+                    Column(
+                      children: [
+                        Container(
+                          height: constraints.maxHeight * .45,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          alignment: Alignment.center,
+                          child: Obx(
+                            () => SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: TextView(headings: "H3", text: quizController.quizModel[quizController.currentQuestion.value].question, fontSize: 18, color: Colors.black),
+                            )
+                          ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
-                          child: Obx(() => ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return customRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} (CorrectAnswerIndex is: ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex})", index);
-                            }),
-                          ), 
+                        Expanded(
+                          child: Container(
+                            height: constraints.maxHeight, // will get by column
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(60),
+                              topRight: Radius.circular(60),
+                              )
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
+                              child: Obx(() => ListView.builder(
+                                physics: const BouncingScrollPhysics(),
+                                itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return customRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} (CorrectAnswerIndex is: ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex})", index);
+                                  // return customRadioButton(quizController.quizModel[quizController.currentQuestion.value].answerList[index], index);
+                                }),
+                              ), 
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ] 
                 ),
               ),
             ),
