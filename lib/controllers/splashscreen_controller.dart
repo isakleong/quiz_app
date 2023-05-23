@@ -154,7 +154,7 @@ class SplashscreenController extends FullLifeCycleController {
           } else { // hardcode for demo testing to DSD
             salesIdParams.value = '01AC1A0103';
           }
-
+          salesIdParams.value = '01AC1A0103';
           getModuleData();
         }
       } catch(e) {

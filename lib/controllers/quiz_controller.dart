@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/controllers/background_service_controller.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/tools/service.dart';
