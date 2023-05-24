@@ -8,6 +8,7 @@ import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/controllers/history_controller.dart';
 import 'package:quiz_app/widgets/textview.dart';
+import 'package:shimmer/shimmer.dart';
 // import 'package:shimmer/shimmer.dart';
 
 class HistoryPage extends GetView<HistoryController>  {
@@ -112,35 +113,32 @@ class HistoryPage extends GetView<HistoryController>  {
                   child: Stack(
                     children: [
                       controller.obx(
-                        onLoading: Center(
-                          child: Lottie.asset('assets/lottie/loading.json', width: 60),
+                        onLoading: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.grey.shade400,
+                              highlightColor: Colors.grey.shade200,
+                              child: ListView.builder(
+                                itemCount: 15,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 15),
+                                    child: Card(
+                                    elevation: 3,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: const SizedBox(height: 160),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
                         ),
-                        // onLoading: Padding(
-                        //   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                        //   child: SizedBox(
-                        //     width: double.infinity,
-                        //     height: double.infinity,
-                        //     child: Shimmer.fromColors(
-                        //       baseColor: Colors.grey.shade400,
-                        //       highlightColor: Colors.grey.shade200,
-                        //       child: ListView.builder(
-                        //         itemCount: 15,
-                        //         itemBuilder: (context, index) {
-                        //           return Padding(
-                        //             padding: const EdgeInsets.symmetric(vertical: 15),
-                        //             child: Card(
-                        //             elevation: 3,
-                        //             shape: RoundedRectangleBorder(
-                        //               borderRadius: BorderRadius.circular(30),
-                        //             ),
-                        //             child: const SizedBox(height: 160),
-                        //             ),
-                        //           );
-                        //         },
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
                         onEmpty: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
