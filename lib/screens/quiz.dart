@@ -109,6 +109,7 @@ class QuizPage extends GetView<QuizController>{
         leftBtnMsg: "Ok",
         leftActionClick: () {
           Get.back();
+          Get.back();
         },
       );
     } else {
