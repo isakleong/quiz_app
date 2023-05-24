@@ -36,74 +36,81 @@ class Homepage extends StatelessWidget {
 
     final splashscreenController = Get.find<SplashscreenController>();
     
-    return WillPopScope(
-      onWillPop: confirmExit,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Stack(
-            children: [
-              SvgPicture.asset(
-                'assets/images/bg-homepage.svg',
-                fit: BoxFit.cover,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(FontAwesomeIcons.solidCircleUser, size: 25, color: AppConfig.darkGreen),
-                        const SizedBox(width: 10),
-                        const TextView(headings: "H2", text: "01AC1A0103"),
-                      ],
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: splashscreenController.moduleList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Card(
-                              elevation: 10,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [AppConfig.softGreen, AppConfig.softCyan],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      child: WillPopScope(
+        onWillPop: confirmExit,
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                SvgPicture.asset(
+                  'assets/images/bg-homepage.svg',
+                  fit: BoxFit.cover,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(FontAwesomeIcons.solidCircleUser, size: 25, color: AppConfig.darkGreen),
+                          const SizedBox(width: 10),
+                          const TextView(headings: "H2", text: "01AC1A0103"),
+                        ],
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: splashscreenController.moduleList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Card(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [AppConfig.softGreen, AppConfig.softCyan],
+                                    ),
+                                    borderRadius: BorderRadius.circular(16)
                                   ),
-                                  borderRadius: BorderRadius.circular(16)
-                                ),
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(16),
-                                    splashColor: AppConfig.mainGreen.withOpacity(0.5),
-                                    onTap: () {
-                                      Get.toNamed(RouteName.quizDashboard);
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(20),
-                                      child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 20),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(16),
+                                      splashColor: AppConfig.mainGreen.withOpacity(0.5),
+                                      onTap: () {
+                                        Get.toNamed(RouteName.quizDashboard);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 20),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -42,12 +42,12 @@ class QuizController extends GetxController with StateMixin {
     getQuizConfig(salesIdParams.value);
 
     ever(isRestart, (callback) {
-      Get.offAllNamed(RouteName.quizDashboard);
+      // Get.offAllNamed(RouteName.quizDashboard);
       restartQuiz();
     });
 
     ever(isReset, (callback) {
-      Get.offAllNamed(RouteName.quizDashboard);
+      // Get.offAllNamed(RouteName.quizDashboard);
       resetQuiz();
     });
 
