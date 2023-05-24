@@ -40,7 +40,8 @@ class QuizPage extends GetView<QuizController>{
         },
         rightActionClick: () {
           Get.back();
-          quizSummary();
+          // quizSummary();
+          quizController.submitQuiz();
         }
       );
     } else {
