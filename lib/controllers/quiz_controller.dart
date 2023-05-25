@@ -289,8 +289,6 @@ class QuizController extends GetxController with StateMixin {
         passed = 0;
       }
 
-      String status = "";
-
       Box? retrySubmitQuizBox;
       try {
         retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
@@ -305,7 +303,6 @@ class QuizController extends GetxController with StateMixin {
       if(retrySubmit == true) {
         var submitQuizBox = await Hive.openBox('submitQuizBox');
         params = submitQuizBox.get("bodyData");
-        status = "2";
       } else {
         params =  {
           'sales_id': salesId,
@@ -314,7 +311,6 @@ class QuizController extends GetxController with StateMixin {
           'passed': passed,
           'model': quizModel
         };
-        status = "3";
       }
 
       bool isConnected = await ApiClient().checkConnection();
@@ -339,21 +335,30 @@ class QuizController extends GetxController with StateMixin {
           //   await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
           // }
         } else {
-          var submitQuizBox = await Hive.openBox('submitQuizBox');
-          submitQuizBox.clear();
-          submitQuizBox.put("bodyData", params);
+          // var submitQuizBox = await Hive.openBox('submitQuizBox');
+          // submitQuizBox.clear();
+          // submitQuizBox.put("bodyData", params);
 
-          var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
-          retrySubmitQuizBox.put("retryStatus", true);
+          // var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+          // retrySubmitQuizBox.put("retryStatus", true);
+          Get.back();
+          isError(true);
+          errorMessage(Message.retrySubmitQuiz +" HAHAHA");
+          print(Message.retrySubmitQuiz +" HAHAHA");
+          change(null, status: RxStatus.error(errorMessage.value));
         }
       } else {
+        Get.back();
+        isError(true);
         errorMessage(Message.retrySubmitQuiz);
+        print(Message.retrySubmitQuiz);
         change(null, status: RxStatus.error(errorMessage.value));
       }
     } catch(e) {
+      Get.back();
       isError(true);
       errorMessage.value = e.toString();
-      print("ERROR "+errorMessage.value.toString());
+      print(errorMessage.value.toString());
       change(null, status: RxStatus.error(errorMessage.value)); 
     }
   }
