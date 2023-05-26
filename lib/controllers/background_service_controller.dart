@@ -257,4 +257,14 @@ class Backgroundservicecontroller {
     }
     return "err";
   }
+
+  pauseOrContinueBackGroundService() async {
+    final service = FlutterBackgroundService();
+    var isRunning = await service.isRunning();
+    if (isRunning) {
+      service.invoke("stopService");
+    } else {
+      service.startService();
+    }
+  }
 }
