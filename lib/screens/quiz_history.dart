@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide RefreshIndicator, RefreshIndicatorState;
+import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,8 @@ import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/controllers/history_controller.dart';
 import 'package:quiz_app/widgets/textview.dart';
+import 'package:shimmer/shimmer.dart';
+// import 'package:shimmer/shimmer.dart';
 
 class HistoryPage extends GetView<HistoryController>  {
   HistoryPage({super.key});
@@ -25,165 +28,198 @@ class HistoryPage extends GetView<HistoryController>  {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppConfig.lightGrayishGreen, AppConfig.grayishGreen, AppConfig.softGreen, AppConfig.softCyan]
-        ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark,
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SmartRefresher(
-          physics: const BouncingScrollPhysics(),
-          enablePullDown: true,
-          header: MaterialClassicHeader(color: AppConfig.mainGreen, distance: 55),
-          controller: _refreshController,
-          onRefresh: _onRefresh,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(30, 40, 30, 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppConfig.darkGreen,
-                        elevation: 0,
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(16),
-                      ),
-                      child: const Icon(FontAwesomeIcons.arrowLeft, size: 25, color: Colors.white),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        await historyController.getHistoryData();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppConfig.darkGreen,
-                        padding: const EdgeInsets.all(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Icon(Icons.history),
-                          SizedBox(width: 10),
-                          TextView(headings: "H3", text: "Refresh", color: Colors.white),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Center(
-                child: LayoutBuilder(
-                  builder: (context, constraints) => Obx(() => ToggleButtons(
-                    constraints: BoxConstraints.expand(width: (constraints.maxWidth*0.8)/3),
-                    fillColor: AppConfig.softGreen,
-                    borderColor: AppConfig.darkGreen,
-                    borderWidth: 1.5,
-                    renderBorder: true,
-                    selectedBorderColor: AppConfig.darkGreen,
-                    borderRadius: BorderRadius.circular(30),
-                    // focusNodes: focusToggle,
-                    isSelected: historyController.selectedLimitRequestHistoryData.toList(),
-                    onPressed: (int i) async {
-                      await historyController.applyFilter(i);
-                      historyController.filterQuizHistoryModel.refresh();
-                    },
-                    children: const <Widget>[
-                      TextView(headings: "H3", text: "BM"),
-                      TextView(headings: "H3", text: "SPV"),
-                      TextView(headings: "H3", text: "Sales"),
-                    ],
-                  )),
-                ),
-              ),
-              Expanded(
-                child: Stack(
-                  children: [
-                    controller.obx(
-                      onLoading: Center(
-                        child: Lottie.asset('assets/lottie/loading.json', width: 60),
-                      ),
-                      onEmpty: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
-                            const SizedBox(height: 30),
-                            const TextView(headings: "H3", text: "Tidak ada data"),
-                          ],
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [AppConfig.lightGrayishGreen, AppConfig.grayishGreen, AppConfig.softGreen, AppConfig.softCyan]
+          ),
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SafeArea(
+            child: SmartRefresher(
+              physics: const BouncingScrollPhysics(),
+              enablePullDown: true,
+              header: MaterialClassicHeader(color: AppConfig.mainGreen, distance: 55),
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppConfig.darkGreen,
+                            elevation: 0,
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(16),
+                          ),
+                          child: const Icon(FontAwesomeIcons.arrowLeft, size: 25, color: Colors.white),
                         ),
-                      ),
-                      onError: (error) => Center(
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Lottie.asset('assets/lottie/error.json', width: Get.width*0.5),
-                              const SizedBox(height: 15),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 30),
-                                child: TextView(headings: "H4", text: "Error :\n${controller.errorMessage.value}", textAlign: TextAlign.start),
-                              ),
-                              const SizedBox(height: 30),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  await historyController.getHistoryData();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppConfig.darkGreen,
-                                  padding: const EdgeInsets.all(12),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: const [
-                                    Icon(Icons.history),
-                                    SizedBox(width: 10),
-                                    TextView(headings: "H3", text: Message.retry, color: Colors.white, isCapslock: true)
-                                  ],
-                                ),
-                              ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await historyController.getHistoryData();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppConfig.darkGreen,
+                            padding: const EdgeInsets.all(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Icon(Icons.history),
+                              SizedBox(width: 10),
+                              TextView(headings: "H3", text: "Refresh", color: Colors.white),
                             ],
                           ),
                         ),
-                      ),
-                      (state) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                        child: Obx(() => 
-                        historyController.filterQuizHistoryModel.isNotEmpty ?
-                        ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: historyController.filterQuizHistoryModel.length,
-                          itemBuilder: (BuildContext context, int i) {
-                            return historyWidget(historyController, i);
-                          }
-                        )
-                        :
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
-                              const SizedBox(height: 30),
-                              const TextView(headings: "H3", text: "Tidak ada data"),
-                            ],
-                          ),
-                        )),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  //uncomment (for demo to DSD)
+                  // Center(
+                  //   child: LayoutBuilder(
+                  //     builder: (context, constraints) => Obx(() => ToggleButtons(
+                  //       constraints: BoxConstraints.expand(width: (constraints.maxWidth*0.8)/3),
+                  //       fillColor: AppConfig.softGreen,
+                  //       borderColor: AppConfig.darkGreen,
+                  //       borderWidth: 1.5,
+                  //       renderBorder: true,
+                  //       selectedBorderColor: AppConfig.darkGreen,
+                  //       borderRadius: BorderRadius.circular(30),
+                  //       // focusNodes: focusToggle,
+                  //       isSelected: historyController.selectedLimitRequestHistoryData.toList(),
+                  //       onPressed: (int i) async {
+                  //         await historyController.applyFilter(i);
+                  //         historyController.filterQuizHistoryModel.refresh();
+                  //       },
+                  //       children: const <Widget>[
+                  //         TextView(headings: "H3", text: "BM"),
+                  //         TextView(headings: "H3", text: "SPV"),
+                  //         TextView(headings: "H3", text: "Sales"),
+                  //       ],
+                  //     )),
+                  //   ),
+                  // ),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        controller.obx(
+                          onLoading: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: double.infinity,
+                              child: Shimmer.fromColors(
+                                baseColor: Colors.grey.shade400,
+                                highlightColor: Colors.grey.shade200,
+                                child: ListView.builder(
+                                  itemCount: 15,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 15),
+                                      child: Card(
+                                      elevation: 3,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: const SizedBox(height: 160),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          onEmpty: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
+                                const SizedBox(height: 30),
+                                const TextView(headings: "H3", text: "Tidak ada data"),
+                              ],
+                            ),
+                          ),
+                          onError: (error) => Center(
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Lottie.asset('assets/lottie/error.json', width: Get.width*0.5),
+                                  const SizedBox(height: 15),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                                    child: TextView(headings: "H4", text: "Error :\n${controller.errorMessage.value}", textAlign: TextAlign.start),
+                                  ),
+                                  const SizedBox(height: 30),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      await historyController.getHistoryData();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppConfig.darkGreen,
+                                      padding: const EdgeInsets.all(12),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: const [
+                                        Icon(Icons.history),
+                                        SizedBox(width: 10),
+                                        TextView(headings: "H3", text: Message.retry, color: Colors.white, isCapslock: true)
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          (state) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                            child: Obx(() => 
+                            historyController.filterQuizHistoryModel.isNotEmpty ?
+                            ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: historyController.filterQuizHistoryModel.length,
+                              itemBuilder: (BuildContext context, int i) {
+                                return historyWidget(historyController, i);
+                              }
+                            )
+                            :
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
+                                  const SizedBox(height: 30),
+                                  const TextView(headings: "H3", text: "Tidak ada data"),
+                                ],
+                              ),
+                            )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -221,7 +257,7 @@ Widget historyWidget(HistoryController historyController, int i) {
                 alignment: Alignment.center,
                 children:[
                   CustomPaint(
-                    size: Size(Get.width*0.15, Get.height),
+                    size: Size(Get.width*0.20, Get.height),
                     painter: historyController.quizHistoryModel[i].passed == "1" ? 
                     CustomCardShapePainter(30.0, AppConfig.mainCyan, AppConfig.softCyan)
                     :
@@ -259,8 +295,6 @@ Widget historyWidget(HistoryController historyController, int i) {
                         TextView(headings: "H3", text: historyController.quizHistoryModel[i].salesID, color: Colors.white, isAutoSize: true, textAlign: TextAlign.start),
                         const SizedBox(height: 20),
                         TextView(headings: "H3", text: historyController.quizHistoryModel[i].name, color: Colors.white, isAutoSize: true, textAlign: TextAlign.start),
-                        const SizedBox(height: 20),
-                        TextView(headings: "H3", text: historyController.quizHistoryModel[i].tanggal, color: Colors.white, isAutoSize: true, textAlign: TextAlign.start),
                         const SizedBox(height: 20),
                         TextView(headings: "H3", text: historyController.quizHistoryModel[i].tanggal, color: Colors.white, isAutoSize: true, textAlign: TextAlign.start),
                       ],

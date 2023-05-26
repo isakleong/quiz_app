@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/controllers/background_service_controller.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/tools/service.dart';
@@ -43,12 +42,12 @@ class QuizController extends GetxController with StateMixin {
     getQuizConfig(salesIdParams.value);
 
     ever(isRestart, (callback) {
-      Get.offAllNamed(RouteName.quizDashboard);
+      // Get.offAllNamed(RouteName.quizDashboard);
       restartQuiz();
     });
 
     ever(isReset, (callback) {
-      Get.offAllNamed(RouteName.quizDashboard);
+      // Get.offAllNamed(RouteName.quizDashboard);
       resetQuiz();
     });
 
@@ -236,15 +235,139 @@ class QuizController extends GetxController with StateMixin {
     Get.back();
   }
 
-  getsalesid() async {
+  getSalesId() async {
       String sales_id = await Utils().readParameter();
-      return sales_id.split(';')[0];
+      // return sales_id.split(';')[0];
+      return '01AC1A0103';
+  }
+
+  scoreCalculation() {
+    int score = 0;
+    for(int i=0; i<quizModel.length; i++) {
+      if(quizModel[i].answerSelected == quizModel[i].correctAnswerIndex) {
+        score++;
+      }
+    }
+
+    var target = ((quizTarget.value/100) * quizModel.length);
+    var arrTarget = target.toString().split(".");
+
+    if(score >= int.parse(arrTarget[0])) {
+      isPassed(true);
+    } else {
+      isPassed(false);
+    }
   }
 
   submitQuiz() async {
     try {
       openSubmitDialog();
-      String sales_id = await getsalesid();
+
+      await postQuizData();
+
+      // closeSubmitDialog();
+    } catch(e) {
+      isError(true);
+      errorMessage.value = e.toString();
+      change(null, status: RxStatus.error(errorMessage.value));
+    }
+  }
+
+  postQuizData() async {
+    try {
+      String salesId = await getSalesId();
+      var now = DateTime.now();
+      var formatter = DateFormat('yyyy-MM-dd H:m:s');
+      String formattedDate = formatter.format(now);
+
+      await scoreCalculation();
+
+      int passed = 0;
+      if(isPassed.value == true) {
+        passed = 1;
+      } else {
+        passed = 0;
+      }
+
+      Box? retrySubmitQuizBox;
+      try {
+        retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+      } catch (e) {
+        isError(true);
+        errorMessage.value = e.toString();
+        change(null, status: RxStatus.error(errorMessage.value)); 
+      }
+
+      var params = {};
+      var retrySubmit = retrySubmitQuizBox?.get("retryStatus");
+      if(retrySubmit == true) {
+        var submitQuizBox = await Hive.openBox('submitQuizBox');
+        params = submitQuizBox.get("bodyData");
+      } else {
+        params =  {
+          'sales_id': salesId,
+          'quiz_id': quizModel[0].quizID,
+          'date': formattedDate,
+          'passed': passed,
+          'model': quizModel
+        };
+      }
+
+      bool isConnected = await ApiClient().checkConnection();
+      if(isConnected) {
+        var bodyData = jsonEncode(params);
+        var resultSubmit = await ApiClient().postData(
+          '/quiz/submit',
+          bodyData,
+          Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
+        );
+
+        if(resultSubmit == "success"){
+          var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+          retrySubmitQuizBox.put("retryStatus", false);
+
+          //BUGGY
+          // var info = await Backgroundservicecontroller().getLatestStatusQuiz(sales_id); 
+          // if(info != "err"){
+          //   String _filequiz = await Backgroundservicecontroller().readFileQuiz();
+          //   await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${sales_id};${DateTime.now()}");
+          // } else {
+          //   await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
+          // }
+        } else {
+          // var submitQuizBox = await Hive.openBox('submitQuizBox');
+          // submitQuizBox.clear();
+          // submitQuizBox.put("bodyData", params);
+
+          // var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+          // retrySubmitQuizBox.put("retryStatus", true);
+          Get.back();
+          isError(true);
+          errorMessage(Message.retrySubmitQuiz +" HAHAHA");
+          print(Message.retrySubmitQuiz +" HAHAHA");
+          change(null, status: RxStatus.error(errorMessage.value));
+        }
+      } else {
+        Get.back();
+        isError(true);
+        errorMessage(Message.retrySubmitQuiz);
+        print(Message.retrySubmitQuiz);
+        change(null, status: RxStatus.error(errorMessage.value));
+      }
+    } catch(e) {
+      Get.back();
+      isError(true);
+      errorMessage.value = e.toString();
+      print(errorMessage.value.toString());
+      change(null, status: RxStatus.error(errorMessage.value)); 
+    }
+  }
+
+  submitQuizxx() async {
+    try {
+      openSubmitDialog();
+
+      String sales_id = await getSalesId();
       var now = DateTime.now();
       var formatter = DateFormat('yyyy-MM-dd H:m:s');
       String formattedDate = formatter.format(now);
@@ -263,25 +386,40 @@ class QuizController extends GetxController with StateMixin {
         'passed': passed,
         'model': quizModel
       };
-      var bodyData = jsonEncode(params);
-      var result_submit = await ApiClient().postData(
-        '/quiz/submit',
-        bodyData,
-        Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
-      );
 
-      if(result_submit == "success"){
-          var info = await Backgroundservicecontroller().getLatestStatusQuiz(sales_id); 
-          if(info != "err"){
-            String _filequiz = await Backgroundservicecontroller().readFileQuiz();
-            await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${sales_id};${DateTime.now()}");
-          } else {
-            await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
-          }
+      var submitQuizBox = await Hive.openBox('submitQuizBox');
+      submitQuizBox.clear();
+      submitQuizBox.put("bodyData", params);
+
+      bool isConnected = await ApiClient().checkConnection();
+      if(isConnected) {
+        var bodyData = jsonEncode(params);
+        var result_submit = await ApiClient().postData(
+          '/quiz/submit',
+          bodyData,
+          Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
+        );
+
+        if(result_submit == "success"){
+          var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+          retrySubmitQuizBox.put("retryStatus", false);
+
+          //BUGGY
+          // var info = await Backgroundservicecontroller().getLatestStatusQuiz(sales_id); 
+          // if(info != "err"){
+          //   String _filequiz = await Backgroundservicecontroller().readFileQuiz();
+          //   await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${sales_id};${DateTime.now()}");
+          // } else {
+          //   await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
+          // }
+        }
+
+        closeSubmitDialog();
+      } else {
+        var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+        retrySubmitQuizBox.put("retryStatus", true);
       }
 
-      closeSubmitDialog();
-      
     } catch(e) {
       isError(true);
       errorMessage.value = e.toString();

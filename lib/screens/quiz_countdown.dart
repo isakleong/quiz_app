@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
@@ -49,71 +50,78 @@ class _CountdownPageState extends State<CountdownPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppConfig.mainGreen,
-      body: WillPopScope(
-        onWillPop: () => Future.value(false),
-        child: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 30),
-              child: AnimatedBuilder(
-                animation: controller,
-                builder: (context, child) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        const TextView(headings: "H2", text: "Selamat mengerjakan!", fontSize: 30, color: Colors.white),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: Stack(
-                                children: <Widget>[
-                                  Positioned.fill(
-                                    child:
-                                    AnimatedBuilder(
-                                      animation: controller,
-                                      builder:(BuildContext context, Widget? child) {
-                                        return CustomPaint(
-                                          painter: CustomTimerPainter(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        backgroundColor: AppConfig.mainGreen,
+        body: WillPopScope(
+          onWillPop: () => Future.value(false),
+          child: SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 30),
+                child: AnimatedBuilder(
+                  animation: controller,
+                  builder: (context, child) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          const TextView(headings: "H2", text: "Selamat mengerjakan!", fontSize: 30, color: Colors.white),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: Stack(
+                                  children: <Widget>[
+                                    Positioned.fill(
+                                      child:
+                                      AnimatedBuilder(
+                                        animation: controller,
+                                        builder:(BuildContext context, Widget? child) {
+                                          return CustomPaint(
+                                            painter: CustomTimerPainter(
+                                              animation: controller,
+                                              backgroundColor: AppConfig.mainGreen,
+                                              color: Colors.white,
+                                            )
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          AnimatedBuilder(
                                             animation: controller,
-                                            backgroundColor: AppConfig.mainGreen,
-                                            color: Colors.white,
-                                          )
-                                        );
-                                      },
+                                            builder: (BuildContext context, Widget? child) {
+                                              return TextView(headings: "H2", text: timerCountdown, fontSize: 100, color: Colors.white);
+                                            }
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        AnimatedBuilder(
-                                          animation: controller,
-                                          builder: (BuildContext context, Widget? child) {
-                                            return TextView(headings: "H2", text: timerCountdown, fontSize: 100, color: Colors.white);
-                                          }
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-            ),
-          )
+                        ],
+                      ),
+                    );
+                  }),
+              ),
+            )
+          ),
         ),
       ),
     );

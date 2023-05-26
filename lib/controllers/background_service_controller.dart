@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:dio/dio.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:hive/hive.dart';
@@ -147,6 +148,42 @@ class Backgroundservicecontroller {
       return contents;
     } catch (e) {
       return "";
+    }
+  }
+
+  retrySubmitQuiz() async {
+    var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+    bool retryStatus = retrySubmitQuizBox.get("retryStatus");
+    if(retryStatus) {
+      var submitQuizBox = await Hive.openBox('submitQuizBox');
+      var params = submitQuizBox.get("bodyData");
+
+      bool isConnected = await ApiClient().checkConnection();
+      if(isConnected) {
+        var bodyData = jsonEncode(params);
+        var result_submit = await ApiClient().postData(
+          '/quiz/submit',
+          bodyData,
+          Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
+        );
+
+        if(result_submit == "success"){
+          var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+          retrySubmitQuizBox.put("retryStatus", false);
+
+          String tempSalesID = await Utils().readParameter();
+          var sales_id = tempSalesID.split(';')[0];
+
+          var info = await Backgroundservicecontroller().getLatestStatusQuiz(sales_id); 
+          if(info != "err"){
+            String _filequiz = await Backgroundservicecontroller().readFileQuiz();
+            await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${sales_id};${DateTime.now()}");
+          } else {
+            await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
+          }
+        }
+      }
+
     }
   }
 

@@ -72,7 +72,14 @@ class SplashscreenController extends FullLifeCycleController {
     // ignore: prefer_typing_uninitialized_variables
     var status;
     if (type == 'STORAGE') {
-      status = await Permission.storage.request();
+      if(sdkInt < 33) {
+        status = await Permission.storage.request();
+      } else {
+        //if you need the access for both photos and videos, 
+        //you can use either Permission.photos or Permission.video, you don’t need both of them, 
+        //because in Granular Media the access is granted for both media types.
+        status = await Permission.photos.request();
+      }
     } else if (type == 'INSTALLS PACKAGES') {
       if (sdkInt >= 26) {
         status = await Permission.requestInstallPackages.request();
@@ -151,8 +158,10 @@ class SplashscreenController extends FullLifeCycleController {
                 isCheckInParams.value = arrParameter[2];
               }
             }
+          } else { // hardcode for demo testing to DSD
+            salesIdParams.value = '01AC1A0103';
           }
-
+          salesIdParams.value = '01AC1A0103';
           getModuleData();
         }
       } catch(e) {

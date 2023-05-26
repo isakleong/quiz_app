@@ -13,8 +13,10 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   HttpOverrides.global = ApiHttpOverrides();
-  await Backgroundservicecontroller().initializeService();
+  //uncomment (for demo to dsd)
+  // await Backgroundservicecontroller().initializeService();
   await Backgroundservicecontroller().hiveInitializer();
+
   runApp(const MyApp());
 }
 
@@ -22,11 +24,19 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      // systemNavigationBarColor: Colors.white, // navigation bar color
+      // statusBarColor: Colors.white, // status bar color
+      // statusBarIconBrightness: Brightness.dark, // status bar icons' color
+      // systemNavigationBarIconBrightness: Brightness.dark, //navigation b
+    // ));
+
     return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        fontFamily: "Poppins"
+        fontFamily: "Poppins",
+        
       ),
       initialRoute: "/",
       getPages: AppRoute.pages,
