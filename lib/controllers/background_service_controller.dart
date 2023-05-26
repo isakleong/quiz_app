@@ -161,23 +161,23 @@ class Backgroundservicecontroller {
       bool isConnected = await ApiClient().checkConnection();
       if(isConnected) {
         var bodyData = jsonEncode(params);
-        var result_submit = await ApiClient().postData(
+        var resultSubmit = await ApiClient().postData(
           '/quiz/submit',
           bodyData,
           Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
         );
 
-        if(result_submit == "success"){
+        if(resultSubmit == "success"){
           var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
           retrySubmitQuizBox.put("retryStatus", false);
 
           String tempSalesID = await Utils().readParameter();
-          var sales_id = tempSalesID.split(';')[0];
+          var salesId = tempSalesID.split(';')[0];
 
-          var info = await Backgroundservicecontroller().getLatestStatusQuiz(sales_id); 
+          var info = await Backgroundservicecontroller().getLatestStatusQuiz(salesId); 
           if(info != "err"){
             String _filequiz = await Backgroundservicecontroller().readFileQuiz();
-            await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${sales_id};${DateTime.now()}");
+            await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${salesId};${DateTime.now()}");
           } else {
             await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
           }

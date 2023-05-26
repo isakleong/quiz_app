@@ -9,7 +9,6 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/message_config.dart';
-import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/background_service_controller.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
@@ -352,8 +351,8 @@ class QuizController extends GetxController with StateMixin {
           // retrySubmitQuizBox.put("retryStatus", true);
           Get.back();
           isError(true);
-          errorMessage(Message.retrySubmitQuiz + " HAHAHA");
-          print(Message.retrySubmitQuiz + " HAHAHA");
+          errorMessage("${Message.retrySubmitQuiz} HAHAHA");
+          print("${Message.retrySubmitQuiz} HAHAHA");
           change(null, status: RxStatus.error(errorMessage.value));
         }
       } else {

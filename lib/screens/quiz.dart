@@ -6,7 +6,6 @@ import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
-import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/quiz_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/widgets/dialog.dart';
