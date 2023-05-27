@@ -38,6 +38,9 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                 type == "quiz_failed" ? 
                 'assets/lottie/quiz-failed.json' 
                 :
+                type == "quiz_retry" ? 
+                'assets/lottie/quiz-retry.json' 
+                :
                 iconAsset,
                 width: 230,
                 height: 230,

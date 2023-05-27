@@ -10,7 +10,7 @@ import 'package:quiz_app/tools/logging.dart';
 class ApiClient {
   Future getData(String path) async {
     try {
-      final dio = Dio(
+      final dio = Dio(  
         BaseOptions(baseUrl: AppConfig.baseUrl)
       )..interceptors.add(Logging());
       (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
@@ -20,13 +20,13 @@ class ApiClient {
         return null;
       };
 
+      dio.interceptors.add(Logging());
+
       final response = await dio.get(path);
 
       return response.data;
-    } on DioError catch (e) {
-      debugPrint("exc code nu ${e.type.toString()}");
-      debugPrint("exc ${e.message.toString()}");
-      throw Exception(e.message);
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -41,6 +41,8 @@ class ApiClient {
         };
         return null;
       };
+
+      dio.interceptors.add(Logging());
 
       final response = await dio.post(path, data: formData, options: options);
 

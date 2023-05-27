@@ -100,6 +100,7 @@ class QuizController extends GetxController with StateMixin {
   }
 
   getQuizConfig(String params) async {
+    print("HERE AGAIN");
     change(null, status: RxStatus.loading());
     
     bool isConnected = await ApiClient().checkConnection();
@@ -129,10 +130,12 @@ class QuizController extends GetxController with StateMixin {
           change(null, status: RxStatus.error(errorMessage.value));
         }
       } catch (e) {
+        print("ERROR 1");
         errorMessage.value = e.toString();
         change(null, status: RxStatus.error(errorMessage.value));
       }
     } else {
+      print("HAHAHA 1 " + quizTarget.value.toString());
       errorMessage(Message.errorConnection);
       change(null, status: RxStatus.error(errorMessage.value));
     }
@@ -190,6 +193,7 @@ class QuizController extends GetxController with StateMixin {
         change(null, status: RxStatus.error(errorMessage.value));
       }
     } catch(e) {
+      print("ERROR 2");
       errorMessage.value = e.toString();
       change(null, status: RxStatus.error(errorMessage.value));
     }
@@ -205,6 +209,31 @@ class QuizController extends GetxController with StateMixin {
         Get.back();
         Get.back();
         // Get.offAndToNamed(RouteName.quizDashboard);
+      }
+    );
+  }
+
+  operErrorSubmitDialog(String message) {
+    appsDialog(
+      type: "app_error",
+      title: TextView(headings: "H3", text: message, fontSize: 16, color: Colors.black),
+      isAnimated: true,
+      leftBtnMsg: "Ok",
+      leftActionClick: () {
+        Get.back();
+      }
+    );
+  }
+
+  openRetrySubmitDialog() {
+    appsDialog(
+      type: "quiz_retry",
+      title: const TextView(headings: "H3", text: Message.retrySubmitQuiz, fontSize: 16, color: Colors.black),
+      isAnimated: true,
+      leftBtnMsg: "Ok",
+      leftActionClick: () {
+        Get.back();
+        Get.back();
       }
     );
   }
@@ -229,10 +258,6 @@ class QuizController extends GetxController with StateMixin {
       ),
       barrierDismissible: false,
     );
-  }
-
-  closeSubmitDialog() {
-    Get.back();
   }
 
   getSalesId() async {
@@ -265,8 +290,9 @@ class QuizController extends GetxController with StateMixin {
 
       await postQuizData();
 
-      // closeSubmitDialog();
+      // Get.back();
     } catch(e) {
+      print("ERROR 3");
       isError(true);
       errorMessage.value = e.toString();
       change(null, status: RxStatus.error(errorMessage.value));
@@ -289,17 +315,10 @@ class QuizController extends GetxController with StateMixin {
         passed = 0;
       }
 
-      Box? retrySubmitQuizBox;
-      try {
-        retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
-      } catch (e) {
-        isError(true);
-        errorMessage.value = e.toString();
-        change(null, status: RxStatus.error(errorMessage.value)); 
-      }
-
       var params = {};
-      var retrySubmit = retrySubmitQuizBox?.get("retryStatus");
+
+      Box retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+      var retrySubmit = retrySubmitQuizBox.get("retryStatus");
       if(retrySubmit == true) {
         var submitQuizBox = await Hive.openBox('submitQuizBox');
         params = submitQuizBox.get("bodyData");
@@ -335,31 +354,31 @@ class QuizController extends GetxController with StateMixin {
           //   await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
           // }
         } else {
-          // var submitQuizBox = await Hive.openBox('submitQuizBox');
-          // submitQuizBox.clear();
-          // submitQuizBox.put("bodyData", params);
+          var submitQuizBox = await Hive.openBox('submitQuizBox');
+          submitQuizBox.clear();
+          submitQuizBox.put("bodyData", params);
 
-          // var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
-          // retrySubmitQuizBox.put("retryStatus", true);
+          var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+          retrySubmitQuizBox.put("retryStatus", true);
+          
           Get.back();
-          isError(true);
-          errorMessage(Message.retrySubmitQuiz +" HAHAHA");
-          print(Message.retrySubmitQuiz +" HAHAHA");
-          change(null, status: RxStatus.error(errorMessage.value));
+          openRetrySubmitDialog();
         }
       } else {
+        var submitQuizBox = await Hive.openBox('submitQuizBox');
+        submitQuizBox.clear();
+        submitQuizBox.put("bodyData", params);
+
+        var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+        retrySubmitQuizBox.put("retryStatus", true);
+
         Get.back();
-        isError(true);
-        errorMessage(Message.retrySubmitQuiz);
-        print(Message.retrySubmitQuiz);
-        change(null, status: RxStatus.error(errorMessage.value));
+        openRetrySubmitDialog();
       }
     } catch(e) {
+      print("ERROR 4");
       Get.back();
-      isError(true);
-      errorMessage.value = e.toString();
-      print(errorMessage.value.toString());
-      change(null, status: RxStatus.error(errorMessage.value)); 
+      operErrorSubmitDialog(e.toString());
     }
   }
 
@@ -414,13 +433,14 @@ class QuizController extends GetxController with StateMixin {
           // }
         }
 
-        closeSubmitDialog();
+        Get.back();
       } else {
         var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
         retrySubmitQuizBox.put("retryStatus", true);
       }
 
     } catch(e) {
+      print("ERROR 5");
       isError(true);
       errorMessage.value = e.toString();
       change(null, status: RxStatus.error(errorMessage.value));

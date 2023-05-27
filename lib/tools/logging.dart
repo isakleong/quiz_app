@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 
-class Logging extends Interceptor {
-
+class Logging extends InterceptorsWrapper  {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
