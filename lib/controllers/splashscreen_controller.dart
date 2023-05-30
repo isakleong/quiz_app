@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -10,15 +9,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/models/module.dart';
-import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/tools/service.dart';
 import 'package:quiz_app/tools/utils.dart';
 import 'package:quiz_app/widgets/dialog.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
-class SplashscreenController extends FullLifeCycleController {
-  var isLoading = true.obs;
-  var isError = false.obs;
+class SplashscreenController extends GetxController with StateMixin {
+  // var isError = false.obs;
   var errorMessage = "".obs;
 
   var configData = "".obs;
@@ -34,26 +31,43 @@ class SplashscreenController extends FullLifeCycleController {
   void onInit() {
     super.onInit();
 
-    ever(isError, (bool success) {
-      if (success) {
-        appsDialog(
-          type: "app_error",
-          title:  Obx(() => TextView(
-            headings: "H4",
-            text: errorMessage.value,
-            textAlign: TextAlign.center,
-            ),
-          ),
-          leftBtnMsg: "Ok",
-          isAnimated: true,
-          leftActionClick: () {
-            Get.back();
-          }
-        );
-      }
-    });
+    // ever(isError, (bool success) {
+    //   if (success) {
+    //     appsDialog(
+    //       type: "app_error",
+    //       title:  Obx(() => TextView(
+    //         headings: "H4",
+    //         text: errorMessage.value,
+    //         textAlign: TextAlign.center,
+    //         ),
+    //       ),
+    //       leftBtnMsg: "Ok",
+    //       isAnimated: true,
+    //       leftActionClick: () {
+    //         Get.back();
+    //       }
+    //     );
+    //   }
+    // });
 
     syncAppsReady();
+  }
+
+  openErrorDialog() {
+    appsDialog(
+      type: "app_error",
+      title:  Obx(() => TextView(
+        headings: "H4",
+        text: errorMessage.value,
+        textAlign: TextAlign.center,
+        ),
+      ),
+      leftBtnMsg: "Ok",
+      isAnimated: true,
+      leftActionClick: () {
+        Get.back();
+      }
+    );
   }
 
   syncAppsReady() async {
@@ -114,8 +128,7 @@ class SplashscreenController extends FullLifeCycleController {
   }
 
   checkUpdate() async {
-    isLoading(true);
-    isError(false);
+    change(null, status: RxStatus.loading());
 
     bool isConnected = await ApiClient().checkConnection();
     if(isConnected) {
@@ -132,7 +145,8 @@ class SplashscreenController extends FullLifeCycleController {
         int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
 
         if(latestVersionConverted > currentVersionConverted) {
-          isLoading(false);
+          change(null, status: RxStatus.success());
+
           appsDialog(
             type: "app_info",
             title: const TextView(
@@ -140,7 +154,7 @@ class SplashscreenController extends FullLifeCycleController {
               text: "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi Utility.\n4. Tunggu hingga proses update selesai.",
               textAlign: TextAlign.start,
             ),
-            leftBtnMsg: "nasi goreng ok",
+            leftBtnMsg: "ok",
             isAnimated: true,
             leftActionClick: () {
               Get.back();
@@ -168,9 +182,9 @@ class SplashscreenController extends FullLifeCycleController {
           getModuleData();
         }
       } catch(e) {
-        isLoading(false);
-        isError(true);
-        errorMessage(e.toString());
+        errorMessage.value = e.toString();
+        openErrorDialog();
+        change(null, status: RxStatus.error(errorMessage.value));
       }
     } else {
       var moduleBox = await Hive.openBox<Module>('moduleBox');
@@ -178,13 +192,12 @@ class SplashscreenController extends FullLifeCycleController {
         moduleList.clear();
         moduleList.addAll(moduleBox.values);
 
-        isLoading(false);
-        isError(false);
+        change(null, status: RxStatus.success());
         Get.offAndToNamed(RouteName.homepage);
       } else {
-        isLoading(false);
-        isError(true);
         errorMessage(Message.errorConnection);
+        openErrorDialog();
+        change(null, status: RxStatus.error(errorMessage.value));
       }
     }
   }
@@ -205,28 +218,25 @@ class SplashscreenController extends FullLifeCycleController {
         await moduleBox.clear();
         await moduleBox.addAll(moduleList);
 
-        isLoading(false);
-        isError(false);
+        change(null, status: RxStatus.success());
         Get.offAndToNamed(RouteName.homepage);
 
       } catch(e) {
-        isLoading(false);
-        isError(true);
         errorMessage(e.toString());
+        change(null, status: RxStatus.error(errorMessage.value));
       }
     } else {
       var moduleBox = await Hive.openBox<Module>('moduleBox');
       if(moduleBox.length > 0) {
         moduleList.clear();
         moduleList.addAll(moduleBox.values);
-        
-        isLoading(false);
-        isError(false);
+
+        change(null, status: RxStatus.success());
         Get.offAndToNamed(RouteName.homepage);
       } else {
-        isLoading(false);
-        isError(true);
         errorMessage(Message.errorConnection);
+        openErrorDialog();
+        change(null, status: RxStatus.error(errorMessage.value));
       }
     }
   }
