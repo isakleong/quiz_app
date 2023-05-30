@@ -4,11 +4,13 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/models/module.dart';
+import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/tools/service.dart';
 import 'package:quiz_app/tools/utils.dart';
 import 'package:quiz_app/widgets/dialog.dart';
@@ -171,9 +173,19 @@ class SplashscreenController extends FullLifeCycleController {
         errorMessage(e.toString());
       }
     } else {
-      isLoading(false);
-      isError(true);
-      errorMessage(Message.errorConnection);
+      var moduleBox = await Hive.openBox<Module>('moduleBox');
+      if(moduleBox.length > 0) {
+        moduleList.clear();
+        moduleList.addAll(moduleBox.values);
+
+        isLoading(false);
+        isError(false);
+        Get.offAndToNamed(RouteName.homepage);
+      } else {
+        isLoading(false);
+        isError(true);
+        errorMessage(Message.errorConnection);
+      }
     }
   }
 
@@ -189,6 +201,10 @@ class SplashscreenController extends FullLifeCycleController {
           moduleList.add(Module.from(item));
         }).toList();
 
+        var moduleBox = await Hive.openBox<Module>('moduleBox');
+        await moduleBox.clear();
+        await moduleBox.addAll(moduleList);
+
         isLoading(false);
         isError(false);
         Get.offAndToNamed(RouteName.homepage);
@@ -199,9 +215,19 @@ class SplashscreenController extends FullLifeCycleController {
         errorMessage(e.toString());
       }
     } else {
-      isLoading(false);
-      isError(true);
-      errorMessage(Message.errorConnection);
+      var moduleBox = await Hive.openBox<Module>('moduleBox');
+      if(moduleBox.length > 0) {
+        moduleList.clear();
+        moduleList.addAll(moduleBox.values);
+        
+        isLoading(false);
+        isError(false);
+        Get.offAndToNamed(RouteName.homepage);
+      } else {
+        isLoading(false);
+        isError(true);
+        errorMessage(Message.errorConnection);
+      }
     }
   }
 }
