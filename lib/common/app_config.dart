@@ -11,7 +11,7 @@ class AppConfig {
   static const String initUrl = "https://link.tirtakencana.com/QuizApp";
   static const String testUrl = "https://google.com";
   static const String filevendor = '/storage/emulated/0/TKTW/SFATools.txt';
-  static const String filequiz = '/storage/emulated/0/TKTW/my_file.txt';
+  static const String filequiz = '/storage/emulated/0/TKTW/SFAToolsNotif.txt';
   static const int connectTimeout = 15000;
   static const int receiveTimeout = 15000;
 
