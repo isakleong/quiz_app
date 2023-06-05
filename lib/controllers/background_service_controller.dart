@@ -154,36 +154,44 @@ class Backgroundservicecontroller {
   retrySubmitQuiz() async {
     var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
     bool retryStatus = retrySubmitQuizBox.get("retryStatus");
-    if(retryStatus) {
+    if (retryStatus) {
       var submitQuizBox = await Hive.openBox('submitQuizBox');
       var params = submitQuizBox.get("bodyData");
 
       bool isConnected = await ApiClient().checkConnection();
-      if(isConnected) {
+      if (isConnected) {
         var bodyData = jsonEncode(params);
         var resultSubmit = await ApiClient().postData(
-          '/quiz/submit',
-          bodyData,
-          Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
-        );
+            '/quiz/submit',
+            bodyData,
+            Options(
+                headers: {HttpHeaders.contentTypeHeader: "application/json"}));
 
-        if(resultSubmit == "success"){
+        if (resultSubmit == "success") {
           var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
           retrySubmitQuizBox.put("retryStatus", false);
 
           String tempSalesID = await Utils().readParameter();
           var salesId = tempSalesID.split(';')[0];
 
-          var info = await Backgroundservicecontroller().getLatestStatusQuiz(salesId); 
-          if(info != "err"){
-            String _filequiz = await Backgroundservicecontroller().readFileQuiz();
-            await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${salesId};${DateTime.now()}");
+          var info =
+              await Backgroundservicecontroller().getLatestStatusQuiz(salesId);
+          if (info != "err") {
+            try {
+              String _filequiz =
+                  await Backgroundservicecontroller().readFileQuiz();
+              await Backgroundservicecontroller().writeText(
+                  "${info};${_filequiz.split(";")[1]};${salesId};${DateTime.now()}");
+            } catch (e) {
+              await Backgroundservicecontroller().writeText(
+                  "${info};${DateTime.now()};${salesId};${DateTime.now()}");
+            }
           } else {
-            await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
+            await Backgroundservicecontroller()
+                .accessBox("create", "retryApi", "1");
           }
         }
       }
-
     }
   }
 
@@ -293,15 +301,5 @@ class Backgroundservicecontroller {
       }
     }
     return "err";
-  }
-
-  pauseOrContinueBackGroundService() async {
-    final service = FlutterBackgroundService();
-    var isRunning = await service.isRunning();
-    if (isRunning) {
-      service.invoke("stopService");
-    } else {
-      service.startService();
-    }
   }
 }

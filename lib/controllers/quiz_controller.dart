@@ -415,14 +415,15 @@ class QuizController extends GetxController with StateMixin {
           var info =
               await Backgroundservicecontroller().getLatestStatusQuiz(sales_id);
           if (info != "err") {
-            String _filequiz =
-                await Backgroundservicecontroller().readFileQuiz();
-            await Backgroundservicecontroller()
-                .pauseOrContinueBackGroundService();
-            await Backgroundservicecontroller().writeText(
-                "${info};${_filequiz.split(";")[1]};${sales_id};${DateTime.now()}");
-            await Backgroundservicecontroller()
-                .pauseOrContinueBackGroundService();
+            try {
+              String _filequiz =
+                  await Backgroundservicecontroller().readFileQuiz();
+              await Backgroundservicecontroller().writeText(
+                  "${info};${_filequiz.split(";")[1]};${sales_id};${DateTime.now()}");
+            } catch (e) {
+              await Backgroundservicecontroller().writeText(
+                  "${info};${DateTime.now()};${sales_id};${DateTime.now()}");
+            }
           } else {
             await Backgroundservicecontroller()
                 .accessBox("create", "retryApi", "1");
