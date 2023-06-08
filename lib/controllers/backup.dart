@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/background_service_controller.dart';
@@ -41,14 +40,14 @@ class QuizController extends GetxController with StateMixin {
 
     final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
 
-    Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>('retrySubmitQuizBox');
+    var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
     var isRetrySubmit = retrySubmitQuizBox.get("retryStatus");
-    if(isRetrySubmit.value == "true") {
+    if(isRetrySubmit == true) {
       change(null, status: RxStatus.empty());
+      
     } else {
       getQuizConfig(salesIdParams.value);
     }
-    retrySubmitQuizBox.close();
 
     ever(isRestart, (callback) {
       restartQuiz();
@@ -237,7 +236,7 @@ class QuizController extends GetxController with StateMixin {
     );
   }
 
-  openErrorSubmitDialog(String message) {
+  operErrorSubmitDialog(String message) {
     appsDialog(
       type: "app_error",
       title: TextView(headings: "H3", text: message, fontSize: 16, color: Colors.black),
@@ -257,7 +256,7 @@ class QuizController extends GetxController with StateMixin {
       leftBtnMsg: "Ok",
       leftActionClick: () {
         Get.back();
-        Get.back();
+        Get.offAndToNamed(RouteName.quizDashboard);
       }
     );
   }
@@ -281,58 +280,6 @@ class QuizController extends GetxController with StateMixin {
         ),
       ),
       barrierDismissible: false,
-    );
-  }
-
-  openPassQuizDialog() {
-    appsDialog(
-      type: "quiz_passed",
-      title: Padding(
-        padding: const EdgeInsets.all(10),
-        child:  RichText(
-          textAlign: TextAlign.center,
-          text: const TextSpan(
-            text: 'Selamat! Anda dinyatakan ',
-            style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
-            children: <TextSpan>[
-              TextSpan(text: 'LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
-              TextSpan(text: ' kuis periode ini', style: TextStyle(fontFamily: "Poppins")),
-            ],
-          ),
-        ),
-      ),
-      isAnimated: true,
-      leftBtnMsg: "Ok",
-      leftActionClick: () {
-        Get.back();
-        Get.back();
-      },
-    );
-  }
-
-  openFailQuizDialog() {
-    appsDialog(
-      type: "quiz_failed",
-      title: Padding(
-        padding: const EdgeInsets.all(10),
-        child:  RichText(
-          textAlign: TextAlign.center,
-          text: const TextSpan(
-            text: 'Mohon maaf, Anda dinyatakan ',
-            style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
-            children: <TextSpan>[
-              TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
-              TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
-            ],
-          ),
-        ),
-      ),
-      isAnimated: true,
-      leftBtnMsg: "Ok",
-      leftActionClick: () {
-        Get.back();
-        Get.back();
-      },
     );
   }
 
@@ -364,6 +311,7 @@ class QuizController extends GetxController with StateMixin {
     try {
       openSubmitDialog();
       await postQuizData();
+      // Get.back();
     } catch(e) {
       isError(true);
       errorMessage.value = e.toString();
@@ -387,13 +335,22 @@ class QuizController extends GetxController with StateMixin {
         passed = 0;
       }
 
-      var params =  {
-        'sales_id': salesId,
-        'quiz_id': quizModel[0].quizID,
-        'date': formattedDate,
-        'passed': passed,
-        'model': quizModel
-      };
+      var params = {};
+
+      Box retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+      var retrySubmit = retrySubmitQuizBox.get("retryStatus");
+      if(retrySubmit == true) {
+        var submitQuizBox = await Hive.openBox('submitQuizBox');
+        params = submitQuizBox.get("bodyData");
+      } else {
+        params =  {
+          'sales_id': salesId,
+          'quiz_id': quizModel[0].quizID,
+          'date': formattedDate,
+          'passed': passed,
+          'model': quizModel
+        };
+      }
 
       bool isConnected = await ApiClient().checkConnection();
       if(isConnected) {
@@ -404,9 +361,9 @@ class QuizController extends GetxController with StateMixin {
           Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
         );
 
-        if(resultSubmit == "success") {
-          Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
-          retrySubmitQuizBox.put(AppConfig.keyStatusBoxSubmitQuiz, ServiceBox(value: "false"));
+        if(resultSubmit == "success"){
+          var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+          retrySubmitQuizBox.put("retryStatus", false);
 
           var info = await Backgroundservicecontroller().getLatestStatusQuiz(salesId); 
           if(info != "err"){
@@ -415,37 +372,35 @@ class QuizController extends GetxController with StateMixin {
           } else {
             await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
           }
-          
-          print("gethere");
-          Get.back();
-          if(isPassed.value) {
-            isReset(!(isReset.value));
-            openPassQuizDialog();
-          } else {
-            isRestart(!(isRestart.value));
-            openFailQuizDialog();
-          }
         } else {
+          var submitQuizBox = await Hive.openBox('submitQuizBox');
+          submitQuizBox.clear();
+          submitQuizBox.put("bodyData", params);
+
+          var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+          retrySubmitQuizBox.put("retryStatus", true);
+          
           Get.back();
-          openErrorSubmitDialog(resultSubmit);
+          openRetrySubmitDialog();
         }
       } else {
-        Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
-        await retrySubmitQuizBox.put(AppConfig.keyStatusBoxSubmitQuiz, ServiceBox(value: "true"));
-        await retrySubmitQuizBox.put(AppConfig.keyDataBoxSubmitQuiz,ServiceBox(value: jsonEncode(params)));
-        retrySubmitQuizBox.close();
-        
+        var submitQuizBox = await Hive.openBox('submitQuizBox');
+        submitQuizBox.clear();
+        submitQuizBox.put("bodyData", params);
+
+        var mybox = await Hive.openBox<ServiceBox>('submitQuizBox');
+        mybox.put("bodyData",ServiceBox(value: params.toString()));
+
+        var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
+        retrySubmitQuizBox.put("retryStatus", true);
+
         Get.back();
-        if(isPassed.value) {
-          isReset(!(isReset.value));
-        } else {
-          isRestart(!(isRestart.value));
-        }
         openRetrySubmitDialog();
       }
     } catch(e) {
       Get.back();
-      openErrorSubmitDialog(e.toString());
+      operErrorSubmitDialog(e.toString());
     }
   }
+
 }

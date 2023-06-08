@@ -47,9 +47,8 @@ class ApiClient {
       final response = await dio.post(path, data: formData, options: options);
 
       return response.data;
-    } on DioError catch (e) {
-      debugPrint("exc ${e.message.toString()}");
-      throw Exception(e.message);
+    } catch (e) {
+      throw Exception(e);
     }
   }
 

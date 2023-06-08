@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
@@ -14,7 +15,8 @@ import 'package:quiz_app/widgets/textview.dart';
 class StartQuiz extends GetView<QuizController>  {
   StartQuiz({super.key});
 
-  final QuizController quizController = Get.find();
+  // final QuizController quizController = Get.find();
+  final quizController = Get.find<QuizController>();
   final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
 
   @override
@@ -53,6 +55,36 @@ class StartQuiz extends GetView<QuizController>  {
               onLoading: Center(
                 child: Lottie.asset('assets/lottie/loading.json', width: 60),
               ),
+              onEmpty: Center(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/quiz-retry.json',
+                        width: Get.width*0.5,
+                      ),
+                      const SizedBox(height: 15),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 30),
+                        child: TextView(headings: "H3", text: Message.warningQuizNotSent, textAlign: TextAlign.center),
+                      ),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppConfig.darkGreen,
+                          padding: const EdgeInsets.all(12),
+                        ),
+                        child: const TextView(headings: "H3", text: "ok", color: Colors.white, isCapslock: true),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               onError: (error) => Center(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -89,7 +121,7 @@ class StartQuiz extends GetView<QuizController>  {
                     ],
                   ),
                 ),
-              )
+              ),
             ),
           ],
         ),
@@ -97,6 +129,8 @@ class StartQuiz extends GetView<QuizController>  {
     );
   }
 }
+
+// sdsd
 
 class CircularButton extends StatelessWidget {
   const CircularButton({super.key});

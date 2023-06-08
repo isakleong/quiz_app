@@ -16,7 +16,7 @@ class AppRoute {
   static final pages = [
     GetPage(
       name: RouteName.splashscreen,
-      page: () => SplashScreen(),
+      page: () => const SplashScreen(),
       binding: SplashScreenBinding(),
       // transition: Transition.fadeIn,
     ),
@@ -44,7 +44,7 @@ class AppRoute {
     GetPage(
       name: RouteName.quiz,
       page: () => QuizPage(),
-      binding: QuizPageBinding(),
+      // binding: QuizPageBinding(),
       transition: Transition.noTransition,
     ),
     GetPage(

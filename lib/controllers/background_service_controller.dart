@@ -7,11 +7,13 @@ import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:quiz_app/common/app_config.dart';
+import 'package:quiz_app/controllers/quiz_controller.dart';
 import 'package:quiz_app/models/servicebox.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -37,7 +39,7 @@ void onStart(ServiceInstance service) async {
   });
 
   // bring to foreground
-  Timer.periodic(const Duration(seconds: 10), (timer) async {
+  Timer.periodic(const Duration(minutes: 1), (timer) async {
     await Backgroundservicecontroller().cekQuiz();
 
     if (service is AndroidServiceInstance) {
@@ -49,7 +51,42 @@ void onStart(ServiceInstance service) async {
       }
     }
     // Backgroundservicecontroller().writeText("Updated at ${DateTime.now()}");
-    // print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
+    // print('FLUTTER BACKGROUND SERVICE 1: ${DateTime.now()}');
+
+    final deviceInfo = DeviceInfoPlugin();
+    String? device;
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      device = androidInfo.model;
+    }
+
+    if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      device = iosInfo.model;
+    }
+
+    service.invoke(
+      'update',
+      {
+        "current_date": DateTime.now().toIso8601String(),
+        "device": device,
+      },
+    );
+  });
+
+  Timer.periodic(const Duration(seconds: 10), (timer) async {
+    await Backgroundservicecontroller().retrySubmitQuiz();
+
+    if (service is AndroidServiceInstance) {
+      if (await service.isForegroundService()) {
+        service.setForegroundNotificationInfo(
+          title: "My App Service",
+          content: "Updated at ${DateTime.now()}",
+        );
+      }
+    }
+    // Backgroundservicecontroller().writeText("Updated at ${DateTime.now()}");
+    // print('FLUTTER BACKGROUND SERVICE 2: ${DateTime.now()}');
 
     final deviceInfo = DeviceInfoPlugin();
     String? device;
@@ -154,43 +191,42 @@ class Backgroundservicecontroller {
   }
 
   retrySubmitQuiz() async {
-    var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
-    bool retryStatus = retrySubmitQuizBox.get("retryStatus");
-    if(retryStatus) {
-      var submitQuizBox = await Hive.openBox('submitQuizBox');
-      var params = submitQuizBox.get("bodyData");
+    try {
+      print("WORKERS");
+      var retryStatus = await accessBox("read", AppConfig.keyStatusBoxSubmitQuiz, "", box: AppConfig.boxSubmitQuiz);
+      if(retryStatus != null && retryStatus.value == "true") {
+        print("ICHA");
+        var bodyData = await accessBox("read", AppConfig.keyDataBoxSubmitQuiz, "", box: AppConfig.boxSubmitQuiz);
+        bool isConnected = await ApiClient().checkConnection();
+        if(isConnected) {
+          var resultSubmit = await ApiClient().postData(
+            '/quiz/submit',
+            bodyData.value,
+            Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
+          );
 
-      bool isConnected = await ApiClient().checkConnection();
-      if(isConnected) {
-        var bodyData = jsonEncode(params);
-        var result_submit = await ApiClient().postData(
-          '/quiz/submit',
-          bodyData,
-          Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
-        );
+          if(resultSubmit == "success") {
+            await Backgroundservicecontroller().accessBox("create", AppConfig.keyStatusBoxSubmitQuiz, "false", box: AppConfig.boxSubmitQuiz);
 
-        if(result_submit == "success"){
-          var retrySubmitQuizBox = await Hive.openBox('retrySubmitQuizBox');
-          retrySubmitQuizBox.put("retryStatus", false);
+            String tempSalesID = await Utils().readParameter();
+            var salesId = tempSalesID.split(';')[0];
 
-          String tempSalesID = await Utils().readParameter();
-          var sales_id = tempSalesID.split(';')[0];
-
-          var info = await Backgroundservicecontroller().getLatestStatusQuiz(sales_id); 
-          if(info != "err"){
-            String _filequiz = await Backgroundservicecontroller().readFileQuiz();
-            await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${sales_id};${DateTime.now()}");
-          } else {
-            await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
+            var info = await Backgroundservicecontroller().getLatestStatusQuiz(salesId);
+            if(info != "err") {
+              String _filequiz = await Backgroundservicecontroller().readFileQuiz();
+              await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${salesId};${DateTime.now()}");
+            } else {
+              await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
+            }
           }
-        }
+        } 
       }
-
+    } catch(e) {
+      print("ERROR HUHU "+e.toString());
     }
   }
 
   cekQuiz() async {
-
     if (await isSameSalesid()){
       try {
         String _filequiz = await readFileQuiz();
@@ -237,7 +273,6 @@ class Backgroundservicecontroller {
 
   Future<String> getLatestStatusQuiz(String salesid) async{
     try {
-
      var req = await ApiClient().getData("/quiz/status?sales_id=${salesid}");
       Map<String, dynamic> jsonResponse = json.decode(req);
       ApiResponse response = ApiResponse.fromJson(jsonResponse);
@@ -251,16 +286,18 @@ class Backgroundservicecontroller {
     }
   }
 
-  accessBox(String type, String key ,String value) async {
+  accessBox(String type, String key ,String value, {String box='serviceBox'}) async {
     try {
       await hiveInitializer();
     } catch (e) {
-      return;
+      // return;
     }
-    var mybox = await Hive.openBox<ServiceBox>('serviceBox');
+    var mybox = await Hive.openBox<ServiceBox>(box);
     if(type == "read"){
       try {
         var data = mybox.get(key);
+        mybox.close();
+
         return data;
       } catch (e) {
         return "err";
@@ -268,6 +305,8 @@ class Backgroundservicecontroller {
     } else if (type == "create"){
       try {
         mybox.put(key, ServiceBox(value: value));
+        mybox.close();
+
         return "created";
       } catch (e) {
         return "err";
@@ -277,6 +316,8 @@ class Backgroundservicecontroller {
         var boxtoupdate = mybox.get(key);
         boxtoupdate!.value = value;
         var newvalue = boxtoupdate.value;
+        mybox.close();
+
         return newvalue;
       } catch (e) {
         return "err";
@@ -284,6 +325,8 @@ class Backgroundservicecontroller {
     } else if (type == "delete"){
       try {
         mybox.delete(key);
+        mybox.close();
+
         return "deleted";
       } catch (e) {
         return "err";
@@ -291,5 +334,4 @@ class Backgroundservicecontroller {
     }
     return "err";
   }
-
 }

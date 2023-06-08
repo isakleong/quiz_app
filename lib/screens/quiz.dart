@@ -6,7 +6,6 @@ import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
-import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/quiz_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/widgets/dialog.dart';
@@ -15,7 +14,8 @@ import 'package:quiz_app/widgets/textview.dart';
 class QuizPage extends GetView<QuizController>{
   QuizPage({super.key});
 
-  final QuizController quizController = Get.find();
+  // final QuizController quizController = Get.find();
+  final quizController = Get.find<QuizController>();
 
   finishQuiz() {
     List<int> arrInvalidQuestion = [];
@@ -156,6 +156,7 @@ class QuizPage extends GetView<QuizController>{
         },
         style: OutlinedButton.styleFrom(
           foregroundColor: AppConfig.darkGreen,
+          backgroundColor: quizController.quizModel[quizController.currentQuestion.value].answerSelected == index ? AppConfig.lightSoftGreen : Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           side: BorderSide(width: 1.3, color: (quizController.quizModel[quizController.currentQuestion.value].answerSelected == index) ? AppConfig.mainGreen : Colors.black),
         ),
@@ -165,7 +166,7 @@ class QuizPage extends GetView<QuizController>{
             headings: "H3",
             text: text, 
             fontSize: 16,
-            color: (quizController.quizModel[quizController.currentQuestion.value].answerSelected == index) ? AppConfig.mainGreen : Colors.black,
+            color: Colors.black,
           ),
         ),
       ),

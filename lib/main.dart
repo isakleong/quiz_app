@@ -14,7 +14,7 @@ void main() async {
   ]);
   HttpOverrides.global = ApiHttpOverrides();
   //uncomment (for demo to dsd)
-  // await Backgroundservicecontroller().initializeService();
+  await Backgroundservicecontroller().initializeService();
   await Backgroundservicecontroller().hiveInitializer();
 
   runApp(const MyApp());
