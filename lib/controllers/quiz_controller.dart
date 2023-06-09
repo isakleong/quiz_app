@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
-import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/background_service_controller.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
@@ -22,11 +21,10 @@ import 'package:quiz_app/widgets/textview.dart';
 
 class QuizController extends GetxController with StateMixin {
   var isError = false.obs;
-  
+
   var isReset = false.obs;
   var isRestart = false.obs;
   var isRetryFetch = false.obs;
-
 
   var errorMessage = "".obs;
 
@@ -94,7 +92,7 @@ class QuizController extends GetxController with StateMixin {
     resetQuestion();
 
     var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
-    for(int i = 0; i<quizModelBox.length; i++) {
+    for (int i = 0; i < quizModelBox.length; i++) {
       quizModelBox.getAt(i)?.answerSelected = -1;
     }
   }
@@ -108,19 +106,19 @@ class QuizController extends GetxController with StateMixin {
 
   getQuizConfig(String params) async {
     change(null, status: RxStatus.loading());
-    
+
     bool isConnected = await ApiClient().checkConnection();
-    if(isConnected) {
+    if (isConnected) {
       try {
         var result = await ApiClient().getData("/quiz/config?sales_id=$params");
         bool isValid = Utils.validateData(result.toString());
 
-        if(isValid) {
+        if (isValid) {
           var data = jsonDecode(result.toString());
-          if(data.length > 0) {
+          if (data.length > 0) {
             quizTarget.value = int.parse(data[0]["Value"].toString());
             var quizConfigBox = await Hive.openBox('quizConfigBox');
-            if(quizConfigBox.get("target") != data[0]["Value"].toString()) {
+            if (quizConfigBox.get("target") != data[0]["Value"].toString()) {
               quizConfigBox.put("target", quizTarget.value);
             } else {
               quizTarget.value = quizConfigBox.get("target");
@@ -275,7 +273,11 @@ class QuizController extends GetxController with StateMixin {
                 fit: BoxFit.contain,
               ),
               const SizedBox(height: 30),
-              const TextView(headings: "H3", text: Message.submittingQuiz, fontSize: 16, color: Colors.black),
+              const TextView(
+                  headings: "H3",
+                  text: Message.submittingQuiz,
+                  fontSize: 16,
+                  color: Colors.black),
             ],
           ),
         ),
@@ -337,23 +339,23 @@ class QuizController extends GetxController with StateMixin {
   }
 
   getSalesId() async {
-      String sales_id = await Utils().readParameter();
-      // return sales_id.split(';')[0];
-      return '01AC1A0103';
+    String sales_id = await Utils().readParameter();
+    // return sales_id.split(';')[0];
+    return '01AC1A0103';
   }
 
   scoreCalculation() {
     int score = 0;
-    for(int i=0; i<quizModel.length; i++) {
-      if(quizModel[i].answerSelected == quizModel[i].correctAnswerIndex) {
+    for (int i = 0; i < quizModel.length; i++) {
+      if (quizModel[i].answerSelected == quizModel[i].correctAnswerIndex) {
         score++;
       }
     }
 
-    var target = ((quizTarget.value/100) * quizModel.length);
+    var target = ((quizTarget.value / 100) * quizModel.length);
     var arrTarget = target.toString().split(".");
 
-    if(score >= int.parse(arrTarget[0])) {
+    if (score >= int.parse(arrTarget[0])) {
       isPassed(true);
     } else {
       isPassed(false);
@@ -381,7 +383,7 @@ class QuizController extends GetxController with StateMixin {
       await scoreCalculation();
 
       int passed = 0;
-      if(isPassed.value == true) {
+      if (isPassed.value == true) {
         passed = 1;
       } else {
         passed = 0;
@@ -396,13 +398,13 @@ class QuizController extends GetxController with StateMixin {
       };
 
       bool isConnected = await ApiClient().checkConnection();
-      if(isConnected) {
+      if (isConnected) {
         var bodyData = jsonEncode(params);
         var resultSubmit = await ApiClient().postData(
-          '/quiz/submit',
-          bodyData,
-          Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
-        );
+            '/quiz/submit',
+            bodyData,
+            Options(
+                headers: {HttpHeaders.contentTypeHeader: "application/json"}));
 
         if(resultSubmit == "success") {
           Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
@@ -415,8 +417,7 @@ class QuizController extends GetxController with StateMixin {
           } else {
             await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
           }
-          
-          print("gethere");
+
           Get.back();
           if(isPassed.value) {
             isReset(!(isReset.value));
@@ -443,7 +444,7 @@ class QuizController extends GetxController with StateMixin {
         }
         openRetrySubmitDialog();
       }
-    } catch(e) {
+    } catch (e) {
       Get.back();
       openErrorSubmitDialog(e.toString());
     }

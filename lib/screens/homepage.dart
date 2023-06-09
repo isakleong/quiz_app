@@ -11,14 +11,15 @@ import 'package:quiz_app/widgets/textview.dart';
 // ignore: must_be_immutable
 class Homepage extends StatelessWidget {
   Homepage({super.key});
-  
+
   DateTime? currentBackPressTime;
 
   Future<bool> confirmExit() async {
     FocusManager.instance.primaryFocus?.unfocus();
     DateTime now = DateTime.now();
 
-    if (currentBackPressTime == null || now.difference(currentBackPressTime!) > const Duration(seconds: 3)) {
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > const Duration(seconds: 3)) {
       currentBackPressTime = now;
       Get.snackbar(
         "Yakin ingin keluar?",
@@ -33,9 +34,8 @@ class Homepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final splashscreenController = Get.find<SplashscreenController>();
-    
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -54,7 +54,8 @@ class Homepage extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -62,7 +63,8 @@ class Homepage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(FontAwesomeIcons.solidCircleUser, size: 25, color: AppConfig.darkGreen),
+                          Icon(FontAwesomeIcons.solidCircleUser,
+                              size: 25, color: AppConfig.darkGreen),
                           const SizedBox(width: 10),
                           const TextView(headings: "H2", text: "01AC1A0103"),
                         ],
@@ -76,27 +78,35 @@ class Homepage extends StatelessWidget {
                             itemBuilder: (BuildContext context, int index) {
                               return Card(
                                 elevation: 10,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16)),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(
+                                      gradient: LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
-                                        colors: [AppConfig.softGreen, AppConfig.softCyan],
-                                    ),
-                                    borderRadius: BorderRadius.circular(16)
-                                  ),
+                                        colors: [
+                                          AppConfig.softGreen,
+                                          AppConfig.softCyan
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(16)),
                                   child: Material(
                                     color: Colors.transparent,
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(16),
-                                      splashColor: AppConfig.mainGreen.withOpacity(0.5),
+                                      splashColor:
+                                          AppConfig.mainGreen.withOpacity(0.5),
                                       onTap: () {
                                         Get.toNamed(RouteName.quizDashboard);
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(20),
-                                        child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 20),
+                                        child: TextView(
+                                            headings: "H2",
+                                            text: splashscreenController
+                                                .moduleList[index].moduleID,
+                                            fontSize: 20),
                                       ),
                                     ),
                                   ),

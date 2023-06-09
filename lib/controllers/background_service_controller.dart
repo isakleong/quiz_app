@@ -7,13 +7,11 @@ import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/controllers/quiz_controller.dart';
 import 'package:quiz_app/models/servicebox.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -39,7 +37,7 @@ void onStart(ServiceInstance service) async {
   });
 
   // bring to foreground
-  Timer.periodic(const Duration(minutes: 1), (timer) async {
+  Timer.periodic(const Duration(hours: 1), (timer) async {
     await Backgroundservicecontroller().cekQuiz();
 
     if (service is AndroidServiceInstance) {
@@ -109,11 +107,11 @@ void onStart(ServiceInstance service) async {
     );
   });
 }
-  
-class Backgroundservicecontroller {
 
-  Future hiveInitializer() async{
-    Directory directory = await path_provider.getApplicationDocumentsDirectory();
+class Backgroundservicecontroller {
+  Future hiveInitializer() async {
+    Directory directory =
+        await path_provider.getApplicationDocumentsDirectory();
     Hive.init(directory.path);
     Hive.registerAdapter(ModuleAdapter());
     Hive.registerAdapter(QuizAdapter());
@@ -121,62 +119,60 @@ class Backgroundservicecontroller {
   }
 
   Future writeText(String teks) async {
-     File(join(
-          AppConfig.filequiz))
-        ..createSync(recursive: true)..writeAsString(teks);
+    File(join(AppConfig.filequiz))
+      ..createSync(recursive: true)
+      ..writeAsString(teks);
   }
 
   Future<void> initializeService() async {
-  final service = FlutterBackgroundService();
-  await service.configure(
-    androidConfiguration: AndroidConfiguration(
-      onStart: onStart,
-      autoStart: true,
-      isForegroundMode: true,
-      foregroundServiceNotificationId: 888,
-    ),
-    iosConfiguration: IosConfiguration(
-      autoStart: true,
-      onForeground: null,
-      onBackground: null,
-    ),
-  );
+    final service = FlutterBackgroundService();
+    await service.configure(
+      androidConfiguration: AndroidConfiguration(
+        onStart: onStart,
+        autoStart: true,
+        isForegroundMode: true,
+        foregroundServiceNotificationId: 888,
+      ),
+      iosConfiguration: IosConfiguration(
+        autoStart: true,
+        onForeground: null,
+        onBackground: null,
+      ),
+    );
 
-
-  service.startService();
-}
+    service.startService();
+  }
 
   Future<bool> isSameSalesid() async {
     try {
       String parameter = await Utils().readParameter();
       String _salesidvendor = "";
-      if(parameter != "") {
+      if (parameter != "") {
         var arrParameter = parameter.split(';');
-        for(int i=0; i<arrParameter.length; i++) {
-            if(i == 0) {
-              //salesid
-              _salesidvendor  = arrParameter[i];
-            } else if(i == 1) {
-              // custid = arrParameter[i];
-            } else {
-              // loccin = arrParameter[2];
-            }
+        for (int i = 0; i < arrParameter.length; i++) {
+          if (i == 0) {
+            //salesid
+            _salesidvendor = arrParameter[i];
+          } else if (i == 1) {
+            // custid = arrParameter[i];
+          } else {
+            // loccin = arrParameter[2];
           }
+        }
       }
-      
+
       String _salesidQuiz = await readFileQuiz();
 
-      if (_salesidQuiz != "" && _salesidvendor != ""){
-          if(_salesidQuiz.split(";")[2] == _salesidvendor){
-            return true;
-          }
+      if (_salesidQuiz != "" && _salesidvendor != "") {
+        if (_salesidQuiz.split(";")[2] == _salesidvendor) {
+          return true;
+        }
       }
       return false;
     } catch (e) {
       return false;
     }
-  
-}
+  }
 
   Future<String> readFileQuiz() async {
     try {
@@ -192,10 +188,8 @@ class Backgroundservicecontroller {
 
   retrySubmitQuiz() async {
     try {
-      print("WORKERS");
       var retryStatus = await accessBox("read", AppConfig.keyStatusBoxSubmitQuiz, "", box: AppConfig.boxSubmitQuiz);
       if(retryStatus != null && retryStatus.value == "true") {
-        print("ICHA");
         var bodyData = await accessBox("read", AppConfig.keyDataBoxSubmitQuiz, "", box: AppConfig.boxSubmitQuiz);
         bool isConnected = await ApiClient().checkConnection();
         if(isConnected) {
@@ -222,30 +216,35 @@ class Backgroundservicecontroller {
         } 
       }
     } catch(e) {
-      print("ERROR HUHU "+e.toString());
+      return;
     }
   }
 
   cekQuiz() async {
-    if (await isSameSalesid()){
+    if (await isSameSalesid()) {
       try {
         String _filequiz = await readFileQuiz();
         DateTime now = DateTime.now();
-        DateTime datetimefilequiz = DateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS").parse(_filequiz.split(";")[3]);
+        DateTime datetimefilequiz = DateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS")
+            .parse(_filequiz.split(";")[3]);
         Duration difference = datetimefilequiz.difference(now);
         var dataBox = await accessBox("read", "retryApi", "");
-        if(difference.inDays >= 1 || (dataBox != null && dataBox.value == "1")){
+        if (difference.inDays >= 1 ||
+            (dataBox != null && dataBox.value == "1")) {
           //sudah melewati 1 hari
           String status = await getLatestStatusQuiz(_filequiz.split(";")[2]);
-          if(status != "err"){
+          if (status != "err") {
             //status;service time;salesid;last hit api time
             await accessBox("create", "retryApi", "0");
-            await writeText("${status};${DateTime.now()};${_filequiz.split(";")[2]};${DateTime.now()}");
-          } else if (status == "err"){
-            await writeText("${status};${DateTime.now()};${_filequiz.split(";")[2]};${_filequiz.split(";")[3]}");
+            await writeText(
+                "${status};${DateTime.now()};${_filequiz.split(";")[2]};${DateTime.now()}");
+          } else if (status == "err") {
+            await writeText(
+                "${status};${DateTime.now()};${_filequiz.split(";")[2]};${_filequiz.split(";")[3]}");
           }
         } else {
-          await writeText("${_filequiz.split(";")[0]};${DateTime.now()};${_filequiz.split(";")[2]};${_filequiz.split(";")[3]}");
+          await writeText(
+              "${_filequiz.split(";")[0]};${DateTime.now()};${_filequiz.split(";")[2]};${_filequiz.split(";")[3]}");
         }
       } catch (e) {
         return;
@@ -253,17 +252,19 @@ class Backgroundservicecontroller {
     } else {
       try {
         String _salesidVendor = await Utils().readParameter();
-        if(_salesidVendor!=""){
+        if (_salesidVendor != "") {
           //hit api only when there is salesid from vendor
-          String status = await getLatestStatusQuiz(_salesidVendor.split(';')[0]);
-          if(status != "err"){
+          String status =
+              await getLatestStatusQuiz(_salesidVendor.split(';')[0]);
+          if (status != "err") {
             //status;service time;salesid;last hit api time
-            await writeText("${status};${DateTime.now()};${_salesidVendor.split(';')[0]};${DateTime.now()}");
-          } else{
+            await writeText(
+                "${status};${DateTime.now()};${_salesidVendor.split(';')[0]};${DateTime.now()}");
+          } else {
             await writeText(";${DateTime.now()};;");
           }
         } else {
-            await writeText(";${DateTime.now()};;");
+          await writeText(";${DateTime.now()};;");
         }
       } catch (e) {
         return;
@@ -271,14 +272,14 @@ class Backgroundservicecontroller {
     }
   }
 
-  Future<String> getLatestStatusQuiz(String salesid) async{
+  Future<String> getLatestStatusQuiz(String salesid) async {
     try {
-     var req = await ApiClient().getData("/quiz/status?sales_id=${salesid}");
+      var req = await ApiClient().getData("/quiz/status?sales_id=${salesid}");
       Map<String, dynamic> jsonResponse = json.decode(req);
       ApiResponse response = ApiResponse.fromJson(jsonResponse);
-      if(response.code.toString() == "200"){
+      if (response.code.toString() == "200") {
         return response.message;
-      }else {
+      } else {
         return "err";
       }
     } catch (e) {
@@ -302,7 +303,7 @@ class Backgroundservicecontroller {
       } catch (e) {
         return "err";
       }
-    } else if (type == "create"){
+    } else if (type == "create") {
       try {
         mybox.put(key, ServiceBox(value: value));
         mybox.close();
@@ -311,7 +312,7 @@ class Backgroundservicecontroller {
       } catch (e) {
         return "err";
       }
-    } else if (type == "update"){
+    } else if (type == "update") {
       try {
         var boxtoupdate = mybox.get(key);
         boxtoupdate!.value = value;
@@ -322,7 +323,7 @@ class Backgroundservicecontroller {
       } catch (e) {
         return "err";
       }
-    } else if (type == "delete"){
+    } else if (type == "delete") {
       try {
         mybox.delete(key);
         mybox.close();

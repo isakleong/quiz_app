@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 
 import 'package:quiz_app/tools/utils.dart';
