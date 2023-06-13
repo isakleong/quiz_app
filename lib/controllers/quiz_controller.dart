@@ -106,7 +106,11 @@ class QuizController extends GetxController with StateMixin {
 
     var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
     for (int i = 0; i < quizModelBox.length; i++) {
-      quizModelBox.getAt(i)?.answerSelected = -1;
+      Quiz? quiz = quizModelBox.getAt(i);
+      if (quiz != null) {
+        quiz.answerSelected = -1;
+        quizModelBox.putAt(i, quiz);
+      }
     }
   }
 
