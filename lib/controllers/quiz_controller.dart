@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
+import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/background_service_controller.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
@@ -39,12 +40,24 @@ class QuizController extends GetxController with StateMixin {
 
     final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
 
-    Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>('retrySubmitQuizBox');
-    var isRetrySubmit = retrySubmitQuizBox.get("retryStatus");
-    if(isRetrySubmit.value == "true") {
+    Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
+    var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
+    if(isRetrySubmit != null && isRetrySubmit.value == "true") {
+      print("masuk 1");
       change(null, status: RxStatus.empty());
     } else {
-      getQuizConfig(salesIdParams.value);
+      if(Get.currentRoute == RouteName.starter) {
+        getQuizConfig(salesIdParams.value);
+      } else {
+        //nothing to do
+        var quizConfigBox = await Hive.openBox('quizConfigBox');
+        quizTarget.value = quizConfigBox.get("target");
+
+        quizModel.clear();
+        var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
+        quizModel.addAll(quizModelBox.values);
+        change(null, status: RxStatus.success());
+      }
     }
     retrySubmitQuizBox.close();
 
