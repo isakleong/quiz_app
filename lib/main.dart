@@ -12,8 +12,9 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
   HttpOverrides.global = ApiHttpOverrides();
-  //uncomment (for demo to dsd)
+
   await Backgroundservicecontroller().initializeService();
   await Backgroundservicecontroller().hiveInitializer();
 

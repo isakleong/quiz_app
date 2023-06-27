@@ -12,6 +12,8 @@ import 'package:quiz_app/widgets/textview.dart';
 class Homepage extends StatelessWidget {
   Homepage({super.key});
 
+  final splashscreenController = Get.find<SplashscreenController>();
+
   DateTime? currentBackPressTime;
 
   Future<bool> confirmExit() async {
@@ -34,7 +36,7 @@ class Homepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final splashscreenController = Get.find<SplashscreenController>();
+    // final splashscreenController = Get.find<SplashscreenController>();
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -66,7 +68,7 @@ class Homepage extends StatelessWidget {
                           Icon(FontAwesomeIcons.solidCircleUser,
                               size: 25, color: AppConfig.darkGreen),
                           const SizedBox(width: 10),
-                          const TextView(headings: "H2", text: "01AC1A0103"),
+                          TextView(headings: "H2", text: splashscreenController.salesIdParams.value),
                         ],
                       ),
                       Expanded(
@@ -115,6 +117,25 @@ class Homepage extends StatelessWidget {
                             },
                           ),
                         ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              print("tested");
+                            },
+                            child: ShaderMask(
+                              shaderCallback: (bounds) => const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFF11998e), Color(0xFF38ef7d)],
+                              ).createShader(bounds),
+                              child: const FaIcon(FontAwesomeIcons.gear, color: Colors.white, size: 50),
+                            ),
+                          ),
+                          TextView(headings: "H3", text: "v ${splashscreenController.appVersion.value}", fontSize: 14),
+                        ],
                       ),
                     ],
                   ),

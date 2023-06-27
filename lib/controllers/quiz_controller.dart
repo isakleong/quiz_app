@@ -43,19 +43,18 @@ class QuizController extends GetxController with StateMixin {
     Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
     var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
     if(isRetrySubmit != null && isRetrySubmit.value == "true") {
-      print("masuk 1");
       change(null, status: RxStatus.empty());
     } else {
       if(Get.currentRoute == RouteName.starter) {
         getQuizConfig(salesIdParams.value);
       } else {
-        //nothing to do
         var quizConfigBox = await Hive.openBox('quizConfigBox');
         quizTarget.value = quizConfigBox.get("target");
 
         quizModel.clear();
         var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
         quizModel.addAll(quizModelBox.values);
+
         change(null, status: RxStatus.success());
       }
     }
@@ -357,8 +356,7 @@ class QuizController extends GetxController with StateMixin {
 
   getSalesId() async {
     String sales_id = await Utils().readParameter();
-    // return sales_id.split(';')[0];
-    return '01AC1A0103';
+    return sales_id.split(';')[0];
   }
 
   scoreCalculation() {

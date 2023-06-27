@@ -8,12 +8,15 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/controllers/history_controller.dart';
+import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/widgets/textview.dart';
 import 'package:shimmer/shimmer.dart';
 // import 'package:shimmer/shimmer.dart';
 
 class HistoryPage extends GetView<HistoryController>  {
   HistoryPage({super.key});
+
+  final SplashscreenController splashscreenController = Get.find();
 
   final HistoryController historyController = Get.find();
 
@@ -92,30 +95,33 @@ class HistoryPage extends GetView<HistoryController>  {
                     ),
                   ),
                   //uncomment (for demo to DSD)
-                  // Center(
-                  //   child: LayoutBuilder(
-                  //     builder: (context, constraints) => Obx(() => ToggleButtons(
-                  //       constraints: BoxConstraints.expand(width: (constraints.maxWidth*0.8)/3),
-                  //       fillColor: AppConfig.softGreen,
-                  //       borderColor: AppConfig.darkGreen,
-                  //       borderWidth: 1.5,
-                  //       renderBorder: true,
-                  //       selectedBorderColor: AppConfig.darkGreen,
-                  //       borderRadius: BorderRadius.circular(30),
-                  //       // focusNodes: focusToggle,
-                  //       isSelected: historyController.selectedLimitRequestHistoryData.toList(),
-                  //       onPressed: (int i) async {
-                  //         await historyController.applyFilter(i);
-                  //         historyController.filterQuizHistoryModel.refresh();
-                  //       },
-                  //       children: const <Widget>[
-                  //         TextView(headings: "H3", text: "BM"),
-                  //         TextView(headings: "H3", text: "SPV"),
-                  //         TextView(headings: "H3", text: "Sales"),
-                  //       ],
-                  //     )),
-                  //   ),
-                  // ),
+                  splashscreenController.salesIdParams.value.contains("C100") ?
+                  Center(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => Obx(() => ToggleButtons(
+                        constraints: BoxConstraints.expand(width: (constraints.maxWidth*0.8)/3),
+                        fillColor: AppConfig.softGreen,
+                        borderColor: AppConfig.darkGreen,
+                        borderWidth: 1.5,
+                        renderBorder: true,
+                        selectedBorderColor: AppConfig.darkGreen,
+                        borderRadius: BorderRadius.circular(30),
+                        // focusNodes: focusToggle,
+                        isSelected: historyController.selectedLimitRequestHistoryData.toList(),
+                        onPressed: (int i) async {
+                          await historyController.applyFilter(i);
+                          historyController.filterQuizHistoryModel.refresh();
+                        },
+                        children: const <Widget>[
+                          TextView(headings: "H3", text: "BM"),
+                          TextView(headings: "H3", text: "SPV"),
+                          TextView(headings: "H3", text: "Sales"),
+                        ],
+                      )),
+                    ),
+                  )
+                  :
+                  Container(),
                   Expanded(
                     child: Stack(
                       children: [

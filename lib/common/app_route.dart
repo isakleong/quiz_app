@@ -44,7 +44,7 @@ class AppRoute {
     GetPage(
       name: RouteName.quiz,
       page: () => QuizPage(),
-      // binding: QuizPageBinding(),
+      binding: QuizPageBinding(),
       transition: Transition.noTransition,
     ),
     GetPage(

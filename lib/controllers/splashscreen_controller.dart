@@ -18,6 +18,7 @@ class SplashscreenController extends GetxController with StateMixin {
   // var isError = false.obs;
   var errorMessage = "".obs;
 
+  var appVersion = "".obs;
   var configData = "".obs;
   var moduleList = <Module>[].obs;
   var isNeedUpdate = false.obs;
@@ -136,6 +137,7 @@ class SplashscreenController extends GetxController with StateMixin {
         PackageInfo packageInfo = await PackageInfo.fromPlatform();
         String appName = packageInfo.appName;
         String currentVersion = packageInfo.version;
+        appVersion.value = currentVersion;
 
         final result = await ApiClient().getData("/config?app=$appName");
         var data = jsonDecode(result.toString());
@@ -151,7 +153,7 @@ class SplashscreenController extends GetxController with StateMixin {
             type: "app_info",
             title: const TextView(
               headings: "H4",
-              text: "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi Utility.\n4. Tunggu hingga proses update selesai.",
+              text: "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi SFA Tools.\n4. Tunggu hingga proses update selesai.",
               textAlign: TextAlign.start,
             ),
             leftBtnMsg: "ok",
@@ -175,10 +177,8 @@ class SplashscreenController extends GetxController with StateMixin {
                 isCheckInParams.value = arrParameter[2];
               }
             }
-          } else { // hardcode for demo testing to DSD
-            salesIdParams.value = '01AC1A0103';
           }
-          salesIdParams.value = '01AC1A0103';
+
           getModuleData();
         }
       } catch(e) {

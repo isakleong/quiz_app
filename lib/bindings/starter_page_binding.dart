@@ -5,7 +5,8 @@ class StarterPageBinding implements Bindings {
   @override
   void dependencies() {
     // Get.put<QuizController>(QuizController(), permanent: true);
-    Get.lazyPut<QuizController>(() => QuizController(), fenix: true);
+    // Get.lazyPut<QuizController>(() => QuizController(), fenix: true);
+    Get.lazyPut<QuizController>(() => QuizController());
   }
 
 }

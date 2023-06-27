@@ -20,6 +20,7 @@ import '../models/quiz.dart';
 import '../tools/service.dart';
 import '../tools/utils.dart';
 
+@pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
   if (service is AndroidServiceInstance) {
@@ -36,20 +37,17 @@ void onStart(ServiceInstance service) async {
     service.stopSelf();
   });
 
-  // bring to foreground
-  Timer.periodic(const Duration(hours: 1), (timer) async {
+  Timer.periodic(const Duration(minutes: 5), (timer) async {
     await Backgroundservicecontroller().cekQuiz();
 
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {
         service.setForegroundNotificationInfo(
-          title: "My App Service",
+          title: "SFA Tools Service",
           content: "Updated at ${DateTime.now()}",
         );
       }
     }
-    // Backgroundservicecontroller().writeText("Updated at ${DateTime.now()}");
-    // print('FLUTTER BACKGROUND SERVICE 1: ${DateTime.now()}');
 
     final deviceInfo = DeviceInfoPlugin();
     String? device;
@@ -72,19 +70,17 @@ void onStart(ServiceInstance service) async {
     );
   });
 
-  Timer.periodic(const Duration(seconds: 10), (timer) async {
+  Timer.periodic(const Duration(minutes: 2), (timer) async {
     await Backgroundservicecontroller().retrySubmitQuiz();
 
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {
         service.setForegroundNotificationInfo(
-          title: "My App Service",
+          title: "SFA Tools Service",
           content: "Updated at ${DateTime.now()}",
         );
       }
     }
-    // Backgroundservicecontroller().writeText("Updated at ${DateTime.now()}");
-    // print('FLUTTER BACKGROUND SERVICE 2: ${DateTime.now()}');
 
     final deviceInfo = DeviceInfoPlugin();
     String? device;
