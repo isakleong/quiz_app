@@ -5,11 +5,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
+import 'package:quiz_app/controllers/homepage_controller.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
+import 'package:quiz_app/widgets/dialog.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
 // ignore: must_be_immutable
-class Homepage extends StatelessWidget {
+class Homepage extends GetView<HomepageController> {
   Homepage({super.key});
 
   final splashscreenController = Get.find<SplashscreenController>();
@@ -123,7 +125,29 @@ class Homepage extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              print("tested");
+                              appsDialog(
+                                type: "confirm_dialog",
+                                title: const TextView(headings: "H2", text: "Pengaturan", fontSize: 16, isCapslock: true),
+                                content: Column(
+                                  children: [
+                                    TextField(
+                                      controller: controller.txtServerIPController,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: 'IP Server',
+                                        hintText: 'Input IP Server',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                isAnimated: false,
+                                isCancel: false,
+                                leftBtnMsg: "Simpan",
+                                leftActionClick: () {
+                                  Get.back();
+                                  print(controller.txtServerIPController.value);
+                                },
+                              );
                             },
                             child: ShaderMask(
                               shaderCallback: (bounds) => const LinearGradient(

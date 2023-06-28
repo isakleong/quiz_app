@@ -5,7 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
-void appsDialog ({required String type, bool isDismmisible = false, required Widget title, String rightBtnMsg = '', String leftBtnMsg = '', String iconAsset = '', required bool isAnimated, bool isCancel = false, VoidCallback? leftActionClick, VoidCallback? rightActionClick}) {
+void appsDialog ({required String type, bool isDismmisible = false, required Widget title, Widget? content, String rightBtnMsg = '', String leftBtnMsg = '', String iconAsset = '', required bool isAnimated, bool isCancel = false, VoidCallback? leftActionClick, VoidCallback? rightActionClick}) {
   Get.dialog(
     WillPopScope(
       onWillPop: () async{
@@ -47,12 +47,20 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                 fit: BoxFit.contain,
               )
               :
+              type == "confirm_dialog" ?
+              Container(
+                child: title
+              )
+              :
               Image.asset(
                 iconAsset,
                 width: 220,
                 height: 220
               ),
               const SizedBox(height: 30),
+              type == "confirm_dialog" ?
+              content!
+              :
               title
             ],
           ),

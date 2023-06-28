@@ -5,8 +5,12 @@ import 'package:quiz_app/tools/utils.dart';
 class AppConfig {
   static const String appsName = "Kuis";
 
-  static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
-  static const String initUrl = "https://link.tirtakencana.com/QuizApp";
+  // static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
+  // static const String initUrl = "https://link.tirtakencana.com/QuizApp";
+
+  static const String publicUrl = "link.tirtakencana.com";
+  static const String initUrl = "https://$publicUrl/QuizApp";
+  static const String baseUrl = "https://$publicUrl//QuizApp/public/api";
   static const String testUrl = "https://google.com";
   static const String filevendor = '/storage/emulated/0/TKTW/SFATools.txt';
   static const String filequiz = '/storage/emulated/0/TKTW/SFANotif.txt';

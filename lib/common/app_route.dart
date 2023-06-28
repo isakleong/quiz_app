@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:quiz_app/bindings/history_page_binding.dart';
+import 'package:quiz_app/bindings/homepage_binding.dart';
 import 'package:quiz_app/bindings/quiz_page_binding.dart';
 import 'package:quiz_app/bindings/starter_page_binding.dart';
 import 'package:quiz_app/bindings/splashscreen_binding.dart';
@@ -28,6 +29,7 @@ class AppRoute {
     GetPage(
       name: RouteName.homepage,
       page: () => Homepage(),
+      binding: HomepageBinding(),
       transition: Transition.fadeIn,
     ),
     GetPage(
