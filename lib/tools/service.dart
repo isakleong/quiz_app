@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/tools/logging.dart';
 
@@ -52,12 +51,24 @@ class ApiClient {
   }
 
   Future<bool> checkConnection() async {
-    bool result = await InternetConnectionChecker().hasConnection;
-    if (result == true) {
-      return true;
-    } else {
+    // bool result = await InternetConnectionChecker().hasConnection;
+    // if (result == true) {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
+
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } on SocketException catch (_) {
       return false;
     }
+
   }
 
 }

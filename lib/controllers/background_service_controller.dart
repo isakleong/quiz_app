@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:quiz_app/common/app_config.dart';
+import 'package:quiz_app/models/config_box.dart';
 import 'package:quiz_app/models/servicebox.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -112,6 +113,7 @@ class Backgroundservicecontroller {
     Hive.registerAdapter(ModuleAdapter());
     Hive.registerAdapter(QuizAdapter());
     Hive.registerAdapter(ServiceBoxAdapter());
+    Hive.registerAdapter(ConfigBoxAdapter());
   }
 
   Future writeText(String teks) async {

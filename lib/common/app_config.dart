@@ -1,17 +1,31 @@
 import 'dart:ui';
 
+import 'package:hive/hive.dart';
+import 'package:quiz_app/models/config_box.dart';
 import 'package:quiz_app/tools/utils.dart';
 
 class AppConfig {
   static const String appsName = "Kuis";
+  static late Box _configBox;
 
   // static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
   // static const String initUrl = "https://link.tirtakencana.com/QuizApp";
 
-  static const String publicUrl = "link.tirtakencana.com";
-  static const String initUrl = "https://$publicUrl/QuizApp";
-  static const String baseUrl = "https://$publicUrl//QuizApp/public/api";
-  static const String testUrl = "https://google.com";
+  static Future<void> init() async {
+    _configBox = await Hive.openBox<ConfigBox>('configBox');
+  }
+
+  static String _publicUrl = "link.tirtakencana.com";
+
+  static String get publicUrl => _configBox.get("configBox").value ?? _publicUrl;
+
+  static set publicUrl(String newUrl) {
+    _publicUrl = newUrl;
+  }
+
+  static String get initUrl => "https://$publicUrl/QuizApp";
+  static String get baseUrl => "https://$publicUrl/QuizApp/public/api";
+  static const String testUrl = "https://google.com/";
   static const String filevendor = '/storage/emulated/0/TKTW/SFATools.txt';
   static const String filequiz = '/storage/emulated/0/TKTW/SFANotif.txt';
   static const int connectTimeout = 15000;

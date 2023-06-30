@@ -1,9 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/tools/service.dart';
+import 'package:quiz_app/models/config_box.dart';
 
 class HomepageController extends GetxController {
   var isLoading = true.obs;
@@ -14,10 +13,14 @@ class HomepageController extends GetxController {
   final txtServerIPController = TextEditingController();
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    txtServerIPController.text = AppConfig.publicUrl;
-    // getConfigData();
+    var configBox = await Hive.openBox<ConfigBox>('configBox');
+    try {
+      txtServerIPController.text = configBox.get("configBox")!.value.toString();
+    } catch (e) {
+      txtServerIPController.text = AppConfig.publicUrl;
+    }
   }
 
   @override
@@ -25,23 +28,4 @@ class HomepageController extends GetxController {
     super.onClose();
     txtServerIPController.dispose();
   }
-
-  // Future<String> getConfigData() async {
-  //   isLoading(true);
-  //   isError(false);
-  //   try {
-  //     final result = await ApiClient().getData("/config?app=quiz");
-  //     var data = jsonDecode(result.toString());
-  //     configData.value = data[0]["Value"].toString();
-
-  //     isLoading(false);
-  //     isError(false);
-  //     Get.offAndToNamed(RouteName.homepage);
-  //   } catch(e) {
-  //     isLoading(false);
-  //     isError(true);
-  //     errorMessage(e.toString());
-  //   }
-  //   return configData.value;
-  // }
 }

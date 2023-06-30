@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
 import 'package:quiz_app/controllers/homepage_controller.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
+import 'package:quiz_app/models/config_box.dart';
 import 'package:quiz_app/widgets/dialog.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
@@ -132,7 +134,7 @@ class Homepage extends GetView<HomepageController> {
                                   children: [
                                     TextField(
                                       controller: controller.txtServerIPController,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         labelText: 'IP Server',
                                         hintText: 'Input IP Server',
@@ -143,9 +145,10 @@ class Homepage extends GetView<HomepageController> {
                                 isAnimated: false,
                                 isCancel: false,
                                 leftBtnMsg: "Simpan",
-                                leftActionClick: () {
+                                leftActionClick: () async {
                                   Get.back();
-                                  print(controller.txtServerIPController.value);
+                                  var mybox = await Hive.openBox<ConfigBox>("configBox");
+                                  await mybox.put("configBox", ConfigBox(value: controller.txtServerIPController.text.toString()));
                                 },
                               );
                             },

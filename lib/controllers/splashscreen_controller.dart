@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
+import 'package:quiz_app/models/config_box.dart';
 import 'package:quiz_app/models/module.dart';
 import 'package:quiz_app/tools/service.dart';
 import 'package:quiz_app/tools/utils.dart';
@@ -28,30 +31,25 @@ class SplashscreenController extends GetxController with StateMixin {
   var customerIdParams = "".obs;
   var isCheckInParams = "".obs;
 
+  final txtServerIPController = TextEditingController();
+
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
 
-    // ever(isError, (bool success) {
-    //   if (success) {
-    //     appsDialog(
-    //       type: "app_error",
-    //       title:  Obx(() => TextView(
-    //         headings: "H4",
-    //         text: errorMessage.value,
-    //         textAlign: TextAlign.center,
-    //         ),
-    //       ),
-    //       leftBtnMsg: "Ok",
-    //       isAnimated: true,
-    //       leftActionClick: () {
-    //         Get.back();
-    //       }
-    //     );
-    //   }
-    // });
-
+    var configBox = await Hive.openBox<ConfigBox>('configBox');
+    try {
+      txtServerIPController.text = configBox.get("configBox")!.value.toString();
+    } catch (e) {
+      txtServerIPController.text = AppConfig.publicUrl;
+    }
     syncAppsReady();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    txtServerIPController.dispose();
   }
 
   openErrorDialog() {
