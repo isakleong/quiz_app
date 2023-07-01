@@ -6,10 +6,7 @@ import 'package:quiz_app/tools/utils.dart';
 
 class AppConfig {
   static const String appsName = "Kuis";
-  static late Box _configBox;
-
-  // static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
-  // static const String initUrl = "https://link.tirtakencana.com/QuizApp";
+  static late var _configBox;
 
   static Future<void> init() async {
     _configBox = await Hive.openBox<ConfigBox>('configBox');
@@ -17,7 +14,14 @@ class AppConfig {
 
   static String _publicUrl = "link.tirtakencana.com";
 
-  static String get publicUrl => _configBox.get("configBox").value ?? _publicUrl;
+  static String get publicUrl {
+    var data = _configBox.get("configBox");
+    if(data != null) {
+      return _configBox.get("configBox").value;
+    } else {
+      return _publicUrl;
+    }
+  }
 
   static set publicUrl(String newUrl) {
     _publicUrl = newUrl;
