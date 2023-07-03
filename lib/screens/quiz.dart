@@ -209,7 +209,7 @@ class QuizPage extends GetView<QuizController>{
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () {
-                      quizController.getQuizData();
+                      quizController.getQuizData(controller.getSalesId());
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppConfig.darkGreen,

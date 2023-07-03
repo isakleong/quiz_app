@@ -24,7 +24,7 @@ class HistoryPage extends GetView<HistoryController>  {
 
   void _onRefresh() async{
     await Future.delayed(const Duration(milliseconds: 500));
-    await historyController.getHistoryData();
+    await historyController.getHistoryData(controller.getSalesId());
     historyController.filterQuizHistoryModel.refresh();
     _refreshController.refreshCompleted();
   }
@@ -76,7 +76,7 @@ class HistoryPage extends GetView<HistoryController>  {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            await historyController.getHistoryData();
+                            await historyController.getHistoryData(controller.getSalesId());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppConfig.darkGreen,
@@ -177,7 +177,7 @@ class HistoryPage extends GetView<HistoryController>  {
                                   const SizedBox(height: 30),
                                   ElevatedButton(
                                     onPressed: () async {
-                                      await historyController.getHistoryData();
+                                      await historyController.getHistoryData(controller.getSalesId());
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppConfig.darkGreen,

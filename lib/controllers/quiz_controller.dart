@@ -140,7 +140,7 @@ class QuizController extends GetxController with StateMixin {
               quizTarget.value = quizConfigBox.get("target");
             }
 
-            getQuizData();
+            getQuizData(params);
           } else {
             errorMessage.value = Message.errorQuizConfig;
             change(null, status: RxStatus.error(errorMessage.value));
@@ -157,7 +157,7 @@ class QuizController extends GetxController with StateMixin {
       //check if draft is exist or not
       var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
       if(quizModelBox.length > 0) {
-        await getQuizData();
+        await getQuizData(params);
       } else {
         errorMessage(Message.errorConnection);
         change(null, status: RxStatus.error(errorMessage.value));
@@ -165,7 +165,7 @@ class QuizController extends GetxController with StateMixin {
     }
   }
 
-  getQuizData() async {
+  getQuizData(String params) async {
     quizModel.clear();
 
     bool isConnected = await ApiClient().checkConnection();
@@ -175,7 +175,7 @@ class QuizController extends GetxController with StateMixin {
         var formatter = DateFormat('yyyy-MM-dd');
         String formattedDate = formatter.format(now);
 
-        var result = await ApiClient().getData("/quiz?sales_id=01AC1A0103&date=$formattedDate");
+        var result = await ApiClient().getData("/quiz?sales_id=$params&date=$formattedDate");
         bool isValid = Utils.validateData(result.toString());
 
         if(isValid) {
@@ -355,8 +355,8 @@ class QuizController extends GetxController with StateMixin {
   }
 
   getSalesId() async {
-    String sales_id = await Utils().readParameter();
-    return sales_id.split(';')[0];
+    String salesID = await Utils().readParameter();
+    return salesID.split(';')[0];
   }
 
   scoreCalculation() {

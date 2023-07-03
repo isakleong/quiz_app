@@ -6,6 +6,7 @@ import 'package:quiz_app/tools/utils.dart';
 
 class AppConfig {
   static const String appsName = "Kuis";
+  // ignore: prefer_typing_uninitialized_variables
   static late var _configBox;
 
   static Future<void> init() async {

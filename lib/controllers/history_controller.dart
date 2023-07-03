@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:quiz_app/common/message_config.dart';
+import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/models/quiz_history.dart';
 import 'package:quiz_app/tools/service.dart';
 import 'package:quiz_app/tools/utils.dart';
@@ -20,13 +21,15 @@ class HistoryController extends GetxController with StateMixin {
   @override
   void onInit() {
     super.onInit();
+
+    final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
     
     selectedLimitRequestHistoryData.clear();
     selectedLimitRequestHistoryData.add(false);
     selectedLimitRequestHistoryData.add(false);
     selectedLimitRequestHistoryData.add(true);
 
-    getHistoryData();
+    getHistoryData(salesIdParams.value);
   }
 
   applyFilter(int index) {
@@ -58,14 +61,19 @@ class HistoryController extends GetxController with StateMixin {
     filterQuizHistoryModel.addAll(tempQuizHistoryModel);
   }
 
-  getHistoryData() async {
+  getSalesId() async {
+    String salesID = await Utils().readParameter();
+    return salesID.split(';')[0];
+  }
+
+  getHistoryData(String params) async {
     change(null, status: RxStatus.loading());
     quizHistoryModel.clear();
 
     bool isConnected = await ApiClient().checkConnection();
     if(isConnected) {
       try {
-        var result = await ApiClient().getData("/quiz/history?sales_id=01AC1A0103");
+        var result = await ApiClient().getData("/quiz/history?sales_id=$params");
         bool isValid = Utils.validateData(result.toString());
 
         if(isValid) {
