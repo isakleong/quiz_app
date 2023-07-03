@@ -7,10 +7,8 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/models/config_box.dart';
 import 'package:quiz_app/models/module.dart';
 import 'package:quiz_app/tools/service.dart';
 import 'package:quiz_app/tools/utils.dart';
@@ -36,20 +34,7 @@ class SplashscreenController extends GetxController with StateMixin {
   @override
   void onInit() async {
     super.onInit();
-
-    var configBox = await Hive.openBox<ConfigBox>('configBox');
-    try {
-      txtServerIPController.text = configBox.get("configBox")!.value.toString();
-    } catch (e) {
-      txtServerIPController.text = AppConfig.publicUrl;
-    }
     syncAppsReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-    txtServerIPController.dispose();
   }
 
   openErrorDialog() {
@@ -129,14 +114,14 @@ class SplashscreenController extends GetxController with StateMixin {
   checkUpdate() async {
     change(null, status: RxStatus.loading());
 
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String appName = packageInfo.appName;
+    String currentVersion = packageInfo.version;
+    appVersion.value = currentVersion;
+
     bool isConnected = await ApiClient().checkConnection();
     if(isConnected) {
       try {
-        PackageInfo packageInfo = await PackageInfo.fromPlatform();
-        String appName = packageInfo.appName;
-        String currentVersion = packageInfo.version;
-        appVersion.value = currentVersion;
-
         final result = await ApiClient().getData("/config?app=$appName");
         var data = jsonDecode(result.toString());
 
@@ -162,21 +147,7 @@ class SplashscreenController extends GetxController with StateMixin {
             }
           );
         } else {
-          //SalesID;CustID;LocCheckIn
-          String parameter = await Utils().readParameter();
-          if(parameter != "") {
-            var arrParameter = parameter.split(';');
-            for(int i=0; i<arrParameter.length; i++) {
-              if(i == 0) {
-                salesIdParams.value = arrParameter[i];
-              } else if(i == 1) {
-                customerIdParams.value = arrParameter[i];
-              } else {
-                isCheckInParams.value = arrParameter[2];
-              }
-            }
-          }
-
+          await getParameterData();
           getModuleData();
         }
       } catch(e) {
@@ -189,6 +160,8 @@ class SplashscreenController extends GetxController with StateMixin {
       if(moduleBox.length > 0) {
         moduleList.clear();
         moduleList.addAll(moduleBox.values);
+        
+        await getParameterData();
 
         change(null, status: RxStatus.success());
         Get.offAndToNamed(RouteName.homepage);
@@ -196,6 +169,23 @@ class SplashscreenController extends GetxController with StateMixin {
         errorMessage(Message.errorConnection);
         openErrorDialog();
         change(null, status: RxStatus.error(errorMessage.value));
+      }
+    }
+  }
+
+  getParameterData() async {
+    //SalesID;CustID;LocCheckIn
+    String parameter = await Utils().readParameter();
+    if(parameter != "") {
+      var arrParameter = parameter.split(';');
+      for(int i=0; i<arrParameter.length; i++) {
+        if(i == 0) {
+          salesIdParams.value = arrParameter[i];
+        } else if(i == 1) {
+          customerIdParams.value = arrParameter[i];
+        } else {
+          isCheckInParams.value = arrParameter[2];
+        }
       }
     }
   }

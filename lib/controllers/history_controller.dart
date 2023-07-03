@@ -1,7 +1,4 @@
-
-
 import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:quiz_app/common/message_config.dart';
@@ -59,11 +56,6 @@ class HistoryController extends GetxController with StateMixin {
     }
     filterQuizHistoryModel.clear();
     filterQuizHistoryModel.addAll(tempQuizHistoryModel);
-  }
-
-  getSalesId() async {
-    String salesID = await Utils().readParameter();
-    return salesID.split(';')[0];
   }
 
   getHistoryData(String params) async {

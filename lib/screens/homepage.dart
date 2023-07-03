@@ -3,17 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/controllers/homepage_controller.dart';
 import 'package:quiz_app/controllers/splashscreen_controller.dart';
-import 'package:quiz_app/models/config_box.dart';
-import 'package:quiz_app/widgets/dialog.dart';
 import 'package:quiz_app/widgets/textview.dart';
 
 // ignore: must_be_immutable
-class Homepage extends GetView<HomepageController> {
+class Homepage extends StatelessWidget {
   Homepage({super.key});
 
   final splashscreenController = Get.find<SplashscreenController>();
@@ -40,8 +36,6 @@ class Homepage extends GetView<HomepageController> {
 
   @override
   Widget build(BuildContext context) {
-    // final splashscreenController = Get.find<SplashscreenController>();
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -122,48 +116,7 @@ class Homepage extends GetView<HomepageController> {
                           ),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              appsDialog(
-                                type: "confirm_dialog",
-                                title: const TextView(headings: "H2", text: "Pengaturan", fontSize: 16, isCapslock: true),
-                                content: Column(
-                                  children: [
-                                    TextField(
-                                      controller: controller.txtServerIPController,
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        labelText: 'IP Server',
-                                        hintText: 'Input IP Server',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                isAnimated: false,
-                                isCancel: false,
-                                leftBtnMsg: "Simpan",
-                                leftActionClick: () async {
-                                  Get.back();
-                                  var mybox = await Hive.openBox<ConfigBox>("configBox");
-                                  await mybox.put("configBox", ConfigBox(value: controller.txtServerIPController.text.toString()));
-                                },
-                              );
-                            },
-                            child: ShaderMask(
-                              shaderCallback: (bounds) => const LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [Color(0xFF11998e), Color(0xFF38ef7d)],
-                              ).createShader(bounds),
-                              child: const FaIcon(FontAwesomeIcons.gear, color: Colors.white, size: 50),
-                            ),
-                          ),
-                          TextView(headings: "H3", text: "v ${splashscreenController.appVersion.value}", fontSize: 14),
-                        ],
-                      ),
+                      TextView(headings: "H3", text: "v ${splashscreenController.appVersion.value}", fontSize: 14),
                     ],
                   ),
                 ),

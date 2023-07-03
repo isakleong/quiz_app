@@ -354,11 +354,6 @@ class QuizController extends GetxController with StateMixin {
     );
   }
 
-  getSalesId() async {
-    String salesID = await Utils().readParameter();
-    return salesID.split(';')[0];
-  }
-
   scoreCalculation() {
     int score = 0;
     for (int i = 0; i < quizModel.length; i++) {
@@ -390,7 +385,9 @@ class QuizController extends GetxController with StateMixin {
 
   postQuizData() async {
     try {
-      String salesId = await getSalesId();
+      final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
+      String salesId = salesIdParams.value;
+      
       var now = DateTime.now();
       var formatter = DateFormat('yyyy-MM-dd H:m:s');
       String formattedDate = formatter.format(now);

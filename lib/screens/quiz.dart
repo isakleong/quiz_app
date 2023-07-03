@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:quiz_app/common/app_config.dart';
 import 'package:quiz_app/common/message_config.dart';
 import 'package:quiz_app/controllers/quiz_controller.dart';
+import 'package:quiz_app/controllers/splashscreen_controller.dart';
 import 'package:quiz_app/models/quiz.dart';
 import 'package:quiz_app/widgets/dialog.dart';
 import 'package:quiz_app/widgets/textview.dart';
@@ -16,6 +17,7 @@ class QuizPage extends GetView<QuizController>{
 
   // final QuizController quizController = Get.find();
   final quizController = Get.find<QuizController>();
+  final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
 
   finishQuiz() {
     List<int> arrInvalidQuestion = [];
@@ -209,7 +211,7 @@ class QuizPage extends GetView<QuizController>{
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () {
-                      quizController.getQuizData(controller.getSalesId());
+                      quizController.getQuizData(salesIdParams.value);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppConfig.darkGreen,
