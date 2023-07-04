@@ -37,7 +37,7 @@ void onStart(ServiceInstance service) async {
     service.stopSelf();
   });
 
-  Timer.periodic(const Duration(minutes: 5), (timer) async {
+  Timer.periodic(const Duration(hours: 1), (timer) async {
     await Backgroundservicecontroller().cekQuiz();
 
     if (service is AndroidServiceInstance) {
@@ -70,7 +70,7 @@ void onStart(ServiceInstance service) async {
     );
   });
 
-  Timer.periodic(const Duration(minutes: 2), (timer) async {
+  Timer.periodic(const Duration(minutes: 10), (timer) async {
     await Backgroundservicecontroller().retrySubmitQuiz();
 
     if (service is AndroidServiceInstance) {

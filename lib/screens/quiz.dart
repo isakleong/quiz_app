@@ -441,8 +441,8 @@ class QuizPage extends GetView<QuizController>{
                                   physics: const BouncingScrollPhysics(),
                                   itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
                                   itemBuilder: (BuildContext context, int index) {
-                                    return customRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} (CorrectAnswerIndex is: ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex})", index);
-                                    // return customRadioButton(quizController.quizModel[quizController.currentQuestion.value].answerList[index], index);
+                                    // return customRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} (CorrectAnswerIndex is: ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex})", index);
+                                    return customRadioButton(quizController.quizModel[quizController.currentQuestion.value].answerList[index], index);
                                   }),
                                 ), 
                               ),
