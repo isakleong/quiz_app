@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/controllers/splashscreen_controller.dart';
-import 'package:quiz_app/widgets/textview.dart';
+import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/common/route_config.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 
 // ignore: must_be_immutable
 class Homepage extends StatelessWidget {

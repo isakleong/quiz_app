@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:quiz_app/tools/utils.dart';
+import 'package:sfa_tools/tools/utils.dart';
 
 class AppConfig {
   static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";

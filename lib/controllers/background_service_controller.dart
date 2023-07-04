@@ -11,8 +11,8 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/models/servicebox.dart';
+import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/models/servicebox.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import '../models/module.dart';
@@ -160,7 +160,7 @@ class Backgroundservicecontroller {
       String _salesidQuiz = await readFileQuiz();
 
       if (_salesidQuiz != "" && _salesidvendor != "") {
-        if (_salesidQuiz.split(";")[2] == _salesidvendor) {
+        if (_salesidQuiz.split(";")[1] == _salesidvendor) {
           return true;
         }
       }
@@ -198,18 +198,18 @@ class Backgroundservicecontroller {
           if(resultSubmit == "success") {
             await Backgroundservicecontroller().accessBox("create", AppConfig.keyStatusBoxSubmitQuiz, "false", box: AppConfig.boxSubmitQuiz);
 
-            String tempSalesID = await Utils().readParameter();
-            var salesId = tempSalesID.split(';')[0];
-
-            var info = await Backgroundservicecontroller().getLatestStatusQuiz(salesId);
-            if(info != "err") {
-              String _filequiz = await Backgroundservicecontroller().readFileQuiz();
-              await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${salesId};${DateTime.now()}");
-            } else {
-              await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
-            }
+            //not used anymore (already using offline data handler on postquizdata function on quiz controller)
+            // String tempSalesID = await Utils().readParameter();
+            // var salesId = tempSalesID.split(';')[0];
+            // var info = await Backgroundservicecontroller().getLatestStatusQuiz(salesId);
+            // if(info != "err") {
+            //   String _filequiz = await Backgroundservicecontroller().readFileQuiz();
+            //   await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${salesId};${DateTime.now()}");
+            // } else {
+            //   await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
+            // }
           }
-        } 
+        }
       }
     } catch(e) {
       return;
@@ -221,26 +221,21 @@ class Backgroundservicecontroller {
       try {
         String _filequiz = await readFileQuiz();
         DateTime now = DateTime.now();
-        DateTime datetimefilequiz = DateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS")
-            .parse(_filequiz.split(";")[3]);
+        DateTime datetimefilequiz = DateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS").parse(_filequiz.split(";")[3]);
         Duration difference = datetimefilequiz.difference(now);
         var dataBox = await accessBox("read", "retryApi", "");
-        if (difference.inDays >= 1 ||
-            (dataBox != null && dataBox.value == "1")) {
+        if (difference.inDays >= 1 || (dataBox != null && dataBox.value == "1")) {
           //sudah melewati 1 hari
-          String status = await getLatestStatusQuiz(_filequiz.split(";")[2]);
+          String status = await getLatestStatusQuiz(_filequiz.split(";")[1]);
           if (status != "err") {
-            //status;service time;salesid;last hit api time
+            //status;salesid;service time;last hit api time
             await accessBox("create", "retryApi", "0");
-            await writeText(
-                "${status};${DateTime.now()};${_filequiz.split(";")[2]};${DateTime.now()}");
+            await writeText("${status};${_filequiz.split(";")[1]};${DateTime.now()};${DateTime.now()}");
           } else if (status == "err") {
-            await writeText(
-                "${status};${DateTime.now()};${_filequiz.split(";")[2]};${_filequiz.split(";")[3]}");
+            await writeText("${status};${_filequiz.split(";")[1]};${DateTime.now()};${_filequiz.split(";")[3]}");
           }
         } else {
-          await writeText(
-              "${_filequiz.split(";")[0]};${DateTime.now()};${_filequiz.split(";")[2]};${_filequiz.split(";")[3]}");
+          await writeText("${_filequiz.split(";")[0]};${_filequiz.split(";")[1]};${DateTime.now()};${_filequiz.split(";")[3]}");
         }
       } catch (e) {
         return;
@@ -253,14 +248,13 @@ class Backgroundservicecontroller {
           String status =
               await getLatestStatusQuiz(_salesidVendor.split(';')[0]);
           if (status != "err") {
-            //status;service time;salesid;last hit api time
-            await writeText(
-                "${status};${DateTime.now()};${_salesidVendor.split(';')[0]};${DateTime.now()}");
+            //status;salesid;service time;last hit api time
+            await writeText("${status};${_salesidVendor.split(';')[0]};${DateTime.now()};${DateTime.now()}");
           } else {
-            await writeText(";${DateTime.now()};;");
+            await writeText(";;${DateTime.now()};");
           }
         } else {
-          await writeText(";${DateTime.now()};;");
+          await writeText(";;${DateTime.now()};");
         }
       } catch (e) {
         return;

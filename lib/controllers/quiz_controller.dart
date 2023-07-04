@@ -8,17 +8,17 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/common/message_config.dart';
-import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/controllers/background_service_controller.dart';
-import 'package:quiz_app/controllers/splashscreen_controller.dart';
-import 'package:quiz_app/models/quiz.dart';
-import 'package:quiz_app/models/servicebox.dart';
-import 'package:quiz_app/tools/service.dart';
-import 'package:quiz_app/tools/utils.dart';
-import 'package:quiz_app/widgets/dialog.dart';
-import 'package:quiz_app/widgets/textview.dart';
+import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/common/message_config.dart';
+import 'package:sfa_tools/common/route_config.dart';
+import 'package:sfa_tools/controllers/background_service_controller.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
+import 'package:sfa_tools/models/quiz.dart';
+import 'package:sfa_tools/models/servicebox.dart';
+import 'package:sfa_tools/tools/service.dart';
+import 'package:sfa_tools/tools/utils.dart';
+import 'package:sfa_tools/widgets/dialog.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 
 class QuizController extends GetxController with StateMixin {
   var isError = false.obs;
@@ -409,6 +409,14 @@ class QuizController extends GetxController with StateMixin {
         'model': quizModel
       };
 
+      //update txt after submit quiz (offline data handler), to keep notification running realtime
+      String _filequiz = await Backgroundservicecontroller().readFileQuiz();
+      if(passed == 1) {
+        await Backgroundservicecontroller().writeText("3;${salesId};${_filequiz.split(";")[2]};${DateTime.now()}");
+      } else {
+        await Backgroundservicecontroller().writeText("2;${salesId};${_filequiz.split(";")[2]};${DateTime.now()}");
+      }
+
       bool isConnected = await ApiClient().checkConnection();
       if (isConnected) {
         var bodyData = jsonEncode(params);
@@ -422,13 +430,14 @@ class QuizController extends GetxController with StateMixin {
           Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
           retrySubmitQuizBox.put(AppConfig.keyStatusBoxSubmitQuiz, ServiceBox(value: "false"));
 
-          var info = await Backgroundservicecontroller().getLatestStatusQuiz(salesId); 
-          if(info != "err"){
-            String _filequiz = await Backgroundservicecontroller().readFileQuiz();
-            await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${salesId};${DateTime.now()}");
-          } else {
-            await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
-          }
+          //not used anymore (moved to top -- offline data handler)
+          // var info = await Backgroundservicecontroller().getLatestStatusQuiz(salesId); 
+          // if(info != "err"){
+          //   String _filequiz = await Backgroundservicecontroller().readFileQuiz();
+          //   await Backgroundservicecontroller().writeText("${info};${_filequiz.split(";")[1]};${salesId};${DateTime.now()}");
+          // } else {
+          //   await Backgroundservicecontroller().accessBox("create", "retryApi", "1");
+          // }
 
           Get.back();
           if(isPassed.value) {

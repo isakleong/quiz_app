@@ -4,13 +4,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
-import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/common/message_config.dart';
-import 'package:quiz_app/controllers/quiz_controller.dart';
-import 'package:quiz_app/controllers/splashscreen_controller.dart';
-import 'package:quiz_app/models/quiz.dart';
-import 'package:quiz_app/widgets/dialog.dart';
-import 'package:quiz_app/widgets/textview.dart';
+import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/common/message_config.dart';
+import 'package:sfa_tools/controllers/quiz_controller.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
+import 'package:sfa_tools/models/quiz.dart';
+import 'package:sfa_tools/widgets/dialog.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 
 class QuizPage extends GetView<QuizController>{
   QuizPage({super.key});

@@ -1,4 +1,4 @@
-name: quiz_app
+name: sfa_tools
 description: SFA Tools application.
 
 publish_to: 'none'
@@ -10,31 +10,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # lottie: ^2.2.0
   lottie: ^2.3.2
   flutter_svg: ^1.1.6
   font_awesome_flutter: ^10.4.0
-  google_fonts: ^4.0.3
   get: ^4.6.5
-  dio: ^5.1.1
-  http: ^0.13.5
+  dio: ^5.2.1+1
   json_annotation: ^4.8.0
   hive: ^2.2.3
-  path_provider: ^2.0.13
-  intl: ^0.18.0
+  path_provider: ^2.0.15
+  intl: ^0.18.1
   auto_size_text: ^3.0.0
-  device_info_plus: ^8.1.0
-  permission_handler: ^10.2.0
+  device_info_plus: ^9.0.2
+  permission_handler: ^10.4.1
   connectivity_plus: ^3.0.6
-  internet_connection_checker: ^1.0.0+1
   pull_to_refresh: ^2.0.0
   cupertino_icons: ^1.0.2
   device_apps: ^2.2.0
-  package_info_plus: ^3.1.0
-  workmanager: ^0.5.1
-  android_alarm_manager_plus: ^2.1.2
-  flutter_background_service: ^2.4.6
-  shared_preferences: ^2.1.1
+  package_info_plus: ^4.0.2
+  flutter_background_service: ^3.0.1
   shimmer: ^3.0.0
 
 dev_dependencies:

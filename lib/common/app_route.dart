@@ -1,16 +1,16 @@
 import 'package:get/get.dart';
-import 'package:quiz_app/bindings/history_page_binding.dart';
-import 'package:quiz_app/bindings/quiz_page_binding.dart';
-import 'package:quiz_app/bindings/starter_page_binding.dart';
-import 'package:quiz_app/bindings/splashscreen_binding.dart';
-import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/screens/quiz_countdown.dart';
-import 'package:quiz_app/screens/quiz_dashboard.dart';
-import 'package:quiz_app/screens/quiz_history.dart';
-import 'package:quiz_app/screens/homepage.dart';
-import 'package:quiz_app/screens/quiz.dart';
-import 'package:quiz_app/screens/splash_screen.dart';
-import 'package:quiz_app/screens/quiz_starter.dart';
+import 'package:sfa_tools/bindings/history_page_binding.dart';
+import 'package:sfa_tools/bindings/quiz_page_binding.dart';
+import 'package:sfa_tools/bindings/starter_page_binding.dart';
+import 'package:sfa_tools/bindings/splashscreen_binding.dart';
+import 'package:sfa_tools/common/route_config.dart';
+import 'package:sfa_tools/screens/quiz_countdown.dart';
+import 'package:sfa_tools/screens/quiz_dashboard.dart';
+import 'package:sfa_tools/screens/quiz_history.dart';
+import 'package:sfa_tools/screens/homepage.dart';
+import 'package:sfa_tools/screens/quiz.dart';
+import 'package:sfa_tools/screens/splash_screen.dart';
+import 'package:sfa_tools/screens/quiz_starter.dart';
 
 class AppRoute {
   static final pages = [

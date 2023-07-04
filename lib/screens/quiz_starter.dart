@@ -4,12 +4,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/common/message_config.dart';
-import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/controllers/quiz_controller.dart';
-import 'package:quiz_app/controllers/splashscreen_controller.dart';
-import 'package:quiz_app/widgets/textview.dart';
+import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/common/message_config.dart';
+import 'package:sfa_tools/common/route_config.dart';
+import 'package:sfa_tools/controllers/quiz_controller.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 
 class StartQuiz extends GetView<QuizController>  {
   StartQuiz({super.key});

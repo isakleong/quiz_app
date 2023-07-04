@@ -7,13 +7,13 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:quiz_app/common/message_config.dart';
-import 'package:quiz_app/common/route_config.dart';
-import 'package:quiz_app/models/module.dart';
-import 'package:quiz_app/tools/service.dart';
-import 'package:quiz_app/tools/utils.dart';
-import 'package:quiz_app/widgets/dialog.dart';
-import 'package:quiz_app/widgets/textview.dart';
+import 'package:sfa_tools/common/message_config.dart';
+import 'package:sfa_tools/common/route_config.dart';
+import 'package:sfa_tools/models/module.dart';
+import 'package:sfa_tools/tools/service.dart';
+import 'package:sfa_tools/tools/utils.dart';
+import 'package:sfa_tools/widgets/dialog.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 
 class SplashscreenController extends GetxController with StateMixin {
   // var isError = false.obs;

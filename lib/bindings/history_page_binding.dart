@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:quiz_app/controllers/history_controller.dart';
+import 'package:sfa_tools/controllers/history_controller.dart';
 
 class HistoryPageBinding implements Bindings {
   @override

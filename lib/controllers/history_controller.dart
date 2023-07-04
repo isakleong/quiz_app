@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:quiz_app/common/message_config.dart';
-import 'package:quiz_app/controllers/splashscreen_controller.dart';
-import 'package:quiz_app/models/quiz_history.dart';
-import 'package:quiz_app/tools/service.dart';
-import 'package:quiz_app/tools/utils.dart';
+import 'package:sfa_tools/common/message_config.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
+import 'package:sfa_tools/models/quiz_history.dart';
+import 'package:sfa_tools/tools/service.dart';
+import 'package:sfa_tools/tools/utils.dart';
 
 class HistoryController extends GetxController with StateMixin {
   var errorMessage = "".obs;

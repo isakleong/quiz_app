@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/widgets/textview.dart';
+import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 
 void appsDialog ({required String type, bool isDismmisible = false, required Widget title, Widget? content, String rightBtnMsg = '', String leftBtnMsg = '', String iconAsset = '', required bool isAnimated, bool isCancel = false, VoidCallback? leftActionClick, VoidCallback? rightActionClick}) {
   Get.dialog(

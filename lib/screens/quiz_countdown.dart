@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/common/route_config.dart';
+import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/common/route_config.dart';
 import 'dart:math' as math;
 
-import 'package:quiz_app/widgets/textview.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 
 class CountdownPage extends StatefulWidget {
   const CountdownPage({super.key});

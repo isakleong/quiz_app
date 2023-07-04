@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:quiz_app/controllers/splashscreen_controller.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 
 class SplashScreenBinding implements Bindings {
   @override

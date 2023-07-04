@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:quiz_app/common/app_config.dart';
-import 'package:quiz_app/tools/logging.dart';
+import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/tools/logging.dart';
 
 class ApiClient {
   Future getData(String path) async {
@@ -11,12 +11,24 @@ class ApiClient {
       final dio = Dio(  
         BaseOptions(baseUrl: AppConfig.baseUrl)
       )..interceptors.add(Logging());
-      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
-        client.badCertificateCallback=(X509Certificate cert, String host, int port){
+
+      dio.httpClientAdapter = IOHttpClientAdapter(
+        createHttpClient: () {
+          final client = HttpClient();
+          client.badCertificateCallback = (X509Certificate cert, String host, int port) {
             return true;
-        };
-        return null;
-      };
+          };
+          return client;
+        },
+      );
+
+      //not used anymore (onHttpClientCreate is deprecated and shouldn't be used. Use createHttpClient instead)
+      // (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
+      //   client.badCertificateCallback=(X509Certificate cert, String host, int port){
+      //       return true;
+      //   };
+      //   return null;
+      // };
 
       dio.interceptors.add(Logging());
 
@@ -33,12 +45,23 @@ class ApiClient {
       final dio = Dio(
         BaseOptions(baseUrl: AppConfig.baseUrl)
       );
-      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
-        client.badCertificateCallback=(X509Certificate cert, String host, int port){
+      dio.httpClientAdapter = IOHttpClientAdapter(
+        createHttpClient: () {
+          final client = HttpClient();
+          client.badCertificateCallback = (X509Certificate cert, String host, int port) {
             return true;
-        };
-        return null;
-      };
+          };
+          return client;
+        },
+      );
+
+      //not used anymore (onHttpClientCreate is deprecated and shouldn't be used. Use createHttpClient instead)
+      // (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate  = (client) {
+      //   client.badCertificateCallback=(X509Certificate cert, String host, int port){
+      //       return true;
+      //   };
+      //   return null;
+      // };
 
       dio.interceptors.add(Logging());
 
