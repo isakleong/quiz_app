@@ -412,9 +412,9 @@ class QuizController extends GetxController with StateMixin {
       //update txt after submit quiz (offline data handler), to keep notification running realtime
       String _filequiz = await Backgroundservicecontroller().readFileQuiz();
       if(passed == 1) {
-        await Backgroundservicecontroller().writeText("3;${salesId};${_filequiz.split(";")[2]};${DateTime.now()}");
+        await Backgroundservicecontroller().writeText("3;${salesId};${DateTime.now()};${_filequiz.split(";")[3]}");
       } else {
-        await Backgroundservicecontroller().writeText("2;${salesId};${_filequiz.split(";")[2]};${DateTime.now()}");
+        await Backgroundservicecontroller().writeText("2;${salesId};${DateTime.now()};${_filequiz.split(";")[3]}");
       }
 
       bool isConnected = await ApiClient().checkConnection();
