@@ -12,29 +12,30 @@ class HistoryController extends GetxController with StateMixin {
   var quizHistoryModel = <QuizHistory>[].obs;
   var filterQuizHistoryModel = <QuizHistory>[].obs;
 
-  //filter
-  var selectedLimitRequestHistoryData = <bool>[].obs;
+  var isLoading = false.obs;
+
+  var selectedFilter = <bool>[].obs;
 
   @override
   void onInit() {
     super.onInit();
 
     final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
-    
-    selectedLimitRequestHistoryData.clear();
-    selectedLimitRequestHistoryData.add(false);
-    selectedLimitRequestHistoryData.add(false);
-    selectedLimitRequestHistoryData.add(true);
 
-    getHistoryData(salesIdParams.value);
+    selectedFilter.clear();
+    selectedFilter.add(false);
+    selectedFilter.add(false);
+    selectedFilter.add(true);
+
+    getHistoryData(salesIdParams.value, selectedFilter);
   }
 
   applyFilter(int index) {
-    for (int i=0; i<selectedLimitRequestHistoryData.length; i++) {
+    for (int i=0; i<selectedFilter.length; i++) {
       if (i == index) {
-        selectedLimitRequestHistoryData[i] = true;
+        selectedFilter[i] = true;
       } else {
-        selectedLimitRequestHistoryData[i] = false;
+        selectedFilter[i] = false;
       }
     }
     update();
@@ -42,23 +43,26 @@ class HistoryController extends GetxController with StateMixin {
     List<QuizHistory> tempQuizHistoryModel = [];
 
     for(int i=0; i<quizHistoryModel.length; i++) {
-      if(selectedLimitRequestHistoryData[0]){
+      if(selectedFilter[0]){
         if(quizHistoryModel[i].salesID.toLowerCase().contains("c100") || quizHistoryModel[i].salesID.toLowerCase().contains("c200") || quizHistoryModel[i].salesID.toLowerCase().contains("c300")) {
           tempQuizHistoryModel.add(quizHistoryModel[i]);
         }
-      } else if(selectedLimitRequestHistoryData[1]) {
+      } else if(selectedFilter[1]) {
         if(quizHistoryModel[i].salesID.toLowerCase().contains("s")) {
           tempQuizHistoryModel.add(quizHistoryModel[i]);
         }
-      } else if(selectedLimitRequestHistoryData[2]) {
-        tempQuizHistoryModel.add(quizHistoryModel[i]);
+      } else if(selectedFilter[2]) {
+        if(!quizHistoryModel[i].salesID.toLowerCase().contains("s") && !quizHistoryModel[i].salesID.toLowerCase().contains("c100") && !quizHistoryModel[i].salesID.toLowerCase().contains("c200") && !quizHistoryModel[i].salesID.toLowerCase().contains("c300")) {
+          tempQuizHistoryModel.add(quizHistoryModel[i]);
+        }
       }
     }
     filterQuizHistoryModel.clear();
     filterQuizHistoryModel.addAll(tempQuizHistoryModel);
   }
 
-  getHistoryData(String params) async {
+  getHistoryData(String params, List<bool> paramsFilter) async {
+    isLoading(true);
     change(null, status: RxStatus.loading());
     quizHistoryModel.clear();
 
@@ -85,23 +89,31 @@ class HistoryController extends GetxController with StateMixin {
             }
 
             List<QuizHistory> tempQuizHistoryModel = [];
-            for(int i=0; i<quizHistoryModel.length; i++) {
-              if(selectedLimitRequestHistoryData[0]){
+
+            if(paramsFilter[0]) {
+              for(int i=0; i<quizHistoryModel.length; i++) {
                 if(quizHistoryModel[i].salesID.toLowerCase().contains("c100") || quizHistoryModel[i].salesID.toLowerCase().contains("c200") || quizHistoryModel[i].salesID.toLowerCase().contains("c300")) {
                   tempQuizHistoryModel.add(quizHistoryModel[i]);
                 }
-              } else if(selectedLimitRequestHistoryData[1]) {
+              }  
+            } else if(paramsFilter[1]) {
+              for(int i=0; i<quizHistoryModel.length; i++) {
                 if(quizHistoryModel[i].salesID.toLowerCase().contains("s")) {
                   tempQuizHistoryModel.add(quizHistoryModel[i]);
                 }
-              } else if(selectedLimitRequestHistoryData[2]) {
-                tempQuizHistoryModel.add(quizHistoryModel[i]);
-              }
+              }  
+            } else if(paramsFilter[2]) {
+              for(int i=0; i<quizHistoryModel.length; i++) {
+                if(!quizHistoryModel[i].salesID.toLowerCase().contains("s") && !quizHistoryModel[i].salesID.toLowerCase().contains("c100") && !quizHistoryModel[i].salesID.toLowerCase().contains("c200") && !quizHistoryModel[i].salesID.toLowerCase().contains("c300")) {
+                  tempQuizHistoryModel.add(quizHistoryModel[i]);
+                }
+              }  
             }
 
             filterQuizHistoryModel.clear();
             filterQuizHistoryModel.addAll(tempQuizHistoryModel);
 
+            isLoading(false);
             change(null, status: RxStatus.success());
           } else {
             change(null, status: RxStatus.empty());
@@ -110,7 +122,6 @@ class HistoryController extends GetxController with StateMixin {
           errorMessage.value = result.toString();
           change(null, status: RxStatus.error(errorMessage.value));
         }
-
       } catch (e) {
         errorMessage.value = e.toString();
         change(null, status: RxStatus.error(errorMessage.value));
@@ -119,7 +130,5 @@ class HistoryController extends GetxController with StateMixin {
       errorMessage(Message.errorConnection);
       change(null, status: RxStatus.error(errorMessage.value));
     }
-
-    
   }
 }
