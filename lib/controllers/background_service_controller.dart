@@ -191,7 +191,7 @@ class Backgroundservicecontroller {
         if(isConnected) {
           var resultSubmit = await ApiClient().postData(
             '/quiz/submit',
-            bodyData.value,
+            Utils.encryptData(bodyData.value),
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
           );
 
@@ -264,7 +264,9 @@ class Backgroundservicecontroller {
 
   Future<String> getLatestStatusQuiz(String salesid) async {
     try {
-      var req = await ApiClient().getData("/quiz/status?sales_id=${salesid}");
+      final encryptedParam = await Utils.encryptData(salesid);
+
+      var req = await ApiClient().getData("/quiz/status?sales_id=$encryptedParam");
       Map<String, dynamic> jsonResponse = json.decode(req);
       ApiResponse response = ApiResponse.fromJson(jsonResponse);
       if (response.code.toString() == "200") {

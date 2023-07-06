@@ -3,6 +3,9 @@ import 'dart:ui';
 import 'package:sfa_tools/tools/utils.dart';
 
 class AppConfig {
+  static const String key = "2anLBen0Vi6ysErxXR7vaepHXjnrAHAu";
+  static const String iv = "sfatoolsparamobj";
+
   static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
   static const String initUrl = "https://link.tirtakencana.com/SFATools";
   static const String filevendor = '/storage/emulated/0/TKTW/SFATools.txt';

@@ -122,7 +122,9 @@ class SplashscreenController extends GetxController with StateMixin {
     bool isConnected = await ApiClient().checkConnection();
     if(isConnected) {
       try {
-        final result = await ApiClient().getData("/config?app=$appName");
+        final encryptedParam = await Utils.encryptData(appName);
+
+        final result = await ApiClient().getData("/config?app=$encryptedParam");
         var data = jsonDecode(result.toString());
 
         String latestVersion = data[0]["Value"];
@@ -196,7 +198,9 @@ class SplashscreenController extends GetxController with StateMixin {
       moduleList.clear();
 
       try {
-        final result = await ApiClient().getData("/module?sales_id=${salesIdParams.value}");
+        final encryptedParam = await Utils.encryptData(salesIdParams.value);
+
+        final result = await ApiClient().getData("/module?sales_id=$encryptedParam");
         var data = jsonDecode(result.toString());
         data.map((item) {
           moduleList.add(Module.from(item));

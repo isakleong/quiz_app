@@ -12,7 +12,6 @@ import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/quiz_history.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:shimmer/shimmer.dart';
-// import 'package:shimmer/shimmer.dart';
 
 class HistoryPage extends GetView<HistoryController>  {
   HistoryPage({super.key});

@@ -126,7 +126,9 @@ class QuizController extends GetxController with StateMixin {
     bool isConnected = await ApiClient().checkConnection();
     if (isConnected) {
       try {
-        var result = await ApiClient().getData("/quiz/config?sales_id=$params");
+        final encryptedParam = await Utils.encryptData(params);
+
+        var result = await ApiClient().getData("/quiz/config?sales_id=$encryptedParam");
         bool isValid = Utils.validateData(result.toString());
 
         if (isValid) {
@@ -171,11 +173,15 @@ class QuizController extends GetxController with StateMixin {
     bool isConnected = await ApiClient().checkConnection();
     if(isConnected) {
       try {
+        final encryptedSalesID = await Utils.encryptData(params);
+
         var now = DateTime.now();
         var formatter = DateFormat('yyyy-MM-dd');
         String formattedDate = formatter.format(now);
 
-        var result = await ApiClient().getData("/quiz?sales_id=$params&date=$formattedDate");
+        final encryptedDate = await Utils.encryptData(formattedDate);
+
+        var result = await ApiClient().getData("/quiz?sales_id=$encryptedSalesID&date=$encryptedDate");
         bool isValid = Utils.validateData(result.toString());
 
         if(isValid) {
@@ -422,7 +428,7 @@ class QuizController extends GetxController with StateMixin {
         var bodyData = jsonEncode(params);
         var resultSubmit = await ApiClient().postData(
             '/quiz/submit',
-            bodyData,
+            Utils.encryptData(bodyData),
             Options(
                 headers: {HttpHeaders.contentTypeHeader: "application/json"}));
 

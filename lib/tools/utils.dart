@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:encrypt/encrypt.dart';
+import 'package:sfa_tools/common/app_config.dart';
+
 class Utils {
 
   static Color color([String code = '#999999']) {
@@ -53,4 +56,11 @@ class Utils {
     }
   }
 
+  static encryptData(String params){
+    final key = Key.fromUtf8(AppConfig.key);
+    final initVector = IV.fromUtf8(AppConfig.iv);
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+    final encrypted = encrypter.encrypt(params, iv: initVector);
+    return encrypted.base64;
+  }
 }
