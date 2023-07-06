@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:sfa_tools/tools/utils.dart';
 
 class AppConfig {
-  static const String baseUrl = "https://link.tirtakencana.com/QuizApp/public/api";
-  static const String initUrl = "https://link.tirtakencana.com/QuizApp";
+  static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
+  static const String initUrl = "https://link.tirtakencana.com/SFATools";
   static const String filevendor = '/storage/emulated/0/TKTW/SFATools.txt';
   static const String filequiz = '/storage/emulated/0/TKTW/SFANotif.txt';
   static const int connectTimeout = 15000;
