@@ -6,8 +6,17 @@ class AppConfig {
   static const String key = "2anLBen0Vi6ysErxXR7vaepHXjnrAHAu";
   static const String iv = "sfatoolsparamobj";
 
+  static const String baseLocalUrl = "http://192.168.10.213/SFATools/public/api";
+  static const String initLocalUrl = "http://192.168.10.213/SFATools";
+  static const String tesLocalUrl = "http://192.168.10.213/SFATools/public/test";
+
+  static const String basePublicUrl = "https://link.tirtakencana.com/SFATools/public/api";
+  static const String initPublicUrl = "https://link.tirtakencana.com/SFATools";
+  static const String tesPublicUrl = "http://link.tirtakencana.com/SFATools/public/test";
+
   static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
   static const String initUrl = "https://link.tirtakencana.com/SFATools";
+
   static const String filevendor = '/storage/emulated/0/TKTW/SFATools.txt';
   static const String filequiz = '/storage/emulated/0/TKTW/SFANotif.txt';
   static const int connectTimeout = 15000;

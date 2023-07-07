@@ -264,7 +264,7 @@ class QuizPage extends GetView<QuizController>{
                             backgroundColor: quizController.currentQuestion.value == 0
                             ? Colors.grey
                             : AppConfig.darkGreen,
-                            elevation: 0,
+                            elevation: 5,
                             shape: const CircleBorder(),
                             padding: const EdgeInsets.all(12),
                           ),
@@ -377,7 +377,7 @@ class QuizPage extends GetView<QuizController>{
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppConfig.darkGreen,
-                            elevation: 0,
+                            elevation: 5,
                             shape: const CircleBorder(),
                             padding: const EdgeInsets.all(12),
                           ),
@@ -405,7 +405,7 @@ class QuizPage extends GetView<QuizController>{
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppConfig.darkGreen,
-                            elevation: 0,
+                            elevation: 5,
                             shape: const CircleBorder(),
                             padding: const EdgeInsets.all(12),
                           ),

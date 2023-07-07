@@ -68,7 +68,7 @@ class HistoryPage extends GetView<HistoryController>  {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppConfig.darkGreen,
-                              elevation: 0,
+                              elevation: 5,
                               shape: const CircleBorder(),
                               padding: const EdgeInsets.all(16),
                             ),
@@ -88,6 +88,7 @@ class HistoryPage extends GetView<HistoryController>  {
                                   backgroundColor: AppConfig.darkGreen,
                                   padding: const EdgeInsets.all(12),
                                   shape: const StadiumBorder(),
+                                  elevation: 5,
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,

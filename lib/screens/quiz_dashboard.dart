@@ -62,7 +62,7 @@ class QuizDashboard extends StatelessWidget {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        elevation: 0,
+                        elevation: 5,
                         shape: const CircleBorder(),
                         padding: const EdgeInsets.all(16),
                       ),

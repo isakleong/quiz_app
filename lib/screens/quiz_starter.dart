@@ -42,7 +42,7 @@ class StartQuiz extends GetView<QuizController>  {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppConfig.darkGreen,
-                  elevation: 0,
+                  elevation: 5,
                   shape: const CircleBorder(),
                   padding: const EdgeInsets.all(16),
                 ),
