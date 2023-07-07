@@ -8,5 +8,5 @@ abstract class Message {
   static const confirmSubmitQuiz = "Apakah Anda yakin ingin mengumpulkan kuis?";
   static const confirmExitApp = "Apakah Anda yakin ingin keluar dari aplikasi?";
   static const retrySubmitQuiz = "Data kuis belum dapat terkirim ke server untuk saat ini.\nJangan matikan gadget agar data dapat langsung terkirim ke server secara otomatis.";
-  static const warningQuizNotSent = "Ada data kuis yang belum terkirim.\nPastikan gadget terhubung ke internet\ndan coba ulang setelah 10 menit.";
+  static const warningQuizNotSent = "Ada data kuis yang belum terkirim.\nPastikan gadget terhubung ke internet\ndan coba ulang setelah 5 menit.";
 }

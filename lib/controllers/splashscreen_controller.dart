@@ -124,7 +124,7 @@ class SplashscreenController extends GetxController with StateMixin {
       try {
         final encryptedParam = await Utils.encryptData(appName);
 
-        final result = await ApiClient().getData("/config?app=$encryptedParam");
+        final result = await ApiClient().getData("/version?app=$encryptedParam");
         var data = jsonDecode(result.toString());
 
         String latestVersion = data[0]["Value"];
