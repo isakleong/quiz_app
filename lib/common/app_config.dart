@@ -12,10 +12,10 @@ class AppConfig {
 
   static const String basePublicUrl = "https://link.tirtakencana.com/SFATools/public/api";
   static const String initPublicUrl = "https://link.tirtakencana.com/SFATools";
-  static const String tesPublicUrl = "http://link.tirtakencana.com/SFATools/public/test";
+  static const String tesPublicUrl = "https://link.tirtakencana.com/SFATools/public/test";
 
-  static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
-  static const String initUrl = "https://link.tirtakencana.com/SFATools";
+  // static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
+  // static const String initUrl = "https://link.tirtakencana.com/SFATools";
 
   static const String filevendor = '/storage/emulated/0/TKTW/SFATools.txt';
   static const String filequiz = '/storage/emulated/0/TKTW/SFANotif.txt';

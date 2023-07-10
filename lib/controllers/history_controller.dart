@@ -66,12 +66,16 @@ class HistoryController extends GetxController with StateMixin {
     change(null, status: RxStatus.loading());
     quizHistoryModel.clear();
 
-    bool isConnected = await ApiClient().checkConnection();
+    var connTest = await ApiClient().checkConnection();
+    var arrConnTest = connTest.split("|");
+    bool isConnected = arrConnTest[0] == 'true';
+    String urlAPI = arrConnTest[1];
+
     if(isConnected) {
       try {
         final encryptedParam = await Utils.encryptData(params);
 
-        var result = await ApiClient().getData("/quiz/history?sales_id=$encryptedParam");
+        var result = await ApiClient().getData(urlAPI, "/quiz/history?sales_id=$encryptedParam");
         bool isValid = Utils.validateData(result.toString());
 
         if(isValid) {

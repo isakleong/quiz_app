@@ -123,12 +123,16 @@ class QuizController extends GetxController with StateMixin {
   getQuizConfig(String params) async {
     change(null, status: RxStatus.loading());
 
-    bool isConnected = await ApiClient().checkConnection();
+    var connTest = await ApiClient().checkConnection();
+    var arrConnTest = connTest.split("|");
+    bool isConnected = arrConnTest[0] == 'true';
+    String urlAPI = arrConnTest[1];
+
     if (isConnected) {
       try {
         final encryptedParam = await Utils.encryptData(params);
 
-        var result = await ApiClient().getData("/quiz/config?sales_id=$encryptedParam");
+        var result = await ApiClient().getData(urlAPI, "/quiz/config?sales_id=$encryptedParam");
         bool isValid = Utils.validateData(result.toString());
 
         if (isValid) {
@@ -170,7 +174,11 @@ class QuizController extends GetxController with StateMixin {
   getQuizData(String params) async {
     quizModel.clear();
 
-    bool isConnected = await ApiClient().checkConnection();
+    var connTest = await ApiClient().checkConnection();
+    var arrConnTest = connTest.split("|");
+    bool isConnected = arrConnTest[0] == 'true';
+    String urlAPI = arrConnTest[1];
+
     if(isConnected) {
       try {
         final encryptedSalesID = await Utils.encryptData(params);
@@ -181,7 +189,7 @@ class QuizController extends GetxController with StateMixin {
 
         final encryptedDate = await Utils.encryptData(formattedDate);
 
-        var result = await ApiClient().getData("/quiz?sales_id=$encryptedSalesID&date=$encryptedDate");
+        var result = await ApiClient().getData(urlAPI, "/quiz?sales_id=$encryptedSalesID&date=$encryptedDate");
         bool isValid = Utils.validateData(result.toString());
 
         if(isValid) {
@@ -423,10 +431,15 @@ class QuizController extends GetxController with StateMixin {
         await Backgroundservicecontroller().writeText("2;${salesId};${DateTime.now()};${_filequiz.split(";")[3]}");
       }
 
-      bool isConnected = await ApiClient().checkConnection();
+      var connTest = await ApiClient().checkConnection();
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+
       if (isConnected) {
         var bodyData = jsonEncode(params);
         var resultSubmit = await ApiClient().postData(
+            urlAPI,
             '/quiz/submit',
             Utils.encryptData(bodyData),
             Options(

@@ -187,9 +187,15 @@ class Backgroundservicecontroller {
       var retryStatus = await accessBox("read", AppConfig.keyStatusBoxSubmitQuiz, "", box: AppConfig.boxSubmitQuiz);
       if(retryStatus != null && retryStatus.value == "true") {
         var bodyData = await accessBox("read", AppConfig.keyDataBoxSubmitQuiz, "", box: AppConfig.boxSubmitQuiz);
-        bool isConnected = await ApiClient().checkConnection();
+
+        var connTest = await ApiClient().checkConnection();
+        var arrConnTest = connTest.split("|");
+        bool isConnected = arrConnTest[0] == 'true';
+        String urlAPI = arrConnTest[1];
+
         if(isConnected) {
           var resultSubmit = await ApiClient().postData(
+            urlAPI,
             '/quiz/submit',
             Utils.encryptData(bodyData.value),
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"})
@@ -266,14 +272,24 @@ class Backgroundservicecontroller {
     try {
       final encryptedParam = await Utils.encryptData(salesid);
 
-      var req = await ApiClient().getData("/quiz/status?sales_id=$encryptedParam");
-      Map<String, dynamic> jsonResponse = json.decode(req);
-      ApiResponse response = ApiResponse.fromJson(jsonResponse);
-      if (response.code.toString() == "200") {
-        return response.message;
+      var connTest = await ApiClient().checkConnection();
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+
+      if(isConnected) {
+        var req = await ApiClient().getData(urlAPI, "/quiz/status?sales_id=$encryptedParam");
+        Map<String, dynamic> jsonResponse = json.decode(req);
+        ApiResponse response = ApiResponse.fromJson(jsonResponse);
+        if (response.code.toString() == "200") {
+          return response.message;
+        } else {
+          return "err";
+        }
       } else {
         return "err";
       }
+
     } catch (e) {
       return "err";
     }

@@ -119,12 +119,16 @@ class SplashscreenController extends GetxController with StateMixin {
     String currentVersion = packageInfo.version;
     appVersion.value = currentVersion;
 
-    bool isConnected = await ApiClient().checkConnection();
+    var connTest = await ApiClient().checkConnection();
+    var arrConnTest = connTest.split("|");
+    bool isConnected = arrConnTest[0] == 'true';
+    String urlAPI = arrConnTest[1];
+
     if(isConnected) {
       try {
         final encryptedParam = await Utils.encryptData(appName);
 
-        final result = await ApiClient().getData("/version?app=$encryptedParam");
+        final result = await ApiClient().getData(urlAPI, "/version?app=$encryptedParam");
         var data = jsonDecode(result.toString());
 
         String latestVersion = data[0]["Value"];
@@ -193,14 +197,18 @@ class SplashscreenController extends GetxController with StateMixin {
   }
 
   getModuleData() async {
-    bool isConnected = await ApiClient().checkConnection();
+    var connTest = await ApiClient().checkConnection();
+    var arrConnTest = connTest.split("|");
+    bool isConnected = arrConnTest[0] == 'true';
+    String urlAPI = arrConnTest[1];
+
     if(isConnected) {
       moduleList.clear();
 
       try {
         final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
-        final result = await ApiClient().getData("/module?sales_id=$encryptedParam");
+        final result = await ApiClient().getData(urlAPI, "/module?sales_id=$encryptedParam");
         var data = jsonDecode(result.toString());
         data.map((item) {
           moduleList.add(Module.from(item));
