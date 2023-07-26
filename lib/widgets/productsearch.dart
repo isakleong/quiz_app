@@ -17,7 +17,7 @@ class ProductSearch extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
       child: Container(
-        width: 0.8 * width,
+        width: 0.9 * width,
         height: 0.15 * height,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
@@ -90,7 +90,7 @@ class ProductSearch extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 0.02 * width),
             child: Container(
-              width: 0.76 * width,
+              width: 0.86 * width,
               height: 2,
               color: Colors.grey.shade300,
             ),

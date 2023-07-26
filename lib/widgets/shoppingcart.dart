@@ -18,7 +18,7 @@ class Shoppingcart extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
       child: Container(
-        width: 0.8 * width,
+        width: 0.9 * width,
         height: 0.18 * height,
         decoration: BoxDecoration(
             border: Border.all(color: AppConfig.mainCyan, width: 2),
@@ -81,7 +81,7 @@ class Shoppingcart extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 0.02 * width),
             child: Container(
-              width: 0.76 * width,
+              width: 0.86 * width,
               height: 2,
               color: Colors.grey.shade300,
             ),
@@ -108,7 +108,7 @@ class Shoppingcart extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 0.05 * width, top: 10),
             child: Container(
-              width: 0.7 * width,
+              width: 0.8 * width,
               height: 0.05 * height,
               decoration: BoxDecoration(
                   color: Colors.white,
