@@ -108,37 +108,40 @@ class Homepage extends StatelessWidget {
                             shrinkWrap: true,
                             itemCount: splashscreenController.moduleList.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Card(
-                                elevation: 10,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16)),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          AppConfig.softGreen,
-                                          AppConfig.softCyan
-                                        ],
-                                      ),
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: Card(
+                                  elevation: 10,
+                                  shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16)),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(16),
-                                      splashColor:
-                                          AppConfig.mainGreen.withOpacity(0.5),
-                                      onTap: () {
-                                        Get.toNamed(RouteName.quizDashboard);
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20),
-                                        child: TextView(
-                                            headings: "H2",
-                                            text: splashscreenController
-                                                .moduleList[index].moduleID,
-                                            fontSize: 20),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            AppConfig.softGreen,
+                                            AppConfig.softCyan
+                                          ],
+                                        ),
+                                        borderRadius: BorderRadius.circular(16)),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(16),
+                                        splashColor:
+                                            AppConfig.mainGreen.withOpacity(0.5),
+                                        onTap: () async {
+                                          Get.toNamed(RouteName.quizDashboard);
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: TextView(
+                                              headings: "H2",
+                                              text: splashscreenController
+                                                  .moduleList[index].moduleID,
+                                              fontSize: 20),
+                                        ),
                                       ),
                                     ),
                                   ),

@@ -169,7 +169,7 @@ class HistoryPage extends GetView<HistoryController>  {
                                 children: [
                                   Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
                                   const SizedBox(height: 30),
-                                  const TextView(headings: "H3", text: "Tidak ada data"),
+                                  const TextView(headings: "H3", text: Message.emptyData)
                                 ],
                               ),
                             ),
@@ -225,7 +225,7 @@ class HistoryPage extends GetView<HistoryController>  {
                                   children: [
                                     Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
                                     const SizedBox(height: 30),
-                                    const TextView(headings: "H3", text: "Tidak ada data"),
+                                    const TextView(headings: "H3", text: Message.emptyData),
                                   ],
                                 ),
                               )),
