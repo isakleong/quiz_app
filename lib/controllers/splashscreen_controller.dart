@@ -39,29 +39,32 @@ class SplashscreenController extends GetxController with StateMixin {
 
   openErrorDialog() {
     appsDialog(
-      type: "app_error",
-      title:  Obx(() => TextView(
-        headings: "H4",
-        text: errorMessage.value,
-        textAlign: TextAlign.center,
+        type: "app_error",
+        title: Obx(
+          () => TextView(
+            headings: "H4",
+            text: errorMessage.value,
+            textAlign: TextAlign.center,
+          ),
         ),
-      ),
-      leftBtnMsg: "Ok",
-      isAnimated: true,
-      leftActionClick: () {
-        Get.back();
-      }
-    );
+        leftBtnMsg: "Ok",
+        isAnimated: true,
+        leftActionClick: () {
+          Get.back();
+        });
   }
 
   syncAppsReady() async {
     if (await checkAppsPermission('STORAGE')) {
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
+        print("on checkupdate");
         await checkUpdate();
       } else {
+        print("on sync");
         syncAppsReady();
       }
     } else {
+      print("on sync");
       syncAppsReady();
     }
   }
@@ -73,11 +76,11 @@ class SplashscreenController extends GetxController with StateMixin {
     // ignore: prefer_typing_uninitialized_variables
     var status;
     if (type == 'STORAGE') {
-      if(sdkInt < 33) {
+      if (sdkInt < 33) {
         status = await Permission.storage.request();
       } else {
-        //if you need the access for both photos and videos, 
-        //you can use either Permission.photos or Permission.video, you don’t need both of them, 
+        //if you need the access for both photos and videos,
+        //you can use either Permission.photos or Permission.video, you don’t need both of them,
         //because in Granular Media the access is granted for both media types.
         status = await Permission.photos.request();
       }
@@ -112,6 +115,9 @@ class SplashscreenController extends GetxController with StateMixin {
   }
 
   checkUpdate() async {
+    await getParameterData();
+    getModuleData();
+    return;
     change(null, status: RxStatus.loading());
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -124,49 +130,53 @@ class SplashscreenController extends GetxController with StateMixin {
     bool isConnected = arrConnTest[0] == 'true';
     String urlAPI = arrConnTest[1];
 
-    if(isConnected) {
+    if (isConnected) {
       try {
         final encryptedParam = await Utils.encryptData(appName);
 
-        final result = await ApiClient().getData(urlAPI, "/version?app=$encryptedParam");
+        final result =
+            await ApiClient().getData(urlAPI, "/version?app=$encryptedParam");
         var data = jsonDecode(result.toString());
 
         String latestVersion = data[0]["Value"];
-        int currentVersionConverted = Utils().convertVersionNumber(currentVersion);
-        int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
+        int currentVersionConverted =
+            Utils().convertVersionNumber(currentVersion);
+        int latestVersionConverted =
+            Utils().convertVersionNumber(latestVersion);
 
-        if(latestVersionConverted > currentVersionConverted) {
+        if (latestVersionConverted > currentVersionConverted) {
           change(null, status: RxStatus.success());
 
           appsDialog(
-            type: "app_info",
-            title: const TextView(
-              headings: "H4",
-              text: "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi SFA Tools.\n4. Tunggu hingga proses update selesai.",
-              textAlign: TextAlign.start,
-            ),
-            leftBtnMsg: "ok",
-            isAnimated: true,
-            leftActionClick: () {
-              Get.back();
-              SystemNavigator.pop();
-            }
-          );
+              type: "app_info",
+              title: const TextView(
+                headings: "H4",
+                text:
+                    "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi SFA Tools.\n4. Tunggu hingga proses update selesai.",
+                textAlign: TextAlign.start,
+              ),
+              leftBtnMsg: "ok",
+              isAnimated: true,
+              leftActionClick: () {
+                Get.back();
+                SystemNavigator.pop();
+              });
         } else {
           await getParameterData();
           getModuleData();
         }
-      } catch(e) {
+      } catch (e) {
+        print("on catch ${e.toString()}");
         errorMessage.value = e.toString();
         openErrorDialog();
         change(null, status: RxStatus.error(errorMessage.value));
       }
     } else {
       var moduleBox = await Hive.openBox<Module>('moduleBox');
-      if(moduleBox.length > 0) {
+      if (moduleBox.length > 0) {
         moduleList.clear();
         moduleList.addAll(moduleBox.values);
-        
+
         await getParameterData();
 
         change(null, status: RxStatus.success());
@@ -182,12 +192,12 @@ class SplashscreenController extends GetxController with StateMixin {
   getParameterData() async {
     //SalesID;CustID;LocCheckIn
     String parameter = await Utils().readParameter();
-    if(parameter != "") {
+    if (parameter != "") {
       var arrParameter = parameter.split(';');
-      for(int i=0; i<arrParameter.length; i++) {
-        if(i == 0) {
+      for (int i = 0; i < arrParameter.length; i++) {
+        if (i == 0) {
           salesIdParams.value = arrParameter[i];
-        } else if(i == 1) {
+        } else if (i == 1) {
           customerIdParams.value = arrParameter[i];
         } else {
           isCheckInParams.value = arrParameter[2];
@@ -202,13 +212,14 @@ class SplashscreenController extends GetxController with StateMixin {
     bool isConnected = arrConnTest[0] == 'true';
     String urlAPI = arrConnTest[1];
 
-    if(isConnected) {
+    if (isConnected) {
       moduleList.clear();
 
       try {
         final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
-        final result = await ApiClient().getData(urlAPI, "/module?sales_id=$encryptedParam");
+        final result = await ApiClient()
+            .getData(urlAPI, "/module?sales_id=$encryptedParam");
         var data = jsonDecode(result.toString());
         data.map((item) {
           moduleList.add(Module.from(item));
@@ -217,20 +228,30 @@ class SplashscreenController extends GetxController with StateMixin {
         var moduleBox = await Hive.openBox<Module>('moduleBox');
         await moduleBox.clear();
         await moduleBox.addAll(moduleList);
+        //for dummy purpose
+        moduleList.add(Module(
+            moduleID: 'Taking Order Vendor',
+            version: '0.0.1',
+            orderNumber: '3'));
+        //comment code above if using real data
 
         change(null, status: RxStatus.success());
         Get.offAndToNamed(RouteName.homepage);
-
-      } catch(e) {
+      } catch (e) {
         errorMessage(e.toString());
         change(null, status: RxStatus.error(errorMessage.value));
       }
     } else {
       var moduleBox = await Hive.openBox<Module>('moduleBox');
-      if(moduleBox.length > 0) {
+      if (moduleBox.length > 0) {
         moduleList.clear();
         moduleList.addAll(moduleBox.values);
-
+        //for dummy purpose
+        moduleList.add(Module(
+            moduleID: 'Taking Order Vendor',
+            version: '0.0.1',
+            orderNumber: '3'));
+        //comment code above if using real data
         change(null, status: RxStatus.success());
         Get.offAndToNamed(RouteName.homepage);
       } else {
@@ -238,6 +259,14 @@ class SplashscreenController extends GetxController with StateMixin {
         openErrorDialog();
         change(null, status: RxStatus.error(errorMessage.value));
       }
+    }
+  }
+
+  buttonAction(String moduleid) {
+    if (moduleid == 'Taking Order Vendor') {
+      Get.toNamed(RouteName.takingOrderVendor);
+    } else {
+      Get.toNamed(RouteName.quizDashboard);
     }
   }
 }

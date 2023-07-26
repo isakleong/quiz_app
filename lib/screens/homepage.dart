@@ -69,7 +69,10 @@ class Homepage extends StatelessWidget {
                             onPressed: () {
                               appsDialog(
                                 type: "app_exit_confirm",
-                                title: const TextView(headings: "H3", text: Message.confirmExitApp, fontSize: 16),
+                                title: const TextView(
+                                    headings: "H3",
+                                    text: Message.confirmExitApp,
+                                    fontSize: 16),
                                 content: const SizedBox(),
                                 isAnimated: true,
                                 isCancel: true,
@@ -79,7 +82,8 @@ class Homepage extends StatelessWidget {
                                   Get.back();
                                 },
                                 rightActionClick: () {
-                                  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                                  SystemChannels.platform
+                                      .invokeMethod('SystemNavigator.pop');
                                 },
                               );
                             },
@@ -89,14 +93,18 @@ class Homepage extends StatelessWidget {
                               shape: const CircleBorder(),
                               padding: const EdgeInsets.all(10),
                             ),
-                            child: Icon(FontAwesomeIcons.xmark, size: 35, color:AppConfig.darkGreen),
+                            child: Icon(FontAwesomeIcons.xmark,
+                                size: 35, color: AppConfig.darkGreen),
                           ),
                           Row(
                             children: [
                               Icon(FontAwesomeIcons.solidCircleUser,
-                              size: 25, color: AppConfig.darkGreen),
+                                  size: 25, color: AppConfig.darkGreen),
                               const SizedBox(width: 10),
-                              TextView(headings: "H2", text: splashscreenController.salesIdParams.value),
+                              TextView(
+                                  headings: "H2",
+                                  text: splashscreenController
+                                      .salesIdParams.value),
                             ],
                           )
                         ],
@@ -130,7 +138,9 @@ class Homepage extends StatelessWidget {
                                       splashColor:
                                           AppConfig.mainGreen.withOpacity(0.5),
                                       onTap: () {
-                                        Get.toNamed(RouteName.quizDashboard);
+                                        splashscreenController.buttonAction(
+                                            splashscreenController
+                                                .moduleList[index].moduleID);
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(20),
@@ -148,7 +158,10 @@ class Homepage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      TextView(headings: "H3", text: "v ${splashscreenController.appVersion.value}", fontSize: 14),
+                      TextView(
+                          headings: "H3",
+                          text: "v ${splashscreenController.appVersion.value}",
+                          fontSize: 14),
                     ],
                   ),
                 ),
