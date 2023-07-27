@@ -116,13 +116,12 @@ class ProductSearch extends StatelessWidget {
                     width: 0.7 * width,
                     height: 0.045 * height,
                     child: DropDownTextField(
-                        clearOption: true,
+                        clearOption: false,
                         enableSearch: true,
                         dropDownIconProperty: IconProperty(icon: null),
                         controller: _takingOrderVendorController.cnt,
                         textFieldDecoration: InputDecoration(
                             hintText: "Cari Produk", border: InputBorder.none),
-                        // dropdownColor: Colors.green,
                         searchDecoration: const InputDecoration(
                             hintText: "Ketik nama produk"),
                         dropDownItemCount:

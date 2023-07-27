@@ -10,8 +10,11 @@ class TakingOrderVendorController extends GetxController with StateMixin {
   RxList<ProductData> listProduct = <ProductData>[].obs;
   RxList<DropDownValueModel> listDropDown = <DropDownValueModel>[].obs;
   RxList<CartModel> cartList = <CartModel>[].obs;
+  RxList<CartDetail> cartDetailList = <CartDetail>[].obs;
   late SingleValueDropDownController cnt;
   Rx<TextEditingController> qty1 = TextEditingController().obs;
+  Rx<TextEditingController> qty2 = TextEditingController().obs;
+  Rx<TextEditingController> qty3 = TextEditingController().obs;
 
   @override
   void onInit() {
@@ -62,16 +65,7 @@ class TakingOrderVendorController extends GetxController with StateMixin {
     cartList.add(CartModel(kdProduct, nmProduct, qty, satuan, price));
     selectedValue.value = "";
     cnt.clearDropDown();
-  }
-
-  countProductTotal() {
-    var listProductinCart = [];
-    for (var i = 0; i < cartList.length; i++) {
-      if (!listProductinCart.contains(cartList[i].kdProduct)) {
-        listProductinCart.add(cartList[i].kdProduct);
-      }
-    }
-    return listProductinCart.length;
+    fillCartDetail();
   }
 
   countPriceTotal() {
@@ -86,5 +80,75 @@ class TakingOrderVendorController extends GetxController with StateMixin {
   String formatNumber(int number) {
     final NumberFormat numberFormat = NumberFormat('#,##0');
     return numberFormat.format(number);
+  }
+
+  fillCartDetail() {
+    cartDetailList.clear();
+    for (var i = 0; i < cartList.length; i++) {
+      if (cartDetailList.isEmpty) {
+        print("added here ${cartList[i].kdProduct} 1");
+        List<CartModel> _data = [
+          CartModel(cartList[i].kdProduct, cartList[i].nmProduct,
+              cartList[i].Qty, cartList[i].Satuan, cartList[i].hrgPerPieces)
+        ];
+        cartDetailList.add(
+            CartDetail(cartList[i].kdProduct, cartList[i].nmProduct, _data));
+      } else {
+        for (var j = 0; j < cartDetailList.length; j++) {
+          if (cartDetailList[j].kdProduct == cartList[i].kdProduct) {
+            var _counter = 0;
+            for (var l = 0; l < cartDetailList[j].itemOrder.length; l++) {
+              if (cartDetailList[j].itemOrder[l].Satuan == cartList[i].Satuan) {
+                _counter++;
+                break;
+              }
+            }
+            if (_counter == 0) {
+              print("added here ${cartList[i].kdProduct} 2");
+              cartDetailList[j].itemOrder.add(CartModel(
+                  cartList[i].kdProduct,
+                  cartList[i].nmProduct,
+                  cartList[i].Qty,
+                  cartList[i].Satuan,
+                  cartList[i].hrgPerPieces));
+            }
+          } else if (cartDetailList[j].kdProduct != cartList[i].kdProduct) {
+            var _counter = 0;
+            for (var k = 0; k < cartDetailList.length; k++) {
+              if (cartDetailList[k].kdProduct == cartList[i].kdProduct) {
+                _counter++;
+                break;
+              }
+            }
+            if (_counter == 0) {
+              print("added here ${cartList[i].kdProduct} 3");
+              List<CartModel> _data = [
+                CartModel(
+                    cartList[i].kdProduct,
+                    cartList[i].nmProduct,
+                    cartList[i].Qty,
+                    cartList[i].Satuan,
+                    cartList[i].hrgPerPieces)
+              ];
+              cartDetailList.add(CartDetail(
+                  cartList[i].kdProduct, cartList[i].nmProduct, _data));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  countTotalDetail(CartDetail _data) {
+    var total = 0.0;
+    print(_data.itemOrder.length);
+    for (var i = 0; i < _data.itemOrder.length; i++) {
+      print(
+          "qty ${_data.itemOrder[i].Qty} hrg ${_data.itemOrder[i].hrgPerPieces}");
+      total =
+          total + (_data.itemOrder[i].Qty * _data.itemOrder[i].hrgPerPieces);
+      print(total);
+    }
+    return total.toInt();
   }
 }

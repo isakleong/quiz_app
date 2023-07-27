@@ -51,14 +51,30 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                             ? Container()
                             : Padding(
                                 padding: EdgeInsets.only(
-                                    left: 0.05 * width, top: 0.02 * height),
+                                    left: 0.05 * width,
+                                    top: 0.02 * height,
+                                    bottom: 0.01 * height),
                                 child: CartHeader()),
                         _takingOrderVendorController.cartList.isEmpty
                             ? Container()
-                            : Padding(
-                                padding: EdgeInsets.only(
-                                    left: 0.05 * width, top: 0.02 * height),
-                                child: CartList())
+                            : Expanded(
+                                child: ListView.builder(
+                                  itemCount: _takingOrderVendorController
+                                      .cartDetailList.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 0.05 * width,
+                                          top: 5,
+                                          right: 0.05 * width),
+                                      child: CartList(
+                                          idx: (index + 1).toString(),
+                                          data: _takingOrderVendorController
+                                              .cartDetailList[index]),
+                                    );
+                                  },
+                                ),
+                              ),
                       ]),
                 ],
               ),

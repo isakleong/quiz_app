@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
+import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
+import '../../controllers/taking_order_vendor_controller.dart';
+
 class CartList extends StatelessWidget {
-  const CartList({super.key});
+  String idx;
+  CartDetail data;
+  CartList({super.key, required this.idx, required this.data});
+  final TakingOrderVendorController _takingOrderVendorController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,7 @@ class CartList extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10)),
                 child: Center(
                   child: TextView(
-                    text: "1",
+                    text: idx,
                     headings: 'H2',
                     fontSize: 20,
                     color: Colors.white,
@@ -50,7 +57,7 @@ class CartList extends StatelessWidget {
                     TextView(
                       headings: 'H4',
                       fontSize: 14,
-                      text: "Abrasive Cloth Roll AA100",
+                      text: data.nmProduct,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -112,7 +119,8 @@ class CartList extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10)),
                 child: Center(
                   child: TextView(
-                    text: "1,229,200",
+                    text:
+                        "${_takingOrderVendorController.formatNumber(_takingOrderVendorController.countTotalDetail(data))}",
                     headings: 'H3',
                     fontSize: 12,
                     color: Colors.white,

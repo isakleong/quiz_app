@@ -72,7 +72,7 @@ class CartHeader extends StatelessWidget {
                       child: Center(
                         child: TextView(
                           text:
-                              "${_takingOrderVendorController.countProductTotal()} produk",
+                              "${_takingOrderVendorController.cartDetailList.length} produk",
                           headings: 'H3',
                           fontSize: 12,
                           color: Colors.white,
