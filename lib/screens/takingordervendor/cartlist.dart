@@ -16,7 +16,7 @@ class CartList extends StatelessWidget {
       color: Colors.white,
       child: Container(
         width: 0.9 * width,
-        height: 0.08 * height,
+        height: 0.07 * height,
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Row(
@@ -25,8 +25,8 @@ class CartList extends StatelessWidget {
                 width: 0.025 * width,
               ),
               Container(
-                width: 0.08 * width,
-                height: 0.05 * height,
+                width: 0.07 * width,
+                height: 0.04 * height,
                 decoration: BoxDecoration(
                     color: Colors.blueGrey,
                     borderRadius: BorderRadius.circular(10)),
@@ -43,7 +43,7 @@ class CartList extends StatelessWidget {
                 width: 0.025 * width,
               ),
               Padding(
-                padding: EdgeInsets.only(top: 0.015 * height),
+                padding: EdgeInsets.only(top: 0.012 * height),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -59,7 +59,7 @@ class CartList extends StatelessWidget {
                           padding: EdgeInsets.only(left: 0.0),
                           child: Container(
                             width: 0.12 * width,
-                            height: 25,
+                            height: 22,
                             decoration: BoxDecoration(
                                 color: Colors.blue.shade400,
                                 borderRadius: BorderRadius.circular(10)),
@@ -77,7 +77,7 @@ class CartList extends StatelessWidget {
                           padding: EdgeInsets.only(left: 5.0),
                           child: Container(
                             width: 0.12 * width,
-                            height: 25,
+                            height: 22,
                             decoration: BoxDecoration(
                                 color: Colors.blue.shade400,
                                 borderRadius: BorderRadius.circular(10)),
@@ -106,7 +106,7 @@ class CartList extends StatelessWidget {
             children: [
               Container(
                 width: 0.14 * width,
-                height: 25,
+                height: 22,
                 decoration: BoxDecoration(
                     color: Color(0xFF8B4513),
                     borderRadius: BorderRadius.circular(10)),
@@ -123,8 +123,8 @@ class CartList extends StatelessWidget {
                 width: 10,
               ),
               Container(
-                width: 45,
-                height: 45,
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
                     shape: BoxShape.circle, color: Colors.green.shade700),
                 child: Stack(
@@ -141,8 +141,8 @@ class CartList extends StatelessWidget {
                 width: 10,
               ),
               Container(
-                width: 45,
-                height: 45,
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
                     shape: BoxShape.circle, color: Colors.red.shade700),
                 child: Stack(

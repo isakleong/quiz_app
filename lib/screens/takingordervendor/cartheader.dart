@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 import '../../common/app_config.dart';
+import '../../controllers/taking_order_vendor_controller.dart';
 
 class CartHeader extends StatelessWidget {
-  const CartHeader({super.key});
+  final TakingOrderVendorController _takingOrderVendorController = Get.find();
+  CartHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +21,8 @@ class CartHeader extends StatelessWidget {
         Row(
           children: [
             Container(
-              width: 60,
-              height: 60,
+              width: 45,
+              height: 45,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
@@ -36,8 +39,8 @@ class CartHeader extends StatelessWidget {
                 children: [
                   Image.asset(
                     'assets/images/cart.png',
-                    width: 40,
-                    height: 40,
+                    width: 25,
+                    height: 25,
                     color: Colors.white,
                     fit: BoxFit.cover,
                   ),
@@ -61,16 +64,17 @@ class CartHeader extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 0.18 * width,
-                      height: 28,
+                      width: 0.15 * width,
+                      height: 25,
                       decoration: BoxDecoration(
                           color: Colors.blue.shade400,
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
                         child: TextView(
-                          text: "1 Produk",
+                          text:
+                              "${_takingOrderVendorController.countProductTotal()} produk",
                           headings: 'H3',
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Colors.white,
                         ),
                       ),
@@ -79,16 +83,17 @@ class CartHeader extends StatelessWidget {
                       width: 10,
                     ),
                     Container(
-                      width: 0.25 * width,
-                      height: 28,
+                      width: 0.22 * width,
+                      height: 25,
                       decoration: BoxDecoration(
                           color: Color(0xFF8B4513),
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
                         child: TextView(
-                          text: "Total : 1,229,200",
+                          text:
+                              "Total : ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.countPriceTotal())}",
                           headings: 'H3',
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Colors.white,
                         ),
                       ),

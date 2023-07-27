@@ -1,12 +1,16 @@
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
+import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 import '../../common/app_config.dart';
 
 class ProductSearch extends StatelessWidget {
-  const ProductSearch({super.key});
+  final TakingOrderVendorController _takingOrderVendorController = Get.find();
+  ProductSearch({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -107,11 +111,34 @@ class ProductSearch extends StatelessWidget {
                 SizedBox(
                   width: 10,
                 ),
-                TextView(
-                  headings: 'H4',
-                  fontSize: 16,
-                  color: Colors.grey.shade600,
-                  text: "Cari Produk",
+                Obx(
+                  () => Container(
+                    width: 0.7 * width,
+                    height: 0.045 * height,
+                    child: DropDownTextField(
+                        clearOption: true,
+                        enableSearch: true,
+                        dropDownIconProperty: IconProperty(icon: null),
+                        controller: _takingOrderVendorController.cnt,
+                        textFieldDecoration: InputDecoration(
+                            hintText: "Cari Produk", border: InputBorder.none),
+                        // dropdownColor: Colors.green,
+                        searchDecoration: const InputDecoration(
+                            hintText: "Ketik nama produk"),
+                        dropDownItemCount:
+                            _takingOrderVendorController.listDropDown.length,
+                        dropDownList: _takingOrderVendorController.listDropDown,
+                        onChanged: (val) {
+                          if (val != "") {
+                            _takingOrderVendorController.selectedValue.value =
+                                val.value.toString();
+                            _takingOrderVendorController.qty1.value.text = "0";
+                          } else {
+                            _takingOrderVendorController.selectedValue.value =
+                                '';
+                          }
+                        }),
+                  ),
                 )
               ],
             ),
