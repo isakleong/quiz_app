@@ -62,42 +62,69 @@ class CartList extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 0.0),
-                          child: Container(
-                            width: 0.12 * width,
-                            height: 22,
-                            decoration: BoxDecoration(
-                                color: Colors.blue.shade400,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Center(
-                              child: TextView(
-                                text: "1 Dos",
-                                headings: 'H3',
-                                fontSize: 12,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 5.0),
-                          child: Container(
-                            width: 0.12 * width,
-                            height: 22,
-                            decoration: BoxDecoration(
-                                color: Colors.blue.shade400,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Center(
-                              child: TextView(
-                                text: "1 Biji",
-                                headings: 'H3',
-                                fontSize: 12,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
+                        data.itemOrder.length > 0
+                            ? Padding(
+                                padding: EdgeInsets.only(left: 0.0),
+                                child: Container(
+                                  width: 0.12 * width,
+                                  height: 22,
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue.shade400,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Center(
+                                    child: TextView(
+                                      text:
+                                          "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
+                                      headings: 'H3',
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(),
+                        data.itemOrder.length > 1
+                            ? Padding(
+                                padding: EdgeInsets.only(left: 5.0),
+                                child: Container(
+                                  width: 0.12 * width,
+                                  height: 22,
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue.shade400,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Center(
+                                    child: TextView(
+                                      text:
+                                          "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
+                                      headings: 'H3',
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(),
+                        data.itemOrder.length > 2
+                            ? Padding(
+                                padding: EdgeInsets.only(left: 5.0),
+                                child: Container(
+                                  width: 0.12 * width,
+                                  height: 22,
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue.shade400,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Center(
+                                    child: TextView(
+                                      text:
+                                          "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
+                                      headings: 'H3',
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container()
                         // SizedBox(
                         //   width: 0.1 * width,
                         // ),

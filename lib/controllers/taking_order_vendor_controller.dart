@@ -7,6 +7,7 @@ import 'package:sfa_tools/models/productdata.dart';
 
 class TakingOrderVendorController extends GetxController with StateMixin {
   RxString selectedValue = "".obs;
+  RxList<ProductData> selectedProduct = <ProductData>[].obs;
   RxList<ProductData> listProduct = <ProductData>[].obs;
   RxList<DropDownValueModel> listDropDown = <DropDownValueModel>[].obs;
   RxList<CartModel> cartList = <CartModel>[].obs;
@@ -33,12 +34,23 @@ class TakingOrderVendorController extends GetxController with StateMixin {
       'AVIAN Cling Zinc Chromate 901 - 1 KG'
     ];
     listProduct.clear();
-    listProduct.add(ProductData('asc', dummyList[0]));
-    listProduct.add(ProductData('desc', dummyList[1]));
-    listProduct.add(ProductData('ccc', dummyList[2]));
-    listProduct.add(ProductData('acc', dummyList[3]));
-    listProduct.add(ProductData('cca', dummyList[4]));
-    listProduct.add(ProductData('cac', dummyList[5]));
+    listProduct.add(
+        ProductData('asc', dummyList[0], [DetailProductData('dos', 10000)]));
+    listProduct.add(ProductData('desc', dummyList[1], [
+      DetailProductData('kaleng', 10000),
+      DetailProductData('biji', 10000)
+    ]));
+    listProduct.add(ProductData(
+        'ccc', dummyList[2], [DetailProductData('inner plas', 10000)]));
+    listProduct.add(ProductData('acc', dummyList[3],
+        [DetailProductData('biji', 10000), DetailProductData('dos', 10000)]));
+    listProduct.add(ProductData('cca', dummyList[4], [
+      DetailProductData('dos', 10000),
+      DetailProductData('inner plas', 10000),
+      DetailProductData('biji', 10000)
+    ]));
+    listProduct.add(
+        ProductData('cac', dummyList[5], [DetailProductData('dos', 10000)]));
 
     for (var i = 0; i < listProduct.length; i++) {
       listDropDown.add(DropDownValueModel(
@@ -150,5 +162,15 @@ class TakingOrderVendorController extends GetxController with StateMixin {
       print(total);
     }
     return total.toInt();
+  }
+
+  getDetailProduct() {
+    List<ProductData> _list = <ProductData>[];
+    for (var i = 0; i < listProduct.length; i++) {
+      if (listProduct[i].kdProduct == cnt.dropDownValue!.value) {
+        _list.add(listProduct[0]);
+        selectedProduct.value = _list;
+      }
+    }
   }
 }
