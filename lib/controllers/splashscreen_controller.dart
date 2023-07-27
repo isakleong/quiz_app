@@ -1,26 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/models/module.dart';
+import 'package:sfa_tools/models/servicebox.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 class SplashscreenController extends GetxController with StateMixin {
-  // var isError = false.obs;
   var errorMessage = "".obs;
 
   var appVersion = "".obs;
-  var configData = "".obs;
   var moduleList = <Module>[].obs;
   var isNeedUpdate = false.obs;
 
@@ -28,8 +29,6 @@ class SplashscreenController extends GetxController with StateMixin {
   var salesIdParams = "".obs;
   var customerIdParams = "".obs;
   var isCheckInParams = "".obs;
-
-  final txtServerIPController = TextEditingController();
 
   @override
   void onInit() async {
@@ -57,8 +56,8 @@ class SplashscreenController extends GetxController with StateMixin {
   syncAppsReady() async {
     if (await checkAppsPermission('STORAGE')) {
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
-        print("on checkupdate");
-        await checkUpdate();
+        await getParameterData();
+        await getModuleData();
       } else {
         print("on sync");
         syncAppsReady();
@@ -114,16 +113,8 @@ class SplashscreenController extends GetxController with StateMixin {
     return status == PermissionStatus.granted;
   }
 
-  checkUpdate() async {
-    await getParameterData();
-    getModuleData();
-    return;
+  getModuleData() async {
     change(null, status: RxStatus.loading());
-
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String appName = packageInfo.appName;
-    String currentVersion = packageInfo.version;
-    appVersion.value = currentVersion;
 
     var connTest = await ApiClient().checkConnection();
     var arrConnTest = connTest.split("|");
@@ -131,43 +122,56 @@ class SplashscreenController extends GetxController with StateMixin {
     String urlAPI = arrConnTest[1];
 
     if (isConnected) {
-      try {
-        final encryptedParam = await Utils.encryptData(appName);
+      moduleList.clear();
 
-        final result =
-            await ApiClient().getData(urlAPI, "/version?app=$encryptedParam");
-        var data = jsonDecode(result.toString());
+      if (salesIdParams.value != "") {
+        try {
+          final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
-        String latestVersion = data[0]["Value"];
-        int currentVersionConverted =
-            Utils().convertVersionNumber(currentVersion);
-        int latestVersionConverted =
-            Utils().convertVersionNumber(latestVersion);
+          final result = await ApiClient()
+              .getData(urlAPI, "/module?sales_id=$encryptedParam");
+          var data = jsonDecode(result.toString());
+          data.map((item) {
+            moduleList.add(Module.from(item));
+          }).toList();
 
-        if (latestVersionConverted > currentVersionConverted) {
-          change(null, status: RxStatus.success());
+          var moduleBox = await Hive.openBox<Module>('moduleBox');
+          await moduleBox.clear();
+          await moduleBox.addAll(moduleList);
+          //for dummy purpose
+          moduleList.add(Module(
+              moduleID: 'Taking Order Vendor',
+              version: '0.0.1',
+              orderNumber: '3'));
+          //comment code above if using real data
 
-          appsDialog(
-              type: "app_info",
-              title: const TextView(
-                headings: "H4",
-                text:
-                    "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi SFA Tools.\n4. Tunggu hingga proses update selesai.",
-                textAlign: TextAlign.start,
-              ),
-              leftBtnMsg: "ok",
-              isAnimated: true,
-              leftActionClick: () {
-                Get.back();
-                SystemNavigator.pop();
-              });
-        } else {
-          await getParameterData();
-          getModuleData();
+          await checkVersion();
+
+          if (isNeedUpdate.value) {
+            change(null, status: RxStatus.success());
+            appsDialog(
+                type: "app_info",
+                title: const TextView(
+                  headings: "H4",
+                  text: Message.updateVersionMessage,
+                  textAlign: TextAlign.start,
+                ),
+                leftBtnMsg: "ok",
+                isAnimated: true,
+                leftActionClick: () {
+                  Get.back();
+                  SystemNavigator.pop();
+                });
+          } else {
+            await postTrackingVersion();
+          }
+        } catch (e) {
+          errorMessage(e.toString());
+          openErrorDialog();
+          change(null, status: RxStatus.error(errorMessage.value));
         }
-      } catch (e) {
-        print("on catch ${e.toString()}");
-        errorMessage.value = e.toString();
+      } else {
+        errorMessage(Message.errorParameterData);
         openErrorDialog();
         change(null, status: RxStatus.error(errorMessage.value));
       }
@@ -176,8 +180,12 @@ class SplashscreenController extends GetxController with StateMixin {
       if (moduleBox.length > 0) {
         moduleList.clear();
         moduleList.addAll(moduleBox.values);
-
-        await getParameterData();
+        //for dummy purpose
+        moduleList.add(Module(
+            moduleID: 'Taking Order Vendor',
+            version: '0.0.1',
+            orderNumber: '3'));
+        //comment code above if using real data
 
         change(null, status: RxStatus.success());
         Get.offAndToNamed(RouteName.homepage);
@@ -186,6 +194,191 @@ class SplashscreenController extends GetxController with StateMixin {
         openErrorDialog();
         change(null, status: RxStatus.error(errorMessage.value));
       }
+    }
+  }
+
+  checkVersion() async {
+    isNeedUpdate(false);
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String currentVersion = packageInfo.version;
+    appVersion.value = currentVersion;
+
+    var connTest = await ApiClient().checkConnection();
+    var arrConnTest = connTest.split("|");
+    bool isConnected = arrConnTest[0] == 'true';
+    String urlAPI = arrConnTest[1];
+
+    if (salesIdParams.value != "") {
+      if (isConnected) {
+        try {
+          final encryptedParam = await Utils.encryptData(salesIdParams.value);
+
+          final result = await ApiClient()
+              .getData(urlAPI, "/version?sales_id=$encryptedParam");
+          var data = jsonDecode(result.toString());
+
+          String latestVersion = data[0]["Value"];
+
+          int currentVersionConverted =
+              Utils().convertVersionNumber(currentVersion);
+          int latestVersionConverted =
+              Utils().convertVersionNumber(latestVersion);
+
+          //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
+          bool moduleVersionStatus = true;
+          int cntPendingData =
+              0; //count pending data (if there is pending data, then app should not be updated)
+
+          Box retrySubmitQuizBox =
+              await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
+          var isRetrySubmit =
+              retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
+          retrySubmitQuizBox.close();
+
+          if (isRetrySubmit != null && isRetrySubmit.value == "true") {
+            cntPendingData = 1;
+          }
+
+          for (int i = 0; i < moduleList.length; i++) {
+            int moduleVersionConverted =
+                Utils().convertVersionNumber(moduleList[i].version);
+            if (moduleVersionConverted > currentVersionConverted) {
+              moduleVersionStatus = false;
+              break;
+            }
+          }
+
+          if (latestVersionConverted > currentVersionConverted &&
+              !moduleVersionStatus &&
+              cntPendingData == 0) {
+            isNeedUpdate(true);
+          }
+        } catch (e) {
+          errorMessage.value = e.toString();
+          openErrorDialog();
+          change(null, status: RxStatus.error(errorMessage.value));
+        }
+      } else {
+        var moduleBox = await Hive.openBox<Module>('moduleBox');
+        if (moduleBox.length > 0) {
+          moduleList.clear();
+          moduleList.addAll(moduleBox.values);
+
+          change(null, status: RxStatus.success());
+          Get.offAndToNamed(RouteName.homepage);
+        } else {
+          errorMessage(Message.errorConnection);
+          openErrorDialog();
+          change(null, status: RxStatus.error(errorMessage.value));
+        }
+      }
+    } else {
+      errorMessage(Message.errorParameterData);
+      openErrorDialog();
+      change(null, status: RxStatus.error(errorMessage.value));
+    }
+  }
+
+  postTrackingVersion() async {
+    var trackVersionBox = await Hive.openBox('trackVersionBox');
+    var trackVersion = trackVersionBox.get('trackVersion');
+
+    if (trackVersion != null && trackVersion != "") {
+      if (trackVersion != appVersion.value) {
+        var connTest = await ApiClient().checkConnection();
+        var arrConnTest = connTest.split("|");
+        bool isConnected = arrConnTest[0] == 'true';
+        String urlAPI = arrConnTest[1];
+
+        if (isConnected) {
+          try {
+            var params = {
+              'sales_id': salesIdParams.value,
+              'version': appVersion.value,
+            };
+
+            var bodyData = jsonEncode(params);
+            var resultSubmit = await ApiClient().postData(
+                urlAPI,
+                '/version/track',
+                Utils.encryptData(bodyData),
+                Options(headers: {
+                  HttpHeaders.contentTypeHeader: "application/json"
+                }));
+
+            if (resultSubmit == "success") {
+              change(null, status: RxStatus.success());
+              Get.offAndToNamed(RouteName.homepage);
+            } else {
+              errorMessage.value = resultSubmit;
+              openErrorDialog();
+              change(null, status: RxStatus.error(errorMessage.value));
+            }
+          } catch (e) {
+            errorMessage.value = e.toString();
+            openErrorDialog();
+            change(null, status: RxStatus.error(errorMessage.value));
+          }
+        } else {
+          errorMessage(Message.errorConnection);
+          openErrorDialog();
+          change(null, status: RxStatus.error(errorMessage.value));
+        }
+      } else {
+        change(null, status: RxStatus.success());
+        Get.offAndToNamed(RouteName.homepage);
+      }
+    } else {
+      var connTest = await ApiClient().checkConnection();
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+
+      if (isConnected) {
+        try {
+          var params = {
+            'sales_id': salesIdParams.value,
+            'version': appVersion.value,
+          };
+
+          var bodyData = jsonEncode(params);
+          var resultSubmit = await ApiClient().postData(
+              urlAPI,
+              '/version/track',
+              Utils.encryptData(bodyData),
+              Options(headers: {
+                HttpHeaders.contentTypeHeader: "application/json"
+              }));
+
+          if (resultSubmit == "success") {
+            trackVersionBox.put("trackVersion", appVersion.value);
+
+            change(null, status: RxStatus.success());
+            Get.offAndToNamed(RouteName.homepage);
+          } else {
+            errorMessage.value = resultSubmit;
+            openErrorDialog();
+            change(null, status: RxStatus.error(errorMessage.value));
+          }
+        } catch (e) {
+          errorMessage.value = e.toString();
+          openErrorDialog();
+          change(null, status: RxStatus.error(errorMessage.value));
+        }
+      } else {
+        errorMessage(Message.errorConnection);
+        openErrorDialog();
+        change(null, status: RxStatus.error(errorMessage.value));
+      }
+    }
+  }
+
+  buttonAction(String moduleid) {
+    if (moduleid == 'Taking Order Vendor') {
+      Get.toNamed(RouteName.takingOrderVendor);
+    } else {
+      Get.toNamed(RouteName.quizDashboard);
     }
   }
 
@@ -203,70 +396,6 @@ class SplashscreenController extends GetxController with StateMixin {
           isCheckInParams.value = arrParameter[2];
         }
       }
-    }
-  }
-
-  getModuleData() async {
-    var connTest = await ApiClient().checkConnection();
-    var arrConnTest = connTest.split("|");
-    bool isConnected = arrConnTest[0] == 'true';
-    String urlAPI = arrConnTest[1];
-
-    if (isConnected) {
-      moduleList.clear();
-
-      try {
-        final encryptedParam = await Utils.encryptData(salesIdParams.value);
-
-        final result = await ApiClient()
-            .getData(urlAPI, "/module?sales_id=$encryptedParam");
-        var data = jsonDecode(result.toString());
-        data.map((item) {
-          moduleList.add(Module.from(item));
-        }).toList();
-
-        var moduleBox = await Hive.openBox<Module>('moduleBox');
-        await moduleBox.clear();
-        await moduleBox.addAll(moduleList);
-        //for dummy purpose
-        moduleList.add(Module(
-            moduleID: 'Taking Order Vendor',
-            version: '0.0.1',
-            orderNumber: '3'));
-        //comment code above if using real data
-
-        change(null, status: RxStatus.success());
-        Get.offAndToNamed(RouteName.homepage);
-      } catch (e) {
-        errorMessage(e.toString());
-        change(null, status: RxStatus.error(errorMessage.value));
-      }
-    } else {
-      var moduleBox = await Hive.openBox<Module>('moduleBox');
-      if (moduleBox.length > 0) {
-        moduleList.clear();
-        moduleList.addAll(moduleBox.values);
-        //for dummy purpose
-        moduleList.add(Module(
-            moduleID: 'Taking Order Vendor',
-            version: '0.0.1',
-            orderNumber: '3'));
-        //comment code above if using real data
-        change(null, status: RxStatus.success());
-        Get.offAndToNamed(RouteName.homepage);
-      } else {
-        errorMessage(Message.errorConnection);
-        openErrorDialog();
-        change(null, status: RxStatus.error(errorMessage.value));
-      }
-    }
-  }
-
-  buttonAction(String moduleid) {
-    if (moduleid == 'Taking Order Vendor') {
-      Get.toNamed(RouteName.takingOrderVendor);
-    } else {
-      Get.toNamed(RouteName.quizDashboard);
     }
   }
 }

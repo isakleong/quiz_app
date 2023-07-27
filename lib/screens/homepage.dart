@@ -116,20 +116,12 @@ class Homepage extends StatelessWidget {
                             shrinkWrap: true,
                             itemCount: splashscreenController.moduleList.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Card(
-                                elevation: 10,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16)),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          AppConfig.softGreen,
-                                          AppConfig.softCyan
-                                        ],
-                                      ),
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: Card(
+                                  elevation: 10,
+                                  shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16)),
                                   child: Material(
                                     color: Colors.transparent,

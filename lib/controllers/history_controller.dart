@@ -122,6 +122,7 @@ class HistoryController extends GetxController with StateMixin {
             isLoading(false);
             change(null, status: RxStatus.success());
           } else {
+            isLoading(false);
             change(null, status: RxStatus.empty());
           }
         } else {
