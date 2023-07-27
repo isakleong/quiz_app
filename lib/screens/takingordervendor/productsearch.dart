@@ -3,7 +3,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../common/app_config.dart';
+import '../../common/app_config.dart';
 
 class ProductSearch extends StatelessWidget {
   const ProductSearch({super.key});

@@ -11,7 +11,7 @@ import 'package:sfa_tools/screens/homepage.dart';
 import 'package:sfa_tools/screens/quiz.dart';
 import 'package:sfa_tools/screens/splash_screen.dart';
 import 'package:sfa_tools/screens/quiz_starter.dart';
-import 'package:sfa_tools/screens/takingordervendor/takingordervendormainpage.dart';
+import 'package:sfa_tools/screens/takingordervendor/taking_order_vendor_main_page.dart';
 
 class AppRoute {
   static final pages = [

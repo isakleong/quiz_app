@@ -5,11 +5,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
-import 'package:sfa_tools/widgets/cartheader.dart';
-import 'package:sfa_tools/widgets/productsearch.dart';
-import 'package:sfa_tools/widgets/shoppingcart.dart';
+import 'package:sfa_tools/screens/takingordervendor/cartheader.dart';
+import 'package:sfa_tools/screens/takingordervendor/cartlist.dart';
+import 'package:sfa_tools/screens/takingordervendor/productsearch.dart';
+import 'package:sfa_tools/screens/takingordervendor/shoppingcart.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
 import '../../common/app_config.dart';
 
 class TakingOrderVendorMainPage extends StatelessWidget {
@@ -45,22 +45,9 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                         EdgeInsets.only(left: 0.05 * width, top: 0.02 * height),
                     child: CartHeader()),
                 Padding(
-                  padding:
-                      EdgeInsets.only(left: 0.05 * width, top: 0.02 * height),
-                  child: Card(
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    color: Colors.white,
-                    child: Container(
-                      width: 0.9 * width,
-                      height: 0.1 * height,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: []),
-                    ),
-                  ),
-                )
+                    padding:
+                        EdgeInsets.only(left: 0.05 * width, top: 0.02 * height),
+                    child: CartList())
               ]),
             ],
           ),

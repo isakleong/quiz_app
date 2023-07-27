@@ -4,7 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../common/app_config.dart';
+import '../../common/app_config.dart';
 
 class Shoppingcart extends StatelessWidget {
   const Shoppingcart({super.key});
