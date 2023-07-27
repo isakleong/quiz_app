@@ -123,24 +123,37 @@ class Homepage extends StatelessWidget {
                                   elevation: 10,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16)),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(16),
-                                      splashColor:
-                                          AppConfig.mainGreen.withOpacity(0.5),
-                                      onTap: () {
-                                        splashscreenController.buttonAction(
-                                            splashscreenController
-                                                .moduleList[index].moduleID);
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20),
-                                        child: TextView(
-                                            headings: "H2",
-                                            text: splashscreenController
-                                                .moduleList[index].moduleID,
-                                            fontSize: 20),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            AppConfig.softGreen,
+                                            AppConfig.softCyan
+                                          ],
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(16),
+                                        splashColor: AppConfig.mainGreen
+                                            .withOpacity(0.5),
+                                        onTap: () async {
+                                          splashscreenController.buttonAction(
+                                              splashscreenController
+                                                  .moduleList[index].moduleID);
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: TextView(
+                                              headings: "H2",
+                                              text: splashscreenController
+                                                  .moduleList[index].moduleID,
+                                              fontSize: 20),
+                                        ),
                                       ),
                                     ),
                                   ),
