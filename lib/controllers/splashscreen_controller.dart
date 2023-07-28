@@ -139,10 +139,10 @@ class SplashscreenController extends GetxController with StateMixin {
           await moduleBox.clear();
           await moduleBox.addAll(moduleList);
           //for dummy purpose
-          moduleList.add(Module(
-              moduleID: 'Taking Order Vendor',
-              version: '0.0.1',
-              orderNumber: '3'));
+          // moduleList.add(Module(
+          //     moduleID: 'Taking Order Vendor',
+          //     version: '0.0.1',
+          //     orderNumber: '3'));
           //comment code above if using real data
 
           await checkVersion();
@@ -181,10 +181,10 @@ class SplashscreenController extends GetxController with StateMixin {
         moduleList.clear();
         moduleList.addAll(moduleBox.values);
         //for dummy purpose
-        moduleList.add(Module(
-            moduleID: 'Taking Order Vendor',
-            version: '0.0.1',
-            orderNumber: '3'));
+        // moduleList.add(Module(
+        //     moduleID: 'Taking Order Vendor',
+        //     version: '0.0.1',
+        //     orderNumber: '3'));
         //comment code above if using real data
 
         change(null, status: RxStatus.success());
