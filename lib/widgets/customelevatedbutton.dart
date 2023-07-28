@@ -15,6 +15,7 @@ class CustomElevatedButton extends StatelessWidget {
   Color textcolor;
   double elevation;
   Color bordercolor;
+  String headings;
   CustomElevatedButton(
       this.text,
       this.onTap,
@@ -24,7 +25,8 @@ class CustomElevatedButton extends StatelessWidget {
       this.backgroundColor,
       this.textcolor,
       this.elevation,
-      this.bordercolor);
+      this.bordercolor,
+      this.headings);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class CustomElevatedButton extends StatelessWidget {
             TextView(
               text: text,
               color: textcolor,
-              headings: 'H2',
+              headings: headings,
               fontSize: 14,
             ),
           ],

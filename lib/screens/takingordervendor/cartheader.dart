@@ -107,16 +107,10 @@ class CartHeader extends StatelessWidget {
         ),
         Padding(
             padding: EdgeInsets.only(right: 0.05 * width),
-            child: CustomElevatedButton(
-                "LANJUTKAN   >>",
-                () {},
-                0.25 * width,
-                0.045 * height,
-                20,
-                AppConfig.mainCyan,
-                Colors.white,
-                5,
-                AppConfig.mainCyan))
+            child: CustomElevatedButton("LANJUTKAN   >>", () {
+              _takingOrderVendorController.previewCheckOut();
+            }, 0.25 * width, 0.045 * height, 20, AppConfig.mainCyan,
+                Colors.white, 5, AppConfig.mainCyan, 'H2'))
       ],
     );
   }
