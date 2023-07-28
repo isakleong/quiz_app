@@ -157,37 +157,47 @@ class CartList extends StatelessWidget {
               SizedBox(
                 width: 10,
               ),
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle, color: Colors.green.shade700),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                    )
-                  ],
+              InkWell(
+                onTap: () {
+                  _takingOrderVendorController.handleEditItem(data);
+                },
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.green.shade700),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                      )
+                    ],
+                  ),
                 ),
               ),
               SizedBox(
                 width: 10,
               ),
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle, color: Colors.red.shade700),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Icon(
-                      Icons.delete_forever,
-                      color: Colors.white,
-                    )
-                  ],
+              InkWell(
+                onTap: () {
+                  _takingOrderVendorController.handleDeleteItem(data);
+                },
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.red.shade700),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Icon(
+                        Icons.delete_forever,
+                        color: Colors.white,
+                      )
+                    ],
+                  ),
                 ),
               ),
               SizedBox(

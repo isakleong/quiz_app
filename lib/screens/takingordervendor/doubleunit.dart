@@ -4,16 +4,16 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/widgets/textview.dart';
 
 import '../../controllers/taking_order_vendor_controller.dart';
+import '../../widgets/textview.dart';
 
-class SingleUnit extends StatelessWidget {
+class DoubleUnit extends StatelessWidget {
   TextEditingController ctrl;
   String satuan;
   var onTapMinus;
   var onTapPlus;
-  SingleUnit(
+  DoubleUnit(
       {super.key,
       required this.ctrl,
       required this.satuan,
@@ -25,8 +25,10 @@ class SingleUnit extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Center(
+        Padding(
+          padding: EdgeInsets.only(left: 0.12 * width),
           child: Container(
             width: 0.15 * width,
             height: 0.025 * height,
@@ -45,7 +47,7 @@ class SingleUnit extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Container(
-            width: 0.8 * width,
+            width: 0.4 * width,
             height: 0.05 * height,
             decoration: BoxDecoration(
                 color: Colors.white,

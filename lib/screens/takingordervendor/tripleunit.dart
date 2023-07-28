@@ -3,17 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../../controllers/taking_order_vendor_controller.dart';
-
-class SingleUnit extends StatelessWidget {
+class TripleUnit extends StatelessWidget {
   TextEditingController ctrl;
   String satuan;
   var onTapMinus;
   var onTapPlus;
-  SingleUnit(
+  TripleUnit(
       {super.key,
       required this.ctrl,
       required this.satuan,
@@ -25,8 +22,10 @@ class SingleUnit extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Center(
+        Padding(
+          padding: EdgeInsets.only(left: 0.04 * width),
           child: Container(
             width: 0.15 * width,
             height: 0.025 * height,
@@ -38,14 +37,14 @@ class SingleUnit extends StatelessWidget {
               text: satuan,
               headings: 'H3',
               color: Colors.white,
-              fontSize: 14,
+              fontSize: 12,
             )),
           ),
         ),
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Container(
-            width: 0.8 * width,
+            width: 0.25 * width,
             height: 0.05 * height,
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -55,7 +54,7 @@ class SingleUnit extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 0.05 * width),
+                    padding: EdgeInsets.only(left: 0.025 * width),
                     child: InkWell(
                       onTap: onTapMinus,
                       child: Icon(
@@ -88,7 +87,7 @@ class SingleUnit extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 0.05 * width),
+                    padding: EdgeInsets.only(right: 0.025 * width),
                     child: InkWell(
                       onTap: onTapPlus,
                       child: Icon(

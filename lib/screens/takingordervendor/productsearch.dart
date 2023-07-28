@@ -113,7 +113,7 @@ class ProductSearch extends StatelessWidget {
                 ),
                 Obx(
                   () => Container(
-                    width: 0.7 * width,
+                    width: 0.8 * width,
                     height: 0.045 * height,
                     child: DropDownTextField(
                         clearOption: false,
@@ -129,9 +129,9 @@ class ProductSearch extends StatelessWidget {
                         dropDownList: _takingOrderVendorController.listDropDown,
                         onChanged: (val) {
                           if (val != "") {
-                            _takingOrderVendorController.selectedValue.value =
-                                val.value.toString();
-                            _takingOrderVendorController.qty1.value.text = "0";
+                            _takingOrderVendorController
+                                .handleProductSearchButton(
+                                    val.value.toString());
                           } else {
                             _takingOrderVendorController.selectedValue.value =
                                 '';

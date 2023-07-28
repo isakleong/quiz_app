@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 import '../../common/app_config.dart';
@@ -105,35 +106,17 @@ class CartHeader extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: EdgeInsets.only(right: 0.05 * width),
-          child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppConfig.mainCyan,
-                elevation: 5,
-                fixedSize: Size(0.25 * width, 0.045 * height),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                padding: const EdgeInsets.all(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextView(
-                    text: "LANJUTKAN",
-                    color: Colors.white,
-                    headings: 'H2',
-                    fontSize: 14,
-                  ),
-                  TextView(
-                    text: ">>",
-                    color: Colors.white,
-                    headings: 'H2',
-                    fontSize: 14,
-                  )
-                ],
-              )),
-        )
+            padding: EdgeInsets.only(right: 0.05 * width),
+            child: CustomElevatedButton(
+                "LANJUTKAN   >>",
+                () {},
+                0.25 * width,
+                0.045 * height,
+                20,
+                AppConfig.mainCyan,
+                Colors.white,
+                5,
+                AppConfig.mainCyan))
       ],
     );
   }

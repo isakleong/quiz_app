@@ -73,6 +73,7 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                                               .cartDetailList[index]),
                                     );
                                   },
+                                  physics: BouncingScrollPhysics(),
                                 ),
                               ),
                       ]),
