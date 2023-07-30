@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
-import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
@@ -142,17 +141,11 @@ class Homepage extends StatelessWidget {
                                         splashColor: AppConfig.mainGreen
                                             .withOpacity(0.5),
                                         onTap: () async {
-                                          splashscreenController.buttonAction(
-                                              splashscreenController
-                                                  .moduleList[index].moduleID);
+                                          splashscreenController.buttonAction(splashscreenController.moduleList[index].moduleID);
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(20),
-                                          child: TextView(
-                                              headings: "H2",
-                                              text: splashscreenController
-                                                  .moduleList[index].moduleID,
-                                              fontSize: 20),
+                                          child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 20),
                                         ),
                                       ),
                                     ),

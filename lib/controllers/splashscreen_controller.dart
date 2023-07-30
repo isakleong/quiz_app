@@ -59,11 +59,9 @@ class SplashscreenController extends GetxController with StateMixin {
         await getParameterData();
         await getModuleData();
       } else {
-        print("on sync");
         syncAppsReady();
       }
     } else {
-      print("on sync");
       syncAppsReady();
     }
   }
@@ -375,9 +373,7 @@ class SplashscreenController extends GetxController with StateMixin {
   }
 
   buttonAction(String moduleid) {
-    if (moduleid == 'Taking Order Vendor') {
-      Get.toNamed(RouteName.takingOrderVendor);
-    } else {
+    if (moduleid == 'Kuis') {
       Get.toNamed(RouteName.quizDashboard);
     }
   }
