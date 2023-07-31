@@ -32,8 +32,8 @@ class ItemReportPenjualan extends StatelessWidget {
                       padding: EdgeInsets.only(
                           top: 10, bottom: 10, left: 0.02 * Get.width),
                       child: Container(
-                        width: 0.08 * Get.width,
-                        height: 0.08 * Get.width,
+                        width: 0.07 * Get.width,
+                        height: 0.07 * Get.width,
                         decoration: BoxDecoration(
                           color: Color(0xFFf5511e),
                           shape: BoxShape.circle,
@@ -42,7 +42,7 @@ class ItemReportPenjualan extends StatelessWidget {
                           child: TextView(
                             text: idx,
                             color: Colors.white,
-                            fontSize: 20,
+                            fontSize: 18,
                             headings: 'H2',
                           ),
                         ),

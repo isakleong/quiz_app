@@ -75,8 +75,9 @@ class DialogCheckOut extends StatelessWidget {
                                 newValue!;
                           },
                           items: <String>[
+                            'Pilih Alamat Pengiriman',
                             'Pemancar Lamtemen Timur',
-                            'Pilih Alamat Pengiriman'
+                            'Alamat Dummy',
                           ].map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,

@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/productdata.dart';
+import 'package:sfa_tools/models/reportmodel.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/checkoutlist.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
@@ -16,6 +17,15 @@ import 'package:sfa_tools/widgets/textview.dart';
 import '../screens/transaction/takingordervendor/cartlist.dart';
 
 class TakingOrderVendorController extends GetxController with StateMixin {
+  @override
+  void onInit() {
+    super.onInit();
+    cnt = SingleValueDropDownController();
+    getListItem();
+    getReportList();
+  }
+
+  // for penjualan page
   RxString selectedValue = "".obs;
   RxList<ProductData> selectedProduct = <ProductData>[].obs;
   RxList<ProductData> listProduct = <ProductData>[].obs;
@@ -27,24 +37,16 @@ class TakingOrderVendorController extends GetxController with StateMixin {
   Rx<TextEditingController> qty2 = TextEditingController().obs;
   Rx<TextEditingController> qty3 = TextEditingController().obs;
   RxString choosedAddress = "".obs;
-  RxString choosedReport = "".obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    cnt = SingleValueDropDownController();
-    getListItem();
-  }
+  var dummyList = [
+    'Aries Bling Emulsion SW - 18 KG',
+    'ABSOLUTE Roof 30 - 2.5 LT',
+    'AVIAN Cling Synthetic SWM - 3.4 LT',
+    'AVIAN Cling Synthetic 11 - 17 LT',
+    'Acura Sb 120 Sonoma Oak',
+    'AVIAN Cling Zinc Chromate 901 - 1 KG'
+  ];
 
   getListItem() {
-    var dummyList = [
-      'Aries Bling Emulsion SW - 18 KG',
-      'ABSOLUTE Roof 30 - 2.5 LT',
-      'AVIAN Cling Synthetic SWM - 3.4 LT',
-      'AVIAN Cling Synthetic 11 - 17 LT',
-      'Acura Sb 120 Sonoma Oak',
-      'AVIAN Cling Zinc Chromate 901 - 1 KG'
-    ];
     listProduct.clear();
     listProduct.add(
         ProductData('asc', dummyList[0], [DetailProductData('dos', 15000)]));
@@ -290,5 +292,21 @@ class TakingOrderVendorController extends GetxController with StateMixin {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: DialogCheckOut()));
+  }
+
+  //for laporan page
+  RxString choosedReport = "".obs;
+  RxList<ReportModel> listReport = <ReportModel>[].obs;
+
+  getReportList() {
+    listReport.clear();
+    List<CartModel> _data = [
+      CartModel("asc", dummyList[0], 2, "dos", 10000),
+      CartModel("asc", dummyList[0], 1, "biji", 20000)
+    ];
+    List<CartDetail> _list = [];
+    _list.add(CartDetail("asc", dummyList[0], _data));
+    listReport.add(ReportModel("GO-00AC1A0103-2307311034-001", "penjualan",
+        "31-07-2023", "10:34", _list));
   }
 }
