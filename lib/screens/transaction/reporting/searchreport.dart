@@ -128,10 +128,10 @@ class SearchReport extends StatelessWidget {
                           'Semua Transaksi',
                           'Transaksi Penjualan',
                           'Transaksi Pembayaran',
-                          'Transaksi Retur',
-                          'Transaksi TTH',
-                          'Transaksi Survey',
-                          'Transaksi Keluhan'
+                          // 'Transaksi Retur',
+                          // 'Transaksi TTH',
+                          // 'Transaksi Survey',
+                          // 'Transaksi Keluhan'
                         ].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,

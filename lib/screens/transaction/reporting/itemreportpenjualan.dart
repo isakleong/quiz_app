@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/models/reportmodel.dart';
 import 'package:sfa_tools/screens/transaction/reporting/itemlistpenjualan.dart';
 
 import '../../../models/cartmodel.dart';
@@ -9,7 +10,7 @@ import '../../../widgets/textview.dart';
 
 class ItemReportPenjualan extends StatelessWidget {
   String idx;
-  CartDetail data;
+  ReportModel data;
   ItemReportPenjualan({super.key, required this.idx, required this.data});
 
   @override
@@ -52,7 +53,7 @@ class ItemReportPenjualan extends StatelessWidget {
                       width: 10,
                     ),
                     TextView(
-                      text: "GO-00AC1A0103-2307311034-001",
+                      text: data.id,
                       headings: 'H4',
                       fontSize: 14,
                     )
@@ -64,11 +65,11 @@ class ItemReportPenjualan extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       TextView(
-                        text: "31-07-2023",
+                        text: data.tanggal,
                         fontSize: 14,
                       ),
                       TextView(
-                        text: "10:34",
+                        text: data.waktu,
                         fontSize: 14,
                       )
                     ],
@@ -86,7 +87,16 @@ class ItemReportPenjualan extends StatelessWidget {
             SizedBox(
               height: 2,
             ),
-            ItemListPenjualan(idx: "1", data: data),
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemBuilder: (c, i) {
+            //       return ItemListPenjualan(idx: "1", data: data.listItem[i]);
+            //     },
+            //     itemCount: data.listItem.length,
+            //     physics: BouncingScrollPhysics(),
+            //   ),
+            // ),
+            ItemListPenjualan(idx: "1", data: data.listItem[0]),
             SizedBox(
               height: 10,
             ),

@@ -4,7 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/transaction/reporting/itemreportpenjulan.dart';
+import 'package:sfa_tools/screens/transaction/reporting/itemreportpenjualan.dart';
 
 import '../../../widgets/textview.dart';
 
@@ -65,14 +65,12 @@ class ReportPenjualan extends StatelessWidget {
                         ),
                         ItemReportPenjualan(
                           idx: (index + 1).toString(),
-                          data: _takingOrderVendorController
-                              .cartDetailList[index],
+                          data: _takingOrderVendorController.listReport[index],
                         )
                       ],
                     ),
                   )
-                : index ==
-                        _takingOrderVendorController.cartDetailList.length - 1
+                : index == _takingOrderVendorController.listReport.length - 1
                     ? Column(
                         children: [
                           Padding(
@@ -83,7 +81,7 @@ class ReportPenjualan extends StatelessWidget {
                             child: ItemReportPenjualan(
                               idx: (index + 1).toString(),
                               data: _takingOrderVendorController
-                                  .cartDetailList[index],
+                                  .listReport[index],
                             ),
                           ),
                           SizedBox(
@@ -103,8 +101,7 @@ class ReportPenjualan extends StatelessWidget {
                             right: 0.05 * Get.width),
                         child: ItemReportPenjualan(
                           idx: (index + 1).toString(),
-                          data: _takingOrderVendorController
-                              .cartDetailList[index],
+                          data: _takingOrderVendorController.listReport[index],
                         ));
           },
           physics: BouncingScrollPhysics(),

@@ -7,7 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/transaction/reporting/itemlistpenjualan.dart';
-import 'package:sfa_tools/screens/transaction/reporting/itemreportpenjulan.dart';
+import 'package:sfa_tools/screens/transaction/reporting/itemreportpenjualan.dart';
 import 'package:sfa_tools/screens/transaction/reporting/reportpenjualan.dart';
 import 'package:sfa_tools/screens/transaction/reporting/searchreport.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/checkoutlist.dart';
