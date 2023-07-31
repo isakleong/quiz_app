@@ -11,7 +11,8 @@ import 'package:sfa_tools/screens/homepage.dart';
 import 'package:sfa_tools/screens/quiz.dart';
 import 'package:sfa_tools/screens/splash_screen.dart';
 import 'package:sfa_tools/screens/quiz_starter.dart';
-import 'package:sfa_tools/screens/takingordervendor/taking_order_vendor_main_page.dart';
+import 'package:sfa_tools/screens/transaction/bottombar.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/taking_order_vendor_main_page.dart';
 
 class AppRoute {
   static final pages = [
@@ -56,7 +57,7 @@ class AppRoute {
     ),
     GetPage(
       name: RouteName.takingOrderVendor,
-      page: () => TakingOrderVendorMainPage(),
+      page: () => BottomBar(),
       // binding: HistoryPageBinding(),
       transition: Transition.fadeIn,
     ),

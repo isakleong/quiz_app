@@ -4,17 +4,17 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/takingordervendor/chipsitem.dart';
-import 'package:sfa_tools/widgets/textview.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 
-import '../../controllers/taking_order_vendor_controller.dart';
+import '../../../controllers/taking_order_vendor_controller.dart';
+import '../../../widgets/textview.dart';
 
-class SingleUnit extends StatelessWidget {
+class DoubleUnit extends StatelessWidget {
   TextEditingController ctrl;
   String satuan;
   var onTapMinus;
   var onTapPlus;
-  SingleUnit(
+  DoubleUnit(
       {super.key,
       required this.ctrl,
       required this.satuan,
@@ -26,12 +26,13 @@ class SingleUnit extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ChipsItem(satuan: satuan),
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Container(
-            width: 0.8 * width,
+            width: 0.4 * width,
             height: 0.05 * height,
             decoration: BoxDecoration(
                 color: Colors.white,

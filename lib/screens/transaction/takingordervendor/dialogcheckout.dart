@@ -4,11 +4,11 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/takingordervendor/checkoutlist.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/checkoutlist.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../../common/app_config.dart';
+import '../../../common/app_config.dart';
 
 class DialogCheckOut extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();

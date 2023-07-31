@@ -3,15 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sfa_tools/screens/takingordervendor/chipsitem.dart';
+import 'package:get/get.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-class TripleUnit extends StatelessWidget {
+import '../../../controllers/taking_order_vendor_controller.dart';
+
+class SingleUnit extends StatelessWidget {
   TextEditingController ctrl;
   String satuan;
   var onTapMinus;
   var onTapPlus;
-  TripleUnit(
+  SingleUnit(
       {super.key,
       required this.ctrl,
       required this.satuan,
@@ -23,13 +26,12 @@ class TripleUnit extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ChipsItem(satuan: satuan),
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Container(
-            width: 0.25 * width,
+            width: 0.8 * width,
             height: 0.05 * height,
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -39,7 +41,7 @@ class TripleUnit extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 0.025 * width),
+                    padding: EdgeInsets.only(left: 0.05 * width),
                     child: InkWell(
                       onTap: onTapMinus,
                       child: Icon(
@@ -72,7 +74,7 @@ class TripleUnit extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 0.025 * width),
+                    padding: EdgeInsets.only(right: 0.05 * width),
                     child: InkWell(
                       onTap: onTapPlus,
                       child: Icon(

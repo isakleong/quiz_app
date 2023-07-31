@@ -8,12 +8,12 @@ import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/productdata.dart';
-import 'package:sfa_tools/screens/takingordervendor/checkoutlist.dart';
-import 'package:sfa_tools/screens/takingordervendor/dialogcheckout.dart';
-import 'package:sfa_tools/screens/takingordervendor/dialogdelete.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/checkoutlist.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-import '../screens/takingordervendor/cartlist.dart';
+import '../screens/transaction/takingordervendor/cartlist.dart';
 
 class TakingOrderVendorController extends GetxController with StateMixin {
   RxString selectedValue = "".obs;
@@ -27,6 +27,7 @@ class TakingOrderVendorController extends GetxController with StateMixin {
   Rx<TextEditingController> qty2 = TextEditingController().obs;
   Rx<TextEditingController> qty3 = TextEditingController().obs;
   RxString choosedAddress = "".obs;
+  RxString choosedReport = "".obs;
 
   @override
   void onInit() {

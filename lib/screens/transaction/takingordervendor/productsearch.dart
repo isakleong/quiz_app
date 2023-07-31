@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../../common/app_config.dart';
+import '../../../common/app_config.dart';
 
 class ProductSearch extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();

@@ -6,12 +6,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
-import 'package:sfa_tools/screens/takingordervendor/cartheader.dart';
-import 'package:sfa_tools/screens/takingordervendor/cartlist.dart';
-import 'package:sfa_tools/screens/takingordervendor/productsearch.dart';
-import 'package:sfa_tools/screens/takingordervendor/shoppingcart.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/cartheader.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/cartlist.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/productsearch.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/shoppingcart.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-import '../../common/app_config.dart';
+import '../../../common/app_config.dart';
 
 class TakingOrderVendorMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController =

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/takingordervendor/chipsitem.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../../common/app_config.dart';
-import '../../controllers/taking_order_vendor_controller.dart';
+import '../../../common/app_config.dart';
+import '../../../controllers/taking_order_vendor_controller.dart';
 
 class CartHeader extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();

@@ -3,18 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
-import 'package:sfa_tools/screens/takingordervendor/chipsitem.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 
-import '../../controllers/taking_order_vendor_controller.dart';
-import '../../widgets/textview.dart';
-
-class DoubleUnit extends StatelessWidget {
+class TripleUnit extends StatelessWidget {
   TextEditingController ctrl;
   String satuan;
   var onTapMinus;
   var onTapPlus;
-  DoubleUnit(
+  TripleUnit(
       {super.key,
       required this.ctrl,
       required this.satuan,
@@ -32,7 +29,7 @@ class DoubleUnit extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Container(
-            width: 0.4 * width,
+            width: 0.25 * width,
             height: 0.05 * height,
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -42,7 +39,7 @@ class DoubleUnit extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 0.05 * width),
+                    padding: EdgeInsets.only(left: 0.025 * width),
                     child: InkWell(
                       onTap: onTapMinus,
                       child: Icon(
@@ -75,7 +72,7 @@ class DoubleUnit extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 0.05 * width),
+                    padding: EdgeInsets.only(right: 0.025 * width),
                     child: InkWell(
                       onTap: onTapPlus,
                       child: Icon(

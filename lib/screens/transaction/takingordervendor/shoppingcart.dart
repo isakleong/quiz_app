@@ -4,13 +4,13 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/takingordervendor/doubleunit.dart';
-import 'package:sfa_tools/screens/takingordervendor/singleunit.dart';
-import 'package:sfa_tools/screens/takingordervendor/tripleunit.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/doubleunit.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/singleunit.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/tripleunit.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../../common/app_config.dart';
-import '../../controllers/taking_order_vendor_controller.dart';
+import '../../../common/app_config.dart';
+import '../../../controllers/taking_order_vendor_controller.dart';
 
 class Shoppingcart extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();

@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../../common/app_config.dart';
+import '../../../common/app_config.dart';
 
 class DialogDelete extends StatelessWidget {
   String nmProduct;
