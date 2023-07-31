@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -62,8 +63,56 @@ class SplashscreenController extends GetxController with StateMixin {
         syncAppsReady();
       }
     } else {
-      syncAppsReady();
+      var status = await Permission.storage.status;
+      print("LEMPARAN DATA "+ status.toString());
+
+      openPermissionRequestDialog();
+      // syncAppsReady();
     }
+  }
+
+  openPermissionRequestDialog() {
+    appsDialog(
+      type: "app_info",
+      title: RichText(
+        textAlign: TextAlign.center,
+        text: const TextSpan(
+          text: 'Mohon berikan izin akses aplikasi dengan menekan tombol ',
+          style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+          children: <TextSpan>[
+            TextSpan(text: 'Allow', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+          ],
+        ),
+      ),
+      isAnimated: true,
+      leftBtnMsg: "Ok",
+      leftActionClick: () async {
+        Get.back();
+        await syncAppsReady();
+      }
+    );
+  }
+
+  openPermissionSettingDialog() {
+    appsDialog(
+      type: "app_info",
+      title: RichText(
+        textAlign: TextAlign.center,
+        text: const TextSpan(
+          text: 'MASUK SETTING YA ',
+          style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+          children: <TextSpan>[
+            TextSpan(text: 'Allow', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+          ],
+        ),
+      ),
+      isAnimated: true,
+      leftBtnMsg: "Ok",
+      leftActionClick: () async {
+        Get.back();
+        await syncAppsReady();
+      }
+    );
   }
 
   Future<bool> checkAppsPermission(String type) async {
@@ -97,15 +146,42 @@ class SplashscreenController extends GetxController with StateMixin {
 
     if (status != PermissionStatus.granted) {
       if (status == PermissionStatus.denied) {
+        print("go 1 ");
         return status == PermissionStatus.granted;
-      } else if (status == PermissionStatus.permanentlyDenied) {
-        status = await Permission.storage.status;
+      } 
+      // else if (status == PermissionStatus.permanentlyDenied) {
+      //   print("go 2 ");
 
-        while (status != PermissionStatus.granted) {
-          await openAppSettings();
-          status = await Permission.storage.status;
-        }
-        return status == PermissionStatus.granted;
+      //   if(type == 'STORAGE') {
+      //     status = await Permission.storage.status;
+      //   } else if (type == 'EXTERNAL STORAGE') {
+      //     status = await Permission.manageExternalStorage.status;
+      //   }
+
+      //   // await openAppSettings();
+
+      //   // while (status != PermissionStatus.granted) {
+      //   //   await openAppSettings();
+      //   //   if(type == 'STORAGE') {
+      //   //     status = await Permission.storage.status;
+      //   //   } else if (type == 'EXTERNAL STORAGE') {
+      //   //     status = await Permission.manageExternalStorage.status;
+      //   //   }
+      //   // }
+
+      //   return status == PermissionStatus.granted;
+      // }
+    }
+    return status == PermissionStatus.granted;
+  }
+
+  openPermissionInfoDialog(String type, var status) async {
+    while (status != PermissionStatus.granted) {
+      await openAppSettings();
+      if(type == 'STORAGE') {
+        status = await Permission.storage.status;
+      } else if (type == 'EXTERNAL STORAGE') {
+        status = await Permission.manageExternalStorage.status;
       }
     }
     return status == PermissionStatus.granted;
