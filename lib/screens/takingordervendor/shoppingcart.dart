@@ -26,7 +26,6 @@ class Shoppingcart extends StatelessWidget {
       color: Colors.white,
       child: Container(
         width: 0.9 * width,
-        height: 0.18 * height,
         decoration: BoxDecoration(
             border: Border.all(color: AppConfig.mainCyan, width: 2),
             borderRadius: BorderRadius.circular(10)),
@@ -249,7 +248,10 @@ class Shoppingcart extends StatelessWidget {
                                             '+');
                                   })
                             ])
-                      : Container())
+                      : Container()),
+          SizedBox(
+            height: 15,
+          )
         ]),
       ),
     );

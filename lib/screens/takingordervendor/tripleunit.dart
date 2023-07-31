@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sfa_tools/screens/takingordervendor/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 class TripleUnit extends StatelessWidget {
@@ -22,25 +23,9 @@ class TripleUnit extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: EdgeInsets.only(left: 0.04 * width),
-          child: Container(
-            width: 0.15 * width,
-            height: 0.025 * height,
-            decoration: BoxDecoration(
-                color: Colors.blue.shade400,
-                borderRadius: BorderRadius.circular(15)),
-            child: Center(
-                child: TextView(
-              text: satuan,
-              headings: 'H3',
-              color: Colors.white,
-              fontSize: 12,
-            )),
-          ),
-        ),
+        ChipsItem(satuan: satuan),
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Container(

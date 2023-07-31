@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
+import 'package:sfa_tools/screens/takingordervendor/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 import '../../controllers/taking_order_vendor_controller.dart';
@@ -65,65 +66,29 @@ class CartList extends StatelessWidget {
                         data.itemOrder.length > 0
                             ? Padding(
                                 padding: EdgeInsets.only(left: 0.0),
-                                child: Container(
-                                  width: 0.12 * width,
-                                  height: 22,
-                                  decoration: BoxDecoration(
-                                      color: Colors.blue.shade400,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Center(
-                                    child: TextView(
-                                      text:
-                                          "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
-                                      headings: 'H3',
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              )
+                                child: ChipsItem(
+                                  satuan:
+                                      "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
+                                  fontSize: 12,
+                                ))
                             : Container(),
                         data.itemOrder.length > 1
                             ? Padding(
                                 padding: EdgeInsets.only(left: 5.0),
-                                child: Container(
-                                  width: 0.12 * width,
-                                  height: 22,
-                                  decoration: BoxDecoration(
-                                      color: Colors.blue.shade400,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Center(
-                                    child: TextView(
-                                      text:
-                                          "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
-                                      headings: 'H3',
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              )
+                                child: ChipsItem(
+                                  satuan:
+                                      "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
+                                  fontSize: 12,
+                                ))
                             : Container(),
                         data.itemOrder.length > 2
                             ? Padding(
                                 padding: EdgeInsets.only(left: 5.0),
-                                child: Container(
-                                  width: 0.12 * width,
-                                  height: 22,
-                                  decoration: BoxDecoration(
-                                      color: Colors.blue.shade400,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Center(
-                                    child: TextView(
-                                      text:
-                                          "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
-                                      headings: 'H3',
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              )
+                                child: ChipsItem(
+                                  satuan:
+                                      "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
+                                  fontSize: 12,
+                                ))
                             : Container()
                         // SizedBox(
                         //   width: 0.1 * width,
@@ -138,21 +103,11 @@ class CartList extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Container(
-                width: 0.14 * width,
-                height: 22,
-                decoration: BoxDecoration(
-                    color: Color(0xFF8B4513),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                  child: TextView(
-                    text:
-                        "${_takingOrderVendorController.formatNumber(_takingOrderVendorController.countTotalDetail(data))}",
-                    headings: 'H3',
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                ),
+              ChipsItem(
+                satuan:
+                    "${_takingOrderVendorController.formatNumber(_takingOrderVendorController.countTotalDetail(data))}",
+                color: Color(0xFF8B4513),
+                fontSize: 12,
               ),
               SizedBox(
                 width: 10,

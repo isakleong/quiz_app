@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/screens/takingordervendor/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 import '../../controllers/taking_order_vendor_controller.dart';
@@ -26,22 +27,7 @@ class SingleUnit extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     return Column(
       children: [
-        Center(
-          child: Container(
-            width: 0.15 * width,
-            height: 0.025 * height,
-            decoration: BoxDecoration(
-                color: Colors.blue.shade400,
-                borderRadius: BorderRadius.circular(15)),
-            child: Center(
-                child: TextView(
-              text: satuan,
-              headings: 'H3',
-              color: Colors.white,
-              fontSize: 14,
-            )),
-          ),
-        ),
+        ChipsItem(satuan: satuan),
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Container(

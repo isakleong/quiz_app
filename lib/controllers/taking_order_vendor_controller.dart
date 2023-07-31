@@ -2,6 +2,7 @@ import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
@@ -9,6 +10,7 @@ import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/productdata.dart';
 import 'package:sfa_tools/screens/takingordervendor/checkoutlist.dart';
 import 'package:sfa_tools/screens/takingordervendor/dialogcheckout.dart';
+import 'package:sfa_tools/screens/takingordervendor/dialogdelete.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import '../screens/takingordervendor/cartlist.dart';
@@ -24,6 +26,7 @@ class TakingOrderVendorController extends GetxController with StateMixin {
   Rx<TextEditingController> qty1 = TextEditingController().obs;
   Rx<TextEditingController> qty2 = TextEditingController().obs;
   Rx<TextEditingController> qty3 = TextEditingController().obs;
+  RxString choosedAddress = "".obs;
 
   @override
   void onInit() {
@@ -221,60 +224,15 @@ class TakingOrderVendorController extends GetxController with StateMixin {
 
   handleDeleteItem(CartDetail data) {
     Get.dialog(Dialog(
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10))),
-      child: SizedBox(
-        width: Get.width * 0.5,
-        height: 0.4 * Get.height,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: Get.height * 0.03,
-            ),
-            TextView(
-              text: "Konfirmasi Hapus",
-              headings: 'H3',
-              fontSize: 17,
-            ),
-            SizedBox(
-              height: Get.height * 0.01,
-            ),
-            Lottie.asset('assets/lottie/delete.json', width: Get.width * 0.25),
-            SizedBox(
-              height: Get.height * 0.02,
-            ),
-            Container(
-              width: Get.width * 0.4,
-              child: TextView(
-                text: "Yakin ingin menghapus ${data.nmProduct}?",
-                headings: 'H4',
-                textAlign: TextAlign.center,
-                fontSize: 15,
-              ),
-            ),
-            SizedBox(
-              height: Get.height * 0.02,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CustomElevatedButton("BATAL", () {
-                  Get.back();
-                }, 0.18 * Get.width, 0.045 * Get.height, 8, Colors.white,
-                    AppConfig.mainCyan, 0, AppConfig.mainCyan, 'H2'),
-                CustomElevatedButton("YA, HAPUS", () async {
-                  await deleteItem(data);
-                  Get.back();
-                }, 0.18 * Get.width, 0.045 * Get.height, 8, AppConfig.mainCyan,
-                    Colors.white, 2, AppConfig.mainCyan, 'H2')
-              ],
-            )
-          ],
-        ),
-      ),
-    ));
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogDelete(
+            nmProduct: data.nmProduct,
+            ontap: () async {
+              await deleteItem(data);
+              Get.back();
+            })));
   }
 
   deleteItem(CartDetail data) {

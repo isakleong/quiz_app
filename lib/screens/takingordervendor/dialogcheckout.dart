@@ -59,32 +59,39 @@ class DialogCheckOut extends StatelessWidget {
                       size:
                           16), // Use any desired icon from flutter_icons package
                   SizedBox(width: 8), // Adjust the space between icon and text
-                  Expanded(
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        value:
-                            'Pemancar Lamtemen Timur', // Set the currently selected value here
-                        onChanged: (String? newValue) {
-                          // Handle dropdown value change here
-                        },
-                        items: <String>[
-                          'Pemancar Lamtemen Timur',
-                        ].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: TextView(
-                              text: value,
-                              textAlign: TextAlign.left,
-                              fontSize: 14,
-                              headings: 'H4',
-                            ), // Align text to the left
-                          );
-                        }).toList(),
+                  Obx(
+                    () => Expanded(
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          value: _takingOrderVendorController
+                                      .choosedAddress.value ==
+                                  ""
+                              ? 'Pilih Alamat Pengiriman'
+                              : _takingOrderVendorController
+                                  .choosedAddress.value,
+                          onChanged: (String? newValue) {
+                            _takingOrderVendorController.choosedAddress.value =
+                                newValue!;
+                          },
+                          items: <String>[
+                            'Pemancar Lamtemen Timur',
+                            'Pilih Alamat Pengiriman'
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: TextView(
+                                text: value,
+                                textAlign: TextAlign.left,
+                                fontSize: 14,
+                                headings: 'H4',
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ),
-
                   SizedBox(
                     width: 10,
                   ),
@@ -311,14 +318,41 @@ class DialogCheckOut extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                CustomElevatedButton("BATAL", () {
-                  Get.back();
-                }, 0.18 * Get.width, 0.04 * Get.height, 4, Colors.white,
-                    AppConfig.mainCyan, 0, AppConfig.mainCyan, 'H2'),
-                CustomElevatedButton("SIMPAN", () async {
-                  Get.back();
-                }, 0.18 * Get.width, 0.04 * Get.height, 4, AppConfig.mainCyan,
-                    Colors.white, 2, AppConfig.mainCyan, 'H2')
+                CustomElevatedButton(
+                    icon: Icon(
+                      Icons.cancel_outlined,
+                      color: AppConfig.mainCyan,
+                      size: 21,
+                    ),
+                    text: "BATAL",
+                    onTap: () {
+                      Get.back();
+                    },
+                    width: 0.18 * Get.width,
+                    height: 0.04 * Get.height,
+                    radius: 4,
+                    backgroundColor: Colors.white,
+                    bordercolor: AppConfig.mainCyan,
+                    elevation: 0,
+                    textcolor: AppConfig.mainCyan,
+                    headings: 'H2'),
+                CustomElevatedButton(
+                    icon: Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: 21,
+                    ),
+                    text: "SIMPAN",
+                    onTap: () async {
+                      Get.back();
+                    },
+                    width: 0.18 * Get.width,
+                    height: 0.04 * Get.height,
+                    radius: 4,
+                    backgroundColor: AppConfig.mainCyan,
+                    textcolor: Colors.white,
+                    elevation: 2,
+                    bordercolor: AppConfig.mainCyan,
+                    headings: 'H2')
               ],
             )
           ],

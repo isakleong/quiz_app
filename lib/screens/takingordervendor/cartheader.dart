@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/screens/takingordervendor/chipsitem.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
@@ -64,40 +65,19 @@ class CartHeader extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Container(
-                      width: 0.15 * width,
-                      height: 25,
-                      decoration: BoxDecoration(
-                          color: Colors.blue.shade400,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Center(
-                        child: TextView(
-                          text:
-                              "${_takingOrderVendorController.cartDetailList.length} produk",
-                          headings: 'H3',
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
-                      ),
+                    ChipsItem(
+                      satuan:
+                          "${_takingOrderVendorController.cartDetailList.length} produk",
+                      fontSize: 12,
                     ),
                     SizedBox(
                       width: 10,
                     ),
-                    Container(
-                      width: 0.22 * width,
-                      height: 25,
-                      decoration: BoxDecoration(
-                          color: Color(0xFF8B4513),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Center(
-                        child: TextView(
-                          text:
-                              "Total : ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.countPriceTotal())}",
-                          headings: 'H3',
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
-                      ),
+                    ChipsItem(
+                      satuan:
+                          "Total : ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.countPriceTotal())}",
+                      color: Color(0xFF8B4513),
+                      fontSize: 12,
                     ),
                   ],
                 )
@@ -107,10 +87,19 @@ class CartHeader extends StatelessWidget {
         ),
         Padding(
             padding: EdgeInsets.only(right: 0.05 * width),
-            child: CustomElevatedButton("LANJUTKAN   >>", () {
-              _takingOrderVendorController.previewCheckOut();
-            }, 0.25 * width, 0.045 * height, 20, AppConfig.mainCyan,
-                Colors.white, 5, AppConfig.mainCyan, 'H2'))
+            child: CustomElevatedButton(
+                text: "LANJUTKAN   >>",
+                onTap: () {
+                  _takingOrderVendorController.previewCheckOut();
+                },
+                width: 0.25 * width,
+                height: 0.045 * height,
+                radius: 20,
+                backgroundColor: AppConfig.mainCyan,
+                textcolor: Colors.white,
+                elevation: 5,
+                bordercolor: AppConfig.mainCyan,
+                headings: 'H2'))
       ],
     );
   }

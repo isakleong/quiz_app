@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/screens/takingordervendor/chipsitem.dart';
 
 import '../../controllers/taking_order_vendor_controller.dart';
 import '../../widgets/textview.dart';
@@ -25,25 +26,9 @@ class DoubleUnit extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: EdgeInsets.only(left: 0.12 * width),
-          child: Container(
-            width: 0.15 * width,
-            height: 0.025 * height,
-            decoration: BoxDecoration(
-                color: Colors.blue.shade400,
-                borderRadius: BorderRadius.circular(15)),
-            child: Center(
-                child: TextView(
-              text: satuan,
-              headings: 'H3',
-              color: Colors.white,
-              fontSize: 14,
-            )),
-          ),
-        ),
+        ChipsItem(satuan: satuan),
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Container(
