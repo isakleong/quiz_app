@@ -5,8 +5,8 @@ import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/screens/transaction/reporting/report_main_page.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/taking_order_vendor_main_page.dart';
 
-class BottomBar extends StatelessWidget {
-  BottomBar({super.key});
+class BottomBartransaction extends StatelessWidget {
+  BottomBartransaction({super.key});
 
   List<Widget> _buildScreens() {
     return [TakingOrderVendorMainPage(), ReportMainPage()];
