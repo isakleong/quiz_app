@@ -8,8 +8,9 @@ import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
 
 class SearchReport extends StatelessWidget {
-  final TakingOrderVendorController _takingOrderVendorController = Get.find();
-  SearchReport({super.key});
+  String value;
+  var onChanged;
+  SearchReport({super.key, required this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -99,70 +100,61 @@ class SearchReport extends StatelessWidget {
             ),
           ),
           Padding(
-              padding: EdgeInsets.only(
-                  left: 0.05 * Get.width,
-                  right: 0.05 * Get.width,
-                  top: 0.01 * Get.height,
-                  bottom: 0.01 * Get.height),
-              child: Obx(
-                () => Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border:
-                          Border.all(width: 1, color: Colors.grey.shade500)),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 5, right: 10),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        value: _takingOrderVendorController
-                                    .choosedReport.value ==
-                                ""
-                            ? 'Semua Transaksi'
-                            : _takingOrderVendorController.choosedReport.value,
-                        onChanged: (String? newValue) {
-                          _takingOrderVendorController.choosedReport.value =
-                              newValue!;
-                        },
-                        items: <String>[
-                          'Semua Transaksi',
-                          'Transaksi Penjualan',
-                          'Transaksi Pembayaran',
-                          // 'Transaksi Retur',
-                          // 'Transaksi TTH',
-                          // 'Transaksi Survey',
-                          // 'Transaksi Keluhan'
-                        ].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Icon(
-                                  Icons.filter_alt_rounded,
-                                  size: 18,
-                                  color: Colors.grey.shade500,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                TextView(
-                                  text: value,
-                                  textAlign: TextAlign.left,
-                                  fontSize: 13,
-                                  headings: 'H4',
-                                ),
-                              ],
+            padding: EdgeInsets.only(
+                left: 0.05 * Get.width,
+                right: 0.05 * Get.width,
+                top: 0.01 * Get.height,
+                bottom: 0.01 * Get.height),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(width: 1, color: Colors.grey.shade500)),
+              child: Padding(
+                padding: EdgeInsets.only(left: 5, right: 10),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    value: value,
+                    onChanged: onChanged,
+                    items: <String>[
+                      'Semua Transaksi',
+                      'Transaksi Penjualan',
+                      'Transaksi Pembayaran',
+                      // 'Transaksi Retur',
+                      // 'Transaksi TTH',
+                      // 'Transaksi Survey',
+                      // 'Transaksi Keluhan'
+                    ].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 10,
                             ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
+                            Icon(
+                              Icons.filter_alt_rounded,
+                              size: 18,
+                              color: Colors.grey.shade500,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            TextView(
+                              text: value,
+                              textAlign: TextAlign.left,
+                              fontSize: 13,
+                              headings: 'H4',
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
-              ))
+              ),
+            ),
+          )
         ]),
       ),
     );

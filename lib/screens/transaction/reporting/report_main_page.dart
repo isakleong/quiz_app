@@ -26,12 +26,13 @@ class ReportMainPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Stack(children: [
+          child: Obx(
+        () => Stack(children: [
           SvgPicture.asset(
             'assets/images/bg-homepage.svg',
             fit: BoxFit.cover,
           ),
-          Obx(() => _takingOrderVendorController.listReport.isEmpty
+          _takingOrderVendorController.listReportShow.isEmpty
               ? Center(
                   child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -45,7 +46,7 @@ class ReportMainPage extends StatelessWidget {
                     )
                   ],
                 ))
-              : Container()),
+              : Container(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -55,12 +56,22 @@ class ReportMainPage extends StatelessWidget {
               Padding(
                   padding: EdgeInsets.only(
                       left: 0.05 * Get.width, top: 0.02 * Get.height),
-                  child: SearchReport()),
+                  child: SearchReport(
+                    value:
+                        _takingOrderVendorController.choosedReport.value == ""
+                            ? 'Semua Transaksi'
+                            : _takingOrderVendorController.choosedReport.value,
+                    onChanged: (String? newValue) async {
+                      _takingOrderVendorController.choosedReport.value =
+                          newValue!;
+                      await _takingOrderVendorController.filteReport();
+                    },
+                  )),
               ReportPenjualan()
             ],
           )
         ]),
-      ),
+      )),
     );
   }
 }

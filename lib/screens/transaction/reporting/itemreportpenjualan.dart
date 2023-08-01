@@ -87,16 +87,15 @@ class ItemReportPenjualan extends StatelessWidget {
             SizedBox(
               height: 2,
             ),
-            // Expanded(
-            //   child: ListView.builder(
-            //     itemBuilder: (c, i) {
-            //       return ItemListPenjualan(idx: "1", data: data.listItem[i]);
-            //     },
-            //     itemCount: data.listItem.length,
-            //     physics: BouncingScrollPhysics(),
-            //   ),
-            // ),
-            ItemListPenjualan(idx: "1", data: data.listItem[0]),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              itemCount: data.listItem.length,
+              itemBuilder: (context, inner) {
+                return ItemListPenjualan(
+                    idx: (inner + 1).toString(), data: data.listItem[inner]);
+              },
+            ),
             SizedBox(
               height: 10,
             ),

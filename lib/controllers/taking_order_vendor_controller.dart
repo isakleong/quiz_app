@@ -296,7 +296,8 @@ class TakingOrderVendorController extends GetxController with StateMixin {
 
   //for laporan page
   RxString choosedReport = "".obs;
-  RxList<ReportModel> listReport = <ReportModel>[].obs;
+  List<ReportModel> listReport = <ReportModel>[];
+  RxList<ReportModel> listReportShow = <ReportModel>[].obs;
 
   getReportList() {
     listReport.clear();
@@ -304,22 +305,61 @@ class TakingOrderVendorController extends GetxController with StateMixin {
       CartModel("asc", dummyList[0], 2, "dos", 10000),
       CartModel("asc", dummyList[0], 1, "biji", 20000)
     ];
-    List<CartDetail> _list = [];
-    _list.add(CartDetail("asc", dummyList[0], _data));
+    List<CartDetail> _list = [CartDetail("asc", dummyList[0], _data)];
     listReport.add(ReportModel("GO-00AC1A0103-2307311034-001", "penjualan",
         "31-07-2023", "10:34", _list));
-    _list.clear();
-    _data.clear();
-    _data = [
-      CartModel("desc", dummyList[1], 12, "dos", 10000),
+
+    List<CartModel> _data2 = [
+      CartModel("desc", dummyList[1], 12, "kaleng", 10000)
     ];
-    _list.add(CartDetail("desc", dummyList[1], _data));
-    _data.clear();
-    _data = [
-      CartModel("desc", dummyList[1], 12, "dos", 10000),
-      CartModel("desc", dummyList[1], 12, "dos", 10000),
+    List<CartModel> _data3 = [
+      CartModel("ccc", dummyList[dummyList.length - 1], 4, "inner plas", 12000),
+      CartModel("ccc", dummyList[dummyList.length - 1], 11, "dos", 12000),
+    ];
+    List<CartDetail> _list2 = [
+      CartDetail("desc", dummyList[1], _data2),
+      CartDetail("ccc", dummyList[dummyList.length - 1], _data3)
     ];
     listReport.add(ReportModel("GO-00AC1A0103-2307311045-001", "penjualan",
-        "31-07-2023", "10:45", _list));
+        "31-07-2023", "10:45", _list2));
+
+    // for (var i = 0; i < listReport.length; i++) {
+    //   print(listReport[i].id);
+    //   for (var k = 0; k < listReport[i].listItem.length; k++) {
+    //     print(listReport[i].listItem[k].kdProduct);
+    //     for (var m = 0; m < listReport[i].listItem[k].itemOrder.length; m++) {
+    //       print(listReport[i].listItem[k].itemOrder[m].Satuan);
+    //     }
+    //   }
+    //   print("***************");
+    // }
+    listReportShow.addAll(listReport);
+  }
+
+  filteReport() {
+    if (choosedReport.value.contains("Semua")) {
+      print("here");
+      print("******DONE*********");
+      listReportShow.value.clear();
+      listReportShow.value.addAll(listReport);
+    } else if (choosedReport.value == "Transaksi Penjualan") {
+      print("here2");
+      print("******DONE*********");
+      listReportShow.value.clear();
+      for (var i = 0; i < listReport.length; i++) {
+        if (listReport[i].jenis == 'penjualan') {
+          listReportShow.value.add(listReport[i]);
+        }
+      }
+    } else if (choosedReport.value == "Transaksi Pembayaran") {
+      print("here3");
+      print("******DONE*********");
+      listReportShow.value.clear();
+      for (var i = 0; i < listReport.length; i++) {
+        if (listReport[i].jenis == 'pembayaran') {
+          listReportShow.value.add(listReport[i]);
+        }
+      }
+    }
   }
 }
