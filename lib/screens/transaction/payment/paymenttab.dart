@@ -12,7 +12,7 @@ class PaymentTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: Get.width,
-      height: 0.35 * Get.height,
+      height: 0.25 * Get.height,
       child: DefaultTabController(
         initialIndex: 0,
         length: 4,
