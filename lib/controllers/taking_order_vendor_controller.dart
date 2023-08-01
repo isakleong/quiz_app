@@ -307,7 +307,7 @@ class TakingOrderVendorController extends GetxController with StateMixin {
     ];
     List<CartDetail> _list = [CartDetail("asc", dummyList[0], _data)];
     listReport.add(ReportModel("GO-00AC1A0103-2307311034-001", "penjualan",
-        "31-07-2023", "10:34", _list));
+        "31-07-2023", "10:34", _list, "test note pendek"));
 
     List<CartModel> _data2 = [
       CartModel("desc", dummyList[1], 12, "kaleng", 10000)
@@ -321,7 +321,7 @@ class TakingOrderVendorController extends GetxController with StateMixin {
       CartDetail("ccc", dummyList[dummyList.length - 1], _data3)
     ];
     listReport.add(ReportModel("GO-00AC1A0103-2307311045-001", "penjualan",
-        "31-07-2023", "10:45", _list2));
+        "31-07-2023", "10:45", _list2, "test note sedang 1234567890"));
 
     List<CartModel> _data4 = [
       CartModel("desc", dummyList[1], 12, "kaleng", 10000)
@@ -340,7 +340,7 @@ class TakingOrderVendorController extends GetxController with StateMixin {
       CartDetail("ccc", dummyList[dummyList.length - 1], _data5)
     ];
     listReport.add(ReportModel("GO-00AC1A0103-2308010914-001", "penjualan",
-        "01-08-2023", "09:14", _list3));
+        "01-08-2023", "09:14", _list3, ""));
 
     // for (var i = 0; i < listReport.length; i++) {
     //   print(listReport[i].id);

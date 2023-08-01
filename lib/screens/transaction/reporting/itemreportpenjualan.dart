@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/reportmodel.dart';
 import 'package:sfa_tools/screens/transaction/reporting/itemlistpenjualan.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 
 import '../../../models/cartmodel.dart';
 import '../../../widgets/textview.dart';
@@ -52,10 +53,18 @@ class ItemReportPenjualan extends StatelessWidget {
                     SizedBox(
                       width: 10,
                     ),
-                    TextView(
-                      text: data.id,
-                      headings: 'H4',
-                      fontSize: 14,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextView(
+                          text: data.id,
+                          headings: 'H4',
+                          fontSize: 14,
+                        ),
+                        data.notes == ""
+                            ? Container()
+                            : ChipsItem(satuan: data.notes)
+                      ],
                     )
                   ],
                 ),

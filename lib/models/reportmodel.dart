@@ -5,6 +5,8 @@ class ReportModel {
   String jenis;
   String tanggal;
   String waktu;
+  String notes;
   List<CartDetail> listItem;
-  ReportModel(this.id, this.jenis, this.tanggal, this.waktu, this.listItem);
+  ReportModel(
+      this.id, this.jenis, this.tanggal, this.waktu, this.listItem, this.notes);
 }
