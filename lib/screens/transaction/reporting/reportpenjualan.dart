@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
@@ -33,7 +31,7 @@ class ReportPenjualan extends StatelessWidget {
                       child: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: 15, top: 15),
+                            padding: const EdgeInsets.only(left: 15, top: 15),
                             child: Row(
                               children: [
                                 Stack(
@@ -55,17 +53,17 @@ class ReportPenjualan extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
-                                TextView(
+                                const TextView(
                                     headings: "H4",
                                     text: "Penjualan",
                                     fontSize: 20)
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           ItemReportPenjualan(
@@ -89,7 +87,7 @@ class ReportPenjualan extends StatelessWidget {
                           child: Column(
                             children: [
                               Padding(
-                                padding: EdgeInsets.only(left: 15, top: 15),
+                                padding: const EdgeInsets.only(left: 15, top: 15),
                                 child: Row(
                                   children: [
                                     Stack(
@@ -111,17 +109,17 @@ class ReportPenjualan extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 20,
                                     ),
-                                    TextView(
+                                    const TextView(
                                         headings: "H4",
                                         text: "Penjualan",
                                         fontSize: 20)
                                   ],
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5,
                               ),
                               ItemReportPenjualan(
@@ -180,7 +178,7 @@ class ReportPenjualan extends StatelessWidget {
                               ))
               : Container();
         },
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
       ),
     );
   }

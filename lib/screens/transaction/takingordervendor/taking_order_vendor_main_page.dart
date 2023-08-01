@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
@@ -10,8 +7,6 @@ import 'package:sfa_tools/screens/transaction/takingordervendor/cartheader.dart'
 import 'package:sfa_tools/screens/transaction/takingordervendor/cartlist.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/productsearch.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/shoppingcart.dart';
-import 'package:sfa_tools/widgets/textview.dart';
-import '../../../common/app_config.dart';
 
 class TakingOrderVendorMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController =
@@ -34,7 +29,7 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
+                        const Padding(
                             padding: EdgeInsets.only(left: 20, top: 10),
                             child: BackButtonAction()),
                         Padding(
@@ -73,7 +68,7 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                                               .cartDetailList[index]),
                                     );
                                   },
-                                  physics: BouncingScrollPhysics(),
+                                  physics: const BouncingScrollPhysics(),
                                 ),
                               ),
                       ]),

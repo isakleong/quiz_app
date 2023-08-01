@@ -10,7 +10,7 @@ class BottomBartransaction extends StatelessWidget {
   BottomBartransaction({super.key});
 
   List<Widget> _buildScreens() {
-    return [TakingOrderVendorMainPage(), PaymentMainPage(), ReportMainPage()];
+    return [TakingOrderVendorMainPage(), const PaymentMainPage(), ReportMainPage()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -21,7 +21,7 @@ class BottomBartransaction extends StatelessWidget {
         // textStyle: TextStyle(color: Colors.white),
         activeColorPrimary: AppConfig.mainCyan,
         activeColorSecondary: AppConfig.mainCyan,
-        inactiveColorPrimary: Color(0XFF3c3c3c),
+        inactiveColorPrimary: const Color(0XFF3c3c3c),
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.payment_rounded),
@@ -29,14 +29,14 @@ class BottomBartransaction extends StatelessWidget {
         // textStyle: TextStyle(color: Colors.white),
         activeColorPrimary: AppConfig.mainCyan,
         activeColorSecondary: AppConfig.mainCyan,
-        inactiveColorPrimary: Color(0XFF3c3c3c),
+        inactiveColorPrimary: const Color(0XFF3c3c3c),
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.book),
         title: ("Laporan"),
         activeColorSecondary: AppConfig.mainCyan,
         activeColorPrimary: AppConfig.mainCyan,
-        inactiveColorPrimary: Color(0XFF3c3c3c),
+        inactiveColorPrimary: const Color(0XFF3c3c3c),
       ),
     ];
   }
@@ -53,7 +53,7 @@ class BottomBartransaction extends StatelessWidget {
       screens: _buildScreens(),
       items: _navBarsItems(),
       confineInSafeArea: true,
-      backgroundColor: Color(0xFFeaeaea), // Default is Colors.white.
+      backgroundColor: const Color(0xFFeaeaea), // Default is Colors.white.
       handleAndroidBackButtonPress: true, // Default is true.
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.

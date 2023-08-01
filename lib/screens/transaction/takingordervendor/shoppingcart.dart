@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/doubleunit.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/singleunit.dart';
@@ -31,7 +27,7 @@ class Shoppingcart extends StatelessWidget {
             borderRadius: BorderRadius.circular(10)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
-            padding: EdgeInsets.only(left: 15, top: 5),
+            padding: const EdgeInsets.only(left: 15, top: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -41,7 +37,7 @@ class Shoppingcart extends StatelessWidget {
                       Icons.auto_awesome_mosaic_rounded,
                       color: AppConfig.mainCyan,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     TextView(
@@ -53,7 +49,7 @@ class Shoppingcart extends StatelessWidget {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 15),
+                  padding: const EdgeInsets.only(right: 15),
                   child: ElevatedButton(
                     onPressed: () {
                       if (_takingOrderVendorController
@@ -83,7 +79,7 @@ class Shoppingcart extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                          Icon(Icons.shopping_cart),
+                          const Icon(Icons.shopping_cart),
                           TextView(
                             text: _takingOrderVendorController.cartList.isEmpty
                                 ? "Tambah"
@@ -104,7 +100,7 @@ class Shoppingcart extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Padding(
@@ -115,7 +111,7 @@ class Shoppingcart extends StatelessWidget {
               color: Colors.grey.shade300,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 8,
           ),
           Obx(() => _takingOrderVendorController
@@ -249,7 +245,7 @@ class Shoppingcart extends StatelessWidget {
                                   })
                             ])
                       : Container()),
-          SizedBox(
+          const SizedBox(
             height: 15,
           )
         ]),

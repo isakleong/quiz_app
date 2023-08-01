@@ -1,7 +1,5 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/widgets/textview.dart';
@@ -20,12 +18,12 @@ class ProductSearch extends StatelessWidget {
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
-      child: Container(
+      child: SizedBox(
         width: 0.9 * width,
         height: 0.15 * height,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
-            padding: EdgeInsets.only(left: 15, top: 15),
+            padding: const EdgeInsets.only(left: 15, top: 15),
             child: Row(
               children: [
                 Stack(
@@ -47,14 +45,14 @@ class ProductSearch extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextView(headings: "H2", text: "Penjualan", fontSize: 14),
-                    SizedBox(
+                    const TextView(headings: "H2", text: "Penjualan", fontSize: 14),
+                    const SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -70,17 +68,17 @@ class ProductSearch extends StatelessWidget {
                                 color: AppConfig.mainCyan,
                               ),
                             ),
-                            Icon(
+                            const Icon(
                               Icons.home,
                               color: Colors.white,
                               size: 15,
                             )
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 5,
                         ),
-                        Text("Adek Abang"),
+                        const Text("Adek Abang"),
                       ],
                     ),
                   ],
@@ -88,7 +86,7 @@ class ProductSearch extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           Padding(
@@ -108,11 +106,11 @@ class ProductSearch extends StatelessWidget {
                   color: AppConfig.mainCyan,
                   size: 35,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Obx(
-                  () => Container(
+                  () => SizedBox(
                     width: 0.8 * width,
                     height: 0.045 * height,
                     child: DropDownTextField(
@@ -120,7 +118,7 @@ class ProductSearch extends StatelessWidget {
                         enableSearch: true,
                         dropDownIconProperty: IconProperty(icon: null),
                         controller: _takingOrderVendorController.cnt,
-                        textFieldDecoration: InputDecoration(
+                        textFieldDecoration: const InputDecoration(
                             hintText: "Cari Produk", border: InputBorder.none),
                         searchDecoration: const InputDecoration(
                             hintText: "Ketik nama produk"),

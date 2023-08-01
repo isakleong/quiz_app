@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 
 import '../../../models/cartmodel.dart';
@@ -21,12 +19,12 @@ class ItemListPenjualan extends StatelessWidget {
           Container(
             width: 5,
             height: 0.04 * Get.height,
-            decoration: BoxDecoration(color: Color(0xFFfe8a66)),
+            decoration: const BoxDecoration(color: Color(0xFFfe8a66)),
           ),
-          Container(
+          SizedBox(
             width: 0.7 * Get.width,
             child: Padding(
-              padding: EdgeInsets.only(top: 7, bottom: 7),
+              padding: const EdgeInsets.only(top: 7, bottom: 7),
               child: Column(
                 children: [
                   Row(
@@ -68,9 +66,9 @@ class ItemListPenjualan extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    data.itemOrder.length > 0
+                                    data.itemOrder.isNotEmpty
                                         ? Padding(
-                                            padding: EdgeInsets.only(left: 0.0),
+                                            padding: const EdgeInsets.only(left: 0.0),
                                             child: ChipsItem(
                                               satuan:
                                                   "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
@@ -79,7 +77,7 @@ class ItemListPenjualan extends StatelessWidget {
                                         : Container(),
                                     data.itemOrder.length > 1
                                         ? Padding(
-                                            padding: EdgeInsets.only(left: 5.0),
+                                            padding: const EdgeInsets.only(left: 5.0),
                                             child: ChipsItem(
                                               satuan:
                                                   "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
@@ -88,7 +86,7 @@ class ItemListPenjualan extends StatelessWidget {
                                         : Container(),
                                     data.itemOrder.length > 2
                                         ? Padding(
-                                            padding: EdgeInsets.only(left: 5.0),
+                                            padding: const EdgeInsets.only(left: 5.0),
                                             child: ChipsItem(
                                               satuan:
                                                   "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",

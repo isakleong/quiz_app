@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 class CustomElevatedButton extends StatelessWidget {
@@ -55,7 +52,7 @@ class CustomElevatedButton extends StatelessWidget {
                   TextView(
                     text: text,
                     color: textcolor,
-                    headings: headings == null ? "H1" : headings,
+                    headings: headings ?? "H1",
                     fontSize: 14,
                   ),
                 ],
@@ -68,7 +65,7 @@ class CustomElevatedButton extends StatelessWidget {
                   TextView(
                     text: text,
                     color: textcolor,
-                    headings: headings == null ? "H1" : headings,
+                    headings: headings ?? "H1",
                     fontSize: 14,
                   ),
                 ],

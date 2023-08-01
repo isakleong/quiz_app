@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 
-import '../../../controllers/taking_order_vendor_controller.dart';
-import '../../../widgets/textview.dart';
 
 class DoubleUnit extends StatelessWidget {
   TextEditingController ctrl;
@@ -30,7 +25,7 @@ class DoubleUnit extends StatelessWidget {
       children: [
         ChipsItem(satuan: satuan),
         Padding(
-          padding: EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 10),
           child: Container(
             width: 0.4 * width,
             height: 0.05 * height,
@@ -51,7 +46,7 @@ class DoubleUnit extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: 0.1 * width,
                     height: 0.05 * height,
                     child: Center(
@@ -61,7 +56,7 @@ class DoubleUnit extends StatelessWidget {
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                         ),
                         textAlign: TextAlign.center,

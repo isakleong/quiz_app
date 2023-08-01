@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
 
@@ -15,11 +13,11 @@ class PiutangCard extends StatelessWidget {
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
-      child: Container(
+      child: SizedBox(
         width: 0.9 * Get.width,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
-            padding: EdgeInsets.only(left: 15, top: 15),
+            padding: const EdgeInsets.only(left: 15, top: 15),
             child: Row(
               children: [
                 Stack(
@@ -28,7 +26,7 @@ class PiutangCard extends StatelessWidget {
                     Container(
                       width: 60,
                       height: 60,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color(0XFF008996),
                       ),
@@ -41,14 +39,14 @@ class PiutangCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextView(headings: "H2", text: "Pembayaran", fontSize: 14),
-                    SizedBox(
+                    const TextView(headings: "H2", text: "Pembayaran", fontSize: 14),
+                    const SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -64,17 +62,17 @@ class PiutangCard extends StatelessWidget {
                                 color: AppConfig.mainCyan,
                               ),
                             ),
-                            Icon(
+                            const Icon(
                               Icons.home,
                               color: Colors.white,
                               size: 15,
                             )
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 5,
                         ),
-                        Text("Adek Abang"),
+                        const Text("Adek Abang"),
                       ],
                     ),
                   ],
@@ -82,7 +80,7 @@ class PiutangCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           Padding(
@@ -93,7 +91,7 @@ class PiutangCard extends StatelessWidget {
               color: Colors.grey.shade300,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Padding(
@@ -109,7 +107,7 @@ class PiutangCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 Column(
-                  children: [
+                  children: const [
                     TextView(
                       text: "20,752,392",
                       headings: 'H3',
@@ -134,7 +132,7 @@ class PiutangCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 Column(
-                  children: [
+                  children: const [
                     TextView(
                       text: "20,752,392",
                       color: Color(0xFFf5511e),
@@ -150,7 +148,7 @@ class PiutangCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
         ]),

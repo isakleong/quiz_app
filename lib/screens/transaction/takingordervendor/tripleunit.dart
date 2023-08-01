@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
-import 'package:sfa_tools/widgets/textview.dart';
 
 class TripleUnit extends StatelessWidget {
   TextEditingController ctrl;
@@ -27,7 +24,7 @@ class TripleUnit extends StatelessWidget {
       children: [
         ChipsItem(satuan: satuan),
         Padding(
-          padding: EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 10),
           child: Container(
             width: 0.25 * width,
             height: 0.05 * height,
@@ -48,7 +45,7 @@ class TripleUnit extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: 0.1 * width,
                     height: 0.05 * height,
                     child: Center(
@@ -58,7 +55,7 @@ class TripleUnit extends StatelessWidget {
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                         ),
                         textAlign: TextAlign.center,

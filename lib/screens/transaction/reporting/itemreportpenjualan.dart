@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/reportmodel.dart';
 import 'package:sfa_tools/screens/transaction/reporting/itemlistpenjualan.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 
-import '../../../models/cartmodel.dart';
 import '../../../widgets/textview.dart';
 
 class ItemReportPenjualan extends StatelessWidget {
@@ -20,7 +17,7 @@ class ItemReportPenjualan extends StatelessWidget {
         elevation: 10,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         color: Colors.white,
-        child: Container(
+        child: SizedBox(
           width: 0.9 * Get.width,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -36,7 +33,7 @@ class ItemReportPenjualan extends StatelessWidget {
                       child: Container(
                         width: 0.07 * Get.width,
                         height: 0.07 * Get.width,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Color(0xFFf5511e),
                           shape: BoxShape.circle,
                         ),
@@ -50,7 +47,7 @@ class ItemReportPenjualan extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Column(
@@ -67,7 +64,7 @@ class ItemReportPenjualan extends StatelessWidget {
                                 satuan: data.notes.length >= 35
                                     ? "${data.notes.substring(0, 30)}...      "
                                     : data.notes,
-                                color: Color(0xFFf5511e),
+                                color: const Color(0xFFf5511e),
                                 fontSize: 12,
                               )
                       ],
@@ -75,7 +72,7 @@ class ItemReportPenjualan extends StatelessWidget {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.only(right: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -99,19 +96,19 @@ class ItemReportPenjualan extends StatelessWidget {
                 height: 3,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 2,
             ),
             ListView.builder(
               shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               itemCount: data.listItem.length,
               itemBuilder: (context, inner) {
                 return ItemListPenjualan(
                     idx: (inner + 1).toString(), data: data.listItem[inner]);
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
           ]),

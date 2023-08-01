@@ -1,20 +1,12 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
-import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/productdata.dart';
 import 'package:sfa_tools/models/reportmodel.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/checkoutlist.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
-import 'package:sfa_tools/widgets/customelevatedbutton.dart';
-import 'package:sfa_tools/widgets/textview.dart';
-import '../screens/transaction/takingordervendor/cartlist.dart';
 
 class TakingOrderVendorController extends GetxController with StateMixin {
   @override
@@ -148,23 +140,23 @@ class TakingOrderVendorController extends GetxController with StateMixin {
     for (var i = 0; i < cartList.length; i++) {
       if (cartDetailList.isEmpty) {
         print("added here ${cartList[i].kdProduct} 1");
-        List<CartModel> _data = [
+        List<CartModel> data = [
           CartModel(cartList[i].kdProduct, cartList[i].nmProduct,
               cartList[i].Qty, cartList[i].Satuan, cartList[i].hrgPerPieces)
         ];
         cartDetailList.add(
-            CartDetail(cartList[i].kdProduct, cartList[i].nmProduct, _data));
+            CartDetail(cartList[i].kdProduct, cartList[i].nmProduct, data));
       } else {
         for (var j = 0; j < cartDetailList.length; j++) {
           if (cartDetailList[j].kdProduct == cartList[i].kdProduct) {
-            var _counter = 0;
+            var counter = 0;
             for (var l = 0; l < cartDetailList[j].itemOrder.length; l++) {
               if (cartDetailList[j].itemOrder[l].Satuan == cartList[i].Satuan) {
-                _counter++;
+                counter++;
                 break;
               }
             }
-            if (_counter == 0) {
+            if (counter == 0) {
               print("added here ${cartList[i].kdProduct} 2");
               cartDetailList[j].itemOrder.add(CartModel(
                   cartList[i].kdProduct,
@@ -174,16 +166,16 @@ class TakingOrderVendorController extends GetxController with StateMixin {
                   cartList[i].hrgPerPieces));
             }
           } else if (cartDetailList[j].kdProduct != cartList[i].kdProduct) {
-            var _counter = 0;
+            var counter = 0;
             for (var k = 0; k < cartDetailList.length; k++) {
               if (cartDetailList[k].kdProduct == cartList[i].kdProduct) {
-                _counter++;
+                counter++;
                 break;
               }
             }
-            if (_counter == 0) {
+            if (counter == 0) {
               print("added here ${cartList[i].kdProduct} 3");
-              List<CartModel> _data = [
+              List<CartModel> data = [
                 CartModel(
                     cartList[i].kdProduct,
                     cartList[i].nmProduct,
@@ -192,7 +184,7 @@ class TakingOrderVendorController extends GetxController with StateMixin {
                     cartList[i].hrgPerPieces)
               ];
               cartDetailList.add(CartDetail(
-                  cartList[i].kdProduct, cartList[i].nmProduct, _data));
+                  cartList[i].kdProduct, cartList[i].nmProduct, data));
             }
           }
         }
@@ -200,26 +192,26 @@ class TakingOrderVendorController extends GetxController with StateMixin {
     }
   }
 
-  countTotalDetail(CartDetail _data) {
+  countTotalDetail(CartDetail data) {
     var total = 0.0;
-    print(_data.itemOrder.length);
-    for (var i = 0; i < _data.itemOrder.length; i++) {
+    print(data.itemOrder.length);
+    for (var i = 0; i < data.itemOrder.length; i++) {
       print(
-          "qty ${_data.itemOrder[i].Qty} hrg ${_data.itemOrder[i].hrgPerPieces}");
+          "qty ${data.itemOrder[i].Qty} hrg ${data.itemOrder[i].hrgPerPieces}");
       total =
-          total + (_data.itemOrder[i].Qty * _data.itemOrder[i].hrgPerPieces);
+          total + (data.itemOrder[i].Qty * data.itemOrder[i].hrgPerPieces);
       print(total);
     }
     return total.toInt();
   }
 
   getDetailProduct(String kdProduct) {
-    List<ProductData> _list = <ProductData>[];
+    List<ProductData> list = <ProductData>[];
     // print(cnt.dropDownValue!.value);
     for (var i = 0; i < listProduct.length; i++) {
       if (listProduct[i].kdProduct == kdProduct) {
-        _list.add(listProduct[i]);
-        selectedProduct.value = _list;
+        list.add(listProduct[i]);
+        selectedProduct.value = list;
       }
     }
     // print(selectedProduct.value[0].detailProduct[0].satuan);
@@ -301,50 +293,50 @@ class TakingOrderVendorController extends GetxController with StateMixin {
 
   getReportList() {
     listReport.clear();
-    List<CartModel> _data = [
+    List<CartModel> data = [
       CartModel("asc", dummyList[0], 2, "dos", 10000),
       CartModel("asc", dummyList[0], 1, "biji", 20000)
     ];
-    List<CartDetail> _list = [CartDetail("asc", dummyList[0], _data)];
+    List<CartDetail> list = [CartDetail("asc", dummyList[0], data)];
     listReport.add(ReportModel("GO-00AC1A0103-2307311034-001", "penjualan",
-        "31-07-2023", "10:34", _list, "test note pendek"));
+        "31-07-2023", "10:34", list, "test note pendek"));
 
-    List<CartModel> _data2 = [
+    List<CartModel> data2 = [
       CartModel("desc", dummyList[1], 12, "kaleng", 10000)
     ];
-    List<CartModel> _data3 = [
+    List<CartModel> data3 = [
       CartModel("ccc", dummyList[dummyList.length - 1], 4, "inner plas", 12000),
       CartModel("ccc", dummyList[dummyList.length - 1], 11, "dos", 12000),
     ];
-    List<CartDetail> _list2 = [
-      CartDetail("desc", dummyList[1], _data2),
-      CartDetail("ccc", dummyList[dummyList.length - 1], _data3)
+    List<CartDetail> list2 = [
+      CartDetail("desc", dummyList[1], data2),
+      CartDetail("ccc", dummyList[dummyList.length - 1], data3)
     ];
     listReport.add(ReportModel("GO-00AC1A0103-2307311045-001", "penjualan",
-        "31-07-2023", "10:45", _list2, ""));
+        "31-07-2023", "10:45", list2, ""));
 
-    List<CartModel> _data4 = [
+    List<CartModel> data4 = [
       CartModel("desc", dummyList[1], 12, "kaleng", 10000)
     ];
-    List<CartModel> _data5 = [
+    List<CartModel> data5 = [
       CartModel("ccc", dummyList[dummyList.length - 1], 4, "inner plas", 12000),
       CartModel("ccc", dummyList[dummyList.length - 1], 11, "dos", 12000),
     ];
-    List<CartModel> _data6 = [
+    List<CartModel> data6 = [
       CartModel("asc", dummyList[0], 2, "dos", 10000),
       CartModel("asc", dummyList[0], 1, "biji", 20000)
     ];
-    List<CartDetail> _list3 = [
-      CartDetail("asc", dummyList[0], _data6),
-      CartDetail("desc", dummyList[1], _data4),
-      CartDetail("ccc", dummyList[dummyList.length - 1], _data5)
+    List<CartDetail> list3 = [
+      CartDetail("asc", dummyList[0], data6),
+      CartDetail("desc", dummyList[1], data4),
+      CartDetail("ccc", dummyList[dummyList.length - 1], data5)
     ];
     listReport.add(ReportModel(
         "GO-00AC1A0103-2308010914-001",
         "penjualan",
         "01-08-2023",
         "09:14",
-        _list3,
+        list3,
         "test note panjang fasbgwujkasbkfbuwahsfjkwiahfjkhuiwhfuia"));
 
     // for (var i = 0; i < listReport.length; i++) {

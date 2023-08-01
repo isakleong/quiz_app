@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/transaction/reporting/itemlistpenjualan.dart';
-import 'package:sfa_tools/screens/transaction/reporting/itemreportpenjualan.dart';
 import 'package:sfa_tools/screens/transaction/reporting/reportpenjualan.dart';
 import 'package:sfa_tools/screens/transaction/reporting/searchreport.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/checkoutlist.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../takingordervendor/cartlist.dart';
-import '../takingordervendor/chipsitem.dart';
 
 class ReportMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -39,7 +31,7 @@ class ReportMainPage extends StatelessWidget {
                   children: [
                     Lottie.asset('assets/lottie/notfound.json',
                         width: Get.width * 0.35),
-                    TextView(
+                    const TextView(
                       text: "Tidak Ada Laporan",
                       headings: 'H4',
                       fontSize: 20,
@@ -50,7 +42,7 @@ class ReportMainPage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
+              const Padding(
                   padding: EdgeInsets.only(left: 20, top: 10),
                   child: BackButtonAction()),
               Padding(

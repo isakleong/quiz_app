@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
@@ -22,11 +20,11 @@ class CartList extends StatelessWidget {
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
-      child: Container(
+      child: SizedBox(
         width: 0.9 * width,
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
@@ -69,9 +67,9 @@ class CartList extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                data.itemOrder.length > 0
+                                data.itemOrder.isNotEmpty
                                     ? Padding(
-                                        padding: EdgeInsets.only(left: 0.0),
+                                        padding: const EdgeInsets.only(left: 0.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
@@ -80,7 +78,7 @@ class CartList extends StatelessWidget {
                                     : Container(),
                                 data.itemOrder.length > 1
                                     ? Padding(
-                                        padding: EdgeInsets.only(left: 5.0),
+                                        padding: const EdgeInsets.only(left: 5.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
@@ -89,7 +87,7 @@ class CartList extends StatelessWidget {
                                     : Container(),
                                 data.itemOrder.length > 2
                                     ? Padding(
-                                        padding: EdgeInsets.only(left: 5.0),
+                                        padding: const EdgeInsets.only(left: 5.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
@@ -111,11 +109,11 @@ class CartList extends StatelessWidget {
                     children: [
                       ChipsItem(
                         satuan:
-                            "${_takingOrderVendorController.formatNumber(_takingOrderVendorController.countTotalDetail(data))}",
-                        color: Color(0xFF8B4513),
+                            _takingOrderVendorController.formatNumber(_takingOrderVendorController.countTotalDetail(data)),
+                        color: const Color(0xFF8B4513),
                         fontSize: 12,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       InkWell(
@@ -130,7 +128,7 @@ class CartList extends StatelessWidget {
                               color: Colors.green.shade700),
                           child: Stack(
                             alignment: Alignment.center,
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.edit,
                                 color: Colors.white,
@@ -139,7 +137,7 @@ class CartList extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       InkWell(
@@ -154,7 +152,7 @@ class CartList extends StatelessWidget {
                               color: Colors.red.shade700),
                           child: Stack(
                             alignment: Alignment.center,
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.delete_forever,
                                 color: Colors.white,
@@ -163,13 +161,13 @@ class CartList extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                     ],
                   ),
                 ]),
-            SizedBox(
+            const SizedBox(
               height: 10,
             )
           ],

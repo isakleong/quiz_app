@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
@@ -25,7 +23,7 @@ class CartHeader extends StatelessWidget {
             Container(
               width: 45,
               height: 45,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   begin: Alignment.centerLeft,
@@ -49,18 +47,18 @@ class CartHeader extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextView(
+                const TextView(
                   text: "Keranjang",
                   headings: 'H3',
                   fontSize: 16,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Row(
@@ -70,13 +68,13 @@ class CartHeader extends StatelessWidget {
                           "${_takingOrderVendorController.cartDetailList.length} produk",
                       fontSize: 12,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     ChipsItem(
                       satuan:
                           "Total : ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.countPriceTotal())}",
-                      color: Color(0xFF8B4513),
+                      color: const Color(0xFF8B4513),
                       fontSize: 12,
                     ),
                   ],

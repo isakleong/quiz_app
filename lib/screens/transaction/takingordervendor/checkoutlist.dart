@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
@@ -20,10 +18,10 @@ class CheckoutList extends StatelessWidget {
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       color: Colors.white,
-      child: Container(
+      child: SizedBox(
         width: 0.9 * Get.width,
         child: Padding(
-          padding: EdgeInsets.only(top: 7, bottom: 7),
+          padding: const EdgeInsets.only(top: 7, bottom: 7),
           child: Column(
             children: [
               Row(
@@ -64,9 +62,9 @@ class CheckoutList extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                data.itemOrder.length > 0
+                                data.itemOrder.isNotEmpty
                                     ? Padding(
-                                        padding: EdgeInsets.only(left: 0.0),
+                                        padding: const EdgeInsets.only(left: 0.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
@@ -75,7 +73,7 @@ class CheckoutList extends StatelessWidget {
                                     : Container(),
                                 data.itemOrder.length > 1
                                     ? Padding(
-                                        padding: EdgeInsets.only(left: 5.0),
+                                        padding: const EdgeInsets.only(left: 5.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
@@ -84,7 +82,7 @@ class CheckoutList extends StatelessWidget {
                                     : Container(),
                                 data.itemOrder.length > 2
                                     ? Padding(
-                                        padding: EdgeInsets.only(left: 5.0),
+                                        padding: const EdgeInsets.only(left: 5.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",

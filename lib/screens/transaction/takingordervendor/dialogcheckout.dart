@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/checkoutlist.dart';
@@ -26,7 +24,7 @@ class DialogCheckOut extends StatelessWidget {
             SizedBox(
               height: Get.height * 0.03,
             ),
-            TextView(
+            const TextView(
               text: "Penjualan - Adek Abang",
               headings: 'H3',
               fontSize: 17,
@@ -34,7 +32,7 @@ class DialogCheckOut extends StatelessWidget {
             SizedBox(
               height: Get.height * 0.01,
             ),
-            TextView(
+            const TextView(
               text: "Alamat Pengiriman",
               headings: 'H3',
               fontSize: 15,
@@ -51,14 +49,14 @@ class DialogCheckOut extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Icon(Icons.home,
                       color: AppConfig.mainCyan,
                       size:
                           16), // Use any desired icon from flutter_icons package
-                  SizedBox(width: 8), // Adjust the space between icon and text
+                  const SizedBox(width: 8), // Adjust the space between icon and text
                   Obx(
                     () => Expanded(
                       child: DropdownButtonHideUnderline(
@@ -93,7 +91,7 @@ class DialogCheckOut extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                 ],
@@ -114,7 +112,7 @@ class DialogCheckOut extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   width: 0.45 * Get.width,
                   height: 0.1 * Get.height,
                   child: TextFormField(
@@ -132,7 +130,7 @@ class DialogCheckOut extends StatelessWidget {
                     maxLines: null,
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 14),
                     onChanged: (text) {
                       // Handle text changes here
                     },
@@ -152,7 +150,7 @@ class DialogCheckOut extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        TextView(
+                        const TextView(
                           text: 'Ganti Barang',
                           color: Colors.black,
                           headings: 'H4',
@@ -166,7 +164,7 @@ class DialogCheckOut extends StatelessWidget {
                               color: Colors.green.shade700),
                           child: Stack(
                             alignment: Alignment.center,
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.manage_search,
                                 color: Colors.white,
@@ -178,7 +176,7 @@ class DialogCheckOut extends StatelessWidget {
                     ))
               ],
             ),
-            Container(
+            SizedBox(
               width: 0.85 * Get.width,
               height: Get.height * 0.4,
               child: ListView.builder(
@@ -195,10 +193,10 @@ class DialogCheckOut extends StatelessWidget {
                             _takingOrderVendorController.cartDetailList[index]),
                   );
                 },
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Container(
@@ -209,11 +207,11 @@ class DialogCheckOut extends StatelessWidget {
                   border: Border.all(color: Colors.grey.shade300, width: 1.5),
                   borderRadius: BorderRadius.circular(8)),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 5),
+                  padding: const EdgeInsets.only(top: 5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -224,7 +222,7 @@ class DialogCheckOut extends StatelessWidget {
                         fontSize: 15,
                         color: Colors.amber.shade900,
                       ),
-                      TextView(
+                      const TextView(
                         text: "Produk",
                         headings: 'H4',
                         fontSize: 13,
@@ -232,7 +230,7 @@ class DialogCheckOut extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Container(
@@ -240,7 +238,7 @@ class DialogCheckOut extends StatelessWidget {
                   height: 0.06 * Get.height,
                   color: Colors.grey.shade400,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Image.asset(
@@ -249,11 +247,11 @@ class DialogCheckOut extends StatelessWidget {
                   height: 35,
                   fit: BoxFit.fill,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 15,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 5),
+                  padding: const EdgeInsets.only(top: 5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -264,7 +262,7 @@ class DialogCheckOut extends StatelessWidget {
                         fontSize: 15,
                         color: Colors.amber.shade900,
                       ),
-                      TextView(
+                      const TextView(
                         text: "Perkiraan Pesanan",
                         headings: 'H4',
                         fontSize: 13,
@@ -272,7 +270,7 @@ class DialogCheckOut extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 15,
                 ),
                 Container(
@@ -280,7 +278,7 @@ class DialogCheckOut extends StatelessWidget {
                   height: 0.06 * Get.height,
                   color: Colors.grey.shade400,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 15,
                 ),
                 Image.asset(
@@ -289,11 +287,11 @@ class DialogCheckOut extends StatelessWidget {
                   height: 35,
                   fit: BoxFit.fill,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 5),
+                  padding: const EdgeInsets.only(top: 5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -303,7 +301,7 @@ class DialogCheckOut extends StatelessWidget {
                         fontSize: 15,
                         color: Colors.amber.shade900,
                       ),
-                      TextView(
+                      const TextView(
                         text: "Perkiraan Komisi",
                         headings: 'H4',
                         fontSize: 13,
@@ -338,7 +336,7 @@ class DialogCheckOut extends StatelessWidget {
                     textcolor: AppConfig.mainCyan,
                     headings: 'H2'),
                 CustomElevatedButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.check_circle_outline_rounded,
                       size: 21,
                     ),

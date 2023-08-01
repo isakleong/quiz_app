@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
@@ -27,7 +25,7 @@ class DialogDelete extends StatelessWidget {
                 SizedBox(
                   height: Get.height * 0.03,
                 ),
-                TextView(
+                const TextView(
                   text: "Konfirmasi Hapus",
                   headings: 'H3',
                   fontSize: 17,
@@ -40,10 +38,10 @@ class DialogDelete extends StatelessWidget {
                 SizedBox(
                   height: Get.height * 0.02,
                 ),
-                Container(
+                SizedBox(
                   width: Get.width * 0.4,
                   child: TextView(
-                    text: "Yakin ingin menghapus ${nmProduct}?",
+                    text: "Yakin ingin menghapus $nmProduct?",
                     headings: 'H4',
                     textAlign: TextAlign.center,
                     fontSize: 15,
