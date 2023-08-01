@@ -63,7 +63,13 @@ class ItemReportPenjualan extends StatelessWidget {
                         ),
                         data.notes == ""
                             ? Container()
-                            : ChipsItem(satuan: data.notes)
+                            : ChipsItem(
+                                satuan: data.notes.length >= 35
+                                    ? "${data.notes.substring(0, 30)}...      "
+                                    : data.notes,
+                                color: Color(0xFFf5511e),
+                                fontSize: 12,
+                              )
                       ],
                     )
                   ],
