@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/screens/transaction/payment/payment_main_page.dart';
 import 'package:sfa_tools/screens/transaction/reporting/report_main_page.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/taking_order_vendor_main_page.dart';
 
@@ -9,14 +10,22 @@ class BottomBartransaction extends StatelessWidget {
   BottomBartransaction({super.key});
 
   List<Widget> _buildScreens() {
-    return [TakingOrderVendorMainPage(), ReportMainPage()];
+    return [TakingOrderVendorMainPage(), PaymentMainPage(), ReportMainPage()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.home_rounded),
+        icon: const Icon(Icons.shopping_bag),
         title: ("Penjualan"),
+        // textStyle: TextStyle(color: Colors.white),
+        activeColorPrimary: AppConfig.mainCyan,
+        activeColorSecondary: AppConfig.mainCyan,
+        inactiveColorPrimary: Color(0XFF3c3c3c),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.payment_rounded),
+        title: ("Pembayaran"),
         // textStyle: TextStyle(color: Colors.white),
         activeColorPrimary: AppConfig.mainCyan,
         activeColorSecondary: AppConfig.mainCyan,
