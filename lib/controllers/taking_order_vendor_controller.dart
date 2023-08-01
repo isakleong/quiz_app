@@ -323,6 +323,25 @@ class TakingOrderVendorController extends GetxController with StateMixin {
     listReport.add(ReportModel("GO-00AC1A0103-2307311045-001", "penjualan",
         "31-07-2023", "10:45", _list2));
 
+    List<CartModel> _data4 = [
+      CartModel("desc", dummyList[1], 12, "kaleng", 10000)
+    ];
+    List<CartModel> _data5 = [
+      CartModel("ccc", dummyList[dummyList.length - 1], 4, "inner plas", 12000),
+      CartModel("ccc", dummyList[dummyList.length - 1], 11, "dos", 12000),
+    ];
+    List<CartModel> _data6 = [
+      CartModel("asc", dummyList[0], 2, "dos", 10000),
+      CartModel("asc", dummyList[0], 1, "biji", 20000)
+    ];
+    List<CartDetail> _list3 = [
+      CartDetail("asc", dummyList[0], _data6),
+      CartDetail("desc", dummyList[1], _data4),
+      CartDetail("ccc", dummyList[dummyList.length - 1], _data5)
+    ];
+    listReport.add(ReportModel("GO-00AC1A0103-2308010914-001", "penjualan",
+        "01-08-2023", "09:14", _list3));
+
     // for (var i = 0; i < listReport.length; i++) {
     //   print(listReport[i].id);
     //   for (var k = 0; k < listReport[i].listItem.length; k++) {
