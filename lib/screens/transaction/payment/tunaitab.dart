@@ -31,7 +31,7 @@ class TunaiTab extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: Colors.grey, width: 1)),
               child: Padding(
-                padding: EdgeInsets.only(right: 8.0),
+                padding: EdgeInsets.only(right: 8.0, top: 5, bottom: 5),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     isExpanded: true,
@@ -79,7 +79,7 @@ class TunaiTab extends StatelessWidget {
               ),
               child: TextField(
                 decoration: InputDecoration(
-                    labelText: 'Hello',
+                    labelText: 'Nominal Tunai',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(
                       FontAwesomeIcons.calculator,
@@ -89,45 +89,44 @@ class TunaiTab extends StatelessWidget {
             )
           ],
         ),
-        Padding(
-          padding: EdgeInsets.only(
-              left: 0.3 * Get.width,
-              right: 0.3 * Get.width,
-              top: 0.02 * Get.height),
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                elevation: 5,
+                backgroundColor: Color(0XFF319088),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                padding: EdgeInsets
+                    .zero, // Set padding to zero to let the child determine the button's size
               ),
-              padding: EdgeInsets
-                  .zero, // Set padding to zero to let the child determine the button's size
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Icon(FontAwesomeIcons.circlePlus),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Tambah Pembayaran",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Color(0XFF319088),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Icon(FontAwesomeIcons.circlePlus),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "Tambah Pembayaran",
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          ],
         ),
       ],
     );

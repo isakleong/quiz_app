@@ -198,8 +198,7 @@ class TakingOrderVendorController extends GetxController with StateMixin {
     for (var i = 0; i < data.itemOrder.length; i++) {
       print(
           "qty ${data.itemOrder[i].Qty} hrg ${data.itemOrder[i].hrgPerPieces}");
-      total =
-          total + (data.itemOrder[i].Qty * data.itemOrder[i].hrgPerPieces);
+      total = total + (data.itemOrder[i].Qty * data.itemOrder[i].hrgPerPieces);
       print(total);
     }
     return total.toInt();
@@ -377,5 +376,19 @@ class TakingOrderVendorController extends GetxController with StateMixin {
         }
       }
     }
+  }
+
+  //for payment page
+  handleDeleteItemPayment(String metode) {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogDelete(
+            nmProduct: metode,
+            ontap: () async {
+              // await deleteItem(data);
+              Get.back();
+            })));
   }
 }

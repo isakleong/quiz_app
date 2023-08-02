@@ -13,7 +13,7 @@ class BottomBartransaction extends StatelessWidget {
   List<Widget> _buildScreens() {
     return [
       TakingOrderVendorMainPage(),
-      const PaymentMainPage(),
+      PaymentMainPage(),
       // BlankPage(),
       BlankPage(),
       ReportMainPage()
