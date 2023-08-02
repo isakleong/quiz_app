@@ -91,6 +91,9 @@ class TransferTab extends StatelessWidget {
                     controller:
                         _takingOrderVendorController.nominaltransfer.value,
                     keyboardType: TextInputType.number,
+                    onChanged:
+                        _takingOrderVendorController.formatMoneyTextField(
+                            _takingOrderVendorController.nominaltransfer.value),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     style: TextStyle(fontSize: 14),
                     decoration: InputDecoration(

@@ -92,6 +92,9 @@ class TunaiTab extends StatelessWidget {
                   child: TextField(
                     controller: _takingOrderVendorController.nominaltunai.value,
                     keyboardType: TextInputType.number,
+                    onChanged:
+                        _takingOrderVendorController.formatMoneyTextField(
+                            _takingOrderVendorController.nominaltunai.value),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                         labelText: 'Nominal Tunai',

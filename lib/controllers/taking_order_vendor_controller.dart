@@ -453,29 +453,59 @@ class TakingOrderVendorController extends GetxController
       if (type == "Tunai") {
         if (listpaymentdata.any((data) => data.jenis == 'Tunai')) {
           listpaymentdata.removeWhere((element) => element.jenis == type);
-          listpaymentdata.add(PaymentData(type, "", choosedTunaiMethod.value,
-              "", double.parse(nominaltunai.value.text)));
+          listpaymentdata.add(PaymentData(
+              type,
+              "",
+              choosedTunaiMethod.value,
+              "",
+              double.parse(
+                  nominaltunai.value.text.toString().replaceAll(',', ''))));
         } else {
-          listpaymentdata.add(PaymentData(type, "", choosedTunaiMethod.value,
-              "", double.parse(nominaltunai.value.text)));
+          listpaymentdata.add(PaymentData(
+              type,
+              "",
+              choosedTunaiMethod.value,
+              "",
+              double.parse(
+                  nominaltunai.value.text.toString().replaceAll(',', ''))));
         }
       } else if (type == "Transfer") {
         if (listpaymentdata.any((data) => data.jenis == 'Transfer')) {
           listpaymentdata.removeWhere((element) => element.jenis == type);
-          listpaymentdata.add(PaymentData(type, "", choosedTransferMethod.value,
-              "", double.parse(nominaltransfer.value.text)));
+          listpaymentdata.add(PaymentData(
+              type,
+              "",
+              choosedTransferMethod.value,
+              "",
+              double.parse(
+                  nominaltransfer.value.text.toString().replaceAll(',', ''))));
         } else {
-          listpaymentdata.add(PaymentData(type, "", choosedTransferMethod.value,
-              "", double.parse(nominaltransfer.value.text)));
+          listpaymentdata.add(PaymentData(
+              type,
+              "",
+              choosedTransferMethod.value,
+              "",
+              double.parse(
+                  nominaltransfer.value.text.toString().replaceAll(',', ''))));
         }
       } else if (type == "cn") {
         if (listpaymentdata.any((data) => data.jenis == 'cn')) {
           listpaymentdata.removeWhere((element) => element.jenis == type);
           listpaymentdata.add(PaymentData(
-              "cn", "", "", "", double.parse(nominalCn.value.text)));
+              "cn",
+              "",
+              "",
+              "",
+              double.parse(
+                  nominalCn.value.text.toString().replaceAll(',', ''))));
         } else {
           listpaymentdata.add(PaymentData(
-              "cn", "", "", "", double.parse(nominalCn.value.text)));
+              "cn",
+              "",
+              "",
+              "",
+              double.parse(
+                  nominalCn.value.text.toString().replaceAll(',', ''))));
         }
       } else {
         if (listpaymentdata.any((data) => data.jenis == 'cek')) {
@@ -485,14 +515,16 @@ class TakingOrderVendorController extends GetxController
               nomorcek.value.text,
               nmbank.value.text,
               jatuhtempotgl.value.text,
-              double.parse(nominalcek.value.text)));
+              double.parse(
+                  nominalcek.value.text.toString().replaceAll(',', ''))));
         } else {
           listpaymentdata.add(PaymentData(
               "cek",
               nomorcek.value.text,
               nmbank.value.text,
               jatuhtempotgl.value.text,
-              double.parse(nominalcek.value.text)));
+              double.parse(
+                  nominalcek.value.text.toString().replaceAll(',', ''))));
         }
       }
     } catch (e) {
@@ -541,25 +573,34 @@ class TakingOrderVendorController extends GetxController
       }
       if (jenis == "Tunai") {
         choosedTunaiMethod.value = listpaymentdata[idx].tipe;
-        nominaltunai.value.text = listpaymentdata[idx].value.toInt().toString();
+        nominaltunai.value.text =
+            formatNumber(listpaymentdata[idx].value.toInt());
         controller.index = 0;
       } else if (jenis == "Transfer") {
         choosedTransferMethod.value = listpaymentdata[idx].tipe;
         nominaltransfer.value.text =
-            listpaymentdata[idx].value.toInt().toString();
+            formatNumber(listpaymentdata[idx].value.toInt());
         controller.index = 1;
       } else if (jenis == "cn") {
-        nominalCn.value.text = listpaymentdata[idx].value.toInt().toString();
+        nominalCn.value.text = formatNumber(listpaymentdata[idx].value.toInt());
         controller.index = 2;
       } else {
         nomorcek.value.text = listpaymentdata[idx].nomor.toString();
         nmbank.value.text = listpaymentdata[idx].tipe.toString();
         jatuhtempotgl.value.text = listpaymentdata[idx].jatuhtempo.toString();
-        nominalcek.value.text = listpaymentdata[idx].value.toInt().toString();
+        nominalcek.value.text =
+            formatNumber(listpaymentdata[idx].value.toInt());
         controller.index = 3;
       }
     } catch (e) {
       print(e);
     }
+  }
+
+  formatMoneyTextField(TextEditingController ctrl) {
+    try {
+      ctrl.text =
+          formatNumber(int.parse(ctrl.text.toString().replaceAll(',', '')));
+    } catch (e) {}
   }
 }

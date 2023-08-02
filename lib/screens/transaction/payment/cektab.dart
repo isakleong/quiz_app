@@ -55,6 +55,9 @@ class CekTab extends StatelessWidget {
                   child: TextField(
                     controller: _takingOrderVendorController.nominalcek.value,
                     keyboardType: TextInputType.number,
+                    onChanged:
+                        _takingOrderVendorController.formatMoneyTextField(
+                            _takingOrderVendorController.nominalcek.value),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                         labelText: 'Nominal',

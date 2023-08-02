@@ -29,6 +29,8 @@ class PotonganCnTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
               ),
               child: TextField(
+                onChanged: _takingOrderVendorController.formatMoneyTextField(
+                    _takingOrderVendorController.nominalCn.value),
                 controller: _takingOrderVendorController.nominalCn.value,
                 style: TextStyle(fontSize: 14),
                 keyboardType: TextInputType.number,
