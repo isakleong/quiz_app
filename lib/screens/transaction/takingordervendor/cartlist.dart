@@ -126,9 +126,9 @@ class CartList extends StatelessWidget {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.green.shade700),
-                          child: Stack(
+                          child: const Stack(
                             alignment: Alignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.edit,
                                 color: Colors.white,
@@ -150,9 +150,9 @@ class CartList extends StatelessWidget {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.red.shade700),
-                          child: Stack(
+                          child: const Stack(
                             alignment: Alignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.delete_forever,
                                 color: Colors.white,

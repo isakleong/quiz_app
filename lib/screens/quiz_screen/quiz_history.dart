@@ -90,9 +90,9 @@ class HistoryPage extends GetView<HistoryController>  {
                                   shape: const StadiumBorder(),
                                   elevation: 5,
                                 ),
-                                child: Row(
+                                child: const Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: const [
+                                  children: [
                                     FaIcon(FontAwesomeIcons.arrowsRotate),
                                     SizedBox(width: 10),
                                     TextView(headings: "H3", text: "Refresh", color: Colors.white),
@@ -194,9 +194,9 @@ class HistoryPage extends GetView<HistoryController>  {
                                         backgroundColor: AppConfig.darkGreen,
                                         padding: const EdgeInsets.all(12),
                                       ),
-                                      child: Row(
+                                      child: const Row(
                                         mainAxisSize: MainAxisSize.min,
-                                        children: const [
+                                        children: [
                                           Icon(Icons.history),
                                           SizedBox(width: 10),
                                           TextView(headings: "H3", text: Message.retry, color: Colors.white, isCapslock: true)

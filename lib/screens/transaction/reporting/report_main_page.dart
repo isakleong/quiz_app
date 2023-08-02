@@ -8,8 +8,6 @@ import 'package:sfa_tools/screens/transaction/reporting/searchreport.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../../../common/app_config.dart';
-import 'itemreportpenjualan.dart';
 
 class ReportMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();

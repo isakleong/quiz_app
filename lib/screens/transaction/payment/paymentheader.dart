@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
@@ -17,7 +15,7 @@ class PaymentHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Row(
@@ -34,7 +32,7 @@ class PaymentHeader extends StatelessWidget {
                 SizedBox(
                   width: 0.02 * Get.width,
                 ),
-                TextView(
+                const TextView(
                   text: "Daftar Pembayaran",
                   headings: 'H3',
                   fontSize: 18,

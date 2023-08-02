@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/screens/transaction/payment/buttonpayment.dart';
-import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
@@ -23,7 +21,7 @@ class TunaiTab extends StatelessWidget {
               height: 10,
               color: Colors.grey.shade200,
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Row(
@@ -35,7 +33,7 @@ class TunaiTab extends StatelessWidget {
                       borderRadius: BorderRadius.circular(5),
                       border: Border.all(color: Colors.grey, width: 1)),
                   child: Padding(
-                    padding: EdgeInsets.only(right: 8.0, top: 5, bottom: 5),
+                    padding: const EdgeInsets.only(right: 8.0, top: 5, bottom: 5),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         isExpanded: true,
@@ -59,15 +57,15 @@ class TunaiTab extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
-                                Icon(
+                                const Icon(
                                   FontAwesomeIcons.moneyBillTransfer,
                                   color: Color(0XFF319088),
                                   size: 16,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 15,
                                 ),
                                 TextView(
@@ -96,7 +94,7 @@ class TunaiTab extends StatelessWidget {
                         _takingOrderVendorController.formatMoneyTextField(
                             _takingOrderVendorController.nominaltunai.value),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         labelText: 'Nominal Tunai',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(
@@ -107,7 +105,7 @@ class TunaiTab extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
@@ -119,8 +117,8 @@ class TunaiTab extends StatelessWidget {
                   },
                   bgcolor: _takingOrderVendorController.listpaymentdata
                           .any((data) => data.jenis == 'Tunai')
-                      ? Color(0xFF398e3d)
-                      : Color(0XFF319088),
+                      ? const Color(0xFF398e3d)
+                      : const Color(0XFF319088),
                   icon: _takingOrderVendorController.listpaymentdata
                           .any((data) => data.jenis == 'Tunai')
                       ? FontAwesomeIcons.pencilSquare

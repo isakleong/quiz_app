@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
@@ -40,7 +38,7 @@ class DialogConfirm extends StatelessWidget {
                 ),
                 SizedBox(
                   width: Get.width * 0.4,
-                  child: TextView(
+                  child: const TextView(
                     text: "Yakin untuk simpan pembayaran?",
                     headings: 'H4',
                     textAlign: TextAlign.center,

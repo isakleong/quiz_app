@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ButtonPayment extends StatelessWidget {
   var ontap;
@@ -33,16 +30,16 @@ class ButtonPayment extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Icon(icon),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Text(
               txt,
-              style: TextStyle(color: Colors.white, fontSize: 14),
+              style: const TextStyle(color: Colors.white, fontSize: 14),
             ),
           ],
         ),

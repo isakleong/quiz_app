@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/transaction/payment/bannernopayment.dart';
 import 'package:sfa_tools/screens/transaction/payment/paymentheader.dart';
 import 'package:sfa_tools/screens/transaction/payment/paymentlist.dart';
 import 'package:sfa_tools/screens/transaction/payment/paymenttab.dart';
 import 'package:sfa_tools/screens/transaction/payment/piutangcard.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
-import 'package:sfa_tools/widgets/customelevatedbutton.dart';
-import 'package:sfa_tools/widgets/textview.dart';
 
-import '../takingordervendor/cartlist.dart';
 
 class PaymentMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -39,7 +34,7 @@ class PaymentMainPage extends StatelessWidget {
                     Padding(
                         padding: EdgeInsets.only(
                             left: 0.05 * Get.width, top: 0.02 * Get.height),
-                        child: PiutangCard()),
+                        child: const PiutangCard()),
                     const SizedBox(
                       height: 20,
                     ),
@@ -51,7 +46,7 @@ class PaymentMainPage extends StatelessWidget {
                     ),
                     // BannerNoPayment()
                     _takingOrderVendorController.listpaymentdata.isEmpty
-                        ? BannerNoPayment()
+                        ? const BannerNoPayment()
                         : PaymentHeader(),
                     Expanded(
                       child: ListView.builder(
@@ -77,7 +72,7 @@ class PaymentMainPage extends StatelessWidget {
                               jatuhtempo: _takingOrderVendorController
                                           .listpaymentdata[index].jatuhtempo ==
                                       ""
-                                  ? "${_takingOrderVendorController.listpaymentdata[index].jatuhtempo}"
+                                  ? _takingOrderVendorController.listpaymentdata[index].jatuhtempo
                                   : "Jatuh Tempo : ${_takingOrderVendorController.listpaymentdata[index].jatuhtempo}",
                               value:
                                   "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listpaymentdata[index].value.toInt())}",

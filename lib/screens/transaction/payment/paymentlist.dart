@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 
@@ -109,9 +107,9 @@ class PaymentList extends StatelessWidget {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.green.shade700),
-                          child: Stack(
+                          child: const Stack(
                             alignment: Alignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.edit,
                                 color: Colors.white,
@@ -135,9 +133,9 @@ class PaymentList extends StatelessWidget {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.red.shade700),
-                          child: Stack(
+                          child: const Stack(
                             alignment: Alignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.delete_forever,
                                 color: Colors.white,

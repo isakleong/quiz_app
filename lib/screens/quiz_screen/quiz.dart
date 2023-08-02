@@ -217,9 +217,9 @@ class QuizPage extends GetView<QuizController>{
                       backgroundColor: AppConfig.darkGreen,
                       padding: const EdgeInsets.all(12),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children: [
                         Icon(Icons.history),
                         SizedBox(width: 10),
                         TextView(headings: "H3", text: "Coba Lagi", fontSize: 16, color: Colors.black),

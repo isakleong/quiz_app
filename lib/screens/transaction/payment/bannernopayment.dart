@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 
 import '../../../widgets/textview.dart';
@@ -13,15 +11,15 @@ class BannerNoPayment extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             Image.asset('assets/images/custpaymentempty.png',
                 width: 0.45 * Get.width, fit: BoxFit.cover),
-            Container(
+            SizedBox(
               width: 0.45 * Get.width,
-              child: Column(
+              child: const Column(
                 children: [
                   TextView(
                     text: "Belum Ada Pembayaran",

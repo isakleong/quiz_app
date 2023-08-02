@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/transaction/payment/buttonpayment.dart';
 
-import '../../../widgets/textview.dart';
 
 class PotonganCnTab extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -20,7 +19,7 @@ class PotonganCnTab extends StatelessWidget {
               height: 10,
               color: Colors.grey.shade200,
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Container(
@@ -32,10 +31,10 @@ class PotonganCnTab extends StatelessWidget {
                 onChanged: _takingOrderVendorController.formatMoneyTextField(
                     _takingOrderVendorController.nominalCn.value),
                 controller: _takingOrderVendorController.nominalCn.value,
-                style: TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 14),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Nominal Potongan CN',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(
@@ -44,7 +43,7 @@ class PotonganCnTab extends StatelessWidget {
                     )),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
@@ -56,8 +55,8 @@ class PotonganCnTab extends StatelessWidget {
                   },
                   bgcolor: _takingOrderVendorController.listpaymentdata
                           .any((data) => data.jenis == 'cn')
-                      ? Color(0xFF398e3d)
-                      : Color(0XFF319088),
+                      ? const Color(0xFF398e3d)
+                      : const Color(0XFF319088),
                   icon: _takingOrderVendorController.listpaymentdata
                           .any((data) => data.jenis == 'cn')
                       ? FontAwesomeIcons.pencilSquare

@@ -20,7 +20,7 @@ class TransferTab extends StatelessWidget {
               height: 10,
               color: Colors.grey.shade200,
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Row(
@@ -32,7 +32,7 @@ class TransferTab extends StatelessWidget {
                       borderRadius: BorderRadius.circular(5),
                       border: Border.all(color: Colors.grey, width: 1)),
                   child: Padding(
-                    padding: EdgeInsets.only(right: 8.0, top: 5, bottom: 5),
+                    padding: const EdgeInsets.only(right: 8.0, top: 5, bottom: 5),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         isExpanded: true,
@@ -57,15 +57,15 @@ class TransferTab extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
-                                Icon(
+                                const Icon(
                                   FontAwesomeIcons.bank,
                                   color: Color(0XFF319088),
                                   size: 16,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 15,
                                 ),
                                 TextView(
@@ -95,8 +95,8 @@ class TransferTab extends StatelessWidget {
                         _takingOrderVendorController.formatMoneyTextField(
                             _takingOrderVendorController.nominaltransfer.value),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    style: TextStyle(fontSize: 14),
-                    decoration: InputDecoration(
+                    style: const TextStyle(fontSize: 14),
+                    decoration: const InputDecoration(
                         labelText: 'Nominal Transfer',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(
@@ -107,7 +107,7 @@ class TransferTab extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
@@ -119,8 +119,8 @@ class TransferTab extends StatelessWidget {
                   },
                   bgcolor: _takingOrderVendorController.listpaymentdata
                           .any((data) => data.jenis == 'Transfer')
-                      ? Color(0xFF398e3d)
-                      : Color(0XFF319088),
+                      ? const Color(0xFF398e3d)
+                      : const Color(0XFF319088),
                   icon: _takingOrderVendorController.listpaymentdata
                           .any((data) => data.jenis == 'Transfer')
                       ? FontAwesomeIcons.pencilSquare

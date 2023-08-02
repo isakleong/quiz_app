@@ -1,8 +1,8 @@
+
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/models/productdata.dart';
@@ -11,10 +11,8 @@ import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/screens/transaction/payment/dialogconfirm.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
-import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 
 import '../common/app_config.dart';
-import '../widgets/textview.dart';
 
 class TakingOrderVendorController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -406,7 +404,7 @@ class TakingOrderVendorController extends GetxController
 
   Future<void> selectDate(BuildContext context) async {
     DateTime currentDate = DateTime.now();
-    DateTime next90Days = currentDate.add(Duration(days: 90));
+    DateTime next90Days = currentDate.add(const Duration(days: 90));
 
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -423,7 +421,7 @@ class TakingOrderVendorController extends GetxController
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                primary: AppConfig.mainCyan, // button text color
+                foregroundColor: AppConfig.mainCyan, // button text color
               ),
             ),
           ),
@@ -536,9 +534,9 @@ class TakingOrderVendorController extends GetxController
   }
 
   handleSavePayment() {
-    Get.dialog(Dialog(
+    Get.dialog(const Dialog(
         backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: DialogConfirm()));
   }
@@ -606,4 +604,7 @@ class TakingOrderVendorController extends GetxController
           formatNumber(int.parse(ctrl.text.toString().replaceAll(',', '')));
     } catch (e) {}
   }
+
+  //for retur page
+  RxList<bool> selectedsegment = [true, false, false, false, false].obs;
 }

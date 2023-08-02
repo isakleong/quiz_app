@@ -162,9 +162,9 @@ class DialogCheckOut extends StatelessWidget {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.green.shade700),
-                          child: Stack(
+                          child: const Stack(
                             alignment: Alignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.manage_search,
                                 color: Colors.white,

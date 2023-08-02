@@ -24,10 +24,10 @@ class PaymentTab extends StatelessWidget {
             elevation: 0,
             bottom: TabBar(
               controller: _takingOrderVendorController.controller,
-              indicatorColor: Color.fromARGB(255, 13, 101, 91),
+              indicatorColor: const Color.fromARGB(255, 13, 101, 91),
               unselectedLabelColor: Colors.grey,
-              labelColor: Color.fromARGB(255, 13, 101, 91),
-              tabs: <Widget>[
+              labelColor: const Color.fromARGB(255, 13, 101, 91),
+              tabs: const <Widget>[
                 Tab(
                   text: "TUNAI",
                 ),

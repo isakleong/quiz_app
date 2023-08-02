@@ -19,7 +19,7 @@ class CekTab extends StatelessWidget {
               height: 10,
               color: Colors.grey.shade200,
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Row(
@@ -35,7 +35,7 @@ class CekTab extends StatelessWidget {
                   ),
                   child: TextField(
                     controller: _takingOrderVendorController.nomorcek.value,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         labelText: 'Nomor Cek / Giro / Slip',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(
@@ -59,7 +59,7 @@ class CekTab extends StatelessWidget {
                         _takingOrderVendorController.formatMoneyTextField(
                             _takingOrderVendorController.nominalcek.value),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         labelText: 'Nominal',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(
@@ -70,7 +70,7 @@ class CekTab extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
@@ -86,7 +86,7 @@ class CekTab extends StatelessWidget {
                   ),
                   child: TextField(
                     controller: _takingOrderVendorController.nmbank.value,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         labelText: 'Bank',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(
@@ -112,7 +112,7 @@ class CekTab extends StatelessWidget {
                         _takingOrderVendorController.jatuhtempotgl.value,
                     keyboardType: null,
                     readOnly: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         labelText: 'Jatuh Tempo',
                         labelStyle: TextStyle(fontSize: 14),
                         border: OutlineInputBorder(),
@@ -131,8 +131,8 @@ class CekTab extends StatelessWidget {
                   },
                   bgcolor: _takingOrderVendorController.listpaymentdata
                           .any((data) => data.jenis == 'cek')
-                      ? Color(0xFF398e3d)
-                      : Color(0XFF319088),
+                      ? const Color(0xFF398e3d)
+                      : const Color(0XFF319088),
                   icon: _takingOrderVendorController.listpaymentdata
                           .any((data) => data.jenis == 'cek')
                       ? FontAwesomeIcons.pencilSquare
