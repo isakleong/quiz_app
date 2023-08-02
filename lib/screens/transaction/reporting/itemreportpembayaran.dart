@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/models/reportpenjualanmodel.dart';
-import 'package:sfa_tools/screens/transaction/reporting/itemlistpenjualan.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
+import 'package:sfa_tools/models/reportpembayaranmodel.dart';
+import 'package:sfa_tools/screens/transaction/reporting/itemlistpembayaran.dart';
 
 import '../../../widgets/textview.dart';
+import '../takingordervendor/chipsitem.dart';
 
-class ItemReportPenjualan extends StatelessWidget {
+class ItemReportPembayaran extends StatelessWidget {
   String idx;
-  ReportPenjualanModel data;
-  ItemReportPenjualan({super.key, required this.idx, required this.data});
+  ReportPembayaranModel data;
+  String total;
+  ItemReportPembayaran(
+      {super.key, required this.idx, required this.data, required this.total});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,7 @@ class ItemReportPenjualan extends StatelessWidget {
                         width: 0.07 * Get.width,
                         height: 0.07 * Get.width,
                         decoration: const BoxDecoration(
-                          color: Color(0xFFf5511e),
+                          color: Color(0xFF0288d1),
                           shape: BoxShape.circle,
                         ),
                         child: Center(
@@ -58,15 +62,10 @@ class ItemReportPenjualan extends StatelessWidget {
                           headings: 'H4',
                           fontSize: 14,
                         ),
-                        data.notes == ""
-                            ? Container()
-                            : ChipsItem(
-                                satuan: data.notes.length >= 35
-                                    ? "${data.notes.substring(0, 30)}...      "
-                                    : data.notes,
-                                color: const Color(0xFFf5511e),
-                                fontSize: 12,
-                              )
+                        ChipsItem(
+                          satuan: total,
+                          fontSize: 13,
+                        )
                       ],
                     )
                   ],
@@ -102,10 +101,10 @@ class ItemReportPenjualan extends StatelessWidget {
             ListView.builder(
               shrinkWrap: true,
               physics: const ClampingScrollPhysics(),
-              itemCount: data.listItem.length,
+              itemCount: data.paymentList.length,
               itemBuilder: (context, inner) {
-                return ItemListPenjualan(
-                    idx: (inner + 1).toString(), data: data.listItem[inner]);
+                return ItemListPembayaran(
+                    idx: (inner + 1).toString(), data: data.paymentList[inner]);
               },
             ),
             const SizedBox(

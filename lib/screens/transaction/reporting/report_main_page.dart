@@ -3,11 +3,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/transaction/reporting/reportpenjualan.dart';
+import 'package:sfa_tools/screens/transaction/reporting/reportbody.dart';
 import 'package:sfa_tools/screens/transaction/reporting/searchreport.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
+import '../../../common/app_config.dart';
+import 'itemreportpenjualan.dart';
 
 class ReportMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -24,7 +26,7 @@ class ReportMainPage extends StatelessWidget {
             'assets/images/bg-homepage.svg',
             fit: BoxFit.cover,
           ),
-          _takingOrderVendorController.listReportShow.isEmpty
+          _takingOrderVendorController.allReportlength.value == 0
               ? Center(
                   child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -59,7 +61,7 @@ class ReportMainPage extends StatelessWidget {
                       await _takingOrderVendorController.filteReport();
                     },
                   )),
-              ReportPenjualan()
+              ReportBody(),
             ],
           )
         ]),

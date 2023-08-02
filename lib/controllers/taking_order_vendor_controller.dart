@@ -6,7 +6,8 @@ import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/models/productdata.dart';
-import 'package:sfa_tools/models/reportmodel.dart';
+import 'package:sfa_tools/models/reportpembayaranmodel.dart';
+import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/screens/transaction/payment/dialogconfirm.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
@@ -296,18 +297,23 @@ class TakingOrderVendorController extends GetxController
 
   //for laporan page
   RxString choosedReport = "".obs;
-  List<ReportModel> listReport = <ReportModel>[];
-  RxList<ReportModel> listReportShow = <ReportModel>[].obs;
+  List<ReportPenjualanModel> listReportPenjualan = <ReportPenjualanModel>[];
+  RxList<ReportPembayaranModel> listReportPembayaranshow =
+      <ReportPembayaranModel>[].obs;
+  RxList<ReportPenjualanModel> listReportPenjualanShow =
+      <ReportPenjualanModel>[].obs;
+  List<ReportPembayaranModel> listReportPembayaran = <ReportPembayaranModel>[];
+  RxInt allReportlength = 0.obs;
 
   getReportList() {
-    listReport.clear();
+    listReportPenjualan.clear();
     List<CartModel> data = [
       CartModel("asc", dummyList[0], 2, "dos", 10000),
       CartModel("asc", dummyList[0], 1, "biji", 20000)
     ];
     List<CartDetail> list = [CartDetail("asc", dummyList[0], data)];
-    listReport.add(ReportModel("GO-00AC1A0103-2307311034-001", "penjualan",
-        "31-07-2023", "10:34", list, "test note pendek"));
+    listReportPenjualan.add(ReportPenjualanModel("GO-00AC1A0103-2307311034-001",
+        "penjualan", "31-07-2023", "10:34", list, "test note pendek"));
 
     List<CartModel> data2 = [
       CartModel("desc", dummyList[1], 12, "kaleng", 10000)
@@ -320,8 +326,8 @@ class TakingOrderVendorController extends GetxController
       CartDetail("desc", dummyList[1], data2),
       CartDetail("ccc", dummyList[dummyList.length - 1], data3)
     ];
-    listReport.add(ReportModel("GO-00AC1A0103-2307311045-001", "penjualan",
-        "31-07-2023", "10:45", list2, ""));
+    listReportPenjualan.add(ReportPenjualanModel("GO-00AC1A0103-2307311045-001",
+        "penjualan", "31-07-2023", "10:45", list2, ""));
 
     List<CartModel> data4 = [
       CartModel("desc", dummyList[1], 12, "kaleng", 10000)
@@ -339,7 +345,7 @@ class TakingOrderVendorController extends GetxController
       CartDetail("desc", dummyList[1], data4),
       CartDetail("ccc", dummyList[dummyList.length - 1], data5)
     ];
-    listReport.add(ReportModel(
+    listReportPenjualan.add(ReportPenjualanModel(
         "GO-00AC1A0103-2308010914-001",
         "penjualan",
         "01-08-2023",
@@ -347,43 +353,40 @@ class TakingOrderVendorController extends GetxController
         list3,
         "test note panjang fasbgwujkasbkfbuwahsfjkwiahfjkhuiwhfuia"));
 
-    // for (var i = 0; i < listReport.length; i++) {
-    //   print(listReport[i].id);
-    //   for (var k = 0; k < listReport[i].listItem.length; k++) {
-    //     print(listReport[i].listItem[k].kdProduct);
-    //     for (var m = 0; m < listReport[i].listItem[k].itemOrder.length; m++) {
-    //       print(listReport[i].listItem[k].itemOrder[m].Satuan);
-    //     }
-    //   }
-    //   print("***************");
-    // }
-    listReportShow.addAll(listReport);
+    listReportPenjualanShow.addAll(listReportPenjualan);
+
+    listReportPembayaran.clear();
+    List<PaymentData> payment1 = [
+      PaymentData("Tunai", "", "Setor di Cabang", "", 50000),
+      PaymentData("Transfer", "", "BCA", "", 100000),
+      PaymentData("cek", "uvusadeawdssa", "MANDIRI", "02-08-2023", 750000),
+      PaymentData("cn", "", "", "", 250000),
+    ];
+    listReportPembayaran.add(ReportPembayaranModel(
+        "GP-00AC1A0103-2308021435-001",
+        1150000.0,
+        "02-08-2023",
+        "14:35",
+        payment1));
+    listReportPembayaranshow.addAll(listReportPembayaran);
+    allReportlength.value =
+        listReportPenjualanShow.length + listReportPembayaranshow.length;
   }
 
   filteReport() {
     if (choosedReport.value.contains("Semua")) {
-      print("here");
-      print("******DONE*********");
-      listReportShow.value.clear();
-      listReportShow.value.addAll(listReport);
+      listReportPenjualanShow.value.clear();
+      listReportPenjualanShow.value.addAll(listReportPenjualan);
+      listReportPembayaranshow.clear();
+      listReportPembayaranshow.value.addAll(listReportPembayaran);
     } else if (choosedReport.value == "Transaksi Penjualan") {
-      print("here2");
-      print("******DONE*********");
-      listReportShow.value.clear();
-      for (var i = 0; i < listReport.length; i++) {
-        if (listReport[i].jenis == 'penjualan') {
-          listReportShow.value.add(listReport[i]);
-        }
-      }
+      listReportPenjualanShow.value.clear();
+      listReportPembayaranshow.clear();
+      listReportPenjualanShow.value.addAll(listReportPenjualan);
     } else if (choosedReport.value == "Transaksi Pembayaran") {
-      print("here3");
-      print("******DONE*********");
-      listReportShow.value.clear();
-      for (var i = 0; i < listReport.length; i++) {
-        if (listReport[i].jenis == 'pembayaran') {
-          listReportShow.value.add(listReport[i]);
-        }
-      }
+      listReportPenjualanShow.value.clear();
+      listReportPembayaranshow.clear();
+      listReportPembayaranshow.value.addAll(listReportPembayaran);
     }
   }
 
