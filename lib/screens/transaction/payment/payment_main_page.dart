@@ -50,11 +50,13 @@ class PaymentMainPage extends StatelessWidget {
                       color: Colors.grey.shade200,
                     ),
                     // BannerNoPayment()
-                    PaymentHeader(),
+                    _takingOrderVendorController.listpaymentdata.isEmpty
+                        ? BannerNoPayment()
+                        : PaymentHeader(),
                     Expanded(
                       child: ListView.builder(
                         itemCount:
-                            _takingOrderVendorController.cartDetailList.length,
+                            _takingOrderVendorController.listpaymentdata.length,
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: EdgeInsets.only(
@@ -63,8 +65,24 @@ class PaymentMainPage extends StatelessWidget {
                                 right: 0.05 * Get.width),
                             child: PaymentList(
                               idx: (index + 1).toString(),
-                              metode: 'Cek / Giro / Slip - mandiri[gjugbgfv]',
-                              jatuhtempo: "Jatuh Tempo: 02-08-2023",
+                              metode: _takingOrderVendorController
+                                          .listpaymentdata[index].jenis ==
+                                      "cn"
+                                  ? "Potongan CN"
+                                  : _takingOrderVendorController
+                                              .listpaymentdata[index].jenis ==
+                                          "cek"
+                                      ? "Cek / Giro / Slip - ${_takingOrderVendorController.listpaymentdata[index].tipe} [${_takingOrderVendorController.listpaymentdata[index].nomor}]"
+                                      : "${_takingOrderVendorController.listpaymentdata[index].jenis} - ${_takingOrderVendorController.listpaymentdata[index].tipe}",
+                              jatuhtempo: _takingOrderVendorController
+                                          .listpaymentdata[index].jatuhtempo ==
+                                      ""
+                                  ? "${_takingOrderVendorController.listpaymentdata[index].jatuhtempo}"
+                                  : "Jatuh Tempo : ${_takingOrderVendorController.listpaymentdata[index].jatuhtempo}",
+                              value:
+                                  "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listpaymentdata[index].value.toInt())}",
+                              jenis: _takingOrderVendorController
+                                  .listpaymentdata[index].jenis,
                             ),
                           );
                         },

@@ -12,11 +12,15 @@ class PaymentList extends StatelessWidget {
   String idx;
   String metode;
   String jatuhtempo;
+  String value;
+  String jenis;
   PaymentList(
       {super.key,
       required this.idx,
       required this.metode,
-      required this.jatuhtempo});
+      required this.jatuhtempo,
+      required this.value,
+      required this.jenis});
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +76,7 @@ class PaymentList extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 TextView(
-                                  text: "Rp 3,500",
+                                  text: value,
                                   fontSize: 14,
                                 ),
                                 SizedBox(
@@ -95,7 +99,10 @@ class PaymentList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          print("edit");
+                          _takingOrderVendorController.handleeditpayment(jenis);
+                        },
                         child: Container(
                           width: 40,
                           height: 40,
@@ -120,7 +127,7 @@ class PaymentList extends StatelessWidget {
                         onTap: () {
                           print("delete");
                           _takingOrderVendorController.handleDeleteItemPayment(
-                              'Cek / Giro / Slip - mandiri');
+                              metode, jenis);
                         },
                         child: Container(
                           width: 40,

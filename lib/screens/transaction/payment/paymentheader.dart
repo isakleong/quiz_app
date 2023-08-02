@@ -7,9 +7,11 @@ import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 import '../../../common/app_config.dart';
+import '../../../controllers/taking_order_vendor_controller.dart';
 
 class PaymentHeader extends StatelessWidget {
-  const PaymentHeader({super.key});
+  final TakingOrderVendorController _takingOrderVendorController = Get.find();
+  PaymentHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +42,11 @@ class PaymentHeader extends StatelessWidget {
                 SizedBox(
                   width: 0.02 * Get.width,
                 ),
-                ChipsItem(
-                  satuan: "1 Metode",
-                  fontSize: 14,
-                )
+                Obx(() => ChipsItem(
+                      satuan:
+                          "${_takingOrderVendorController.listpaymentdata.length} Metode",
+                      fontSize: 14,
+                    ))
               ],
             ),
             Padding(
@@ -54,7 +57,9 @@ class PaymentHeader extends StatelessWidget {
                     size: 21,
                   ),
                   text: "SIMPAN",
-                  onTap: () {},
+                  onTap: () {
+                    _takingOrderVendorController.handleSavePayment();
+                  },
                   width: 0.2 * Get.width,
                   height: 0.04 * Get.height,
                   radius: 15,

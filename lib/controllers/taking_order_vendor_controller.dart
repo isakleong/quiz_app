@@ -2,16 +2,25 @@ import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
+import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/models/productdata.dart';
 import 'package:sfa_tools/models/reportmodel.dart';
+import 'package:sfa_tools/screens/transaction/payment/dialogconfirm.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
+import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 
-class TakingOrderVendorController extends GetxController with StateMixin {
+import '../common/app_config.dart';
+import '../widgets/textview.dart';
+
+class TakingOrderVendorController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   @override
   void onInit() {
     super.onInit();
+    controller = TabController(vsync: this, length: 4, initialIndex: 0);
     cnt = SingleValueDropDownController();
     getListItem();
     getReportList();
@@ -379,7 +388,54 @@ class TakingOrderVendorController extends GetxController with StateMixin {
   }
 
   //for payment page
-  handleDeleteItemPayment(String metode) {
+  RxString choosedTunaiMethod = "".obs;
+  RxString choosedTransferMethod = "".obs;
+  Rx<TextEditingController> nominaltunai = TextEditingController().obs;
+  Rx<TextEditingController> nominaltransfer = TextEditingController().obs;
+  Rx<TextEditingController> nominalCn = TextEditingController().obs;
+  Rx<TextEditingController> nominalcek = TextEditingController().obs;
+  Rx<TextEditingController> nomorcek = TextEditingController().obs;
+  Rx<TextEditingController> nmbank = TextEditingController().obs;
+  Rx<TextEditingController> jatuhtempotgl = TextEditingController().obs;
+  RxList<PaymentData> listpaymentdata = <PaymentData>[].obs;
+  RxInt selectedTab = 0.obs;
+  late TabController controller;
+
+  Future<void> selectDate(BuildContext context) async {
+    DateTime currentDate = DateTime.now();
+    DateTime next90Days = currentDate.add(Duration(days: 90));
+
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: currentDate,
+      firstDate: currentDate,
+      lastDate: next90Days,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppConfig.mainCyan, // <-- SEE HERE
+              onPrimary: Colors.white, // <-- SEE HERE
+              onSurface: Colors.black, // <-- SEE HERE
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                primary: AppConfig.mainCyan, // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
+      jatuhtempotgl.value.text = formattedDate;
+    }
+  }
+
+  handleDeleteItemPayment(String metode, String jenis) {
     Get.dialog(Dialog(
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
@@ -387,8 +443,123 @@ class TakingOrderVendorController extends GetxController with StateMixin {
         child: DialogDelete(
             nmProduct: metode,
             ontap: () async {
-              // await deleteItem(data);
+              await deletePayment(jenis);
               Get.back();
             })));
+  }
+
+  insertRecord(String type) {
+    try {
+      if (type == "Tunai") {
+        if (listpaymentdata.any((data) => data.jenis == 'Tunai')) {
+          listpaymentdata.removeWhere((element) => element.jenis == type);
+          listpaymentdata.add(PaymentData(type, "", choosedTunaiMethod.value,
+              "", double.parse(nominaltunai.value.text)));
+        } else {
+          listpaymentdata.add(PaymentData(type, "", choosedTunaiMethod.value,
+              "", double.parse(nominaltunai.value.text)));
+        }
+      } else if (type == "Transfer") {
+        if (listpaymentdata.any((data) => data.jenis == 'Transfer')) {
+          listpaymentdata.removeWhere((element) => element.jenis == type);
+          listpaymentdata.add(PaymentData(type, "", choosedTransferMethod.value,
+              "", double.parse(nominaltransfer.value.text)));
+        } else {
+          listpaymentdata.add(PaymentData(type, "", choosedTransferMethod.value,
+              "", double.parse(nominaltransfer.value.text)));
+        }
+      } else if (type == "cn") {
+        if (listpaymentdata.any((data) => data.jenis == 'cn')) {
+          listpaymentdata.removeWhere((element) => element.jenis == type);
+          listpaymentdata.add(PaymentData(
+              "cn", "", "", "", double.parse(nominalCn.value.text)));
+        } else {
+          listpaymentdata.add(PaymentData(
+              "cn", "", "", "", double.parse(nominalCn.value.text)));
+        }
+      } else {
+        if (listpaymentdata.any((data) => data.jenis == 'cek')) {
+          listpaymentdata.removeWhere((element) => element.jenis == type);
+          listpaymentdata.add(PaymentData(
+              "cek",
+              nomorcek.value.text,
+              nmbank.value.text,
+              jatuhtempotgl.value.text,
+              double.parse(nominalcek.value.text)));
+        } else {
+          listpaymentdata.add(PaymentData(
+              "cek",
+              nomorcek.value.text,
+              nmbank.value.text,
+              jatuhtempotgl.value.text,
+              double.parse(nominalcek.value.text)));
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  handleSavePayment() {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogConfirm()));
+  }
+
+  deletePayment(String jenis) {
+    try {
+      listpaymentdata.removeWhere((element) => element.jenis == jenis);
+      if (jenis == "Tunai") {
+        choosedTunaiMethod.value = "";
+        nominaltunai.value.clear();
+      } else if (jenis == "Transfer") {
+        choosedTransferMethod.value = "";
+        nominaltransfer.value.clear();
+      } else if (jenis == "cn") {
+        nominalCn.value.clear();
+      } else {
+        nominalcek.value.clear();
+        nomorcek.value.clear();
+        nmbank.value.clear();
+        jatuhtempotgl.value.clear();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  handleeditpayment(String jenis) {
+    try {
+      var idx = 0;
+      for (var i = 0; i < listpaymentdata.length; i++) {
+        if (listpaymentdata[i].jenis == jenis) {
+          idx = i;
+          break;
+        }
+      }
+      if (jenis == "Tunai") {
+        choosedTunaiMethod.value = listpaymentdata[idx].tipe;
+        nominaltunai.value.text = listpaymentdata[idx].value.toInt().toString();
+        controller.index = 0;
+      } else if (jenis == "Transfer") {
+        choosedTransferMethod.value = listpaymentdata[idx].tipe;
+        nominaltransfer.value.text =
+            listpaymentdata[idx].value.toInt().toString();
+        controller.index = 1;
+      } else if (jenis == "cn") {
+        nominalCn.value.text = listpaymentdata[idx].value.toInt().toString();
+        controller.index = 2;
+      } else {
+        nomorcek.value.text = listpaymentdata[idx].nomor.toString();
+        nmbank.value.text = listpaymentdata[idx].tipe.toString();
+        jatuhtempotgl.value.text = listpaymentdata[idx].jatuhtempo.toString();
+        nominalcek.value.text = listpaymentdata[idx].value.toInt().toString();
+        controller.index = 3;
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
