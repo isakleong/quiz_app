@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:sfa_tools/common/app_config.dart';
-import 'package:sfa_tools/screens/transaction/blankpage.dart';
+import 'package:sfa_tools/screens/transaction/returitem/retur_main_page.dart';
 import 'package:sfa_tools/screens/transaction/payment/payment_main_page.dart';
 import 'package:sfa_tools/screens/transaction/reporting/report_main_page.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/taking_order_vendor_main_page.dart';
@@ -14,8 +14,7 @@ class BottomBartransaction extends StatelessWidget {
     return [
       TakingOrderVendorMainPage(),
       PaymentMainPage(),
-      // BlankPage(),
-      BlankPage(),
+      ReturMainPage(),
       ReportMainPage()
     ];
   }
