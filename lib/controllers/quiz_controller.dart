@@ -447,11 +447,15 @@ class QuizController extends GetxController with StateMixin {
       if (isConnected) {
         var bodyData = jsonEncode(params);
         var resultSubmit = await ApiClient().postData(
-            urlAPI,
-            '/quiz/submit',
-            Utils.encryptData(bodyData),
-            Options(
-                headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+          urlAPI,
+          '/quiz/submit',
+          Utils.encryptData(bodyData),
+          Options(
+            headers: {
+              HttpHeaders.contentTypeHeader: "application/json"
+            }
+          )
+        );
 
         if(resultSubmit == "success") {
           Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);

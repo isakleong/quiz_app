@@ -1,9 +1,6 @@
 abstract class Message {
   static const retry = "coba lagi";
 
-  static const requestPermission = "Mohon berikan izin akses aplikasi dengan menekan tombol Allow.";
-
-  static const updateVersionMessage = "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi SFA Tools.\n4. Tunggu hingga proses update selesai.";
   static const errorParameterData = "Mohon maaf, konfigurasi aplikasi tidak ditemukan, silahkan menghubungi tim SFA.";
   static const errorConnection = "Gagal terhubung ke server,\npastikan gadget sudah terhubung ke internet.\n(Bisa menggunakan simcard atau wifi SFA).";
   static const errorQuizConfig = "Mohon maaf, konfigurasi kuis tidak ditemukan, silahkan menghubungi tim SFA.";
