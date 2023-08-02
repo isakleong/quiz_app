@@ -1,4 +1,3 @@
-
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +10,6 @@ import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/screens/transaction/payment/dialogconfirm.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
-
 import '../common/app_config.dart';
 
 class TakingOrderVendorController extends GetxController
@@ -73,7 +71,6 @@ class TakingOrderVendorController extends GetxController
   }
 
   handleAddMinusBtn(TextEditingController ctrl, var action) {
-    print(action);
     if (action == '+') {
       if (ctrl.text != "") {
         var newqty = int.parse(ctrl.text) + 1;
@@ -85,7 +82,6 @@ class TakingOrderVendorController extends GetxController
         ctrl.text = newqty.toString();
       }
     }
-    print(ctrl.text);
   }
 
   addToCart() {
@@ -147,7 +143,6 @@ class TakingOrderVendorController extends GetxController
     cartDetailList.clear();
     for (var i = 0; i < cartList.length; i++) {
       if (cartDetailList.isEmpty) {
-        print("added here ${cartList[i].kdProduct} 1");
         List<CartModel> data = [
           CartModel(cartList[i].kdProduct, cartList[i].nmProduct,
               cartList[i].Qty, cartList[i].Satuan, cartList[i].hrgPerPieces)
@@ -165,7 +160,6 @@ class TakingOrderVendorController extends GetxController
               }
             }
             if (counter == 0) {
-              print("added here ${cartList[i].kdProduct} 2");
               cartDetailList[j].itemOrder.add(CartModel(
                   cartList[i].kdProduct,
                   cartList[i].nmProduct,
@@ -182,7 +176,6 @@ class TakingOrderVendorController extends GetxController
               }
             }
             if (counter == 0) {
-              print("added here ${cartList[i].kdProduct} 3");
               List<CartModel> data = [
                 CartModel(
                     cartList[i].kdProduct,
@@ -202,12 +195,8 @@ class TakingOrderVendorController extends GetxController
 
   countTotalDetail(CartDetail data) {
     var total = 0.0;
-    print(data.itemOrder.length);
     for (var i = 0; i < data.itemOrder.length; i++) {
-      print(
-          "qty ${data.itemOrder[i].Qty} hrg ${data.itemOrder[i].hrgPerPieces}");
       total = total + (data.itemOrder[i].Qty * data.itemOrder[i].hrgPerPieces);
-      print(total);
     }
     return total.toInt();
   }
