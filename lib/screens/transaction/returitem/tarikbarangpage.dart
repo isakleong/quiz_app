@@ -19,19 +19,6 @@ class TarikBarangPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
   TarikBarangPage({super.key});
 
-  final List<String> countries = [
-    'Argentina',
-    'Brazil',
-    'Canada',
-    'Denmark',
-    'France',
-    'Germany',
-    'India',
-    'Japan',
-    'United States',
-    'United Kingdom',
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
