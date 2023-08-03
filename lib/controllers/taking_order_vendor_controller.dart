@@ -596,4 +596,5 @@ class TakingOrderVendorController extends GetxController
 
   //for retur page
   RxList<bool> selectedsegment = [true, false, false, false, false].obs;
+  RxInt indexSegment = 0.obs;
 }

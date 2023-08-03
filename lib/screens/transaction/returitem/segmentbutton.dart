@@ -13,6 +13,7 @@ class SegmentButton extends StatelessWidget {
     return Obx(() => ToggleButtons(
           isSelected: _takingOrderVendorController.selectedsegment.value,
           onPressed: (index) {
+            _takingOrderVendorController.indexSegment.value = index;
             for (int buttonIndex = 0;
                 buttonIndex <
                     _takingOrderVendorController.selectedsegment.length;
