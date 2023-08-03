@@ -11,6 +11,7 @@ import 'package:sfa_tools/screens/transaction/payment/dialogconfirm.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
 import '../common/app_config.dart';
+import '../models/tarikbarangmodel.dart';
 
 class TakingOrderVendorController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -21,6 +22,20 @@ class TakingOrderVendorController extends GetxController
     cnt = SingleValueDropDownController();
     getListItem();
     getReportList();
+  }
+
+  handleAddMinusBtn(TextEditingController ctrl, var action) {
+    if (action == '+') {
+      if (ctrl.text != "") {
+        var newqty = int.parse(ctrl.text) + 1;
+        ctrl.text = newqty.toString();
+      }
+    } else {
+      if (ctrl.text != "" && ctrl.text != "0") {
+        var newqty = int.parse(ctrl.text) - 1;
+        ctrl.text = newqty.toString();
+      }
+    }
   }
 
   // for penjualan page
@@ -67,20 +82,6 @@ class TakingOrderVendorController extends GetxController
     for (var i = 0; i < listProduct.length; i++) {
       listDropDown.add(DropDownValueModel(
           value: listProduct[i].kdProduct, name: listProduct[i].nmProduct));
-    }
-  }
-
-  handleAddMinusBtn(TextEditingController ctrl, var action) {
-    if (action == '+') {
-      if (ctrl.text != "") {
-        var newqty = int.parse(ctrl.text) + 1;
-        ctrl.text = newqty.toString();
-      }
-    } else {
-      if (ctrl.text != "" && ctrl.text != "0") {
-        var newqty = int.parse(ctrl.text) - 1;
-        ctrl.text = newqty.toString();
-      }
     }
   }
 
@@ -147,8 +148,11 @@ class TakingOrderVendorController extends GetxController
           CartModel(cartList[i].kdProduct, cartList[i].nmProduct,
               cartList[i].Qty, cartList[i].Satuan, cartList[i].hrgPerPieces)
         ];
-        cartDetailList.add(
-            CartDetail(cartList[i].kdProduct, cartList[i].nmProduct, data));
+        cartDetailList.add(CartDetail(
+          cartList[i].kdProduct,
+          cartList[i].nmProduct,
+          data,
+        ));
       } else {
         for (var j = 0; j < cartDetailList.length; j++) {
           if (cartDetailList[j].kdProduct == cartList[i].kdProduct) {
@@ -607,4 +611,128 @@ class TakingOrderVendorController extends GetxController
   RxBool gantikemasanhorizontal = false.obs;
   RxBool servismebelhorizontal = false.obs;
   RxBool gantibaranghorizontal = false.obs;
+  RxString selectedKdProducttarikbarang = "".obs;
+  RxList<ProductData> selectedProducttarikbarang = <ProductData>[].obs;
+  Rx<TextEditingController> qty1tb = TextEditingController().obs;
+  Rx<TextEditingController> qty2tb = TextEditingController().obs;
+  Rx<TextEditingController> qty3tb = TextEditingController().obs;
+  RxString selectedAlasantb = "".obs;
+  RxList<TarikBarangModel> listTarikBarang = <TarikBarangModel>[].obs;
+
+  handleProductSearchTb(String val) {
+    selectedKdProducttarikbarang.value = val;
+    qty1tb.value.text = "0";
+    qty2tb.value.text = "0";
+    qty3tb.value.text = "0";
+    getDetailProductTb(val);
+  }
+
+  getDetailProductTb(String kdProduct) {
+    List<ProductData> list = <ProductData>[];
+    for (var i = 0; i < listProduct.length; i++) {
+      if (listProduct[i].kdProduct == kdProduct) {
+        list.add(listProduct[i]);
+        selectedProducttarikbarang.value = list;
+      }
+    }
+  }
+
+  addToCartTb() {
+    var flag = "null";
+    for (var i = 0; i < listTarikBarang.length; i++) {
+      if (selectedProducttarikbarang[0].kdProduct ==
+          listTarikBarang[i].kdProduct) {
+        flag == i.toString();
+        break;
+      }
+    }
+    if (flag == "null") {
+      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      for (var i = 0;
+          i < selectedProducttarikbarang[0].detailProduct.length;
+          i++) {
+        if (i == 0 &&
+            qty1tb.value.text != "" &&
+            int.parse(qty1tb.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProducttarikbarang[0].kdProduct,
+              selectedProducttarikbarang[0].nmProduct,
+              int.parse(qty1tb.value.text),
+              selectedProducttarikbarang[0].detailProduct[i].satuan));
+        } else if (i == 1 &&
+            qty2tb.value.text != "" &&
+            int.parse(qty2tb.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProducttarikbarang[0].kdProduct,
+              selectedProducttarikbarang[0].nmProduct,
+              int.parse(qty2tb.value.text),
+              selectedProducttarikbarang[0].detailProduct[i].satuan));
+        } else if (i == 2 &&
+            qty3tb.value.text != "" &&
+            int.parse(qty3tb.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProducttarikbarang[0].kdProduct,
+              selectedProducttarikbarang[0].nmProduct,
+              int.parse(qty3tb.value.text),
+              selectedProducttarikbarang[0].detailProduct[i].satuan));
+        }
+      }
+      listTarikBarang.add(TarikBarangModel(
+          selectedProducttarikbarang[0].kdProduct,
+          selectedProducttarikbarang[0].nmProduct,
+          _items,
+          selectedAlasantb.value));
+      selectedKdProducttarikbarang.value = "";
+      selectedAlasantb.value = "";
+      // selectedProducttarikbarang.clear();
+      tarikbarangfield.value.clear();
+      qty1tb.value.clear();
+      qty2tb.value.clear();
+      qty3tb.value.clear();
+    } else {
+      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      for (var i = 0;
+          i < selectedProducttarikbarang[0].detailProduct.length;
+          i++) {
+        if (i == 0 &&
+            qty1tb.value.text != "" &&
+            int.parse(qty1tb.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProducttarikbarang[0].kdProduct,
+              selectedProducttarikbarang[0].nmProduct,
+              int.parse(qty1tb.value.text),
+              selectedProducttarikbarang[0].detailProduct[i].satuan));
+        } else if (i == 1 &&
+            qty2tb.value.text != "" &&
+            int.parse(qty2tb.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProducttarikbarang[0].kdProduct,
+              selectedProducttarikbarang[0].nmProduct,
+              int.parse(qty2tb.value.text),
+              selectedProducttarikbarang[0].detailProduct[i].satuan));
+        } else if (i == 2 &&
+            qty3tb.value.text != "" &&
+            int.parse(qty3tb.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProducttarikbarang[0].kdProduct,
+              selectedProducttarikbarang[0].nmProduct,
+              int.parse(qty3tb.value.text),
+              selectedProducttarikbarang[0].detailProduct[i].satuan));
+        }
+      }
+      listTarikBarang[int.parse(flag)].kdProduct =
+          selectedProducttarikbarang[0].kdProduct;
+      listTarikBarang[int.parse(flag)].nmProduct =
+          selectedProducttarikbarang[0].nmProduct;
+      listTarikBarang[int.parse(flag)].itemOrder = _items;
+      listTarikBarang[int.parse(flag)].alasan = selectedAlasantb.value;
+      selectedKdProducttarikbarang.value = "";
+      selectedAlasantb.value = "";
+      selectedProducttarikbarang.clear();
+      tarikbarangfield.value.clear();
+      qty1tb.value.clear();
+      qty2tb.value.clear();
+      qty3tb.value.clear();
+    }
+  }
 }
