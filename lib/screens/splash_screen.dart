@@ -35,18 +35,20 @@ class SplashScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Image.asset(
-                            "assets/images/logo.png", 
-                            alignment: Alignment.center, 
+                            "assets/images/logo.png",
+                            alignment: Alignment.center,
                             fit: BoxFit.contain,
-                            width: Get.width*0.4,
+                            width: Get.width * 0.4,
                             // width: 250,
                           ),
                           Lottie.asset(
                             'assets/lottie/welcome.json',
-                            width: Get.width*0.5,
+                            width: Get.width * 0.5,
                           ),
                           controller.obx(
-                            onLoading: Lottie.asset('assets/lottie/loading.json', width: 60),
+                            onLoading: Lottie.asset(
+                                'assets/lottie/loading.json',
+                                width: 60),
                             onError: (error) => Column(
                               children: [
                                 ElevatedButton(
@@ -57,12 +59,17 @@ class SplashScreen extends StatelessWidget {
                                     backgroundColor: AppConfig.darkGreen,
                                     padding: const EdgeInsets.all(12),
                                   ),
-                                  child: const Row(
+                                  child: Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    children: [
+                                    children: const [
                                       Icon(Icons.history),
                                       SizedBox(width: 10),
-                                      TextView(headings: "H3", text: Message.retry, fontSize: 16, color: Colors.white, isCapslock: true),
+                                      TextView(
+                                          headings: "H3",
+                                          text: Message.retry,
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                          isCapslock: true),
                                     ],
                                   ),
                                 ),

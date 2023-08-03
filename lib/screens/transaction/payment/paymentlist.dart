@@ -107,7 +107,7 @@ class PaymentList extends StatelessWidget {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.green.shade700),
-                          child: const Stack(
+                          child: Stack(
                             alignment: Alignment.center,
                             children: [
                               Icon(
@@ -133,7 +133,7 @@ class PaymentList extends StatelessWidget {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.red.shade700),
-                          child: const Stack(
+                          child: Stack(
                             alignment: Alignment.center,
                             children: [
                               Icon(

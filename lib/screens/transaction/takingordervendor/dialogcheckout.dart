@@ -56,7 +56,8 @@ class DialogCheckOut extends StatelessWidget {
                       color: AppConfig.mainCyan,
                       size:
                           16), // Use any desired icon from flutter_icons package
-                  const SizedBox(width: 8), // Adjust the space between icon and text
+                  const SizedBox(
+                      width: 8), // Adjust the space between icon and text
                   Obx(
                     () => Expanded(
                       child: DropdownButtonHideUnderline(
@@ -162,9 +163,9 @@ class DialogCheckOut extends StatelessWidget {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.green.shade700),
-                          child: const Stack(
+                          child: Stack(
                             alignment: Alignment.center,
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.manage_search,
                                 color: Colors.white,

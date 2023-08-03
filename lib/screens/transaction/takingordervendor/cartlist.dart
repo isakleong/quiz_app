@@ -69,7 +69,8 @@ class CartList extends StatelessWidget {
                               children: [
                                 data.itemOrder.isNotEmpty
                                     ? Padding(
-                                        padding: const EdgeInsets.only(left: 0.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 0.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
@@ -78,7 +79,8 @@ class CartList extends StatelessWidget {
                                     : Container(),
                                 data.itemOrder.length > 1
                                     ? Padding(
-                                        padding: const EdgeInsets.only(left: 5.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 5.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
@@ -87,7 +89,8 @@ class CartList extends StatelessWidget {
                                     : Container(),
                                 data.itemOrder.length > 2
                                     ? Padding(
-                                        padding: const EdgeInsets.only(left: 5.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 5.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
@@ -108,8 +111,9 @@ class CartList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       ChipsItem(
-                        satuan:
-                            _takingOrderVendorController.formatNumber(_takingOrderVendorController.countTotalDetail(data)),
+                        satuan: _takingOrderVendorController.formatNumber(
+                            _takingOrderVendorController
+                                .countTotalDetail(data)),
                         color: const Color(0xFF8B4513),
                         fontSize: 12,
                       ),
@@ -126,9 +130,9 @@ class CartList extends StatelessWidget {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.green.shade700),
-                          child: const Stack(
+                          child: Stack(
                             alignment: Alignment.center,
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.edit,
                                 color: Colors.white,
@@ -150,9 +154,9 @@ class CartList extends StatelessWidget {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.red.shade700),
-                          child: const Stack(
+                          child: Stack(
                             alignment: Alignment.center,
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.delete_forever,
                                 color: Colors.white,

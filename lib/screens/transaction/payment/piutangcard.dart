@@ -45,7 +45,8 @@ class PiutangCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const TextView(headings: "H2", text: "Pembayaran", fontSize: 14),
+                    const TextView(
+                        headings: "H2", text: "Pembayaran", fontSize: 14),
                     const SizedBox(
                       height: 5,
                     ),
@@ -106,7 +107,7 @@ class PiutangCard extends StatelessWidget {
                   height: 50,
                   fit: BoxFit.cover,
                 ),
-                const Column(
+                Column(
                   children: [
                     TextView(
                       text: "20,752,392",
@@ -131,7 +132,7 @@ class PiutangCard extends StatelessWidget {
                   height: 50,
                   fit: BoxFit.cover,
                 ),
-                const Column(
+                Column(
                   children: [
                     TextView(
                       text: "20,752,392",

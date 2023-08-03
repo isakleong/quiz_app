@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart' hide RefreshIndicator, RefreshIndicatorState;
+import 'package:flutter/material.dart'
+    hide RefreshIndicator, RefreshIndicatorState;
 import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,17 +14,20 @@ import 'package:sfa_tools/models/quiz_history.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:shimmer/shimmer.dart';
 
-class HistoryPage extends GetView<HistoryController>  {
+class HistoryPage extends GetView<HistoryController> {
   HistoryPage({super.key});
 
   final SplashscreenController splashscreenController = Get.find();
 
   final HistoryController historyController = Get.find();
 
-  final RefreshController _refreshController = RefreshController(initialRefresh: false);
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
-  void _onRefresh() async{
-    await historyController.getHistoryData(splashscreenController.salesIdParams.value, historyController.selectedFilter);
+  void _onRefresh() async {
+    await historyController.getHistoryData(
+        splashscreenController.salesIdParams.value,
+        historyController.selectedFilter);
     historyController.filterQuizHistoryModel.refresh();
     _refreshController.refreshCompleted();
   }
@@ -41,8 +45,12 @@ class HistoryPage extends GetView<HistoryController>  {
           gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [AppConfig.lightGrayishGreen, AppConfig.grayishGreen, AppConfig.softGreen, AppConfig.softCyan]
-          ),
+              colors: [
+                AppConfig.lightGrayishGreen,
+                AppConfig.grayishGreen,
+                AppConfig.softGreen,
+                AppConfig.softCyan
+              ]),
         ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -51,7 +59,8 @@ class HistoryPage extends GetView<HistoryController>  {
               () => SmartRefresher(
                 physics: const BouncingScrollPhysics(),
                 enablePullDown: controller.isLoading.value ? false : true,
-                header: MaterialClassicHeader(color: AppConfig.mainGreen, distance: 55),
+                header: MaterialClassicHeader(
+                    color: AppConfig.mainGreen, distance: 55),
                 controller: _refreshController,
                 onRefresh: _onRefresh,
                 child: Column(
@@ -72,30 +81,40 @@ class HistoryPage extends GetView<HistoryController>  {
                               shape: const CircleBorder(),
                               padding: const EdgeInsets.all(16),
                             ),
-                            child: const Icon(FontAwesomeIcons.arrowLeft, size: 25, color: Colors.white),
+                            child: const Icon(FontAwesomeIcons.arrowLeft,
+                                size: 25, color: Colors.white),
                           ),
                           Obx(
                             () => Visibility(
-                              maintainSize: true, 
+                              maintainSize: true,
                               maintainAnimation: true,
                               maintainState: true,
-                              visible: controller.isLoading.value ? false : true,
+                              visible:
+                                  controller.isLoading.value ? false : true,
                               child: ElevatedButton(
-                                onPressed: controller.isLoading.value ? null : () async {
-                                  await historyController.getHistoryData(splashscreenController.salesIdParams.value, historyController.selectedFilter);
-                                },
+                                onPressed: controller.isLoading.value
+                                    ? null
+                                    : () async {
+                                        await historyController.getHistoryData(
+                                            splashscreenController
+                                                .salesIdParams.value,
+                                            historyController.selectedFilter);
+                                      },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppConfig.darkGreen,
                                   padding: const EdgeInsets.all(12),
                                   shape: const StadiumBorder(),
                                   elevation: 5,
                                 ),
-                                child: const Row(
+                                child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     FaIcon(FontAwesomeIcons.arrowsRotate),
                                     SizedBox(width: 10),
-                                    TextView(headings: "H3", text: "Refresh", color: Colors.white),
+                                    TextView(
+                                        headings: "H3",
+                                        text: "Refresh",
+                                        color: Colors.white),
                                   ],
                                 ),
                               ),
@@ -104,40 +123,49 @@ class HistoryPage extends GetView<HistoryController>  {
                         ],
                       ),
                     ),
-                    splashscreenController.salesIdParams.value.contains("C100") ? 
-                    Center(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) => Obx(() => ToggleButtons(
-                          constraints: BoxConstraints.expand(width: (constraints.maxWidth*0.8)/3),
-                          fillColor: AppConfig.softGreen,
-                          disabledColor: AppConfig.softGreen,
-                          borderColor: AppConfig.darkGreen,
-                          disabledBorderColor: AppConfig.darkGreen,
-                          borderWidth: 2,
-                          renderBorder: true,
-                          selectedBorderColor: AppConfig.darkGreen,
-                          borderRadius: BorderRadius.circular(30),
-                          isSelected: historyController.selectedFilter.toList(),
-                          onPressed: controller.isLoading.value ? null : (int i) async {
-                            await historyController.applyFilter(i);
-                            historyController.filterQuizHistoryModel.refresh();
-                          },
-                          children: const <Widget>[
-                            TextView(headings: "H3", text: "BM"),
-                            TextView(headings: "H3", text: "SPV"),
-                            TextView(headings: "H3", text: "Sales"),
-                          ],
-                        )),
-                      ),
-                    )
-                    :
-                    Container(),
+                    splashscreenController.salesIdParams.value.contains("C100")
+                        ? Center(
+                            child: LayoutBuilder(
+                              builder: (context, constraints) => Obx(() =>
+                                  ToggleButtons(
+                                    constraints: BoxConstraints.expand(
+                                        width:
+                                            (constraints.maxWidth * 0.8) / 3),
+                                    fillColor: AppConfig.softGreen,
+                                    disabledColor: AppConfig.softGreen,
+                                    borderColor: AppConfig.darkGreen,
+                                    disabledBorderColor: AppConfig.darkGreen,
+                                    borderWidth: 2,
+                                    renderBorder: true,
+                                    selectedBorderColor: AppConfig.darkGreen,
+                                    borderRadius: BorderRadius.circular(30),
+                                    isSelected: historyController.selectedFilter
+                                        .toList(),
+                                    onPressed: controller.isLoading.value
+                                        ? null
+                                        : (int i) async {
+                                            await historyController
+                                                .applyFilter(i);
+                                            historyController
+                                                .filterQuizHistoryModel
+                                                .refresh();
+                                          },
+                                    children: const <Widget>[
+                                      TextView(headings: "H3", text: "BM"),
+                                      TextView(headings: "H3", text: "SPV"),
+                                      TextView(headings: "H3", text: "Sales"),
+                                    ],
+                                  )),
+                            ),
+                          )
+                        : Container(),
                     Expanded(
                       child: Stack(
                         children: [
                           controller.obx(
                             onLoading: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 10),
                               child: SizedBox(
                                 width: double.infinity,
                                 height: double.infinity,
@@ -149,13 +177,15 @@ class HistoryPage extends GetView<HistoryController>  {
                                     itemCount: 15,
                                     itemBuilder: (context, index) {
                                       return Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 15),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 15),
                                         child: Card(
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(30),
-                                        ),
-                                        child: const SizedBox(height: 160),
+                                          elevation: 3,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: const SizedBox(height: 160),
                                         ),
                                       );
                                     },
@@ -167,9 +197,11 @@ class HistoryPage extends GetView<HistoryController>  {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
+                                  Lottie.asset('assets/lottie/empty.json',
+                                      width: Get.width * 0.45),
                                   const SizedBox(height: 30),
-                                  const TextView(headings: "H3", text: Message.emptyData)
+                                  const TextView(
+                                      headings: "H3", text: Message.emptyData)
                                 ],
                               ),
                             ),
@@ -179,27 +211,40 @@ class HistoryPage extends GetView<HistoryController>  {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Lottie.asset('assets/lottie/error.json', width: Get.width*0.5),
+                                    Lottie.asset('assets/lottie/error.json',
+                                        width: Get.width * 0.5),
                                     const SizedBox(height: 15),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                                      child: TextView(headings: "H4", text: "Error :\n${controller.errorMessage.value}", textAlign: TextAlign.start),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30),
+                                      child: TextView(
+                                          headings: "H4",
+                                          text:
+                                              "Error :\n${controller.errorMessage.value}",
+                                          textAlign: TextAlign.start),
                                     ),
                                     const SizedBox(height: 30),
                                     ElevatedButton(
                                       onPressed: () async {
-                                        await historyController.getHistoryData(splashscreenController.salesIdParams.value, historyController.selectedFilter);
+                                        await historyController.getHistoryData(
+                                            splashscreenController
+                                                .salesIdParams.value,
+                                            historyController.selectedFilter);
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppConfig.darkGreen,
                                         padding: const EdgeInsets.all(12),
                                       ),
-                                      child: const Row(
+                                      child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Icon(Icons.history),
                                           SizedBox(width: 10),
-                                          TextView(headings: "H3", text: Message.retry, color: Colors.white, isCapslock: true)
+                                          TextView(
+                                              headings: "H3",
+                                              text: Message.retry,
+                                              color: Colors.white,
+                                              isCapslock: true)
                                         ],
                                       ),
                                     ),
@@ -208,27 +253,36 @@ class HistoryPage extends GetView<HistoryController>  {
                               ),
                             ),
                             (state) => Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                              child: Obx(() => 
-                              historyController.filterQuizHistoryModel.isNotEmpty ?
-                              ListView.builder(
-                                physics: const BouncingScrollPhysics(),
-                                itemCount: historyController.filterQuizHistoryModel.length,
-                                itemBuilder: (BuildContext context, int i) {
-                                  return historyWidget(historyController.filterQuizHistoryModel, i);
-                                }
-                              )
-                              :
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Lottie.asset('assets/lottie/empty.json', width: Get.width*0.45),
-                                    const SizedBox(height: 30),
-                                    const TextView(headings: "H3", text: Message.emptyData),
-                                  ],
-                                ),
-                              )),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 10),
+                              child: Obx(() => historyController
+                                      .filterQuizHistoryModel.isNotEmpty
+                                  ? ListView.builder(
+                                      physics: const BouncingScrollPhysics(),
+                                      itemCount: historyController
+                                          .filterQuizHistoryModel.length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        return historyWidget(
+                                            historyController
+                                                .filterQuizHistoryModel,
+                                            i);
+                                      })
+                                  : Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Lottie.asset(
+                                              'assets/lottie/empty.json',
+                                              width: Get.width * 0.45),
+                                          const SizedBox(height: 30),
+                                          const TextView(
+                                              headings: "H3",
+                                              text: Message.emptyData),
+                                        ],
+                                      ),
+                                    )),
                             ),
                           ),
                         ],
@@ -245,7 +299,7 @@ class HistoryPage extends GetView<HistoryController>  {
   }
 }
 
-Widget historyWidget(List<QuizHistory> quizHistoryList , int i) {
+Widget historyWidget(List<QuizHistory> quizHistoryList, int i) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 15),
     child: Card(
@@ -257,86 +311,94 @@ Widget historyWidget(List<QuizHistory> quizHistoryList , int i) {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           gradient: LinearGradient(
-            colors: quizHistoryList[i].passed == "1" ? 
-            [AppConfig.mainCyan, AppConfig.softCyan]
-            :
-            [AppConfig.mainRed, AppConfig.softRed],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight
+              colors: quizHistoryList[i].passed == "1"
+                  ? [AppConfig.mainCyan, AppConfig.softCyan]
+                  : [AppConfig.mainRed, AppConfig.softRed],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight),
+        ),
+        child: Stack(children: [
+          Positioned(
+            right: 0,
+            bottom: 0,
+            top: 0,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CustomPaint(
+                    size: Size(Get.width * 0.20, Get.height),
+                    painter: quizHistoryList[i].passed == "1"
+                        ? CustomCardShapePainter(
+                            30.0, AppConfig.mainCyan, AppConfig.softCyan)
+                        : CustomCardShapePainter(
+                            30.0, AppConfig.mainRed, AppConfig.softRed)),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    quizHistoryList[i].passed == "1"
+                        ? Icons.check
+                        : Icons.close,
+                    color: quizHistoryList[i].passed == "1"
+                        ? AppConfig.mainGreen
+                        : Colors.red,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              right: 0,
-              bottom: 0,
-              top: 0,
-              child: Stack(
-                alignment: Alignment.center,
-                children:[
-                  CustomPaint(
-                    size: Size(Get.width*0.20, Get.height),
-                    painter: quizHistoryList[i].passed == "1" ? 
-                    CustomCardShapePainter(30.0, AppConfig.mainCyan, AppConfig.softCyan)
-                    :
-                    CustomCardShapePainter(30.0, AppConfig.mainRed, AppConfig.softRed)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextView(
+                          headings: "H3",
+                          text: quizHistoryList[i].salesID,
+                          color: Colors.white,
+                          isAutoSize: true,
+                          textAlign: TextAlign.start),
+                      const SizedBox(height: 20),
+                      TextView(
+                          headings: "H3",
+                          text: quizHistoryList[i].name,
+                          color: Colors.white,
+                          isAutoSize: true,
+                          textAlign: TextAlign.start),
+                      const SizedBox(height: 20),
+                      TextView(
+                          headings: "H3",
+                          text: quizHistoryList[i].tanggal,
+                          color: Colors.white,
+                          isAutoSize: true,
+                          textAlign: TextAlign.start),
+                    ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      quizHistoryList[i].passed == "1" ? 
-                      Icons.check
-                      :
-                      Icons.close,
-                      color: quizHistoryList[i].passed == "1" ? 
-                      AppConfig.mainGreen
-                      :
-                      Colors.red,
-                    ),
+                ),
+                const Expanded(
+                  child: TextView(
+                    headings: "H2",
+                    // text: historyController.quizHistoryModel[i].passed == "1" ? "lulus" : "tidak lulus",
+                    text: '',
+                    fontSize: 16,
+                    color: Colors.white,
+                    isCapslock: true,
+                    textAlign: TextAlign.start,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextView(headings: "H3", text: quizHistoryList[i].salesID, color: Colors.white, isAutoSize: true, textAlign: TextAlign.start),
-                        const SizedBox(height: 20),
-                        TextView(headings: "H3", text: quizHistoryList[i].name, color: Colors.white, isAutoSize: true, textAlign: TextAlign.start),
-                        const SizedBox(height: 20),
-                        TextView(headings: "H3", text: quizHistoryList[i].tanggal, color: Colors.white, isAutoSize: true, textAlign: TextAlign.start),
-                      ],
-                    ),
-                  ),
-                  const Expanded(
-                    child: TextView(
-                      headings: "H2",
-                      // text: historyController.quizHistoryModel[i].passed == "1" ? "lulus" : "tidak lulus",
-                      text: '',
-                      fontSize: 16,
-                      color: Colors.white,
-                      isCapslock: true,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ]
-        ),
+          ),
+        ]),
       ),
     ),
-  
   );
 }
 
@@ -352,14 +414,17 @@ class CustomCardShapePainter extends CustomPainter {
     var radius = 30.0;
 
     var paint = Paint();
-    paint.shader = ui.Gradient.linear(const Offset(0,0), Offset(size.width, size.height), [
-      HSLColor.fromColor(startColor).withLightness(0.9).toColor(), endColor
+    paint.shader = ui.Gradient.linear(
+        const Offset(0, 0), Offset(size.width, size.height), [
+      HSLColor.fromColor(startColor).withLightness(0.9).toColor(),
+      endColor
     ]);
 
     var path = Path()
       ..moveTo(0, size.height)
       ..lineTo(size.width - radius, size.height)
-      ..quadraticBezierTo(size.width, size.height, size.width, size.height-radius)
+      ..quadraticBezierTo(
+          size.width, size.height, size.width, size.height - radius)
       ..lineTo(size.width, radius)
       ..quadraticBezierTo(size.width, 0, size.width - radius, 0)
       ..lineTo(size.width - 1.5 * radius, 0)
