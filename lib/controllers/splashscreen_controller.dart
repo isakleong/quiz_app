@@ -20,7 +20,7 @@ import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-class SplashscreenController extends GetxController with StateMixin {
+class SplashscreenController extends GetxController with StateMixin implements WidgetsBindingObserver {
   var errorMessage = "".obs;
 
   var appName = "".obs;
@@ -28,16 +28,38 @@ class SplashscreenController extends GetxController with StateMixin {
   var moduleList = <Module>[].obs;
   var isNeedUpdate = false.obs;
 
+  //permission data
+  var cntStoragePermissionDeny = 0.obs;
+  var isOpenSettings = false.obs;
+
   //parameter data
   var salesIdParams = "".obs;
   var customerIdParams = "".obs;
   var isCheckInParams = "".obs;
 
   @override
+  void onInit() {
+    super.onInit();
+    // Add the controller as an observer when it's initialized
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if(state == AppLifecycleState.resumed && isOpenSettings.value) {
+      isOpenSettings(false);
+      await syncAppsReady('STORAGE');
+    }
+  }
+
+  @override
   void onReady() async {
     super.onReady();
     if(await getPermissionStatus('STORAGE')) {
       if (await getPermissionStatus('EXTERNAL STORAGE')) {
+        //reset permanent deny permission flag
+        cntStoragePermissionDeny.value = 0;
+
         await getParameterData();
         await getModuleData();
       } else {
@@ -95,24 +117,30 @@ class SplashscreenController extends GetxController with StateMixin {
     if (type == 'STORAGE') {
       if (await checkAppsPermission('STORAGE')) {
         if (sdkInt >= 30) {
-          openPermissionRequestDialog('EXTERNAL STORAGE');
+          var status = await Permission.manageExternalStorage.status;
+          if(status != PermissionStatus.granted) {
+            openPermissionRequestDialog('EXTERNAL STORAGE');
+          } else {
+            await getParameterData();
+            await getModuleData();
+          }
         } else {
           syncAppsReady('EXTERNAL STORAGE');
         }
       } else {
-        syncAppsReady('STORAGE');
+        openPermissionRequestDialog('STORAGE');
       }
     } else if (type == 'EXTERNAL STORAGE') {
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
         await getParameterData();
         await getModuleData();
       } else {
-        syncAppsReady('EXTERNAL STORAGE');
+        openPermissionRequestDialog('EXTERNAL STORAGE');
       }
     }
   }
 
-  openPermissionRequestDialog(String type) async {
+  openPermissionRequestDialog(String type, {bool? actionButton}) async {
     var androidInfo = await DeviceInfoPlugin().androidInfo;
     var sdkInt = androidInfo.version.sdkInt;
 
@@ -132,26 +160,89 @@ class SplashscreenController extends GetxController with StateMixin {
                 ],
               ),
             ),
-            // RichText(
-            //   textAlign: TextAlign.start,
-            //   text: TextSpan(
-            //     text: 'Jika tombol Allow tidak muncul, maka:\n ',
-            //     style: const TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
-            //     children: <TextSpan>[
-            //       sdkInt < 30 ?
-            //       const TextSpan(text: '1.  Tekan Permissions.\n2.  Aktifkan Storage.', style: TextStyle(fontFamily: "Poppins"))
-            //       :
-            //       const TextSpan(text: '1.  Tekan Permissions.\n2.  Tekan (Storage) / (Files and Media)\n3.  Tekan Allow access to media only.', style: TextStyle(fontFamily: "Poppins"))
-            //     ],
-            //   ),
-            // ),
+            const SizedBox(height: 20),
+            RichText(
+              textAlign: TextAlign.start,
+              text: TextSpan(
+                text: 'Jika tombol Allow tidak muncul, ikuti langkah berikut:\n ',
+                style: const TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+                children: <TextSpan>[
+                  sdkInt == 30 ?
+                  const TextSpan(
+                    text: '1.  Tekan ', 
+                    style: TextStyle(fontFamily: "Poppins"),
+                    children: [
+                      TextSpan(text: 'Permissions.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '2.  Tekan ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Storage.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '3.  Tekan ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Allow access to media only.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '4.  Tekan tombol ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Kembali (Back).\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                    ]
+                  )
+                  :
+                  sdkInt == 31 || sdkInt == 32 ?
+                  const TextSpan(
+                    text: '1.  Tekan ', 
+                    style: TextStyle(fontFamily: "Poppins"),
+                    children: [
+                      TextSpan(text: 'Permissions.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '2.  Tekan ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Files and Media.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '3.  Tekan ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Allow access to media only.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '4.  Tekan tombol ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Kembali (Back).\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                    ]
+                  )
+                  :
+                  sdkInt >= 33 ?
+                  const TextSpan(
+                    text: '1.  Tekan ', 
+                    style: TextStyle(fontFamily: "Poppins"),
+                    children: [
+                      TextSpan(text: 'Permissions.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '2.  Tekan ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Photos and videos.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '3.  Tekan ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Allow.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '4.  Tekan tombol ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Kembali (Back).\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                    ]
+                  )
+                  :
+                  //below android 30 (should not happen because all device installed in office already os 11 or higher)
+                  const TextSpan(
+                    text: '1.  Tekan ', 
+                    style: TextStyle(fontFamily: "Poppins"),
+                    children: [
+                      TextSpan(text: 'Permissions.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '2.  Tekan ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Storage.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '3.  Aktifkan atau Hidupkan ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Storage.\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                      TextSpan(text: '4.  Tekan tombol ', style: TextStyle(fontFamily: "Poppins")),
+                      TextSpan(text: 'Kembali (Back).\n', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+                    ]
+                  )
+                ],
+              ),
+            ),
           ],
         ),
         isAnimated: true,
         leftBtnMsg: "Ok",
         leftActionClick: () async {
-          Get.back();
-          await syncAppsReady('STORAGE');
+          if(cntStoragePermissionDeny > 0) {
+            Get.back();
+            await openAppSettings();
+            isOpenSettings(true);
+            // await syncAppsReady('STORAGE');
+          } else {
+            Get.back();
+            await syncAppsReady('STORAGE');
+          }
         }
       );
     } else if(type == 'EXTERNAL STORAGE') {
@@ -187,12 +278,24 @@ class SplashscreenController extends GetxController with StateMixin {
     var status;
     if (type == 'STORAGE') {
       if (sdkInt < 33) {
-        status = await Permission.storage.request();
+        if(cntStoragePermissionDeny.value > 0) {
+          status = await Permission.storage.status;
+        } else {
+          status = await Permission.storage.request();
+        }
       } else {
         //if you need the access for both photos and videos,
         //you can use either Permission.photos or Permission.video, you don’t need both of them,
         //because in Granular Media the access is granted for both media types.
-        status = await Permission.photos.request();
+        if(cntStoragePermissionDeny.value > 0) {
+          var statusPhoto = await Permission.photos.status;
+          var statusVideo = await Permission.videos.status;
+          if(statusPhoto == PermissionStatus.granted || statusVideo == PermissionStatus.granted) {
+            status = PermissionStatus.granted;
+          }
+        } else {
+          status = await Permission.photos.request();
+        }
       }
     } else if (type == 'INSTALLS PACKAGES') {
       if (sdkInt >= 26) {
@@ -210,6 +313,7 @@ class SplashscreenController extends GetxController with StateMixin {
 
     if (status != PermissionStatus.granted) {
       if (status == PermissionStatus.denied) {
+        cntStoragePermissionDeny.value ++;
         return status == PermissionStatus.granted;
       } else if (status == PermissionStatus.permanentlyDenied) {
         if(type == 'STORAGE') {
@@ -218,14 +322,7 @@ class SplashscreenController extends GetxController with StateMixin {
           status = await Permission.manageExternalStorage.status;
         }
 
-        while (status != PermissionStatus.granted) {
-          await openAppSettings();
-          if(type == 'STORAGE') {
-            status = await Permission.storage.status;
-          } else if (type == 'EXTERNAL STORAGE') {
-            status = await Permission.manageExternalStorage.status;
-          }
-        }
+        cntStoragePermissionDeny.value ++;
 
         return status == PermissionStatus.granted;
       }
@@ -243,6 +340,8 @@ class SplashscreenController extends GetxController with StateMixin {
 
     if (isConnected) {
       moduleList.clear();
+
+      salesIdParams.value = '00AC1A0103';
 
       if (salesIdParams.value != "") {
         try {
@@ -524,5 +623,38 @@ class SplashscreenController extends GetxController with StateMixin {
         }
       }
     }
+  }
+  
+  @override
+  void didChangeAccessibilityFeatures() {}
+  
+  @override
+  void didChangeLocales(List<Locale>? locales) {}
+  
+  @override
+  void didChangeMetrics() {}
+  
+  @override
+  void didChangePlatformBrightness() {}
+  
+  @override
+  void didChangeTextScaleFactor() {}
+  
+  @override
+  void didHaveMemoryPressure() {}
+  
+  @override
+  Future<bool> didPopRoute() {
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> didPushRoute(String route) {
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> didPushRouteInformation(RouteInformation routeInformation) {
+    throw UnimplementedError();
   }
 }
