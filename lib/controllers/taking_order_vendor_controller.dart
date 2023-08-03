@@ -640,12 +640,15 @@ class TakingOrderVendorController extends GetxController
   addToCartTb() {
     var flag = "null";
     for (var i = 0; i < listTarikBarang.length; i++) {
+      print(listTarikBarang[i].kdProduct);
       if (selectedProducttarikbarang[0].kdProduct ==
           listTarikBarang[i].kdProduct) {
-        flag == i.toString();
+        print("same");
+        flag = i.toString();
         break;
       }
     }
+    print("ini isi flag ${flag}");
     if (flag == "null") {
       List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
       for (var i = 0;
@@ -690,6 +693,7 @@ class TakingOrderVendorController extends GetxController
       qty2tb.value.clear();
       qty3tb.value.clear();
     } else {
+      print("already added");
       List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
       for (var i = 0;
           i < selectedProducttarikbarang[0].detailProduct.length;
@@ -733,6 +737,45 @@ class TakingOrderVendorController extends GetxController
       qty1tb.value.clear();
       qty2tb.value.clear();
       qty3tb.value.clear();
+    }
+  }
+
+  handleDeleteTarikBarangItem(TarikBarangModel data) {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogDelete(
+            nmProduct: data.nmProduct,
+            ontap: () async {
+              await deleteTarikBarangItem(data);
+              Get.back();
+            })));
+  }
+
+  handleEditTarikBarangItem(TarikBarangModel data) {
+    selectedKdProducttarikbarang.value = data.kdProduct.toString();
+    qty1tb.value.text = '0';
+    qty2tb.value.text = '0';
+    qty3tb.value.text = '0';
+    selectedAlasantb.value = data.alasan;
+    for (var i = 0; i < data.itemOrder.length; i++) {
+      if (i == 0) {
+        qty1tb.value.text = data.itemOrder[i].Qty.toString();
+      } else if (i == 1) {
+        qty2tb.value.text = data.itemOrder[i].Qty.toString();
+      } else if (i == 2) {
+        qty3tb.value.text = data.itemOrder[i].Qty.toString();
+      }
+    }
+    getDetailProductTb(data.kdProduct);
+  }
+
+  deleteTarikBarangItem(TarikBarangModel data) {
+    listTarikBarang
+        .removeWhere((element) => element.kdProduct == data.kdProduct);
+    if (listTarikBarang.isEmpty) {
+      tarikbaranghorizontal.value = false;
     }
   }
 }

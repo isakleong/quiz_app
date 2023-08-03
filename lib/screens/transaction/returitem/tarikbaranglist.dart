@@ -6,12 +6,14 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/models/tarikbarangmodel.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
+import '../../../controllers/taking_order_vendor_controller.dart';
 import '../takingordervendor/chipsitem.dart';
 
 class TarikBarangList extends StatelessWidget {
   String idx;
   TarikBarangModel data;
   TarikBarangList({super.key, required this.idx, required this.data});
+  final TakingOrderVendorController _takingOrderVendorController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +110,8 @@ class TarikBarangList extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          // _takingOrderVendorController.handleEditItem(data);
+                          _takingOrderVendorController
+                              .handleEditTarikBarangItem(data);
                         },
                         child: Container(
                           width: 40,
@@ -132,7 +135,8 @@ class TarikBarangList extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          // _takingOrderVendorController.handleDeleteItem(data);
+                          _takingOrderVendorController
+                              .handleDeleteTarikBarangItem(data);
                         },
                         child: Container(
                           width: 40,
