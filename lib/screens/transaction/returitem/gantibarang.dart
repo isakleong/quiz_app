@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/screens/transaction/returitem/noinputretur.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 class GantiBarang extends StatelessWidget {
@@ -12,8 +13,7 @@ class GantiBarang extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding:
-              EdgeInsets.only(left: 0.05 * Get.width, top: 0.02 * Get.height),
+          padding: EdgeInsets.only(top: 0.02 * Get.height),
           child: Container(
             width: 0.9 * Get.width,
             height: 0.02 * Get.height,
@@ -21,7 +21,14 @@ class GantiBarang extends StatelessWidget {
                 BoxDecoration(border: Border.all(width: 1, color: Colors.grey)),
           ),
         ),
-        TextView(text: "Ganti Barang"),
+        SizedBox(
+          height: 0.02 * Get.height,
+        ),
+        NoInputRetur(
+            image: 'assets/images/returgantibarang.png',
+            title: "Belum Ada Produk Diganti",
+            description:
+                "Anda dapat mulai mencari produk yang akan diganti dan menambahkannya ke dalam keranjang.")
       ],
     );
   }
