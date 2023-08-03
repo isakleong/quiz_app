@@ -32,6 +32,7 @@ dependencies:
   http: ^0.13.5
   dropdown_textfield: ^1.0.8
   persistent_bottom_nav_bar: ^5.0.2
+  flutter_typeahead: ^4.3.1 #there is bug for version below 4.3.2 change "maybeOf" to "of"
 
 dev_dependencies:
   flutter_test:

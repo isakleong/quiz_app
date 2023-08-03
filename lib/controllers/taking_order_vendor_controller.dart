@@ -597,4 +597,14 @@ class TakingOrderVendorController extends GetxController
   //for retur page
   RxList<bool> selectedsegment = [true, false, false, false, false].obs;
   RxInt indexSegment = 0.obs;
+  Rx<TextEditingController> tarikbarangfield = TextEditingController().obs;
+  Rx<TextEditingController> tukarwarnafield = TextEditingController().obs;
+  Rx<TextEditingController> gantikemasanfield = TextEditingController().obs;
+  Rx<TextEditingController> servismebelfield = TextEditingController().obs;
+  Rx<TextEditingController> gantibarangfield = TextEditingController().obs;
+  RxBool tukarwarnahorizontal = false.obs;
+  RxBool tarikbaranghorizontal = false.obs;
+  RxBool gantikemasanhorizontal = false.obs;
+  RxBool servismebelhorizontal = false.obs;
+  RxBool gantibaranghorizontal = false.obs;
 }
