@@ -16,12 +16,12 @@ class DialogCheckoutGb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: Get.width * 0.8,
-      height: 0.6 * Get.height,
+      width: Get.width * 0.9,
+      height: 0.85 * Get.height,
       child: Stack(
         children: [
           Padding(
-            padding: EdgeInsets.only(bottom: 10),
+            padding: EdgeInsets.only(bottom: 0.02 * Get.height),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Row(

@@ -631,11 +631,13 @@ class TakingOrderVendorController extends GetxController
   RxString selectedKdProductgantikemasan = "".obs;
   RxString selectedKdProductservismebel = "".obs;
   RxString selectedKdProductgantibarang = "".obs;
+  RxString selectedKdProductTukarWarna = "".obs;
   //
   RxList<ProductData> selectedProducttarikbarang = <ProductData>[].obs;
   RxList<ProductData> selectedProductgantikemasan = <ProductData>[].obs;
   RxList<ProductData> selectedProductservismebel = <ProductData>[].obs;
   RxList<ProductData> selectedProductgantibarang = <ProductData>[].obs;
+  RxList<ProductData> selectedProductTukarWarna = <ProductData>[].obs;
   //
   Rx<TextEditingController> qty1tb = TextEditingController().obs;
   Rx<TextEditingController> qty2tb = TextEditingController().obs;
@@ -649,6 +651,9 @@ class TakingOrderVendorController extends GetxController
   Rx<TextEditingController> qty1gb = TextEditingController().obs;
   Rx<TextEditingController> qty2gb = TextEditingController().obs;
   Rx<TextEditingController> qty3gb = TextEditingController().obs;
+  Rx<TextEditingController> qty1tw = TextEditingController().obs;
+  Rx<TextEditingController> qty2tw = TextEditingController().obs;
+  Rx<TextEditingController> qty3tw = TextEditingController().obs;
   //
   RxString selectedAlasantb = "".obs;
   RxString selectedAlasangk = "".obs;
@@ -657,6 +662,7 @@ class TakingOrderVendorController extends GetxController
   RxList<TarikBarangModel> listgantikemasan = <TarikBarangModel>[].obs;
   RxList<TarikBarangModel> listServisMebel = <TarikBarangModel>[].obs;
   RxList<TarikBarangModel> listGantiBarang = <TarikBarangModel>[].obs;
+  RxList<TarikBarangModel> listTukarWarna = <TarikBarangModel>[].obs;
 
   handleProductSearchTb(String val) async {
     selectedKdProducttarikbarang.value = val;
@@ -728,6 +734,23 @@ class TakingOrderVendorController extends GetxController
     }
   }
 
+  handleProductSearchTw(String val) async {
+    selectedKdProductTukarWarna.value = val;
+    qty1tw.value.text = "0";
+    qty2tw.value.text = "0";
+    qty3tw.value.text = "0";
+    if (listTukarWarna.isNotEmpty &&
+        listTukarWarna.any((data) => data.kdProduct == val)) {
+      for (var i = 0; i < listTukarWarna.length; i++) {
+        if (val == listTukarWarna[i].kdProduct) {
+          handleEditTukarWarnaItem(listTukarWarna[i]);
+        }
+      }
+    } else {
+      await getDetailProductTw(val);
+    }
+  }
+
   getDetailProductGk(String kdProduct) {
     List<ProductData> list = <ProductData>[];
     for (var i = 0; i < listProduct.length; i++) {
@@ -764,6 +787,16 @@ class TakingOrderVendorController extends GetxController
       if (listProduct[i].kdProduct == kdProduct) {
         list.add(listProduct[i]);
         selectedProductgantibarang.value = list;
+      }
+    }
+  }
+
+  getDetailProductTw(String kdProduct) {
+    List<ProductData> list = <ProductData>[];
+    for (var i = 0; i < listProduct.length; i++) {
+      if (listProduct[i].kdProduct == kdProduct) {
+        list.add(listProduct[i]);
+        selectedProductTukarWarna.value = list;
       }
     }
   }
@@ -888,6 +921,36 @@ class TakingOrderVendorController extends GetxController
     }
 
     getDetailProductGb(data.kdProduct);
+  }
+
+  handleEditTukarWarnaItem(TarikBarangModel data) {
+    selectedKdProductTukarWarna.value = data.kdProduct.toString();
+    qty1tw.value.text = '0';
+    qty2tw.value.text = '0';
+    qty3tw.value.text = '0';
+    for (var k = 0; k < listProduct.length; k++) {
+      if (listProduct[k].kdProduct == data.kdProduct) {
+        for (var i = 0; i < data.itemOrder.length; i++) {
+          for (var j = 0; j < listProduct[k].detailProduct.length; j++) {
+            if (j == 0 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.itemOrder[i].Satuan) {
+              qty1tw.value.text = data.itemOrder[i].Qty.toString();
+            } else if (j == 1 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.itemOrder[i].Satuan) {
+              qty2tw.value.text = data.itemOrder[i].Qty.toString();
+            } else if (j == 2 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.itemOrder[i].Satuan) {
+              qty3tw.value.text = data.itemOrder[i].Qty.toString();
+            }
+          }
+        }
+      }
+    }
+
+    getDetailProductTw(data.kdProduct);
   }
 
   addToCartTb() {

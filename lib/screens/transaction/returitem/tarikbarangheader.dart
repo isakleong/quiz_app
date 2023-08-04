@@ -82,8 +82,8 @@ class TarikBarangHeader extends StatelessWidget {
               child: CustomElevatedButton(
                   text: "LANJUTKAN >>",
                   onTap: onTap,
-                  width: 0.23 * Get.width,
-                  height: 0.04 * Get.height,
+                  width: 0.25 * width,
+                  height: 0.045 * height,
                   radius: 15,
                   backgroundColor: AppConfig.mainCyan,
                   textcolor: Colors.white,
