@@ -24,63 +24,48 @@ class TripleUnit extends StatelessWidget {
       children: [
         ChipsItem(satuan: satuan),
         Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Container(
-            width: 0.25 * width,
-            height: 0.05 * height,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey, width: 1)),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 0.025 * width),
-                    child: InkWell(
-                      onTap: onTapMinus,
-                      child: Icon(
-                        FontAwesomeIcons.minus,
-                        color: Colors.grey.shade500,
-                      ),
+            padding: const EdgeInsets.only(top: 10),
+            child: Container(
+              width: 0.25 * width, // Set the desired width
+              child: TextFormField(
+                controller: ctrl,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.zero, // Remove the default padding
+                  suffixIcon: IconButton(
+                    onPressed: onTapPlus,
+                    icon: Icon(
+                      FontAwesomeIcons.plus,
+                      size: 16, // Set the desired icon size
+                      color: Colors.grey.shade500,
                     ),
+                    padding:
+                        EdgeInsets.zero, // Remove the padding around the icon
                   ),
-                  SizedBox(
-                    width: 0.1 * width,
-                    height: 0.05 * height,
-                    child: Center(
-                      child: TextFormField(
-                        controller: ctrl,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                        ),
-                        textAlign: TextAlign.center,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter an integer';
-                          }
-                          return null;
-                        },
-                      ),
+                  prefixIcon: IconButton(
+                    onPressed: onTapMinus,
+                    icon: Icon(
+                      FontAwesomeIcons.minus,
+                      size: 16, // Set the desired icon size
+                      color: Colors.grey.shade500,
                     ),
+                    padding:
+                        EdgeInsets.zero, // Remove the padding around the icon
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 0.025 * width),
-                    child: InkWell(
-                      onTap: onTapPlus,
-                      child: Icon(
-                        FontAwesomeIcons.plus,
-                        color: Colors.grey.shade500,
-                      ),
-                    ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
-                ]),
-          ),
-        )
+                ),
+                textAlign: TextAlign.center,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter an integer';
+                  }
+                  return null;
+                },
+              ),
+            ))
       ],
     );
   }
