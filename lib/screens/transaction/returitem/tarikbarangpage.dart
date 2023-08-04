@@ -121,7 +121,9 @@ class TarikBarangPage extends StatelessWidget {
                     : Expanded(
                         child: Column(
                         children: [
-                          TarikBarangHeader(),
+                          TarikBarangHeader(
+                              jumlahproduk:
+                                  "${_takingOrderVendorController.listTarikBarang.length} Produk"),
                           Expanded(
                             child: ListView.builder(
                               itemCount: _takingOrderVendorController

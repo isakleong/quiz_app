@@ -10,8 +10,9 @@ import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/customelevatedbutton.dart';
 
 class TarikBarangHeader extends StatelessWidget {
+  String jumlahproduk;
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
-  TarikBarangHeader({super.key});
+  TarikBarangHeader({super.key, required this.jumlahproduk});
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +70,10 @@ class TarikBarangHeader extends StatelessWidget {
                 SizedBox(
                   width: 0.02 * Get.width,
                 ),
-                Obx(() => ChipsItem(
-                      satuan:
-                          "${_takingOrderVendorController.listTarikBarang.length} Produk",
-                      fontSize: 14,
-                    ))
+                ChipsItem(
+                  satuan: jumlahproduk,
+                  fontSize: 14,
+                )
               ],
             ),
             Padding(

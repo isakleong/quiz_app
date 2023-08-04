@@ -6,6 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/transaction/returitem/noinputretur.dart';
+import 'package:sfa_tools/screens/transaction/returitem/shopcartgantibarang.dart';
+import 'package:sfa_tools/screens/transaction/returitem/shopcartservismebel.dart';
 import 'package:sfa_tools/screens/transaction/returitem/tarikbarangheader.dart';
 import 'package:sfa_tools/screens/transaction/returitem/tarikbaranglist.dart';
 import 'package:sfa_tools/widgets/textview.dart';
@@ -91,22 +93,34 @@ class GantiBarang extends StatelessWidget {
                 SizedBox(
                   height: 0.01 * Get.height,
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 0.02 * Get.height),
-                  child: NoInputRetur(
-                      image: 'assets/images/returgantibarang.png',
-                      title: "Belum Ada Produk Diganti",
-                      isHorizontal: _takingOrderVendorController
-                          .gantibaranghorizontal.value,
-                      description:
-                          "Anda dapat mulai mencari produk yang akan diganti dan menambahkannya ke dalam keranjang."),
-                ),
+                _takingOrderVendorController
+                        .selectedKdProductgantibarang.isEmpty
+                    ? Container()
+                    : Padding(
+                        padding: EdgeInsets.only(left: 0.05 * Get.width),
+                        child: ShopCartGantiBarang(),
+                      ),
+                _takingOrderVendorController.listGantiBarang.isEmpty
+                    ? Padding(
+                        padding: EdgeInsets.only(top: 0.02 * Get.height),
+                        child: NoInputRetur(
+                            image: 'assets/images/returgantibarang.png',
+                            title: "Belum Ada Produk Diganti",
+                            isHorizontal: _takingOrderVendorController
+                                .gantibaranghorizontal.value,
+                            description:
+                                "Anda dapat mulai mencari produk yang akan diganti dan menambahkannya ke dalam keranjang."),
+                      )
+                    : Container(),
                 _takingOrderVendorController.listGantiBarang.isEmpty
                     ? Container()
                     : Expanded(
                         child: Column(
                         children: [
-                          TarikBarangHeader(),
+                          TarikBarangHeader(
+                            jumlahproduk:
+                                "${_takingOrderVendorController.listGantiBarang.length} Produk",
+                          ),
                           Expanded(
                             child: ListView.builder(
                               itemCount: _takingOrderVendorController
@@ -123,7 +137,7 @@ class GantiBarang extends StatelessWidget {
                                           .listGantiBarang[index],
                                       onTapEdit: () {
                                         _takingOrderVendorController
-                                            .handleEditTarikBarangItem(
+                                            .handleEditGantiBarangItem(
                                                 _takingOrderVendorController
                                                     .listGantiBarang[index]);
                                       },
@@ -132,7 +146,7 @@ class GantiBarang extends StatelessWidget {
                                             .handleDeleteItemRetur(
                                                 _takingOrderVendorController
                                                     .listGantiBarang[index],
-                                                "tarikbarang");
+                                                "gantibarang");
                                       },
                                     ));
                               },

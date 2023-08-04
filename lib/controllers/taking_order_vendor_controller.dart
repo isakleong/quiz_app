@@ -1371,6 +1371,8 @@ class TakingOrderVendorController extends GetxController
                 await deleteTarikBarangItem(data);
               } else if (from == "servismebel") {
                 await deleteServisMebelItem(data);
+              } else if (from == "gantibarang") {
+                await deleteGantiBarangItem(data);
               }
               Get.back();
             })));
@@ -1406,6 +1408,17 @@ class TakingOrderVendorController extends GetxController
     } else if (listServisMebel.isEmpty &&
         selectedProductservismebel.isNotEmpty) {
       servismebelhorizontal.value = true;
+    }
+  }
+
+  deleteGantiBarangItem(TarikBarangModel data) {
+    listGantiBarang
+        .removeWhere((element) => element.kdProduct == data.kdProduct);
+    if (listGantiBarang.isEmpty && selectedProductgantibarang.isEmpty) {
+      gantibaranghorizontal.value = false;
+    } else if (listGantiBarang.isEmpty &&
+        selectedProductgantibarang.isNotEmpty) {
+      gantibaranghorizontal.value = true;
     }
   }
 }

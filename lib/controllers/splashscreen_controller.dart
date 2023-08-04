@@ -13,6 +13,7 @@ import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/models/module.dart';
 import 'package:sfa_tools/models/servicebox.dart';
+import 'package:sfa_tools/screens/transaction/bottombartransaction.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
@@ -54,6 +55,8 @@ class SplashscreenController extends GetxController with StateMixin {
   }
 
   syncAppsReady() async {
+    // Get.to(BottomBartransaction());
+    // return;
     if (await checkAppsPermission('STORAGE')) {
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
         await getParameterData();
@@ -114,6 +117,8 @@ class SplashscreenController extends GetxController with StateMixin {
   }
 
   getModuleData() async {
+    // Get.to(BottomBartransaction());
+    // return;
     change(null, status: RxStatus.loading());
 
     var connTest = await ApiClient().checkConnection();
