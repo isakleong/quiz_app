@@ -6,6 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/transaction/returitem/noinputretur.dart';
+import 'package:sfa_tools/screens/transaction/returitem/tarikbarangheader.dart';
+import 'package:sfa_tools/screens/transaction/returitem/tarikbaranglist.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 class GantiBarang extends StatelessWidget {
@@ -79,8 +81,8 @@ class GantiBarang extends StatelessWidget {
                               .gantibaranghorizontal.value = true;
                           _takingOrderVendorController.gantibarangfield.value
                               .text = suggestion.nmProduct;
-                          // _takingOrderVendorController
-                          //     .handleProductSearchGk(suggestion.kdProduct);
+                          _takingOrderVendorController
+                              .handleProductSearchGb(suggestion.kdProduct);
                         }
                       },
                     ),
@@ -89,13 +91,57 @@ class GantiBarang extends StatelessWidget {
                 SizedBox(
                   height: 0.01 * Get.height,
                 ),
-                NoInputRetur(
-                    image: 'assets/images/returgantibarang.png',
-                    title: "Belum Ada Produk Diganti",
-                    isHorizontal: _takingOrderVendorController
-                        .gantibaranghorizontal.value,
-                    description:
-                        "Anda dapat mulai mencari produk yang akan diganti dan menambahkannya ke dalam keranjang.")
+                Padding(
+                  padding: EdgeInsets.only(top: 0.02 * Get.height),
+                  child: NoInputRetur(
+                      image: 'assets/images/returgantibarang.png',
+                      title: "Belum Ada Produk Diganti",
+                      isHorizontal: _takingOrderVendorController
+                          .gantibaranghorizontal.value,
+                      description:
+                          "Anda dapat mulai mencari produk yang akan diganti dan menambahkannya ke dalam keranjang."),
+                ),
+                _takingOrderVendorController.listGantiBarang.isEmpty
+                    ? Container()
+                    : Expanded(
+                        child: Column(
+                        children: [
+                          TarikBarangHeader(),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: _takingOrderVendorController
+                                  .listGantiBarang.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 0.05 * Get.width,
+                                        top: 5,
+                                        right: 0.05 * Get.width),
+                                    child: TarikBarangList(
+                                      idx: (index + 1).toString(),
+                                      data: _takingOrderVendorController
+                                          .listGantiBarang[index],
+                                      onTapEdit: () {
+                                        _takingOrderVendorController
+                                            .handleEditTarikBarangItem(
+                                                _takingOrderVendorController
+                                                    .listGantiBarang[index]);
+                                      },
+                                      onTapDelete: () {
+                                        _takingOrderVendorController
+                                            .handleDeleteItemRetur(
+                                                _takingOrderVendorController
+                                                    .listGantiBarang[index],
+                                                "tarikbarang");
+                                      },
+                                    ));
+                              },
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                            ),
+                          )
+                        ],
+                      ))
               ],
             )));
   }
