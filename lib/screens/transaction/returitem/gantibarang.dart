@@ -118,6 +118,10 @@ class GantiBarang extends StatelessWidget {
                         child: Column(
                         children: [
                           TarikBarangHeader(
+                            onTap: () {
+                              _takingOrderVendorController
+                                  .handleSaveGantiBarang();
+                            },
                             jumlahproduk:
                                 "${_takingOrderVendorController.listGantiBarang.length} Produk",
                           ),

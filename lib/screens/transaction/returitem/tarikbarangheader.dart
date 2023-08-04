@@ -11,8 +11,9 @@ import '../../../widgets/customelevatedbutton.dart';
 
 class TarikBarangHeader extends StatelessWidget {
   String jumlahproduk;
-  final TakingOrderVendorController _takingOrderVendorController = Get.find();
-  TarikBarangHeader({super.key, required this.jumlahproduk});
+  var onTap;
+  TarikBarangHeader(
+      {super.key, required this.jumlahproduk, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +81,7 @@ class TarikBarangHeader extends StatelessWidget {
               padding: EdgeInsets.only(right: 0.05 * Get.width),
               child: CustomElevatedButton(
                   text: "LANJUTKAN >>",
-                  onTap: () {
-                    // _takingOrderVendorController.handleSavePayment();
-                  },
+                  onTap: onTap,
                   width: 0.23 * Get.width,
                   height: 0.04 * Get.height,
                   radius: 15,

@@ -1,0 +1,147 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
+import 'package:sfa_tools/screens/transaction/returitem/tarikbaranglist.dart';
+import 'package:sfa_tools/widgets/customelevatedbutton.dart';
+
+import '../../../common/app_config.dart';
+import '../../../controllers/taking_order_vendor_controller.dart';
+import '../../../widgets/textview.dart';
+
+class DialogCheckOutTb extends StatelessWidget {
+  DialogCheckOutTb({super.key});
+  final TakingOrderVendorController _takingOrderVendorController = Get.find();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: Get.width * 0.8,
+      height: 0.6 * Get.height,
+      child: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 10),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomElevatedButton(
+                      icon: Icon(
+                        Icons.cancel_outlined,
+                        color: AppConfig.mainCyan,
+                        size: 21,
+                      ),
+                      text: "BATAL",
+                      onTap: () {
+                        Get.back();
+                      },
+                      width: 0.18 * Get.width,
+                      height: 0.04 * Get.height,
+                      radius: 4,
+                      backgroundColor: Colors.white,
+                      bordercolor: AppConfig.mainCyan,
+                      elevation: 0,
+                      textcolor: AppConfig.mainCyan,
+                      headings: 'H2'),
+                  CustomElevatedButton(
+                      icon: const Icon(
+                        Icons.check_circle_outline_rounded,
+                        size: 21,
+                      ),
+                      text: "SIMPAN",
+                      onTap: () async {
+                        Get.back();
+                      },
+                      width: 0.18 * Get.width,
+                      height: 0.04 * Get.height,
+                      radius: 4,
+                      backgroundColor: AppConfig.mainCyan,
+                      textcolor: Colors.white,
+                      elevation: 2,
+                      bordercolor: AppConfig.mainCyan,
+                      headings: 'H2')
+                ],
+              ),
+            ),
+          ),
+          Column(children: [
+            SizedBox(
+              height: 0.02 * Get.height,
+            ),
+            TextView(
+              text: "Retur Tarik Barang - Aceh Indah",
+              headings: 'H3',
+              fontSize: 16,
+            ),
+            SizedBox(
+              height: 0.01 * Get.height,
+            ),
+            TextView(
+              text: "Total : 153,650",
+              headings: 'H3',
+              fontSize: 14,
+            ),
+            SizedBox(
+              height: 0.01 * Get.height,
+            ),
+            Container(
+              width: Get.width,
+              height: 10,
+              color: Colors.grey.shade300,
+            ),
+            SizedBox(
+              height: 0.01 * Get.height,
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: 0.05 * Get.width, right: 0.05 * Get.width),
+              child: TextFormField(
+                // controller: _textEditingController,
+                decoration: InputDecoration(
+                  labelText: 'Catatan / Keterangan',
+                  icon: Image.asset(
+                    'assets/images/notes.png',
+                    width: 45,
+                    height: 45,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                maxLength: 150,
+                maxLines: null,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                keyboardType: TextInputType.multiline,
+                style: const TextStyle(fontSize: 14),
+                onChanged: (text) {
+                  // Handle text changes here
+                },
+              ),
+            ),
+            Expanded(
+                child: Padding(
+                    padding: EdgeInsets.only(bottom: 0.08 * Get.height),
+                    child: ListView.builder(
+                      itemBuilder: (c, i) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                              left: 0.05 * Get.width, right: 0.05 * Get.width),
+                          child: TarikBarangList(
+                            data:
+                                _takingOrderVendorController.listTarikBarang[i],
+                            hidebtn: true,
+                            idx: (i + 1).toString(),
+                          ),
+                        );
+                      },
+                      itemCount:
+                          _takingOrderVendorController.listTarikBarang.length,
+                      physics: const BouncingScrollPhysics(),
+                    )))
+          ]),
+        ],
+      ),
+    );
+  }
+}

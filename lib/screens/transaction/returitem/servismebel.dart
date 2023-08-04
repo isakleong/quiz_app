@@ -119,8 +119,8 @@ class ServisMebel extends StatelessWidget {
                             jumlahproduk:
                                 "${_takingOrderVendorController.listServisMebel.length} Produk",
                             onTap: () {
-                              // _takingOrderVendorController.handleSaveConfirm(
-                              //     "Yakin untuk simpan ganti kemasan?");
+                              _takingOrderVendorController
+                                  .handleSaveServisMebel();
                             }),
                         Expanded(
                           child: ListView.builder(

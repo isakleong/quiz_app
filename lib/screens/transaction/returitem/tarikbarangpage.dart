@@ -122,6 +122,10 @@ class TarikBarangPage extends StatelessWidget {
                         child: Column(
                         children: [
                           TarikBarangHeader(
+                              onTap: () {
+                                _takingOrderVendorController
+                                    .handleSaveTarikBarang();
+                              },
                               jumlahproduk:
                                   "${_takingOrderVendorController.listTarikBarang.length} Produk"),
                           Expanded(

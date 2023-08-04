@@ -14,12 +14,14 @@ class TarikBarangList extends StatelessWidget {
   TarikBarangModel data;
   var onTapEdit;
   var onTapDelete;
+  bool? hidebtn;
   TarikBarangList(
       {super.key,
       required this.idx,
       required this.data,
       this.onTapEdit,
-      this.onTapDelete});
+      this.onTapDelete,
+      this.hidebtn});
 
   @override
   Widget build(BuildContext context) {
@@ -108,58 +110,60 @@ class TarikBarangList extends StatelessWidget {
                       )
                     ],
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      InkWell(
-                        onTap: onTapEdit,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.green.shade700),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: const [
-                              Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                              )
-                            ],
-                          ),
+                  (hidebtn != null && hidebtn == true)
+                      ? Container()
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            InkWell(
+                              onTap: onTapEdit,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.green.shade700),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            InkWell(
+                              onTap: onTapDelete,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red.shade700),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.delete_forever,
+                                      color: Colors.white,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      InkWell(
-                        onTap: onTapDelete,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.red.shade700),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: const [
-                              Icon(
-                                Icons.delete_forever,
-                                color: Colors.white,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                    ],
-                  ),
                 ]),
             const SizedBox(
               height: 10,

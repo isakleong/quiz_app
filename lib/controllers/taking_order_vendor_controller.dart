@@ -1,5 +1,6 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
@@ -8,10 +9,18 @@ import 'package:sfa_tools/models/productdata.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/screens/transaction/payment/dialogconfirm.dart';
+import 'package:sfa_tools/screens/transaction/returitem/dialogcheckoutgb.dart';
+import 'package:sfa_tools/screens/transaction/returitem/dialogcheckoutsm.dart';
+import 'package:sfa_tools/screens/transaction/returitem/dialogcheckouttb.dart';
+import 'package:sfa_tools/screens/transaction/returitem/tarikbaranglist.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/checkoutlist.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 import '../common/app_config.dart';
 import '../models/tarikbarangmodel.dart';
+import '../screens/transaction/returitem/checkoutlistgb.dart';
+import '../widgets/customelevatedbutton.dart';
 
 class TakingOrderVendorController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -900,34 +909,37 @@ class TakingOrderVendorController extends GetxController
     }
     print("ini isi flag ${flag}");
     if (flag == "null") {
-      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      List<CartModel> _items = <CartModel>[];
       for (var i = 0;
           i < selectedProducttarikbarang[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1tb.value.text != "" &&
             int.parse(qty1tb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty1tb.value.text),
-              selectedProducttarikbarang[0].detailProduct[i].satuan));
+              selectedProducttarikbarang[0].detailProduct[i].satuan,
+              0));
         } else if (i == 1 &&
             qty2tb.value.text != "" &&
             int.parse(qty2tb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty2tb.value.text),
-              selectedProducttarikbarang[0].detailProduct[i].satuan));
+              selectedProducttarikbarang[0].detailProduct[i].satuan,
+              0));
         } else if (i == 2 &&
             qty3tb.value.text != "" &&
             int.parse(qty3tb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty3tb.value.text),
-              selectedProducttarikbarang[0].detailProduct[i].satuan));
+              selectedProducttarikbarang[0].detailProduct[i].satuan,
+              0));
         }
       }
       if (!_items.isEmpty) {
@@ -947,34 +959,37 @@ class TakingOrderVendorController extends GetxController
       qty3tb.value.clear();
     } else {
       print("already added");
-      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      List<CartModel> _items = <CartModel>[];
       for (var i = 0;
           i < selectedProducttarikbarang[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1tb.value.text != "" &&
             int.parse(qty1tb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty1tb.value.text),
-              selectedProducttarikbarang[0].detailProduct[i].satuan));
+              selectedProducttarikbarang[0].detailProduct[i].satuan,
+              0));
         } else if (i == 1 &&
             qty2tb.value.text != "" &&
             int.parse(qty2tb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty2tb.value.text),
-              selectedProducttarikbarang[0].detailProduct[i].satuan));
+              selectedProducttarikbarang[0].detailProduct[i].satuan,
+              0));
         } else if (i == 2 &&
             qty3tb.value.text != "" &&
             int.parse(qty3tb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty3tb.value.text),
-              selectedProducttarikbarang[0].detailProduct[i].satuan));
+              selectedProducttarikbarang[0].detailProduct[i].satuan,
+              0));
         }
       }
       if (_items.isNotEmpty) {
@@ -1025,34 +1040,37 @@ class TakingOrderVendorController extends GetxController
     }
     print("ini isi flag ${flag}");
     if (flag == "null") {
-      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      List<CartModel> _items = <CartModel>[];
       for (var i = 0;
           i < selectedProductgantikemasan[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1gk.value.text != "" &&
             int.parse(qty1gk.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty1gk.value.text),
-              selectedProductgantikemasan[0].detailProduct[i].satuan));
+              selectedProductgantikemasan[0].detailProduct[i].satuan,
+              0));
         } else if (i == 1 &&
             qty2gk.value.text != "" &&
             int.parse(qty2gk.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty2gk.value.text),
-              selectedProductgantikemasan[0].detailProduct[i].satuan));
+              selectedProductgantikemasan[0].detailProduct[i].satuan,
+              0));
         } else if (i == 2 &&
             qty3gk.value.text != "" &&
             int.parse(qty3gk.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty3gk.value.text),
-              selectedProductgantikemasan[0].detailProduct[i].satuan));
+              selectedProductgantikemasan[0].detailProduct[i].satuan,
+              0));
         }
       }
       if (!_items.isEmpty) {
@@ -1072,34 +1090,37 @@ class TakingOrderVendorController extends GetxController
       qty3gk.value.clear();
     } else {
       print("already added");
-      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      List<CartModel> _items = <CartModel>[];
       for (var i = 0;
           i < selectedProductgantikemasan[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1gk.value.text != "" &&
             int.parse(qty1gk.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty1gk.value.text),
-              selectedProductgantikemasan[0].detailProduct[i].satuan));
+              selectedProductgantikemasan[0].detailProduct[i].satuan,
+              0));
         } else if (i == 1 &&
             qty2gk.value.text != "" &&
             int.parse(qty2gk.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty2gk.value.text),
-              selectedProductgantikemasan[0].detailProduct[i].satuan));
+              selectedProductgantikemasan[0].detailProduct[i].satuan,
+              0));
         } else if (i == 2 &&
             qty3gk.value.text != "" &&
             int.parse(qty3gk.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty3gk.value.text),
-              selectedProductgantikemasan[0].detailProduct[i].satuan));
+              selectedProductgantikemasan[0].detailProduct[i].satuan,
+              0));
         }
       }
       if (_items.isNotEmpty) {
@@ -1141,34 +1162,37 @@ class TakingOrderVendorController extends GetxController
       }
     }
     if (flag == "null") {
-      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      List<CartModel> _items = <CartModel>[];
       for (var i = 0;
           i < selectedProductservismebel[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1sm.value.text != "" &&
             int.parse(qty1sm.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty1sm.value.text),
-              selectedProductservismebel[0].detailProduct[i].satuan));
+              selectedProductservismebel[0].detailProduct[i].satuan,
+              0));
         } else if (i == 1 &&
             qty2sm.value.text != "" &&
             int.parse(qty2sm.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty2sm.value.text),
-              selectedProductservismebel[0].detailProduct[i].satuan));
+              selectedProductservismebel[0].detailProduct[i].satuan,
+              0));
         } else if (i == 2 &&
             qty3sm.value.text != "" &&
             int.parse(qty3sm.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty3sm.value.text),
-              selectedProductservismebel[0].detailProduct[i].satuan));
+              selectedProductservismebel[0].detailProduct[i].satuan,
+              0));
         }
       }
       if (!_items.isEmpty) {
@@ -1186,34 +1210,37 @@ class TakingOrderVendorController extends GetxController
       qty2sm.value.clear();
       qty3sm.value.clear();
     } else {
-      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      List<CartModel> _items = <CartModel>[];
       for (var i = 0;
           i < selectedProductservismebel[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1sm.value.text != "" &&
             int.parse(qty1sm.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty1sm.value.text),
-              selectedProductservismebel[0].detailProduct[i].satuan));
+              selectedProductservismebel[0].detailProduct[i].satuan,
+              0));
         } else if (i == 1 &&
             qty2sm.value.text != "" &&
             int.parse(qty2sm.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty2sm.value.text),
-              selectedProductservismebel[0].detailProduct[i].satuan));
+              selectedProductservismebel[0].detailProduct[i].satuan,
+              0));
         } else if (i == 2 &&
             qty3sm.value.text != "" &&
             int.parse(qty3sm.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty3sm.value.text),
-              selectedProductservismebel[0].detailProduct[i].satuan));
+              selectedProductservismebel[0].detailProduct[i].satuan,
+              0));
         }
       }
       if (_items.isNotEmpty) {
@@ -1254,34 +1281,37 @@ class TakingOrderVendorController extends GetxController
       }
     }
     if (flag == "null") {
-      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      List<CartModel> _items = <CartModel>[];
       for (var i = 0;
           i < selectedProductgantibarang[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1gb.value.text != "" &&
             int.parse(qty1gb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty1gb.value.text),
-              selectedProductgantibarang[0].detailProduct[i].satuan));
+              selectedProductgantibarang[0].detailProduct[i].satuan,
+              0));
         } else if (i == 1 &&
             qty2gb.value.text != "" &&
             int.parse(qty2gb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty2gb.value.text),
-              selectedProductgantibarang[0].detailProduct[i].satuan));
+              selectedProductgantibarang[0].detailProduct[i].satuan,
+              0));
         } else if (i == 2 &&
             qty3gb.value.text != "" &&
             int.parse(qty3gb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty3gb.value.text),
-              selectedProductgantibarang[0].detailProduct[i].satuan));
+              selectedProductgantibarang[0].detailProduct[i].satuan,
+              0));
         }
       }
       if (!_items.isEmpty) {
@@ -1299,41 +1329,44 @@ class TakingOrderVendorController extends GetxController
       qty2gb.value.clear();
       qty3gb.value.clear();
     } else {
-      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      List<CartModel> _items = <CartModel>[];
       for (var i = 0;
           i < selectedProductgantibarang[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1gb.value.text != "" &&
             int.parse(qty1gb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty1gb.value.text),
-              selectedProductgantibarang[0].detailProduct[i].satuan));
+              selectedProductgantibarang[0].detailProduct[i].satuan,
+              0));
         } else if (i == 1 &&
             qty2gb.value.text != "" &&
             int.parse(qty2gb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty2gb.value.text),
-              selectedProductgantibarang[0].detailProduct[i].satuan));
+              selectedProductgantibarang[0].detailProduct[i].satuan,
+              0));
         } else if (i == 2 &&
             qty3gb.value.text != "" &&
             int.parse(qty3gb.value.text) != 0) {
-          _items.add(TarikBarangItemModel(
+          _items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty3gb.value.text),
-              selectedProductgantibarang[0].detailProduct[i].satuan));
+              selectedProductgantibarang[0].detailProduct[i].satuan,
+              0));
         }
       }
       if (_items.isNotEmpty) {
         listGantiBarang[int.parse(flag)].kdProduct =
-            selectedProductservismebel[0].kdProduct;
+            selectedProductgantibarang[0].kdProduct;
         listGantiBarang[int.parse(flag)].nmProduct =
-            selectedProductservismebel[0].nmProduct;
+            selectedProductgantibarang[0].nmProduct;
         listGantiBarang[int.parse(flag)].itemOrder = _items;
         listGantiBarang[int.parse(flag)].alasan = "";
       } else {
@@ -1420,5 +1453,29 @@ class TakingOrderVendorController extends GetxController
         selectedProductgantibarang.isNotEmpty) {
       gantibaranghorizontal.value = true;
     }
+  }
+
+  handleSaveGantiBarang() {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogCheckoutGb()));
+  }
+
+  handleSaveServisMebel() {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogCheckoutSm()));
+  }
+
+  handleSaveTarikBarang() {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogCheckOutTb()));
   }
 }
