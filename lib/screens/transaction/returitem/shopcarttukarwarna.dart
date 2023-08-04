@@ -53,8 +53,7 @@ class ShopCartTukarWarna extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 15),
                       child: ElevatedButton(
-                        onPressed: () async {
-                          // await _takingOrderVendorController.addToCartSm();
+                        onPressed: () {
                           showModalBottomSheet(
                               context: context,
                               barrierColor: Colors.transparent,
@@ -72,30 +71,32 @@ class ShopCartTukarWarna extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppConfig.mainCyan,
                           elevation: 5,
-                          fixedSize: Size(0.2 * width, 0.04 * height),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.all(10),
+                          padding: EdgeInsets.only(
+                              left: 15, right: 15, top: 2, bottom: 2),
                         ),
-                        child: Center(
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                              Icon(
-                                Icons.repeat,
-                                size: 18,
-                              ),
-                              TextView(
-                                text: "Tukar",
-                                headings: 'H4',
-                                fontSize: 14,
-                                color: Colors.white,
-                              )
-                            ])),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.repeat,
+                              size: 18,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            TextView(
+                              text: "Tukar",
+                              headings: 'H4',
+                              fontSize: 14,
+                              color: Colors.white,
+                            )
+                          ],
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

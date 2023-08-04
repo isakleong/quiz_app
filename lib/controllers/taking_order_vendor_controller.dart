@@ -28,7 +28,7 @@ class TakingOrderVendorController extends GetxController
   void onInit() {
     super.onInit();
     controller = TabController(vsync: this, length: 4, initialIndex: 0);
-    cnt = SingleValueDropDownController();
+    // cnt = SingleValueDropDownController();
     getListItem();
     getReportList();
   }
@@ -64,7 +64,8 @@ class TakingOrderVendorController extends GetxController
   RxList<DropDownValueModel> listDropDown = <DropDownValueModel>[].obs;
   RxList<CartModel> cartList = <CartModel>[].obs;
   RxList<CartDetail> cartDetailList = <CartDetail>[].obs;
-  late SingleValueDropDownController cnt;
+  // late SingleValueDropDownController cnt;
+  Rx<TextEditingController> cnt = TextEditingController().obs;
   Rx<TextEditingController> qty1 = TextEditingController().obs;
   Rx<TextEditingController> qty2 = TextEditingController().obs;
   Rx<TextEditingController> qty3 = TextEditingController().obs;
@@ -135,7 +136,7 @@ class TakingOrderVendorController extends GetxController
     }
     selectedValue.value = "";
     selectedProduct.clear();
-    cnt.clearDropDown();
+    cnt.value.clear();
     fillCartDetail();
   }
 

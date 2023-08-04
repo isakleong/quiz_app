@@ -63,37 +63,37 @@ class ShopCartServisMebel extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppConfig.mainCyan,
                           elevation: 5,
-                          fixedSize: Size(0.2 * width, 0.04 * height),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.all(10),
+                          padding: EdgeInsets.only(
+                              left: 15, right: 15, top: 2, bottom: 2),
                         ),
-                        child: Center(
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                              const Icon(Icons.shopping_cart),
-                              TextView(
-                                text: _takingOrderVendorController
-                                        .listServisMebel.isEmpty
-                                    ? "Tambah"
-                                    : _takingOrderVendorController
-                                            .listServisMebel
-                                            .any((data) =>
-                                                data.kdProduct ==
-                                                _takingOrderVendorController
-                                                    .selectedProductservismebel[
-                                                        0]
-                                                    .kdProduct)
-                                        ? "Ganti"
-                                        : "Tambah",
-                                headings: 'H4',
-                                fontSize: 14,
-                                color: Colors.white,
-                              )
-                            ])),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.shopping_cart),
+                            const SizedBox(
+                                width:
+                                    8), // Add some space between the icon and text
+                            TextView(
+                              text: _takingOrderVendorController
+                                      .listServisMebel.isEmpty
+                                  ? "Tambah"
+                                  : _takingOrderVendorController.listServisMebel
+                                          .any((data) =>
+                                              data.kdProduct ==
+                                              _takingOrderVendorController
+                                                  .selectedProductservismebel[0]
+                                                  .kdProduct)
+                                      ? "Ganti"
+                                      : "Tambah",
+                              headings: 'H4',
+                              fontSize: 14,
+                              color: Colors.white,
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ],
