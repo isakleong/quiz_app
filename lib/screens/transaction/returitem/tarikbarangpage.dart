@@ -133,9 +133,23 @@ class TarikBarangPage extends StatelessWidget {
                                         top: 5,
                                         right: 0.05 * Get.width),
                                     child: TarikBarangList(
-                                        idx: (index + 1).toString(),
-                                        data: _takingOrderVendorController
-                                            .listTarikBarang[index]));
+                                      idx: (index + 1).toString(),
+                                      data: _takingOrderVendorController
+                                          .listTarikBarang[index],
+                                      onTapEdit: () {
+                                        _takingOrderVendorController
+                                            .handleEditTarikBarangItem(
+                                                _takingOrderVendorController
+                                                    .listTarikBarang[index]);
+                                      },
+                                      onTapDelete: () {
+                                        _takingOrderVendorController
+                                            .handleDeleteItemRetur(
+                                                _takingOrderVendorController
+                                                    .listTarikBarang[index],
+                                                "tarikbarang");
+                                      },
+                                    ));
                               },
                               physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,

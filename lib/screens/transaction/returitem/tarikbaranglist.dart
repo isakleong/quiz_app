@@ -12,8 +12,14 @@ import '../takingordervendor/chipsitem.dart';
 class TarikBarangList extends StatelessWidget {
   String idx;
   TarikBarangModel data;
-  TarikBarangList({super.key, required this.idx, required this.data});
-  final TakingOrderVendorController _takingOrderVendorController = Get.find();
+  var onTapEdit;
+  var onTapDelete;
+  TarikBarangList(
+      {super.key,
+      required this.idx,
+      required this.data,
+      this.onTapEdit,
+      this.onTapDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -109,10 +115,7 @@ class TarikBarangList extends StatelessWidget {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () {
-                          _takingOrderVendorController
-                              .handleEditTarikBarangItem(data);
-                        },
+                        onTap: onTapEdit,
                         child: Container(
                           width: 40,
                           height: 40,
@@ -134,10 +137,7 @@ class TarikBarangList extends StatelessWidget {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () {
-                          _takingOrderVendorController
-                              .handleDeleteTarikBarangItem(data);
-                        },
+                        onTap: onTapDelete,
                         child: Container(
                           width: 40,
                           height: 40,
@@ -164,33 +164,39 @@ class TarikBarangList extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Container(
-              width: 0.85 * Get.width,
-              height: 1,
-              color: Colors.grey.shade500,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 0.025 * Get.width,
-                ),
-                Icon(
-                  FontAwesomeIcons.circleChevronRight,
-                  color: Colors.brown,
-                  size: 16,
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                TextView(
-                  text: "Alasan : ${data.alasan}",
-                  fontSize: 14,
-                )
-              ],
-            ),
+            data.alasan == ""
+                ? Container()
+                : Container(
+                    width: 0.85 * Get.width,
+                    height: 1,
+                    color: Colors.grey.shade500,
+                  ),
+            data.alasan == ""
+                ? Container()
+                : const SizedBox(
+                    height: 10,
+                  ),
+            data.alasan == ""
+                ? Container()
+                : Row(
+                    children: [
+                      SizedBox(
+                        width: 0.025 * Get.width,
+                      ),
+                      Icon(
+                        FontAwesomeIcons.circleChevronRight,
+                        color: Colors.brown,
+                        size: 16,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      TextView(
+                        text: "Alasan : ${data.alasan}",
+                        fontSize: 14,
+                      )
+                    ],
+                  ),
             const SizedBox(
               height: 10,
             ),

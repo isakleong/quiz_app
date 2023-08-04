@@ -38,6 +38,16 @@ class TakingOrderVendorController extends GetxController
     }
   }
 
+  handleSaveConfirm(String msg) {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogConfirm(
+          message: msg,
+        )));
+  }
+
   // for penjualan page
   RxString selectedValue = "".obs;
   RxList<ProductData> selectedProduct = <ProductData>[].obs;
@@ -264,21 +274,19 @@ class TakingOrderVendorController extends GetxController
     getDetailProduct(data.kdProduct);
   }
 
-  handleProductSearchButton(String val) {
+  handleProductSearchButton(String val) async {
     selectedValue.value = val;
     qty1.value.text = "0";
     qty2.value.text = "0";
     qty3.value.text = "0";
-    getDetailProduct(val);
-    if (cartList.isNotEmpty) {
-      if (cartList
-          .any((data) => data.kdProduct == selectedProduct[0].kdProduct)) {
-        for (var i = 0; i < cartDetailList.length; i++) {
-          if (cartDetailList[i].kdProduct == selectedProduct[0].kdProduct) {
-            handleEditItem(cartDetailList[i]);
-          }
+    if (cartList.isNotEmpty && cartList.any((data) => data.kdProduct == val)) {
+      for (var i = 0; i < cartDetailList.length; i++) {
+        if (cartDetailList[i].kdProduct == val) {
+          handleEditItem(cartDetailList[i]);
         }
       }
+    } else {
+      await getDetailProduct(val);
     }
   }
 
@@ -530,14 +538,6 @@ class TakingOrderVendorController extends GetxController
     }
   }
 
-  handleSavePayment() {
-    Get.dialog(const Dialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: DialogConfirm()));
-  }
-
   deletePayment(String jenis) {
     try {
       listpaymentdata.removeWhere((element) => element.jenis == jenis);
@@ -617,18 +617,24 @@ class TakingOrderVendorController extends GetxController
   RxBool gantibaranghorizontal = false.obs;
   RxString selectedKdProducttarikbarang = "".obs;
   RxString selectedKdProductgantikemasan = "".obs;
+  RxString selectedKdProductservismebel = "".obs;
   RxList<ProductData> selectedProducttarikbarang = <ProductData>[].obs;
   RxList<ProductData> selectedProductgantikemasan = <ProductData>[].obs;
+  RxList<ProductData> selectedProductservismebel = <ProductData>[].obs;
   Rx<TextEditingController> qty1tb = TextEditingController().obs;
   Rx<TextEditingController> qty2tb = TextEditingController().obs;
   Rx<TextEditingController> qty3tb = TextEditingController().obs;
   Rx<TextEditingController> qty1gk = TextEditingController().obs;
   Rx<TextEditingController> qty2gk = TextEditingController().obs;
   Rx<TextEditingController> qty3gk = TextEditingController().obs;
+  Rx<TextEditingController> qty1sm = TextEditingController().obs;
+  Rx<TextEditingController> qty2sm = TextEditingController().obs;
+  Rx<TextEditingController> qty3sm = TextEditingController().obs;
   RxString selectedAlasantb = "".obs;
   RxString selectedAlasangk = "".obs;
   RxList<TarikBarangModel> listTarikBarang = <TarikBarangModel>[].obs;
   RxList<TarikBarangModel> listgantikemasan = <TarikBarangModel>[].obs;
+  RxList<TarikBarangModel> listServisMebel = <TarikBarangModel>[].obs;
 
   handleProductSearchTb(String val) async {
     selectedKdProducttarikbarang.value = val;
@@ -636,7 +642,8 @@ class TakingOrderVendorController extends GetxController
     qty1tb.value.text = "0";
     qty2tb.value.text = "0";
     qty3tb.value.text = "0";
-    if (listTarikBarang.isNotEmpty) {
+    if (listTarikBarang.isNotEmpty &&
+        listTarikBarang.any((data) => data.kdProduct == val)) {
       for (var i = 0; i < listTarikBarang.length; i++) {
         if (val == listTarikBarang[i].kdProduct) {
           handleEditTarikBarangItem(listTarikBarang[i]);
@@ -653,7 +660,8 @@ class TakingOrderVendorController extends GetxController
     qty1gk.value.text = "0";
     qty2gk.value.text = "0";
     qty3gk.value.text = "0";
-    if (listgantikemasan.isNotEmpty) {
+    if (listgantikemasan.isNotEmpty &&
+        listgantikemasan.any((data) => data.kdProduct == val)) {
       for (var i = 0; i < listgantikemasan.length; i++) {
         if (val == listgantikemasan[i].kdProduct) {
           handleEditGantiKemasanItem(listgantikemasan[i]);
@@ -661,6 +669,23 @@ class TakingOrderVendorController extends GetxController
       }
     } else {
       await getDetailProductGk(val);
+    }
+  }
+
+  handleProductSearchSm(String val) async {
+    selectedKdProductservismebel.value = val;
+    qty1sm.value.text = "0";
+    qty2sm.value.text = "0";
+    qty3sm.value.text = "0";
+    if (listServisMebel.isNotEmpty &&
+        listServisMebel.any((data) => data.kdProduct == val)) {
+      for (var i = 0; i < listServisMebel.length; i++) {
+        if (val == listServisMebel[i].kdProduct) {
+          handleEditServisMebelItem(listServisMebel[i]);
+        }
+      }
+    } else {
+      await getDetailProductSm(val);
     }
   }
 
@@ -680,6 +705,16 @@ class TakingOrderVendorController extends GetxController
       if (listProduct[i].kdProduct == kdProduct) {
         list.add(listProduct[i]);
         selectedProducttarikbarang.value = list;
+      }
+    }
+  }
+
+  getDetailProductSm(String kdProduct) {
+    List<ProductData> list = <ProductData>[];
+    for (var i = 0; i < listProduct.length; i++) {
+      if (listProduct[i].kdProduct == kdProduct) {
+        list.add(listProduct[i]);
+        selectedProductservismebel.value = list;
       }
     }
   }
@@ -744,6 +779,36 @@ class TakingOrderVendorController extends GetxController
     }
 
     getDetailProductGk(data.kdProduct);
+  }
+
+  handleEditServisMebelItem(TarikBarangModel data) {
+    selectedKdProductservismebel.value = data.kdProduct.toString();
+    qty1sm.value.text = '0';
+    qty2sm.value.text = '0';
+    qty3sm.value.text = '0';
+    for (var k = 0; k < listProduct.length; k++) {
+      if (listProduct[k].kdProduct == data.kdProduct) {
+        for (var i = 0; i < data.itemOrder.length; i++) {
+          for (var j = 0; j < listProduct[k].detailProduct.length; j++) {
+            if (j == 0 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.itemOrder[i].Satuan) {
+              qty1sm.value.text = data.itemOrder[i].Qty.toString();
+            } else if (j == 1 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.itemOrder[i].Satuan) {
+              qty2sm.value.text = data.itemOrder[i].Qty.toString();
+            } else if (j == 2 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.itemOrder[i].Satuan) {
+              qty3sm.value.text = data.itemOrder[i].Qty.toString();
+            }
+          }
+        }
+      }
+    }
+
+    getDetailProductSm(data.kdProduct);
   }
 
   addToCartTb() {
@@ -862,6 +927,12 @@ class TakingOrderVendorController extends GetxController
       qty1tb.value.clear();
       qty2tb.value.clear();
       qty3tb.value.clear();
+    }
+    if (listTarikBarang.isEmpty && selectedProducttarikbarang.isEmpty) {
+      tarikbaranghorizontal.value = false;
+    } else if (listTarikBarang.isEmpty &&
+        selectedProducttarikbarang.isNotEmpty) {
+      tarikbaranghorizontal.value = true;
     }
   }
 
@@ -982,9 +1053,128 @@ class TakingOrderVendorController extends GetxController
       qty2gk.value.clear();
       qty3gk.value.clear();
     }
+    if (listgantikemasan.isEmpty && selectedProductgantikemasan.isEmpty) {
+      gantikemasanhorizontal.value = false;
+    } else if (listgantikemasan.isEmpty &&
+        selectedProductgantikemasan.isNotEmpty) {
+      gantikemasanhorizontal.value = true;
+    }
   }
 
-  handleDeleteTarikBarangItem(TarikBarangModel data) {
+  addToCartSm() {
+    var flag = "null";
+    for (var i = 0; i < listServisMebel.length; i++) {
+      if (selectedProductservismebel[0].kdProduct ==
+          listServisMebel[i].kdProduct) {
+        flag = i.toString();
+        break;
+      }
+    }
+    if (flag == "null") {
+      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      for (var i = 0;
+          i < selectedProductservismebel[0].detailProduct.length;
+          i++) {
+        if (i == 0 &&
+            qty1sm.value.text != "" &&
+            int.parse(qty1sm.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProductservismebel[0].kdProduct,
+              selectedProductservismebel[0].nmProduct,
+              int.parse(qty1sm.value.text),
+              selectedProductservismebel[0].detailProduct[i].satuan));
+        } else if (i == 1 &&
+            qty2sm.value.text != "" &&
+            int.parse(qty2sm.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProductservismebel[0].kdProduct,
+              selectedProductservismebel[0].nmProduct,
+              int.parse(qty2sm.value.text),
+              selectedProductservismebel[0].detailProduct[i].satuan));
+        } else if (i == 2 &&
+            qty3sm.value.text != "" &&
+            int.parse(qty3sm.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProductservismebel[0].kdProduct,
+              selectedProductservismebel[0].nmProduct,
+              int.parse(qty3sm.value.text),
+              selectedProductservismebel[0].detailProduct[i].satuan));
+        }
+      }
+      if (!_items.isEmpty) {
+        listServisMebel.add(TarikBarangModel(
+            selectedProductservismebel[0].kdProduct,
+            selectedProductservismebel[0].nmProduct,
+            _items,
+            ""));
+      }
+
+      selectedKdProductservismebel.value = "";
+      selectedProductservismebel.clear();
+      servismebelfield.value.clear();
+      qty1sm.value.clear();
+      qty2sm.value.clear();
+      qty3sm.value.clear();
+    } else {
+      List<TarikBarangItemModel> _items = <TarikBarangItemModel>[];
+      for (var i = 0;
+          i < selectedProductservismebel[0].detailProduct.length;
+          i++) {
+        if (i == 0 &&
+            qty1sm.value.text != "" &&
+            int.parse(qty1sm.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProductservismebel[0].kdProduct,
+              selectedProductservismebel[0].nmProduct,
+              int.parse(qty1sm.value.text),
+              selectedProductservismebel[0].detailProduct[i].satuan));
+        } else if (i == 1 &&
+            qty2sm.value.text != "" &&
+            int.parse(qty2sm.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProductservismebel[0].kdProduct,
+              selectedProductservismebel[0].nmProduct,
+              int.parse(qty2sm.value.text),
+              selectedProductservismebel[0].detailProduct[i].satuan));
+        } else if (i == 2 &&
+            qty3sm.value.text != "" &&
+            int.parse(qty3sm.value.text) != 0) {
+          _items.add(TarikBarangItemModel(
+              selectedProductservismebel[0].kdProduct,
+              selectedProductservismebel[0].nmProduct,
+              int.parse(qty3sm.value.text),
+              selectedProductservismebel[0].detailProduct[i].satuan));
+        }
+      }
+      if (_items.isNotEmpty) {
+        listServisMebel[int.parse(flag)].kdProduct =
+            selectedProductservismebel[0].kdProduct;
+        listServisMebel[int.parse(flag)].nmProduct =
+            selectedProductservismebel[0].nmProduct;
+        listServisMebel[int.parse(flag)].itemOrder = _items;
+        listServisMebel[int.parse(flag)].alasan = "";
+      } else {
+        listServisMebel.removeAt(int.parse(flag));
+        if (listServisMebel.isEmpty) {
+          servismebelhorizontal.value = false;
+        }
+      }
+      selectedKdProductservismebel.value = "";
+      selectedProductservismebel.clear();
+      servismebelfield.value.clear();
+      qty1sm.value.clear();
+      qty2sm.value.clear();
+      qty3sm.value.clear();
+    }
+    if (listServisMebel.isEmpty && selectedProductservismebel.isEmpty) {
+      servismebelhorizontal.value = false;
+    } else if (listServisMebel.isEmpty &&
+        selectedProductservismebel.isNotEmpty) {
+      servismebelhorizontal.value = true;
+    }
+  }
+
+  handleDeleteItemRetur(TarikBarangModel data, String from) {
     Get.dialog(Dialog(
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
@@ -992,7 +1182,13 @@ class TakingOrderVendorController extends GetxController
         child: DialogDelete(
             nmProduct: data.nmProduct,
             ontap: () async {
-              await deleteTarikBarangItem(data);
+              if (from == "gantikemasan") {
+                await deleteGantiKemasanItem(data);
+              } else if (from == "tarikbarang") {
+                await deleteTarikBarangItem(data);
+              } else if (from == "servismebel") {
+                await deleteServisMebelItem(data);
+              }
               Get.back();
             })));
   }
@@ -1000,8 +1196,33 @@ class TakingOrderVendorController extends GetxController
   deleteTarikBarangItem(TarikBarangModel data) {
     listTarikBarang
         .removeWhere((element) => element.kdProduct == data.kdProduct);
-    if (listTarikBarang.isEmpty) {
+    if (listTarikBarang.isEmpty && selectedProducttarikbarang.isEmpty) {
       tarikbaranghorizontal.value = false;
+    } else if (listTarikBarang.isEmpty &&
+        selectedProducttarikbarang.isNotEmpty) {
+      tarikbaranghorizontal.value = true;
+    }
+  }
+
+  deleteGantiKemasanItem(TarikBarangModel data) {
+    listgantikemasan
+        .removeWhere((element) => element.kdProduct == data.kdProduct);
+    if (listgantikemasan.isEmpty && selectedProductgantikemasan.isEmpty) {
+      gantikemasanhorizontal.value = false;
+    } else if (listgantikemasan.isEmpty &&
+        selectedProductgantikemasan.isNotEmpty) {
+      gantikemasanhorizontal.value = true;
+    }
+  }
+
+  deleteServisMebelItem(TarikBarangModel data) {
+    listServisMebel
+        .removeWhere((element) => element.kdProduct == data.kdProduct);
+    if (listServisMebel.isEmpty && selectedProductservismebel.isEmpty) {
+      servismebelhorizontal.value = false;
+    } else if (listServisMebel.isEmpty &&
+        selectedProductservismebel.isNotEmpty) {
+      servismebelhorizontal.value = true;
     }
   }
 }

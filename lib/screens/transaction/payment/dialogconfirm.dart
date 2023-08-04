@@ -7,7 +7,8 @@ import 'package:sfa_tools/widgets/textview.dart';
 import '../../../widgets/customelevatedbutton.dart';
 
 class DialogConfirm extends StatelessWidget {
-  const DialogConfirm({super.key});
+  String message;
+  DialogConfirm({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +39,8 @@ class DialogConfirm extends StatelessWidget {
                 ),
                 SizedBox(
                   width: Get.width * 0.4,
-                  child: const TextView(
-                    text: "Yakin untuk simpan pembayaran?",
+                  child: TextView(
+                    text: message,
                     headings: 'H4',
                     textAlign: TextAlign.center,
                     fontSize: 15,
