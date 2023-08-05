@@ -5,7 +5,7 @@ import 'package:dio/io.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/tools/logging.dart';
-import 'package:http/http.dart' show Client, Request;
+// import 'package:http/http.dart' show Client, Request;
 
 class ApiClient {
   Future getData(String url, String path) async {
@@ -84,51 +84,69 @@ class ApiClient {
   }
 
   Future<String> checkConnection() async {
-    String data = "";
-    try {
-      final conn_1 = await urlTest(AppConfig.tesPublicUrl);
-      if (conn_1 == "OK") {
-        data = "true|${AppConfig.basePublicUrl}";
-      } else {
-        final conn_2 = await urlTest(AppConfig.tesLocalUrl);
-        if (conn_2 == "OK") {
-          data = "true|${AppConfig.baseLocalUrl}";
-        } else {
-          data = "false|";
-        }
-      }
-    } on SocketException {
-      try {
-        final conn_2 = await urlTest(AppConfig.tesLocalUrl);
-        if (conn_2 == "OK") {
-          data = "true|${AppConfig.baseLocalUrl}";
-        }
-      } on SocketException {
-        data = "false|";
+    //get ip
+    var ipAddress = [];
+    for (var interface in await NetworkInterface.list()) {
+      // print('== Interface: ${interface.name} ==');
+      for (var addr in interface.addresses) {
+        // print('${addr.address} ${addr.host} ${addr.isLoopback} ${addr.rawAddress} ${addr.type.name}');
+        ipAddress = addr.rawAddress;
       }
     }
-    return data;
-  }
 
-  Future<String> urlTest(String url) async {
-    Client client = Client();
-    String testResult = "ERROR";
-
-    final request = Request('Get', Uri.parse(url))..followRedirects = false;
-    try {
-      final response = await client.send(request).timeout(const Duration(seconds: 5));
-
-      if(response.statusCode <400 && response.statusCode !=0){
-        testResult = "OK";
+    if(ipAddress.isNotEmpty) {
+      if(ipAddress[0] == "10" && ipAddress[1] == "10") {
+        return "true|${AppConfig.baseLocalUrl}";
       } else {
-        testResult = "ERROR";
+        return "true|${AppConfig.basePublicUrl}";
       }
-    } catch(e) {
-      testResult = "ERROR";
+    } else {
+      return "false|";
     }
 
-    return testResult;
+    // try {
+    //   final conn_1 = await urlTest(AppConfig.tesPublicUrl);
+    //   if (conn_1 == "OK") {
+    //     data = "true|${AppConfig.basePublicUrl}";
+    //   } else {
+    //     final conn_2 = await urlTest(AppConfig.tesLocalUrl);
+    //     if (conn_2 == "OK") {
+    //       data = "true|${AppConfig.baseLocalUrl}";
+    //     } else {
+    //       data = "false|";
+    //     }
+    //   }
+    // } on SocketException {
+    //   try {
+    //     final conn_2 = await urlTest(AppConfig.tesLocalUrl);
+    //     if (conn_2 == "OK") {
+    //       data = "true|${AppConfig.baseLocalUrl}";
+    //     }
+    //   } on SocketException {
+    //     data = "false|";
+    //   }
+    // }
   }
+
+  // Future<String> urlTest(String url) async {
+  //   Client client = Client();
+  //   String testResult = "ERROR";
+
+  //   final request = Request('Get', Uri.parse(url))..followRedirects = false;
+  //   try {
+  //     final response = await client.send(request).timeout(const Duration(seconds: 5));
+
+  //     if(response.statusCode <400 && response.statusCode !=0){
+  //       testResult = "OK";
+  //     } else {
+  //       testResult = "ERROR";
+  //     }
+  //   } catch(e) {
+  //     testResult = "ERROR";
+  //   }
+
+  //   return testResult;
+  // }
 }
 
 class ApiHttpOverrides extends HttpOverrides {

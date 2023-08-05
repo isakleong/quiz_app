@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
@@ -34,6 +35,27 @@ class SplashScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Visibility(
+                                visible: controller.isError.value ? true : false,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppConfig.darkGreen,
+                                    elevation: 5,
+                                    shape: const CircleBorder(),
+                                    padding: const EdgeInsets.all(10),
+                                  ),
+                                  child: const Icon(FontAwesomeIcons.xmark, size: 35, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
                           Image.asset(
                             "assets/images/logo.png", 
                             alignment: Alignment.center, 

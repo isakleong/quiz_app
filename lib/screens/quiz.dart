@@ -342,7 +342,7 @@ class QuizPage extends GetView<QuizController>{
                                                 },
                                                 child: CircleAvatar(
                                                   radius: 40,
-                                                  backgroundColor: (quizController.quizModel[index].answerSelected != -1) ? AppConfig.darkGreen : AppConfig.softRed,
+                                                  backgroundColor: (quizController.quizModel[index].answerSelected != -1) ? AppConfig.mainGreen : AppConfig.softRed,
                                                   child: TextView(headings: "H2", text: "${index + 1}", fontSize: 20, color: Colors.white),
                                                 ),
                                               )),
@@ -441,8 +441,8 @@ class QuizPage extends GetView<QuizController>{
                                   physics: const BouncingScrollPhysics(),
                                   itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
                                   itemBuilder: (BuildContext context, int index) {
-                                    return customRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} (CorrectAnswerIndex is: ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex})", index);
-                                    // return customRadioButton(quizController.quizModel[quizController.currentQuestion.value].answerList[index], index);
+                                    // return customRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} (CorrectAnswerIndex is: ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex})", index);
+                                    return customRadioButton(quizController.quizModel[quizController.currentQuestion.value].answerList[index], index);
                                   }),
                                 ), 
                               ),

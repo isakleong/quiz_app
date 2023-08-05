@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/common/route_config.dart';
+import 'package:sfa_tools/controllers/background_service_controller.dart';
 import 'package:sfa_tools/models/module.dart';
 import 'package:sfa_tools/models/servicebox.dart';
 import 'package:sfa_tools/tools/service.dart';
@@ -22,6 +23,7 @@ import 'package:sfa_tools/widgets/textview.dart';
 
 class SplashscreenController extends GetxController with StateMixin implements WidgetsBindingObserver {
   var errorMessage = "".obs;
+  var isError = false.obs;
 
   var appName = "".obs;
   var appVersion = "".obs;
@@ -40,21 +42,35 @@ class SplashscreenController extends GetxController with StateMixin implements W
   @override
   void onInit() {
     super.onInit();
+    isError(false);
     // Add the controller as an observer when it's initialized
     WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if(state == AppLifecycleState.resumed && isOpenSettings.value) {
-      isOpenSettings(false);
-      await syncAppsReady('STORAGE');
+    if(state == AppLifecycleState.resumed) {
+      if(isOpenSettings.value) {
+        isOpenSettings(false);
+        await syncAppsReady('STORAGE');
+      } else {
+        if(Get.currentRoute.toString() != "/") {
+
+          await Get.deleteAll(force: true);
+          // Get.offAndToNamed(RouteName.splashscreen);
+          Get.offAllNamed(RouteName.splashscreen);
+        }
+      }
     }
   }
 
   @override
-  void onReady() async {
+  void onReady() {
     super.onReady();
+    startApp();
+  }
+
+  startApp() async {
     if(await getPermissionStatus('STORAGE')) {
       if (await getPermissionStatus('EXTERNAL STORAGE')) {
         //reset permanent deny permission flag
@@ -133,6 +149,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } else if (type == 'EXTERNAL STORAGE') {
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
         await getParameterData();
+        await Backgroundservicecontroller().initializeNotifConfiguration();
         await getModuleData();
       } else {
         openPermissionRequestDialog('EXTERNAL STORAGE');
@@ -331,6 +348,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   }
 
   getModuleData() async {
+    isError(false);
     change(null, status: RxStatus.loading());
 
     var connTest = await ApiClient().checkConnection();
@@ -341,15 +359,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
     if (isConnected) {
       moduleList.clear();
 
-      salesIdParams.value = '00AC1A0103';
-
       if (salesIdParams.value != "") {
         try {
           final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
-          final result = await ApiClient().getData(urlAPI, "/module?sales_id=$encryptedParam");
+          final result = await ApiClient().getData(urlAPI, "/data?sales_id=$encryptedParam");
           var data = jsonDecode(result.toString());
-          data.map((item) {
+          data["AppModule"].map((item) {
             moduleList.add(Module.from(item));
           }).toList();
 
@@ -357,7 +373,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           await moduleBox.clear();
           await moduleBox.addAll(moduleList);
 
-          await checkVersion();
+          await checkVersion(data["AppVersion"]);
 
           if (isNeedUpdate.value) {
             change(null, status: RxStatus.success());
@@ -381,11 +397,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
         } catch (e) {
           errorMessage(e.toString());
           openErrorDialog();
+          isError(true);
           change(null, status: RxStatus.error(errorMessage.value));
         }
       } else {
         errorMessage(Message.errorParameterData);
         openErrorDialog();
+        isError(true);
         change(null, status: RxStatus.error(errorMessage.value));
       }
     } else {
@@ -399,85 +417,134 @@ class SplashscreenController extends GetxController with StateMixin implements W
       } else {
         errorMessage(Message.errorConnection);
         openErrorDialog();
+        isError(true);
         change(null, status: RxStatus.error(errorMessage.value));
       }
     }
   }
 
-  checkVersion() async {
+  checkVersion(var data) async {
     isNeedUpdate(false);
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String currentVersion = packageInfo.version;
     appVersion.value = currentVersion;
 
-    var connTest = await ApiClient().checkConnection();
-    var arrConnTest = connTest.split("|");
-    bool isConnected = arrConnTest[0] == 'true';
-    String urlAPI = arrConnTest[1];
+     try {
+      String latestVersion = data[0]["Value"];
+      appName.value = data[0]["AppName"];
 
-    if (salesIdParams.value != "") {
-      if (isConnected) {
-        try {
-          final encryptedParam = await Utils.encryptData(salesIdParams.value);
+      int currentVersionConverted = Utils().convertVersionNumber(currentVersion);
+      int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
 
-          final result = await ApiClient().getData(urlAPI, "/version?sales_id=$encryptedParam");
-          var data = jsonDecode(result.toString());
+      //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
+      bool moduleVersionStatus = true;
+      int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
 
-          String latestVersion = data[0]["Value"];
-          appName.value = data[0]["AppName"];
+      Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
+      var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
+      retrySubmitQuizBox.close();
 
-          int currentVersionConverted = Utils().convertVersionNumber(currentVersion);
-          int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
+      if (isRetrySubmit != null && isRetrySubmit.value == "true") {
+        cntPendingData = 1;
+      }
 
-          //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
-          bool moduleVersionStatus = true;
-          int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
-
-          Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
-          var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
-          retrySubmitQuizBox.close();
-
-          if (isRetrySubmit != null && isRetrySubmit.value == "true") {
-            cntPendingData = 1;
-          }
-
-          for (int i = 0; i < moduleList.length; i++) {
-            int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
-            if (moduleVersionConverted > currentVersionConverted) {
-              moduleVersionStatus = false;
-              break;
-            }
-          }
-
-          if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
-            isNeedUpdate(true);
-          }
-        } catch (e) {
-          errorMessage.value = e.toString();
-          openErrorDialog();
-          change(null, status: RxStatus.error(errorMessage.value));
-        }
-      } else {
-        var moduleBox = await Hive.openBox<Module>('moduleBox');
-        if (moduleBox.length > 0) {
-          moduleList.clear();
-          moduleList.addAll(moduleBox.values);
-
-          change(null, status: RxStatus.success());
-          Get.offAndToNamed(RouteName.homepage);
-        } else {
-          errorMessage(Message.errorConnection);
-          openErrorDialog();
-          change(null, status: RxStatus.error(errorMessage.value));
+      for (int i = 0; i < moduleList.length; i++) {
+        int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
+        if (moduleVersionConverted > currentVersionConverted) {
+          moduleVersionStatus = false;
+          break;
         }
       }
-    } else {
-      errorMessage(Message.errorParameterData);
+
+      if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
+        isNeedUpdate(true);
+      }
+    } catch (e) {
+      errorMessage.value = e.toString();
       openErrorDialog();
+      isError(true);
       change(null, status: RxStatus.error(errorMessage.value));
     }
   }
+
+  // checkVersion() async {
+  //   isNeedUpdate(false);
+
+  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  //   String currentVersion = packageInfo.version;
+  //   appVersion.value = currentVersion;
+
+  //   var connTest = await ApiClient().checkConnection();
+  //   var arrConnTest = connTest.split("|");
+  //   bool isConnected = arrConnTest[0] == 'true';
+  //   String urlAPI = arrConnTest[1];
+
+  //   if (salesIdParams.value != "") {
+  //     if (isConnected) {
+  //       try {
+  //         final encryptedParam = await Utils.encryptData(salesIdParams.value);
+
+  //         final result = await ApiClient().getData(urlAPI, "/version?sales_id=$encryptedParam");
+  //         var data = jsonDecode(result.toString());
+
+  //         String latestVersion = data[0]["Value"];
+  //         appName.value = data[0]["AppName"];
+
+  //         int currentVersionConverted = Utils().convertVersionNumber(currentVersion);
+  //         int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
+
+  //         //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
+  //         bool moduleVersionStatus = true;
+  //         int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
+
+  //         Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
+  //         var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
+  //         retrySubmitQuizBox.close();
+
+  //         if (isRetrySubmit != null && isRetrySubmit.value == "true") {
+  //           cntPendingData = 1;
+  //         }
+
+  //         for (int i = 0; i < moduleList.length; i++) {
+  //           int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
+  //           if (moduleVersionConverted > currentVersionConverted) {
+  //             moduleVersionStatus = false;
+  //             break;
+  //           }
+  //         }
+
+  //         if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
+  //           isNeedUpdate(true);
+  //         }
+  //       } catch (e) {
+  //         errorMessage.value = e.toString();
+  //         openErrorDialog();
+  //         isError(true);
+  //         change(null, status: RxStatus.error(errorMessage.value));
+  //       }
+  //     } else {
+  //       var moduleBox = await Hive.openBox<Module>('moduleBox');
+  //       if (moduleBox.length > 0) {
+  //         moduleList.clear();
+  //         moduleList.addAll(moduleBox.values);
+
+  //         change(null, status: RxStatus.success());
+  //         Get.offAndToNamed(RouteName.homepage);
+  //       } else {
+  //         errorMessage(Message.errorConnection);
+  //         openErrorDialog();
+  //         isError(true);
+  //         change(null, status: RxStatus.error(errorMessage.value));
+  //       }
+  //     }
+  //   } else {
+  //     errorMessage(Message.errorParameterData);
+  //     openErrorDialog();
+  //     isError(true);
+  //     change(null, status: RxStatus.error(errorMessage.value));
+  //   }
+  // }
 
   postTrackingVersion() async {
     var trackVersionBox = await Hive.openBox('trackVersionBox');
@@ -536,16 +603,19 @@ class SplashscreenController extends GetxController with StateMixin implements W
             } else {
               errorMessage.value = resultSubmit;
               openErrorDialog();
+              isError(true);
               change(null, status: RxStatus.error(errorMessage.value));
             }
           } catch (e) {
             errorMessage.value = e.toString();
             openErrorDialog();
+            isError(true);
             change(null, status: RxStatus.error(errorMessage.value));
           }
         } else {
           errorMessage(Message.errorConnection);
           openErrorDialog();
+          isError(true);
           change(null, status: RxStatus.error(errorMessage.value));
         }
       } else {
@@ -587,16 +657,19 @@ class SplashscreenController extends GetxController with StateMixin implements W
           } else {
             errorMessage.value = resultSubmit;
             openErrorDialog();
+            isError(true);
             change(null, status: RxStatus.error(errorMessage.value));
           }
         } catch (e) {
           errorMessage.value = e.toString();
           openErrorDialog();
+          isError(true);
           change(null, status: RxStatus.error(errorMessage.value));
         }
       } else {
         errorMessage(Message.errorConnection);
         openErrorDialog();
+        isError(true);
         change(null, status: RxStatus.error(errorMessage.value));
       }
     }
