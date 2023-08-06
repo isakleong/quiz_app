@@ -78,21 +78,36 @@ class ReturHeader extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(right: 0.05 * Get.width),
-              child: CustomElevatedButton(
-                  icon: Icon(
-                    FontAwesomeIcons.solidCheckCircle,
-                    size: 20,
-                  ),
-                  text: "Simpan",
-                  onTap: onTap,
-                  width: 0.25 * width,
-                  height: 0.045 * height,
-                  radius: 15,
+              child: ElevatedButton(
+                onPressed: onTap,
+                style: ElevatedButton.styleFrom(
                   backgroundColor: AppConfig.mainCyan,
-                  textcolor: Colors.white,
-                  elevation: 2,
-                  bordercolor: AppConfig.mainCyan,
-                  headings: 'H2'),
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  padding:
+                      EdgeInsets.only(left: 15, right: 15, top: 2, bottom: 2),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.solidCheckCircle,
+                      size: 18,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    TextView(
+                      text: "Simpan",
+                      headings: 'H4',
+                      fontSize: 14,
+                      color: Colors.white,
+                    )
+                  ],
+                ),
+              ),
             )
           ],
         ),

@@ -5,6 +5,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/returitem/noinputretur.dart';
+import 'package:sfa_tools/screens/transaction/returitem/returheader.dart';
 import 'package:sfa_tools/screens/transaction/returitem/shopcarttukarwarna.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
@@ -96,18 +97,37 @@ class TukarWarnaPage extends StatelessWidget {
                         padding: EdgeInsets.only(left: 0.05 * Get.width),
                         child: ShopCartTukarWarna(),
                       ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: 0.02 * Get.height,
-                  ),
-                  child: NoInputRetur(
-                      image: 'assets/images/returtukarwarna.png',
-                      isHorizontal: _takingOrderVendorController
-                          .tukarwarnahorizontal.value,
-                      title: "Belum Ada Produk Ditukar",
-                      description:
-                          "Anda dapat mulai mencari produk yang akan ditukar dan menambahkannya ke dalam keranjang."),
-                )
+                _takingOrderVendorController.listTukarWarna.isEmpty
+                    ? Container()
+                    : Expanded(
+                        child: Column(
+                          children: [
+                            ReturHeader(
+                                jumlahproduk:
+                                    "${_takingOrderVendorController.listTukarWarna.length} Produk",
+                                onTap: () {
+                                  _takingOrderVendorController
+                                      .handleSaveConfirm(
+                                          "Yakin untuk simpan tukar warna ?",
+                                          "Konfirmasi Tukar Warna");
+                                }),
+                          ],
+                        ),
+                      ),
+                _takingOrderVendorController.listTukarWarna.isEmpty
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                          top: 0.02 * Get.height,
+                        ),
+                        child: NoInputRetur(
+                            image: 'assets/images/returtukarwarna.png',
+                            isHorizontal: _takingOrderVendorController
+                                .tukarwarnahorizontal.value,
+                            title: "Belum Ada Produk Ditukar",
+                            description:
+                                "Anda dapat mulai mencari produk yang akan ditukar dan menambahkannya ke dalam keranjang."),
+                      )
+                    : Container()
               ],
             )));
   }

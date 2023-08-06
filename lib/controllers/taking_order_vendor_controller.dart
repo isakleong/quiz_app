@@ -7,6 +7,7 @@ import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/models/productdata.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
+import 'package:sfa_tools/models/tukarwarnamodel.dart';
 import 'package:sfa_tools/screens/transaction/payment/dialogconfirm.dart';
 import 'package:sfa_tools/screens/transaction/returitem/bottomsheettukarwarna.dart';
 import 'package:sfa_tools/screens/transaction/returitem/dialogcheckoutgb.dart';
@@ -42,14 +43,12 @@ class TakingOrderVendorController extends GetxController
     }
   }
 
-  handleSaveConfirm(String msg) {
+  handleSaveConfirm(String msg, String title) {
     Get.dialog(Dialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: DialogConfirm(
-          message: msg,
-        )));
+        child: DialogConfirm(message: msg, title: title)));
   }
 
   // for penjualan page
@@ -664,7 +663,7 @@ class TakingOrderVendorController extends GetxController
   RxList<TarikBarangModel> listgantikemasan = <TarikBarangModel>[].obs;
   RxList<TarikBarangModel> listServisMebel = <TarikBarangModel>[].obs;
   RxList<TarikBarangModel> listGantiBarang = <TarikBarangModel>[].obs;
-  RxList<TarikBarangModel> listTukarWarna = <TarikBarangModel>[].obs;
+  RxList<TukarWarnaModel> listTukarWarna = <TukarWarnaModel>[].obs;
   RxList<TarikBarangModel> listProdukPengganti = <TarikBarangModel>[].obs;
   RxList<TarikBarangModel> listitemforProdukPengganti =
       <TarikBarangModel>[].obs;
@@ -960,32 +959,32 @@ class TakingOrderVendorController extends GetxController
     getDetailProductGb(data.kdProduct);
   }
 
-  handleEditTukarWarnaItem(TarikBarangModel data) {
+  handleEditTukarWarnaItem(TukarWarnaModel data) {
     selectedKdProductTukarWarna.value = data.kdProduct.toString();
     qty1tw.value.text = '0';
     qty2tw.value.text = '0';
     qty3tw.value.text = '0';
-    for (var k = 0; k < listProduct.length; k++) {
-      if (listProduct[k].kdProduct == data.kdProduct) {
-        for (var i = 0; i < data.itemOrder.length; i++) {
-          for (var j = 0; j < listProduct[k].detailProduct.length; j++) {
-            if (j == 0 &&
-                listProduct[k].detailProduct[j].satuan ==
-                    data.itemOrder[i].Satuan) {
-              qty1tw.value.text = data.itemOrder[i].Qty.toString();
-            } else if (j == 1 &&
-                listProduct[k].detailProduct[j].satuan ==
-                    data.itemOrder[i].Satuan) {
-              qty2tw.value.text = data.itemOrder[i].Qty.toString();
-            } else if (j == 2 &&
-                listProduct[k].detailProduct[j].satuan ==
-                    data.itemOrder[i].Satuan) {
-              qty3tw.value.text = data.itemOrder[i].Qty.toString();
-            }
-          }
-        }
-      }
-    }
+    // for (var k = 0; k < listProduct.length; k++) {
+    //   if (listProduct[k].kdProduct == data.kdProduct) {
+    //     for (var i = 0; i < data.itemOrder.length; i++) {
+    //       for (var j = 0; j < listProduct[k].detailProduct.length; j++) {
+    //         if (j == 0 &&
+    //             listProduct[k].detailProduct[j].satuan ==
+    //                 data.itemOrder[i].Satuan) {
+    //           qty1tw.value.text = data.itemOrder[i].Qty.toString();
+    //         } else if (j == 1 &&
+    //             listProduct[k].detailProduct[j].satuan ==
+    //                 data.itemOrder[i].Satuan) {
+    //           qty2tw.value.text = data.itemOrder[i].Qty.toString();
+    //         } else if (j == 2 &&
+    //             listProduct[k].detailProduct[j].satuan ==
+    //                 data.itemOrder[i].Satuan) {
+    //           qty3tw.value.text = data.itemOrder[i].Qty.toString();
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     getDetailProductTw(data.kdProduct);
   }
@@ -1848,8 +1847,26 @@ class TakingOrderVendorController extends GetxController
   }
 
   handlesaveprodukpengganti(BuildContext context) {
+    if (listTukarWarna.isEmpty) {
+      List<CartModel> _list = <CartModel>[];
+      for (var i = 0; i < listitemforProdukPengganti[0].itemOrder.length; i++) {
+        CartModel data = listitemforProdukPengganti[0].itemOrder[i];
+        _list.add(CartModel(data.kdProduct, data.nmProduct, data.Qty,
+            data.Satuan, data.hrgPerPieces));
+      }
+      List<CartDetail> _listdetail = <CartDetail>[];
+      for (var i = 0; i < listProdukPengganti.length; i++) {
+        _listdetail.add(CartDetail(
+            listProdukPengganti[i].kdProduct,
+            listProdukPengganti[i].nmProduct,
+            listProdukPengganti[i].itemOrder));
+      }
+      listTukarWarna.add(TukarWarnaModel(selectedProductTukarWarna[0].kdProduct,
+          selectedProductTukarWarna[0].nmProduct, _list, _listdetail));
+    }
     selectedKdProductTukarWarna.value = "";
     selectedProductTukarWarna.clear();
+    tukarwarnafield.value.clear();
     Navigator.pop(context);
   }
 }

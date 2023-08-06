@@ -8,7 +8,8 @@ import '../../../widgets/customelevatedbutton.dart';
 
 class DialogConfirm extends StatelessWidget {
   String message;
-  DialogConfirm({super.key, required this.message});
+  String title;
+  DialogConfirm({super.key, required this.message, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +25,8 @@ class DialogConfirm extends StatelessWidget {
                 SizedBox(
                   height: Get.height * 0.03,
                 ),
-                const TextView(
-                  text: "Konfirmasi Pembayaran",
+                TextView(
+                  text: title,
                   headings: 'H3',
                   fontSize: 17,
                 ),
