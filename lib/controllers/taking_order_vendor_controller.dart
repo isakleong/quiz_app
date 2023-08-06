@@ -1,6 +1,5 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
@@ -9,18 +8,14 @@ import 'package:sfa_tools/models/productdata.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/screens/transaction/payment/dialogconfirm.dart';
+import 'package:sfa_tools/screens/transaction/returitem/bottomsheettukarwarna.dart';
 import 'package:sfa_tools/screens/transaction/returitem/dialogcheckoutgb.dart';
 import 'package:sfa_tools/screens/transaction/returitem/dialogcheckoutsm.dart';
 import 'package:sfa_tools/screens/transaction/returitem/dialogcheckouttb.dart';
-import 'package:sfa_tools/screens/transaction/returitem/tarikbaranglist.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/checkoutlist.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
-import 'package:sfa_tools/widgets/textview.dart';
 import '../common/app_config.dart';
 import '../models/tarikbarangmodel.dart';
-import '../screens/transaction/returitem/checkoutlistgb.dart';
-import '../widgets/customelevatedbutton.dart';
 
 class TakingOrderVendorController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -621,6 +616,7 @@ class TakingOrderVendorController extends GetxController
   Rx<TextEditingController> gantikemasanfield = TextEditingController().obs;
   Rx<TextEditingController> servismebelfield = TextEditingController().obs;
   Rx<TextEditingController> gantibarangfield = TextEditingController().obs;
+  Rx<TextEditingController> produkpenggantifield = TextEditingController().obs;
   //
   RxBool tukarwarnahorizontal = false.obs;
   RxBool tarikbaranghorizontal = false.obs;
@@ -633,12 +629,14 @@ class TakingOrderVendorController extends GetxController
   RxString selectedKdProductservismebel = "".obs;
   RxString selectedKdProductgantibarang = "".obs;
   RxString selectedKdProductTukarWarna = "".obs;
+  RxString selectedKdProductProdukPengganti = "".obs;
   //
   RxList<ProductData> selectedProducttarikbarang = <ProductData>[].obs;
   RxList<ProductData> selectedProductgantikemasan = <ProductData>[].obs;
   RxList<ProductData> selectedProductservismebel = <ProductData>[].obs;
   RxList<ProductData> selectedProductgantibarang = <ProductData>[].obs;
   RxList<ProductData> selectedProductTukarWarna = <ProductData>[].obs;
+  RxList<ProductData> selectedProductProdukPengganti = <ProductData>[].obs;
   //
   Rx<TextEditingController> qty1tb = TextEditingController().obs;
   Rx<TextEditingController> qty2tb = TextEditingController().obs;
@@ -655,6 +653,9 @@ class TakingOrderVendorController extends GetxController
   Rx<TextEditingController> qty1tw = TextEditingController().obs;
   Rx<TextEditingController> qty2tw = TextEditingController().obs;
   Rx<TextEditingController> qty3tw = TextEditingController().obs;
+  Rx<TextEditingController> qty1pp = TextEditingController().obs;
+  Rx<TextEditingController> qty2pp = TextEditingController().obs;
+  Rx<TextEditingController> qty3pp = TextEditingController().obs;
   //
   RxString selectedAlasantb = "".obs;
   RxString selectedAlasangk = "".obs;
@@ -664,6 +665,13 @@ class TakingOrderVendorController extends GetxController
   RxList<TarikBarangModel> listServisMebel = <TarikBarangModel>[].obs;
   RxList<TarikBarangModel> listGantiBarang = <TarikBarangModel>[].obs;
   RxList<TarikBarangModel> listTukarWarna = <TarikBarangModel>[].obs;
+  RxList<TarikBarangModel> listProdukPengganti = <TarikBarangModel>[].obs;
+  RxList<TarikBarangModel> listitemforProdukPengganti =
+      <TarikBarangModel>[].obs;
+  //
+  RxBool isOverfow = false.obs;
+  //
+  RxList listSisa = [].obs;
 
   handleProductSearchTb(String val) async {
     selectedKdProducttarikbarang.value = val;
@@ -752,6 +760,24 @@ class TakingOrderVendorController extends GetxController
     }
   }
 
+  handleProductSearchPp(String val) async {
+    isOverfow.value = false;
+    selectedKdProductProdukPengganti.value = val;
+    qty1pp.value.text = "0";
+    qty2pp.value.text = "0";
+    qty3pp.value.text = "0";
+    if (listProdukPengganti.isNotEmpty &&
+        listProdukPengganti.any((data) => data.kdProduct == val)) {
+      for (var i = 0; i < listProdukPengganti.length; i++) {
+        if (val == listProdukPengganti[i].kdProduct) {
+          handleEditProdukPenggantiItem(listProdukPengganti[i]);
+        }
+      }
+    } else {
+      await getDetailProductPp(val);
+    }
+  }
+
   getDetailProductGk(String kdProduct) {
     List<ProductData> list = <ProductData>[];
     for (var i = 0; i < listProduct.length; i++) {
@@ -798,6 +824,16 @@ class TakingOrderVendorController extends GetxController
       if (listProduct[i].kdProduct == kdProduct) {
         list.add(listProduct[i]);
         selectedProductTukarWarna.value = list;
+      }
+    }
+  }
+
+  getDetailProductPp(String kdProduct) {
+    List<ProductData> list = <ProductData>[];
+    for (var i = 0; i < listProduct.length; i++) {
+      if (listProduct[i].kdProduct == kdProduct) {
+        list.add(listProduct[i]);
+        selectedProductProdukPengganti.value = list;
       }
     }
   }
@@ -952,6 +988,37 @@ class TakingOrderVendorController extends GetxController
     }
 
     getDetailProductTw(data.kdProduct);
+  }
+
+  handleEditProdukPenggantiItem(TarikBarangModel data) {
+    isOverfow.value = false;
+    selectedKdProductProdukPengganti.value = data.kdProduct.toString();
+    qty1pp.value.text = '0';
+    qty2pp.value.text = '0';
+    qty3pp.value.text = '0';
+    for (var k = 0; k < listProduct.length; k++) {
+      if (listProduct[k].kdProduct == data.kdProduct) {
+        for (var i = 0; i < data.itemOrder.length; i++) {
+          for (var j = 0; j < listProduct[k].detailProduct.length; j++) {
+            if (j == 0 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.itemOrder[i].Satuan) {
+              qty1pp.value.text = data.itemOrder[i].Qty.toString();
+            } else if (j == 1 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.itemOrder[i].Satuan) {
+              qty2pp.value.text = data.itemOrder[i].Qty.toString();
+            } else if (j == 2 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.itemOrder[i].Satuan) {
+              qty3pp.value.text = data.itemOrder[i].Qty.toString();
+            }
+          }
+        }
+      }
+    }
+
+    getDetailProductPp(data.kdProduct);
   }
 
   addToCartTb() {
@@ -1454,6 +1521,111 @@ class TakingOrderVendorController extends GetxController
     }
   }
 
+  addToCartPp() {
+    var itemtotal = countTotalpengganti();
+    List<CartModel> _list = <CartModel>[];
+    for (var i = 0;
+        i < selectedProductProdukPengganti[0].detailProduct.length;
+        i++) {
+      if (i == 0 &&
+          qty1pp.value.text != "" &&
+          int.parse(qty1pp.value.text) > 0) {
+        _list.add(CartModel(
+            selectedProductProdukPengganti[0].kdProduct,
+            selectedProductProdukPengganti[0].nmProduct,
+            int.parse(qty1pp.value.text),
+            selectedProductProdukPengganti[0].detailProduct[i].satuan,
+            selectedProductProdukPengganti[0].detailProduct[i].hrg));
+      } else if (i == 1 &&
+          qty2pp.value.text != "" &&
+          int.parse(qty2pp.value.text) > 0) {
+        _list.add(CartModel(
+            selectedProductProdukPengganti[0].kdProduct,
+            selectedProductProdukPengganti[0].nmProduct,
+            int.parse(qty2pp.value.text),
+            selectedProductProdukPengganti[0].detailProduct[i].satuan,
+            selectedProductProdukPengganti[0].detailProduct[i].hrg));
+      } else if (i == 2 &&
+          qty3pp.value.text != "" &&
+          int.parse(qty3pp.value.text) > 0) {
+        _list.add(CartModel(
+            selectedProductProdukPengganti[0].kdProduct,
+            selectedProductProdukPengganti[0].nmProduct,
+            int.parse(qty3pp.value.text),
+            selectedProductProdukPengganti[0].detailProduct[i].satuan,
+            selectedProductProdukPengganti[0].detailProduct[i].hrg));
+      }
+    }
+    print("awal ${itemtotal}");
+    for (var i = 0; i < _list.length; i++) {
+      if ("dos" == _list[i].Satuan) {
+        itemtotal = itemtotal - (_list[i].Qty * 8);
+      } else if ("biji" == _list[i].Satuan) {
+        itemtotal = itemtotal - _list[i].Qty;
+      } else if ("kaleng" == _list[i].Satuan) {
+        itemtotal = itemtotal - _list[i].Qty;
+      } else if ("inner plas" == _list[i].Satuan) {
+        itemtotal = itemtotal - (_list[i].Qty * 4);
+      }
+    }
+    for (var i = 0; i < listProdukPengganti.length; i++) {
+      if (listProdukPengganti[i].kdProduct !=
+          selectedProductProdukPengganti[0].kdProduct) {
+        for (var j = 0; j < listProdukPengganti[i].itemOrder.length; j++) {
+          if ("dos" == listProdukPengganti[i].itemOrder[j].Satuan) {
+            itemtotal =
+                itemtotal - (listProdukPengganti[i].itemOrder[j].Qty * 8);
+          } else if ("biji" == listProdukPengganti[i].itemOrder[j].Satuan) {
+            itemtotal = itemtotal - listProdukPengganti[i].itemOrder[j].Qty;
+          } else if ("kaleng" == listProdukPengganti[i].itemOrder[j].Satuan) {
+            itemtotal = itemtotal - listProdukPengganti[i].itemOrder[j].Qty;
+          } else if ("inner plas" ==
+              listProdukPengganti[i].itemOrder[j].Satuan) {
+            itemtotal =
+                itemtotal - (listProdukPengganti[i].itemOrder[j].Qty * 4);
+          }
+        }
+      }
+    }
+    print("after minus by all item ${itemtotal}");
+    if (itemtotal < 0) {
+      isOverfow.value = true;
+      print("overflow");
+      return;
+    }
+
+    if (listProdukPengganti.isNotEmpty &&
+        listProdukPengganti.any((data) =>
+            data.kdProduct == selectedProductProdukPengganti[0].kdProduct)) {
+      for (var i = 0; i < listProdukPengganti.length; i++) {
+        if (listProdukPengganti[i].kdProduct ==
+            selectedProductProdukPengganti[0].kdProduct) {
+          listProdukPengganti[i].itemOrder.clear();
+          print(_list.length.toString() + " list length");
+          if (_list.isNotEmpty) {
+            listProdukPengganti[i].itemOrder.addAll(_list);
+          } else {
+            listProdukPengganti.removeAt(i);
+          }
+          break;
+        }
+      }
+    } else {
+      if (_list.isNotEmpty) {
+        listProdukPengganti.add(TarikBarangModel(
+            selectedProductProdukPengganti[0].kdProduct,
+            selectedProductProdukPengganti[0].nmProduct,
+            _list,
+            ""));
+      }
+    }
+    selectedProductProdukPengganti.clear();
+    selectedKdProductProdukPengganti.value = "";
+    produkpenggantifield.value.clear();
+    isOverfow.value = false;
+    countSisaPengganti();
+  }
+
   handleDeleteItemRetur(TarikBarangModel data, String from) {
     Get.dialog(Dialog(
         backgroundColor: Colors.white,
@@ -1470,6 +1642,8 @@ class TakingOrderVendorController extends GetxController
                 await deleteServisMebelItem(data);
               } else if (from == "gantibarang") {
                 await deleteGantiBarangItem(data);
+              } else if (from == "produkpengganti") {
+                await deleteProdukPenggantiItem(data);
               }
               Get.back();
             })));
@@ -1519,6 +1693,12 @@ class TakingOrderVendorController extends GetxController
     }
   }
 
+  deleteProdukPenggantiItem(TarikBarangModel data) {
+    listProdukPengganti
+        .removeWhere((element) => element.kdProduct == data.kdProduct);
+    countSisaPengganti();
+  }
+
   handleSaveGantiBarang() {
     Get.dialog(Dialog(
         backgroundColor: Colors.white,
@@ -1541,5 +1721,135 @@ class TakingOrderVendorController extends GetxController
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: DialogCheckOutTb()));
+  }
+
+  showProdukPengganti(BuildContext context) {
+    selectedKdProductProdukPengganti.value = "";
+    selectedProductProdukPengganti.clear();
+    listProdukPengganti.clear();
+    produkpenggantifield.value.clear();
+    listitemforProdukPengganti.clear();
+    List<CartModel> _list = <CartModel>[];
+    for (var i = 0; i < listProduct.length; i++) {
+      if (listProduct[i].kdProduct == selectedProductTukarWarna[0].kdProduct) {
+        for (var k = 0; k < listProduct[i].detailProduct.length; k++) {
+          if (k == 0 &&
+              qty1tw.value.text != "" &&
+              int.tryParse(qty1tw.value.text)! > 0) {
+            _list.add(CartModel(
+                listProduct[i].kdProduct,
+                listProduct[i].nmProduct,
+                int.tryParse(qty1tw.value.text)!,
+                listProduct[i].detailProduct[k].satuan,
+                listProduct[i].detailProduct[k].hrg));
+          } else if (k == 1 &&
+              qty2tw.value.text != "" &&
+              int.tryParse(qty2tw.value.text)! > 0) {
+            _list.add(CartModel(
+                listProduct[i].kdProduct,
+                listProduct[i].nmProduct,
+                int.tryParse(qty2tw.value.text)!,
+                listProduct[i].detailProduct[k].satuan,
+                listProduct[i].detailProduct[k].hrg));
+          } else if (k == 2 &&
+              qty3tw.value.text != "" &&
+              int.tryParse(qty3tw.value.text)! > 0) {
+            _list.add(CartModel(
+                listProduct[i].kdProduct,
+                listProduct[i].nmProduct,
+                int.tryParse(qty3tw.value.text)!,
+                listProduct[i].detailProduct[k].satuan,
+                listProduct[i].detailProduct[k].hrg));
+          }
+        }
+        break;
+      }
+    }
+    print(_list.length);
+    listitemforProdukPengganti.add(TarikBarangModel(
+        selectedProductTukarWarna[0].kdProduct,
+        selectedProductTukarWarna[0].nmProduct,
+        _list,
+        ""));
+    for (var i = 0; i < _list.length; i++) {
+      print(_list[i].Qty);
+    }
+    print(listitemforProdukPengganti[0].itemOrder.length);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      barrierColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      elevation: 8.0,
+      builder: (context) {
+        return BottomSheetTukarWarna(
+          nmProduct: selectedProductTukarWarna[0].nmProduct,
+        );
+      },
+    );
+  }
+
+  countTotalpengganti() {
+    var items = 0;
+    for (var i = 0; i < listitemforProdukPengganti[0].itemOrder.length; i++) {
+      if ("dos" == listitemforProdukPengganti[0].itemOrder[i].Satuan) {
+        items = items + (listitemforProdukPengganti[0].itemOrder[i].Qty * 8);
+      } else if ("biji" == listitemforProdukPengganti[0].itemOrder[i].Satuan) {
+        items = items + listitemforProdukPengganti[0].itemOrder[i].Qty;
+      } else if ("kaleng" ==
+          listitemforProdukPengganti[0].itemOrder[i].Satuan) {
+        items = items + listitemforProdukPengganti[0].itemOrder[i].Qty;
+      } else if ("inner plas" ==
+          listitemforProdukPengganti[0].itemOrder[i].Satuan) {
+        items = items + (listitemforProdukPengganti[0].itemOrder[i].Qty * 4);
+      }
+    }
+    return items;
+  }
+
+  countSisaPengganti() {
+    var itemtotal = countTotalpengganti();
+    for (var i = 0; i < listProdukPengganti.length; i++) {
+      for (var j = 0; j < listProdukPengganti[i].itemOrder.length; j++) {
+        if ("dos" == listProdukPengganti[i].itemOrder[j].Satuan) {
+          itemtotal = itemtotal - (listProdukPengganti[i].itemOrder[j].Qty * 8);
+        } else if ("biji" == listProdukPengganti[i].itemOrder[j].Satuan) {
+          itemtotal = itemtotal - listProdukPengganti[i].itemOrder[j].Qty;
+        } else if ("kaleng" == listProdukPengganti[i].itemOrder[j].Satuan) {
+          itemtotal = itemtotal - listProdukPengganti[i].itemOrder[j].Qty;
+        } else if ("inner plas" == listProdukPengganti[i].itemOrder[j].Satuan) {
+          itemtotal = itemtotal - (listProdukPengganti[i].itemOrder[j].Qty * 4);
+        }
+      }
+    }
+    if (itemtotal <= 0) {
+      listSisa.clear();
+      return 0;
+    } else {
+      listSisa.clear();
+      while (itemtotal != 0) {
+        if (itemtotal >= 8) {
+          int qty = (itemtotal / 8).toInt();
+          itemtotal = itemtotal - (8 * qty);
+          listSisa.add("${qty} dos");
+        } else if (itemtotal >= 4) {
+          int qty = (itemtotal / 4).toInt();
+          itemtotal = itemtotal - (4 * qty);
+          listSisa.add("${qty} inner plas");
+        } else {
+          listSisa.add("${itemtotal} biji");
+          itemtotal = itemtotal - itemtotal;
+        }
+      }
+      return listSisa.length;
+    }
+  }
+
+  handlesaveprodukpengganti(BuildContext context) {
+    selectedKdProductTukarWarna.value = "";
+    selectedProductTukarWarna.clear();
+    Navigator.pop(context);
   }
 }

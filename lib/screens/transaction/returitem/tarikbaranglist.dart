@@ -15,13 +15,17 @@ class TarikBarangList extends StatelessWidget {
   var onTapEdit;
   var onTapDelete;
   bool? hidebtn;
+  Color? btndelete;
+  Color? unit;
   TarikBarangList(
       {super.key,
       required this.idx,
       required this.data,
       this.onTapEdit,
       this.onTapDelete,
-      this.hidebtn});
+      this.hidebtn,
+      this.btndelete,
+      this.unit});
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +85,7 @@ class TarikBarangList extends StatelessWidget {
                                         satuan:
                                             "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
                                         fontSize: 12,
+                                        color: unit ?? Color(0XFF0098a6),
                                       ))
                                   : Container(),
                               data.itemOrder.length > 1
@@ -90,6 +95,7 @@ class TarikBarangList extends StatelessWidget {
                                         satuan:
                                             "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
                                         fontSize: 12,
+                                        color: unit ?? Color(0XFF0098a6),
                                       ))
                                   : Container(),
                               data.itemOrder.length > 2
@@ -99,6 +105,7 @@ class TarikBarangList extends StatelessWidget {
                                         satuan:
                                             "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
                                         fontSize: 12,
+                                        color: unit ?? Color(0XFF0098a6),
                                       ))
                                   : Container()
                               // SizedBox(
@@ -147,7 +154,7 @@ class TarikBarangList extends StatelessWidget {
                                 height: 40,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: Colors.red.shade700),
+                                    color: btndelete ?? Colors.red.shade700),
                                 child: Stack(
                                   alignment: Alignment.center,
                                   children: const [

@@ -1,0 +1,98 @@
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
+import 'package:sfa_tools/widgets/customelevatedbutton.dart';
+
+import '../../../widgets/textview.dart';
+
+class ProdukPenggantiHeader extends StatelessWidget {
+  List list;
+  var ontap;
+  ProdukPenggantiHeader({super.key, required this.list, required this.ontap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 0.05 * Get.width,
+              ),
+              Container(
+                  width: 45,
+                  height: 45,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xFFc4185c),
+                  ),
+                  child: Icon(
+                    FontAwesomeIcons.layerGroup,
+                    color: Colors.white,
+                  )),
+              SizedBox(
+                width: 0.02 * Get.width,
+              ),
+              const TextView(
+                text: "Barang Pengganti",
+                headings: 'H3',
+                fontSize: 18,
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 0.05 * Get.width),
+            child: list.isEmpty
+                ? ElevatedButton(
+                    onPressed: ontap,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppConfig.mainCyan,
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: EdgeInsets.only(
+                          left: 15, right: 15, top: 2, bottom: 2),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          FontAwesomeIcons.checkCircle,
+                          size: 18,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        TextView(
+                          text: "Selesai",
+                          headings: 'H4',
+                          fontSize: 14,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                  )
+                : Row(children: [
+                    TextView(text: "Sisa : "),
+                    for (var j = 0; j < list.length; j++)
+                      Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: ChipsItem(
+                          satuan: list[j],
+                          color: Color(0xFFc4185c),
+                        ),
+                      )
+                  ]),
+          )
+        ],
+      ),
+    );
+  }
+}

@@ -8,12 +8,14 @@ class TripleUnit extends StatelessWidget {
   String satuan;
   var onTapMinus;
   var onTapPlus;
+  Color? colorChips;
   TripleUnit(
       {super.key,
       required this.ctrl,
       required this.satuan,
       required this.onTapMinus,
-      required this.onTapPlus});
+      required this.onTapPlus,
+      this.colorChips});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,10 @@ class TripleUnit extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        ChipsItem(satuan: satuan),
+        ChipsItem(
+          satuan: satuan,
+          color: colorChips ?? Color(0XFF0098a6),
+        ),
         Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Container(
