@@ -55,8 +55,19 @@ class ShopCartTukarWarna extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 15),
                       child: ElevatedButton(
                         onPressed: () {
-                          _takingOrderVendorController
-                              .showProdukPengganti(context);
+                          if (_takingOrderVendorController.listTukarWarna.any(
+                              (data) =>
+                                  data.kdProduct ==
+                                  _takingOrderVendorController
+                                      .selectedProductTukarWarna[0]
+                                      .kdProduct)) {
+                            print("already added");
+                            _takingOrderVendorController
+                                .showEditProdukPengganti(context);
+                          } else {
+                            _takingOrderVendorController
+                                .showProdukPengganti(context);
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppConfig.mainCyan,

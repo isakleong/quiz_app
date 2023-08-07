@@ -348,9 +348,9 @@ class ReturController extends GetxController {
     qty3tw.value.text = '0';
     for (var k = 0; k < _penjualanController.listProduct.length; k++) {
       if (_penjualanController.listProduct[k].kdProduct == data.kdProduct) {
-        // listitemforProdukPengganti.clear();
-        // listitemforProdukPengganti.add(TarikBarangModel(
-        //     data.kdProduct, data.nmProduct, data.listqtyheader, ""));
+        listitemforProdukPengganti.clear();
+        listitemforProdukPengganti.add(TarikBarangModel(
+            data.kdProduct, data.nmProduct, data.listqtyheader, ""));
         // listProdukPengganti.clear();
         // listProdukPengganti.add(TarikBarangModel(kdProduct, nmProduct, itemOrder, alasan))
         for (var i = 0; i < data.listqtyheader.length; i++) {
@@ -1247,6 +1247,23 @@ class ReturController extends GetxController {
         },
       );
     }
+  }
+
+  showEditProdukPengganti(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      barrierColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      elevation: 8.0,
+      builder: (context) {
+        return BottomSheetTukarWarna(
+          nmProduct: selectedProductTukarWarna[0].nmProduct,
+        );
+      },
+    );
   }
 
   countTotalpengganti() {

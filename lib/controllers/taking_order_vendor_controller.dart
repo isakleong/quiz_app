@@ -28,7 +28,6 @@ class TakingOrderVendorController extends GetxController
     super.onInit();
     _pembayaranController.controller =
         TabController(vsync: this, length: 4, initialIndex: 0);
-    // cnt = SingleValueDropDownController();
     _penjualanController.getListItem();
     _laporanController.getReportList();
   }
@@ -328,5 +327,9 @@ class TakingOrderVendorController extends GetxController
 
   showProdukPengganti(BuildContext context) {
     _returController.showProdukPengganti(context);
+  }
+
+  showEditProdukPengganti(BuildContext context) {
+    _returController.showEditProdukPengganti(context);
   }
 }
