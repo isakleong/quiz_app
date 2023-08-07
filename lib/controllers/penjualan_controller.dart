@@ -2,6 +2,7 @@ import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
 
 import '../models/cartmodel.dart';
@@ -21,34 +22,28 @@ class PenjualanController extends GetxController {
   Rx<TextEditingController> qty2 = TextEditingController().obs;
   Rx<TextEditingController> qty3 = TextEditingController().obs;
   RxString choosedAddress = "".obs;
-  var dummyList = [
-    'Aries Bling Emulsion SW - 18 KG',
-    'ABSOLUTE Roof 30 - 2.5 LT',
-    'AVIAN Cling Synthetic SWM - 3.4 LT',
-    'AVIAN Cling Synthetic 11 - 17 LT',
-    'Acura Sb 120 Sonoma Oak',
-    'AVIAN Cling Zinc Chromate 901 - 1 KG'
-  ];
+
+  final LaporanController _laporanController = Get.find();
 
   getListItem() {
     listProduct.clear();
-    listProduct.add(
-        ProductData('asc', dummyList[0], [DetailProductData('dos', 15000)]));
-    listProduct.add(ProductData('desc', dummyList[1], [
+    listProduct.add(ProductData('asc', _laporanController.dummyList[0],
+        [DetailProductData('dos', 15000)]));
+    listProduct.add(ProductData('desc', _laporanController.dummyList[1], [
       DetailProductData('kaleng', 10000),
       DetailProductData('biji', 20000)
     ]));
-    listProduct.add(ProductData(
-        'ccc', dummyList[2], [DetailProductData('inner plas', 25000)]));
-    listProduct.add(ProductData('acc', dummyList[3],
+    listProduct.add(ProductData('ccc', _laporanController.dummyList[2],
+        [DetailProductData('inner plas', 25000)]));
+    listProduct.add(ProductData('acc', _laporanController.dummyList[3],
         [DetailProductData('biji', 30000), DetailProductData('dos', 35000)]));
-    listProduct.add(ProductData('cca', dummyList[4], [
+    listProduct.add(ProductData('cca', _laporanController.dummyList[4], [
       DetailProductData('dos', 50000),
       DetailProductData('inner plas', 100000),
       DetailProductData('biji', 120000)
     ]));
-    listProduct.add(
-        ProductData('cac', dummyList[5], [DetailProductData('dos', 200000)]));
+    listProduct.add(ProductData('cac', _laporanController.dummyList[5],
+        [DetailProductData('dos', 200000)]));
 
     for (var i = 0; i < listProduct.length; i++) {
       listDropDown.add(DropDownValueModel(
