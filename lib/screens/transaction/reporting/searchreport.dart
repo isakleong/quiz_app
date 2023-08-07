@@ -50,7 +50,8 @@ class SearchReport extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const TextView(headings: "H2", text: "Laporan", fontSize: 14),
+                    const TextView(
+                        headings: "H2", text: "Laporan", fontSize: 14),
                     const SizedBox(
                       height: 5,
                     ),
@@ -117,7 +118,7 @@ class SearchReport extends StatelessWidget {
                       'Semua Transaksi',
                       'Transaksi Penjualan',
                       'Transaksi Pembayaran',
-                      // 'Transaksi Retur',
+                      'Transaksi Retur',
                       // 'Transaksi TTH',
                       // 'Transaksi Survey',
                       // 'Transaksi Keluhan'

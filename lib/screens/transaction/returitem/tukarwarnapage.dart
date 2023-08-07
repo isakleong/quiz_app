@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/returitem/noinputretur.dart';
 import 'package:sfa_tools/screens/transaction/returitem/returheader.dart';
 import 'package:sfa_tools/screens/transaction/returitem/shopcarttukarwarna.dart';
+import 'package:sfa_tools/screens/transaction/returitem/tukarwarnalist.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 import '../../../controllers/taking_order_vendor_controller.dart';
@@ -111,6 +112,38 @@ class TukarWarnaPage extends StatelessWidget {
                                           "Yakin untuk simpan tukar warna ?",
                                           "Konfirmasi Tukar Warna");
                                 }),
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: _takingOrderVendorController
+                                    .listTukarWarna.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 0.05 * Get.width,
+                                          top: 5,
+                                          right: 0.05 * Get.width),
+                                      child: TukarWarnaList(
+                                        idx: (index + 1).toString(),
+                                        data: _takingOrderVendorController
+                                            .listTukarWarna[index],
+                                        onTapEdit: () {
+                                          _takingOrderVendorController
+                                              .handleEditTukarWarnaItem(
+                                                  _takingOrderVendorController
+                                                      .listTukarWarna[index]);
+                                        },
+                                        onTapDelete: () {
+                                          _takingOrderVendorController
+                                              .handleDeleteItemTukarWarna(
+                                                  _takingOrderVendorController
+                                                      .listTukarWarna[index]);
+                                        },
+                                      ));
+                                },
+                                physics: const BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                              ),
+                            )
                           ],
                         ),
                       ),

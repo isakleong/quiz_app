@@ -394,6 +394,9 @@ class TakingOrderVendorController extends GetxController
       listReportPenjualanShow.value.clear();
       listReportPembayaranshow.clear();
       listReportPembayaranshow.value.addAll(listReportPembayaran);
+    } else if (choosedReport.value == "Transaksi Retur") {
+      listReportPenjualanShow.clear();
+      listReportPembayaranshow.clear();
     }
   }
 
@@ -964,27 +967,32 @@ class TakingOrderVendorController extends GetxController
     qty1tw.value.text = '0';
     qty2tw.value.text = '0';
     qty3tw.value.text = '0';
-    // for (var k = 0; k < listProduct.length; k++) {
-    //   if (listProduct[k].kdProduct == data.kdProduct) {
-    //     for (var i = 0; i < data.itemOrder.length; i++) {
-    //       for (var j = 0; j < listProduct[k].detailProduct.length; j++) {
-    //         if (j == 0 &&
-    //             listProduct[k].detailProduct[j].satuan ==
-    //                 data.itemOrder[i].Satuan) {
-    //           qty1tw.value.text = data.itemOrder[i].Qty.toString();
-    //         } else if (j == 1 &&
-    //             listProduct[k].detailProduct[j].satuan ==
-    //                 data.itemOrder[i].Satuan) {
-    //           qty2tw.value.text = data.itemOrder[i].Qty.toString();
-    //         } else if (j == 2 &&
-    //             listProduct[k].detailProduct[j].satuan ==
-    //                 data.itemOrder[i].Satuan) {
-    //           qty3tw.value.text = data.itemOrder[i].Qty.toString();
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    for (var k = 0; k < listProduct.length; k++) {
+      if (listProduct[k].kdProduct == data.kdProduct) {
+        // listitemforProdukPengganti.clear();
+        // listitemforProdukPengganti.add(TarikBarangModel(
+        //     data.kdProduct, data.nmProduct, data.listqtyheader, ""));
+        // listProdukPengganti.clear();
+        // listProdukPengganti.add(TarikBarangModel(kdProduct, nmProduct, itemOrder, alasan))
+        for (var i = 0; i < data.listqtyheader.length; i++) {
+          for (var j = 0; j < listProduct[k].detailProduct.length; j++) {
+            if (j == 0 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.listqtyheader[i].Satuan) {
+              qty1tw.value.text = data.listqtyheader[i].Qty.toString();
+            } else if (j == 1 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.listqtyheader[i].Satuan) {
+              qty2tw.value.text = data.listqtyheader[i].Qty.toString();
+            } else if (j == 2 &&
+                listProduct[k].detailProduct[j].satuan ==
+                    data.listqtyheader[i].Satuan) {
+              qty3tw.value.text = data.listqtyheader[i].Qty.toString();
+            }
+          }
+        }
+      }
+    }
 
     getDetailProductTw(data.kdProduct);
   }
@@ -1764,30 +1772,31 @@ class TakingOrderVendorController extends GetxController
         break;
       }
     }
-    print(_list.length);
-    listitemforProdukPengganti.add(TarikBarangModel(
-        selectedProductTukarWarna[0].kdProduct,
-        selectedProductTukarWarna[0].nmProduct,
-        _list,
-        ""));
-    for (var i = 0; i < _list.length; i++) {
-      print(_list[i].Qty);
+    if (_list.isEmpty) {
+      selectedProductTukarWarna.clear();
+      selectedKdProductTukarWarna.value = "";
+      tukarwarnafield.value.clear();
+    } else {
+      listitemforProdukPengganti.add(TarikBarangModel(
+          selectedProductTukarWarna[0].kdProduct,
+          selectedProductTukarWarna[0].nmProduct,
+          _list,
+          ""));
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        barrierColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+        ),
+        elevation: 8.0,
+        builder: (context) {
+          return BottomSheetTukarWarna(
+            nmProduct: selectedProductTukarWarna[0].nmProduct,
+          );
+        },
+      );
     }
-    print(listitemforProdukPengganti[0].itemOrder.length);
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      barrierColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-      ),
-      elevation: 8.0,
-      builder: (context) {
-        return BottomSheetTukarWarna(
-          nmProduct: selectedProductTukarWarna[0].nmProduct,
-        );
-      },
-    );
   }
 
   countTotalpengganti() {
@@ -1847,26 +1856,61 @@ class TakingOrderVendorController extends GetxController
   }
 
   handlesaveprodukpengganti(BuildContext context) {
+    List<CartModel> _list = <CartModel>[];
+    for (var i = 0; i < listitemforProdukPengganti[0].itemOrder.length; i++) {
+      CartModel data = listitemforProdukPengganti[0].itemOrder[i];
+      _list.add(CartModel(data.kdProduct, data.nmProduct, data.Qty, data.Satuan,
+          data.hrgPerPieces));
+    }
+    List<CartDetail> _listdetail = <CartDetail>[];
+    for (var i = 0; i < listProdukPengganti.length; i++) {
+      _listdetail.add(CartDetail(listProdukPengganti[i].kdProduct,
+          listProdukPengganti[i].nmProduct, listProdukPengganti[i].itemOrder));
+    }
     if (listTukarWarna.isEmpty) {
-      List<CartModel> _list = <CartModel>[];
-      for (var i = 0; i < listitemforProdukPengganti[0].itemOrder.length; i++) {
-        CartModel data = listitemforProdukPengganti[0].itemOrder[i];
-        _list.add(CartModel(data.kdProduct, data.nmProduct, data.Qty,
-            data.Satuan, data.hrgPerPieces));
-      }
-      List<CartDetail> _listdetail = <CartDetail>[];
-      for (var i = 0; i < listProdukPengganti.length; i++) {
-        _listdetail.add(CartDetail(
-            listProdukPengganti[i].kdProduct,
-            listProdukPengganti[i].nmProduct,
-            listProdukPengganti[i].itemOrder));
-      }
       listTukarWarna.add(TukarWarnaModel(selectedProductTukarWarna[0].kdProduct,
           selectedProductTukarWarna[0].nmProduct, _list, _listdetail));
+    } else {
+      if (listTukarWarna.any(
+          (data) => data.kdProduct == selectedProductTukarWarna[0].kdProduct)) {
+        for (var i = 0; i < listTukarWarna.length; i++) {
+          if (listTukarWarna[i].kdProduct ==
+              selectedProductTukarWarna[0].kdProduct) {
+            listTukarWarna[i].listqtyheader.clear();
+            listTukarWarna[i].listitemdetail.clear();
+            listTukarWarna[i].listqtyheader.addAll(_list);
+            listTukarWarna[i].listitemdetail.addAll(_listdetail);
+          }
+        }
+      } else {
+        listTukarWarna.add(TukarWarnaModel(
+            selectedProductTukarWarna[0].kdProduct,
+            selectedProductTukarWarna[0].nmProduct,
+            _list,
+            _listdetail));
+      }
     }
     selectedKdProductTukarWarna.value = "";
     selectedProductTukarWarna.clear();
     tukarwarnafield.value.clear();
     Navigator.pop(context);
+  }
+
+  handleDeleteItemTukarWarna(TukarWarnaModel data) {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogDelete(
+            nmProduct: data.nmProduct,
+            ontap: () async {
+              await deleteItemTukarWarna(data);
+              Get.back();
+            })));
+  }
+
+  deleteItemTukarWarna(TukarWarnaModel data) {
+    listTukarWarna
+        .removeWhere((element) => element.kdProduct == data.kdProduct);
   }
 }
