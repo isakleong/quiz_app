@@ -1089,6 +1089,16 @@ class ReturController extends GetxController {
     countSisaPengganti();
   }
 
+  deleteItemTukarWarna(TukarWarnaModel data) {
+    listTukarWarna
+        .removeWhere((element) => element.kdProduct == data.kdProduct);
+    if (listTukarWarna.isEmpty && selectedProductTukarWarna.isEmpty) {
+      tukarwarnahorizontal.value = false;
+    } else if (listTukarWarna.isEmpty && selectedProductTukarWarna.isNotEmpty) {
+      tukarwarnahorizontal.value = true;
+    }
+  }
+
   handleSaveGantiBarang() {
     Get.dialog(Dialog(
         backgroundColor: Colors.white,
@@ -1111,6 +1121,60 @@ class ReturController extends GetxController {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: DialogCheckOutTb()));
+  }
+
+  handlesaveprodukpengganti(BuildContext context) {
+    List<CartModel> _list = <CartModel>[];
+    for (var i = 0; i < listitemforProdukPengganti[0].itemOrder.length; i++) {
+      CartModel data = listitemforProdukPengganti[0].itemOrder[i];
+      _list.add(CartModel(data.kdProduct, data.nmProduct, data.Qty, data.Satuan,
+          data.hrgPerPieces));
+    }
+    List<CartDetail> _listdetail = <CartDetail>[];
+    for (var i = 0; i < listProdukPengganti.length; i++) {
+      _listdetail.add(CartDetail(listProdukPengganti[i].kdProduct,
+          listProdukPengganti[i].nmProduct, listProdukPengganti[i].itemOrder));
+    }
+    if (listTukarWarna.isEmpty) {
+      listTukarWarna.add(TukarWarnaModel(selectedProductTukarWarna[0].kdProduct,
+          selectedProductTukarWarna[0].nmProduct, _list, _listdetail));
+    } else {
+      if (listTukarWarna.any(
+          (data) => data.kdProduct == selectedProductTukarWarna[0].kdProduct)) {
+        for (var i = 0; i < listTukarWarna.length; i++) {
+          if (listTukarWarna[i].kdProduct ==
+              selectedProductTukarWarna[0].kdProduct) {
+            listTukarWarna[i].listqtyheader.clear();
+            listTukarWarna[i].listitemdetail.clear();
+            listTukarWarna[i].listqtyheader.addAll(_list);
+            listTukarWarna[i].listitemdetail.addAll(_listdetail);
+          }
+        }
+      } else {
+        listTukarWarna.add(TukarWarnaModel(
+            selectedProductTukarWarna[0].kdProduct,
+            selectedProductTukarWarna[0].nmProduct,
+            _list,
+            _listdetail));
+      }
+    }
+    selectedKdProductTukarWarna.value = "";
+    selectedProductTukarWarna.clear();
+    tukarwarnafield.value.clear();
+    Navigator.pop(context);
+  }
+
+  handleDeleteItemTukarWarna(TukarWarnaModel data) {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogDelete(
+            nmProduct: data.nmProduct,
+            ontap: () async {
+              await deleteItemTukarWarna(data);
+              Get.back();
+            })));
   }
 
   showProdukPengganti(BuildContext context) {
@@ -1238,70 +1302,6 @@ class ReturController extends GetxController {
         }
       }
       return listSisa.length;
-    }
-  }
-
-  handlesaveprodukpengganti(BuildContext context) {
-    List<CartModel> _list = <CartModel>[];
-    for (var i = 0; i < listitemforProdukPengganti[0].itemOrder.length; i++) {
-      CartModel data = listitemforProdukPengganti[0].itemOrder[i];
-      _list.add(CartModel(data.kdProduct, data.nmProduct, data.Qty, data.Satuan,
-          data.hrgPerPieces));
-    }
-    List<CartDetail> _listdetail = <CartDetail>[];
-    for (var i = 0; i < listProdukPengganti.length; i++) {
-      _listdetail.add(CartDetail(listProdukPengganti[i].kdProduct,
-          listProdukPengganti[i].nmProduct, listProdukPengganti[i].itemOrder));
-    }
-    if (listTukarWarna.isEmpty) {
-      listTukarWarna.add(TukarWarnaModel(selectedProductTukarWarna[0].kdProduct,
-          selectedProductTukarWarna[0].nmProduct, _list, _listdetail));
-    } else {
-      if (listTukarWarna.any(
-          (data) => data.kdProduct == selectedProductTukarWarna[0].kdProduct)) {
-        for (var i = 0; i < listTukarWarna.length; i++) {
-          if (listTukarWarna[i].kdProduct ==
-              selectedProductTukarWarna[0].kdProduct) {
-            listTukarWarna[i].listqtyheader.clear();
-            listTukarWarna[i].listitemdetail.clear();
-            listTukarWarna[i].listqtyheader.addAll(_list);
-            listTukarWarna[i].listitemdetail.addAll(_listdetail);
-          }
-        }
-      } else {
-        listTukarWarna.add(TukarWarnaModel(
-            selectedProductTukarWarna[0].kdProduct,
-            selectedProductTukarWarna[0].nmProduct,
-            _list,
-            _listdetail));
-      }
-    }
-    selectedKdProductTukarWarna.value = "";
-    selectedProductTukarWarna.clear();
-    tukarwarnafield.value.clear();
-    Navigator.pop(context);
-  }
-
-  handleDeleteItemTukarWarna(TukarWarnaModel data) {
-    Get.dialog(Dialog(
-        backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: DialogDelete(
-            nmProduct: data.nmProduct,
-            ontap: () async {
-              await deleteItemTukarWarna(data);
-              Get.back();
-            })));
-  }
-
-  deleteItemTukarWarna(TukarWarnaModel data) {
-    listTukarWarna
-        .removeWhere((element) => element.kdProduct == data.kdProduct);
-    if (listTukarWarna.isEmpty && selectedProductTukarWarna.isEmpty) {
-      tukarwarnahorizontal.value = false;
-    } else if (listTukarWarna.isEmpty && selectedProductTukarWarna.isNotEmpty) {
-      tukarwarnahorizontal.value = true;
     }
   }
 }
