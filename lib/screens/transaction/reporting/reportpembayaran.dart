@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/transaction/reporting/itemreportpenjualan.dart';
 import 'package:sfa_tools/screens/transaction/reporting/reportheader.dart';
 
 import '../../../controllers/taking_order_vendor_controller.dart';
+import 'itemreportpembayaran.dart';
 
-class ReportPenjualan extends StatelessWidget {
+class ReportPembayaran extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
-  ReportPenjualan({super.key});
+  ReportPembayaran({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +19,12 @@ class ReportPenjualan extends StatelessWidget {
         for (int index = 0;
             index <
                 _takingOrderVendorController
-                    .listReportPenjualanShow.value.length;
+                    .listReportPembayaranshow.value.length;
             index++)
           index == 0 &&
                   index !=
                       _takingOrderVendorController
-                              .listReportPenjualanShow.value.length -
+                              .listReportPembayaranshow.value.length -
                           1
               ? Column(
                   children: [
@@ -34,23 +34,25 @@ class ReportPenjualan extends StatelessWidget {
                             top: 15,
                             right: 0.05 * Get.width),
                         child: ReportHeader(
-                          img: 'assets/images/custorder.png',
-                          title: "Penjualan",
+                          img: 'assets/images/custpayment.png',
+                          title: "Pembayaran",
                         )),
                     const SizedBox(
                       height: 5,
                     ),
-                    ItemReportPenjualan(
+                    ItemReportPembayaran(
                       idx: (index + 1).toString(),
                       data: _takingOrderVendorController
-                          .listReportPenjualanShow.value[index],
-                    )
+                          .listReportPembayaranshow.value[index],
+                      total:
+                          "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                    ),
                   ],
                 )
               : index == 0 &&
                       index ==
                           _takingOrderVendorController
-                                  .listReportPenjualanShow.value.length -
+                                  .listReportPembayaranshow.value.length -
                               1
                   ? Column(
                       children: [
@@ -60,16 +62,18 @@ class ReportPenjualan extends StatelessWidget {
                                 top: 15,
                                 right: 0.05 * Get.width),
                             child: ReportHeader(
-                              img: 'assets/images/custorder.png',
-                              title: "Penjualan",
+                              img: 'assets/images/custpayment.png',
+                              title: "Pembayaran",
                             )),
                         const SizedBox(
                           height: 5,
                         ),
-                        ItemReportPenjualan(
+                        ItemReportPembayaran(
                           idx: (index + 1).toString(),
                           data: _takingOrderVendorController
-                              .listReportPenjualanShow.value[index],
+                              .listReportPembayaranshow.value[index],
+                          total:
+                              "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
                         ),
                         SizedBox(
                           height: 0.04 * Get.height,
@@ -84,7 +88,7 @@ class ReportPenjualan extends StatelessWidget {
                   : index != 0 &&
                           index ==
                               _takingOrderVendorController
-                                      .listReportPenjualanShow.value.length -
+                                      .listReportPembayaranshow.value.length -
                                   1
                       ? Column(
                           children: [
@@ -93,10 +97,12 @@ class ReportPenjualan extends StatelessWidget {
                                   left: 0.05 * Get.width,
                                   top: 15,
                                   right: 0.05 * Get.width),
-                              child: ItemReportPenjualan(
+                              child: ItemReportPembayaran(
                                 idx: (index + 1).toString(),
                                 data: _takingOrderVendorController
-                                    .listReportPenjualanShow.value[index],
+                                    .listReportPembayaranshow.value[index],
+                                total:
+                                    "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
                               ),
                             ),
                             SizedBox(
@@ -114,11 +120,14 @@ class ReportPenjualan extends StatelessWidget {
                               left: 0.05 * Get.width,
                               top: 15,
                               right: 0.05 * Get.width),
-                          child: ItemReportPenjualan(
+                          child: ItemReportPembayaran(
                             idx: (index + 1).toString(),
                             data: _takingOrderVendorController
-                                .listReportPenjualanShow.value[index],
-                          )),
+                                .listReportPembayaranshow.value[index],
+                            total:
+                                "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                          ),
+                        ),
       ],
     );
   }
