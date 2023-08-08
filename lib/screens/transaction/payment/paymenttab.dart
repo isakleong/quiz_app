@@ -14,7 +14,7 @@ class PaymentTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: Get.width,
-      height: 0.26 * Get.height,
+      height: 0.23 * Get.height,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
