@@ -35,7 +35,7 @@ class CheckoutList extends StatelessWidget {
                         ),
                         Container(
                           width: 0.07 * Get.width,
-                          height: 0.04 * Get.height,
+                          height: 0.07 * Get.width,
                           decoration: BoxDecoration(
                               color: Colors.blueGrey,
                               borderRadius: BorderRadius.circular(8)),
@@ -63,17 +63,16 @@ class CheckoutList extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 data.itemOrder.isNotEmpty
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(left: 0.0),
-                                        child: ChipsItem(
-                                          satuan:
-                                              "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
-                                          fontSize: 12,
-                                        ))
+                                    ? ChipsItem(
+                                        satuan:
+                                            "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
+                                        fontSize: 12,
+                                      )
                                     : Container(),
                                 data.itemOrder.length > 1
                                     ? Padding(
-                                        padding: const EdgeInsets.only(left: 5.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 5.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
@@ -82,7 +81,8 @@ class CheckoutList extends StatelessWidget {
                                     : Container(),
                                 data.itemOrder.length > 2
                                     ? Padding(
-                                        padding: const EdgeInsets.only(left: 5.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 5.0),
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",

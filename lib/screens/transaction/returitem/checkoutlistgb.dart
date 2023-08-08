@@ -37,7 +37,7 @@ class CheckoutListGb extends StatelessWidget {
                         ),
                         Container(
                           width: 0.07 * Get.width,
-                          height: 0.04 * Get.height,
+                          height: 0.07 * Get.width,
                           decoration: BoxDecoration(
                               color: Colors.blueGrey,
                               borderRadius: BorderRadius.circular(8)),

@@ -49,8 +49,8 @@ class TukarWarnaList extends StatelessWidget {
                         width: 0.025 * Get.width,
                       ),
                       Container(
-                        width: 0.07 * Get.width,
-                        height: 0.04 * Get.height,
+                        width: 0.0725 * Get.width,
+                        height: 0.0725 * Get.width,
                         decoration: BoxDecoration(
                             color: Colors.blueGrey,
                             borderRadius: BorderRadius.circular(10)),

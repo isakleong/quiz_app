@@ -37,8 +37,8 @@ class CartList extends StatelessWidget {
                         width: 0.025 * width,
                       ),
                       Container(
-                        width: 0.07 * width,
-                        height: 0.04 * height,
+                        width: 0.0725 * Get.width,
+                        height: 0.0725 * Get.width,
                         decoration: BoxDecoration(
                             color: Colors.blueGrey,
                             borderRadius: BorderRadius.circular(10)),
@@ -54,56 +54,50 @@ class CartList extends StatelessWidget {
                       SizedBox(
                         width: 0.025 * width,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 0.0 * height),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextView(
-                              headings: 'H4',
-                              fontSize: 14,
-                              text: data.nmProduct,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                data.itemOrder.isNotEmpty
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 0.0),
-                                        child: ChipsItem(
-                                          satuan:
-                                              "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
-                                          fontSize: 12,
-                                        ))
-                                    : Container(),
-                                data.itemOrder.length > 1
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 5.0),
-                                        child: ChipsItem(
-                                          satuan:
-                                              "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
-                                          fontSize: 12,
-                                        ))
-                                    : Container(),
-                                data.itemOrder.length > 2
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 5.0),
-                                        child: ChipsItem(
-                                          satuan:
-                                              "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
-                                          fontSize: 12,
-                                        ))
-                                    : Container()
-                                // SizedBox(
-                                //   width: 0.1 * width,
-                                // ),
-                              ],
-                            )
-                          ],
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextView(
+                            headings: 'H4',
+                            fontSize: 14,
+                            text: data.nmProduct,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              data.itemOrder.isNotEmpty
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(left: 0.0),
+                                      child: ChipsItem(
+                                        satuan:
+                                            "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
+                                        fontSize: 12,
+                                      ))
+                                  : Container(),
+                              data.itemOrder.length > 1
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(left: 5.0),
+                                      child: ChipsItem(
+                                        satuan:
+                                            "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
+                                        fontSize: 12,
+                                      ))
+                                  : Container(),
+                              data.itemOrder.length > 2
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(left: 5.0),
+                                      child: ChipsItem(
+                                        satuan:
+                                            "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
+                                        fontSize: 12,
+                                      ))
+                                  : Container()
+                              // SizedBox(
+                              //   width: 0.1 * width,
+                              // ),
+                            ],
+                          )
+                        ],
                       )
                     ],
                   ),

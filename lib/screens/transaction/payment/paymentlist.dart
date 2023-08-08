@@ -43,8 +43,8 @@ class PaymentList extends StatelessWidget {
                         width: 0.025 * Get.width,
                       ),
                       Container(
-                        width: 0.07 * Get.width,
-                        height: 0.045 * Get.height,
+                        width: 0.0725 * Get.width,
+                        height: 0.0725 * Get.width,
                         decoration: BoxDecoration(
                             color: Colors.blueGrey,
                             borderRadius: BorderRadius.circular(10)),
@@ -60,36 +60,33 @@ class PaymentList extends StatelessWidget {
                       SizedBox(
                         width: 0.025 * Get.width,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 0.0 * Get.height),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextView(
-                              headings: 'H4',
-                              fontSize: 14,
-                              text: metode,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextView(
-                                  text: value,
-                                  fontSize: 14,
-                                ),
-                                SizedBox(
-                                  width: 0.01 * Get.width,
-                                ),
-                                jatuhtempo == ""
-                                    ? Container()
-                                    : ChipsItem(
-                                        satuan: jatuhtempo,
-                                        fontSize: 12,
-                                      )
-                              ],
-                            )
-                          ],
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextView(
+                            headings: 'H4',
+                            fontSize: 14,
+                            text: metode,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextView(
+                                text: value,
+                                fontSize: 14,
+                              ),
+                              SizedBox(
+                                width: 0.01 * Get.width,
+                              ),
+                              jatuhtempo == ""
+                                  ? Container()
+                                  : ChipsItem(
+                                      satuan: jatuhtempo,
+                                      fontSize: 12,
+                                    )
+                            ],
+                          )
+                        ],
                       )
                     ],
                   ),

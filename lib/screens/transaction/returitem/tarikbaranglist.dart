@@ -50,8 +50,8 @@ class TarikBarangList extends StatelessWidget {
                         width: 0.025 * Get.width,
                       ),
                       Container(
-                        width: 0.07 * Get.width,
-                        height: 0.04 * Get.height,
+                        width: 0.0725 * Get.width,
+                        height: 0.0725 * Get.width,
                         decoration: BoxDecoration(
                             color: Colors.blueGrey,
                             borderRadius: BorderRadius.circular(10)),
@@ -79,14 +79,12 @@ class TarikBarangList extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               data.itemOrder.isNotEmpty
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(left: 0.0),
-                                      child: ChipsItem(
-                                        satuan:
-                                            "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
-                                        fontSize: 12,
-                                        color: unit ?? Color(0XFF0098a6),
-                                      ))
+                                  ? ChipsItem(
+                                      satuan:
+                                          "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
+                                      fontSize: 12,
+                                      color: unit ?? Color(0XFF0098a6),
+                                    )
                                   : Container(),
                               data.itemOrder.length > 1
                                   ? Padding(
@@ -208,9 +206,11 @@ class TarikBarangList extends StatelessWidget {
                       )
                     ],
                   ),
-            const SizedBox(
-              height: 10,
-            ),
+            data.alasan == ""
+                ? Container()
+                : const SizedBox(
+                    height: 10,
+                  ),
           ],
         ),
       ),
