@@ -34,7 +34,7 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                             child: BackButtonAction()),
                         Padding(
                             padding: EdgeInsets.only(
-                                left: 0.05 * width, top: 0.02 * height),
+                                left: 0.05 * width, top: 0.01 * height),
                             child: ProductSearch()),
                         _takingOrderVendorController.selectedValue.value == ""
                             ? Container()

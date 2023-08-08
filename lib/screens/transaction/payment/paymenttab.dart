@@ -22,6 +22,7 @@ class PaymentTab extends StatelessWidget {
           child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
+            toolbarHeight: 20,
             bottom: TabBar(
               controller: _takingOrderVendorController.controller,
               indicatorColor: const Color.fromARGB(255, 13, 101, 91),

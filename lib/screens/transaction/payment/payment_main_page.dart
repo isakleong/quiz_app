@@ -9,7 +9,6 @@ import 'package:sfa_tools/screens/transaction/payment/paymenttab.dart';
 import 'package:sfa_tools/screens/transaction/payment/piutangcard.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
 
-
 class PaymentMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
   PaymentMainPage({super.key});
@@ -33,10 +32,10 @@ class PaymentMainPage extends StatelessWidget {
                         child: BackButtonAction()),
                     Padding(
                         padding: EdgeInsets.only(
-                            left: 0.05 * Get.width, top: 0.02 * Get.height),
+                            left: 0.05 * Get.width, top: 0.01 * Get.height),
                         child: const PiutangCard()),
                     const SizedBox(
-                      height: 20,
+                      height: 15,
                     ),
                     PaymentTab(),
                     Container(
@@ -72,7 +71,8 @@ class PaymentMainPage extends StatelessWidget {
                               jatuhtempo: _takingOrderVendorController
                                           .listpaymentdata[index].jatuhtempo ==
                                       ""
-                                  ? _takingOrderVendorController.listpaymentdata[index].jatuhtempo
+                                  ? _takingOrderVendorController
+                                      .listpaymentdata[index].jatuhtempo
                                   : "Jatuh Tempo : ${_takingOrderVendorController.listpaymentdata[index].jatuhtempo}",
                               value:
                                   "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listpaymentdata[index].value.toInt())}",

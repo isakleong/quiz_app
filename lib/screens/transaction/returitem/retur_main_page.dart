@@ -42,7 +42,7 @@ class ReturMainPage extends StatelessWidget {
                     child: BackButtonAction()),
                 Padding(
                     padding: EdgeInsets.only(
-                        left: 0.05 * Get.width, top: 0.02 * Get.height),
+                        left: 0.05 * Get.width, top: 0.01 * Get.height),
                     child: const ReturCard()),
                 Padding(
                     padding: EdgeInsets.only(
