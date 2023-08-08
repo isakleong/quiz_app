@@ -244,6 +244,7 @@ class PenjualanController extends GetxController {
     } else {
       await getDetailProduct(val);
     }
+    cnt.value.clear();
   }
 
   previewCheckOut() {

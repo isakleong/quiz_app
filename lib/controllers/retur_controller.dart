@@ -100,6 +100,7 @@ class ReturController extends GetxController {
     } else {
       await getDetailProduct(val, "tb");
     }
+    tarikbarangfield.value.clear();
   }
 
   handleProductSearchGk(String val) async {
@@ -118,6 +119,7 @@ class ReturController extends GetxController {
     } else {
       await getDetailProduct(val, "gk");
     }
+    gantikemasanfield.value.clear();
   }
 
   handleProductSearchSm(String val) async {
@@ -135,6 +137,7 @@ class ReturController extends GetxController {
     } else {
       await getDetailProduct(val, "sm");
     }
+    servismebelfield.value.clear();
   }
 
   handleProductSearchGb(String val) async {
@@ -152,6 +155,7 @@ class ReturController extends GetxController {
     } else {
       await getDetailProduct(val, "gb");
     }
+    gantibarangfield.value.clear();
   }
 
   handleProductSearchTw(String val) async {
@@ -169,6 +173,7 @@ class ReturController extends GetxController {
     } else {
       await getDetailProduct(val, "tw");
     }
+    tukarwarnafield.value.clear();
   }
 
   handleProductSearchPp(String val) async {
@@ -187,6 +192,7 @@ class ReturController extends GetxController {
     } else {
       await getDetailProduct(val, "pp");
     }
+    produkpenggantifield.value.clear();
   }
 
   getDetailProduct(String kdProduct, String from) async {
