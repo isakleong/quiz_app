@@ -266,8 +266,8 @@ class ShopCartTarikBarang extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                    left: 0.05 * Get.width,
-                    right: 0.05 * Get.width,
+                    left: ((0.9 - 0.8) / 3) * Get.width,
+                    right: ((0.9 - 0.8) / 3) * Get.width,
                     bottom: 0.01 * Get.height),
                 child: Container(
                   decoration: BoxDecoration(

@@ -31,7 +31,7 @@ class SingleUnit extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Container(
-              width: 0.8 * width, // Set the desired width
+              width: 0.83 * width, // Set the desired width
               child: TextFormField(
                 controller: ctrl,
                 keyboardType: TextInputType.number,
@@ -59,7 +59,7 @@ class SingleUnit extends StatelessWidget {
                         EdgeInsets.zero, // Remove the padding around the icon
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: BorderRadius.all(Radius.circular(6)),
                   ),
                 ),
                 textAlign: TextAlign.center,

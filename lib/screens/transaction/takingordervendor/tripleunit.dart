@@ -59,7 +59,7 @@ class TripleUnit extends StatelessWidget {
                         EdgeInsets.zero, // Remove the padding around the icon
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: BorderRadius.all(Radius.circular(6)),
                   ),
                 ),
                 textAlign: TextAlign.center,
