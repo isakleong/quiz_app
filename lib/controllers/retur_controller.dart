@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
+import 'package:sfa_tools/screens/transaction/returitem/dialogdeletetukarwarna.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
+import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 
 import '../models/cartmodel.dart';
 import '../models/productdata.dart';
@@ -11,6 +15,7 @@ import '../screens/transaction/returitem/bottomsheettukarwarna.dart';
 import '../screens/transaction/returitem/dialogcheckoutgb.dart';
 import '../screens/transaction/returitem/dialogcheckoutsm.dart';
 import '../screens/transaction/returitem/dialogcheckouttb.dart';
+import '../widgets/textview.dart';
 
 class ReturController extends GetxController {
   RxList<bool> selectedsegment = [true, false, false, false, false].obs;
@@ -351,8 +356,6 @@ class ReturController extends GetxController {
         listitemforProdukPengganti.clear();
         listitemforProdukPengganti.add(TarikBarangModel(
             data.kdProduct, data.nmProduct, data.listqtyheader, ""));
-        // listProdukPengganti.clear();
-        // listProdukPengganti.add(TarikBarangModel(kdProduct, nmProduct, itemOrder, alasan))
         for (var i = 0; i < data.listqtyheader.length; i++) {
           for (var j = 0;
               j < _penjualanController.listProduct[k].detailProduct.length;
@@ -381,6 +384,7 @@ class ReturController extends GetxController {
   handleEditProdukPenggantiItem(TarikBarangModel data) {
     isOverfow.value = false;
     selectedKdProductProdukPengganti.value = data.kdProduct.toString();
+    print(data.nmProduct.toString());
     qty1pp.value.text = '0';
     qty2pp.value.text = '0';
     qty3pp.value.text = '0';
@@ -1250,6 +1254,100 @@ class ReturController extends GetxController {
   }
 
   showEditProdukPengganti(BuildContext context) {
+    var previtem = 0;
+    for (var i = 0; i < listTukarWarna.length; i++) {
+      if (selectedProductTukarWarna[0].kdProduct ==
+          listTukarWarna[i].kdProduct) {
+        for (var l = 0; l < listTukarWarna[i].listqtyheader.length; l++) {
+          if (listTukarWarna[i].listqtyheader[l].Satuan == "dos") {
+            previtem = previtem + (listTukarWarna[i].listqtyheader[l].Qty * 8);
+          } else if (listTukarWarna[i].listqtyheader[l].Satuan == "biji" ||
+              listTukarWarna[i].listqtyheader[l].Satuan == "kaleng") {
+            previtem = previtem + (listTukarWarna[i].listqtyheader[l].Qty);
+          } else if (listTukarWarna[i].listqtyheader[l].Satuan ==
+              "inner plas") {
+            previtem = previtem + (listTukarWarna[i].listqtyheader[l].Qty * 4);
+          }
+        }
+        break;
+      }
+    }
+    List<CartModel> _list = <CartModel>[];
+    for (var i = 0;
+        i < selectedProductTukarWarna[0].detailProduct.length;
+        i++) {
+      if (i == 0 &&
+          qty1tw.value.text != "" &&
+          int.tryParse(qty1tw.value.text)! > 0) {
+        _list.add(CartModel(
+            selectedProductTukarWarna[0].kdProduct,
+            selectedProductTukarWarna[0].nmProduct,
+            int.tryParse(qty1tw.value.text)!,
+            selectedProductTukarWarna[0].detailProduct[i].satuan,
+            selectedProductTukarWarna[0].detailProduct[i].hrg));
+      } else if (i == 1 &&
+          qty2tw.value.text != "" &&
+          int.tryParse(qty2tw.value.text)! > 0) {
+        _list.add(CartModel(
+            selectedProductTukarWarna[0].kdProduct,
+            selectedProductTukarWarna[0].nmProduct,
+            int.tryParse(qty2tw.value.text)!,
+            selectedProductTukarWarna[0].detailProduct[i].satuan,
+            selectedProductTukarWarna[0].detailProduct[i].hrg));
+      } else if (i == 2 &&
+          qty3tw.value.text != "" &&
+          int.tryParse(qty3tw.value.text)! > 0) {
+        _list.add(CartModel(
+            selectedProductTukarWarna[0].kdProduct,
+            selectedProductTukarWarna[0].nmProduct,
+            int.tryParse(qty3tw.value.text)!,
+            selectedProductTukarWarna[0].detailProduct[i].satuan,
+            selectedProductTukarWarna[0].detailProduct[i].hrg));
+      }
+    }
+    var curritem = 0;
+    for (var i = 0; i < _list.length; i++) {
+      if (_list[i].Satuan == "dos") {
+        curritem = curritem + (_list[i].Qty * 8);
+      } else if (_list[i].Satuan == "biji" || _list[i].Satuan == "kaleng") {
+        curritem = curritem + (_list[i].Qty);
+      } else if (_list[i].Satuan == "inner plas") {
+        curritem = curritem + (_list[i].Qty * 4);
+      }
+    }
+    if (curritem < previtem && curritem != 0) {
+      showDeleteDialogTukarWarna(context);
+      return;
+    } else if (curritem == 0) {
+      selectedProductTukarWarna.clear();
+      tukarwarnafield.value.clear();
+      selectedKdProductTukarWarna.value = "";
+      // print("no input");
+      return;
+    }
+    listitemforProdukPengganti.clear();
+    listitemforProdukPengganti.add(TarikBarangModel(
+        selectedProductTukarWarna[0].kdProduct,
+        selectedProductTukarWarna[0].nmProduct,
+        _list,
+        ""));
+    listProdukPengganti.clear();
+    for (var i = 0; i < listTukarWarna.length; i++) {
+      if (selectedProductTukarWarna[0].kdProduct ==
+          listTukarWarna[i].kdProduct) {
+        for (var l = 0; l < listTukarWarna[i].listitemdetail.length; l++) {
+          listProdukPengganti.add(TarikBarangModel(
+              listTukarWarna[i].listitemdetail[l].itemOrder[0].kdProduct,
+              listTukarWarna[i].listitemdetail[l].itemOrder[0].nmProduct,
+              listTukarWarna[i].listitemdetail[l].itemOrder,
+              ""));
+        }
+        break;
+      }
+    }
+    countSisaPengganti();
+    selectedProductProdukPengganti.clear();
+    selectedKdProductProdukPengganti.value = "";
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1320,5 +1418,21 @@ class ReturController extends GetxController {
       }
       return listSisa.length;
     }
+  }
+
+  showDeleteDialogTukarWarna(BuildContext context) {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogDeleteTukarWarna(
+          ontapbatal: () {
+            Get.back();
+          },
+          ontapconfirm: () async {
+            await showProdukPengganti(context);
+            Get.back();
+          },
+        )));
   }
 }
