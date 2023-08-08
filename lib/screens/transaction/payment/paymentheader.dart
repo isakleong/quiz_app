@@ -63,6 +63,7 @@ class PaymentHeader extends StatelessWidget {
                   width: 0.2 * Get.width,
                   height: 0.04 * Get.height,
                   radius: 15,
+                  space: 5,
                   backgroundColor: AppConfig.mainCyan,
                   textcolor: Colors.white,
                   elevation: 2,

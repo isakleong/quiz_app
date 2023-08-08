@@ -143,8 +143,8 @@ class CekTab extends StatelessWidget {
                           : FontAwesomeIcons.plusSquare,
                       txt: _takingOrderVendorController.listpaymentdata
                               .any((data) => data.jenis == 'cek')
-                          ? "Ganti\nPembayaran "
-                          : "Tambah\nPembayaran ",
+                          ? "Ganti\nPembayaran"
+                          : "Tambah\nPembayaran",
                     )
                   ],
                 )

@@ -40,6 +40,7 @@ class DialogCheckoutGb extends StatelessWidget {
                       width: 0.18 * Get.width,
                       height: 0.04 * Get.height,
                       radius: 4,
+                      space: 5,
                       backgroundColor: Colors.white,
                       bordercolor: AppConfig.mainCyan,
                       elevation: 0,
@@ -60,6 +61,7 @@ class DialogCheckoutGb extends StatelessWidget {
                       backgroundColor: AppConfig.mainCyan,
                       textcolor: Colors.white,
                       elevation: 2,
+                      space: 5,
                       bordercolor: AppConfig.mainCyan,
                       headings: 'H2')
                 ],

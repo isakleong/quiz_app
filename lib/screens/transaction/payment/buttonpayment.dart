@@ -41,6 +41,9 @@ class ButtonPayment extends StatelessWidget {
               txt,
               style: const TextStyle(color: Colors.white, fontSize: 14),
             ),
+            const SizedBox(
+              width: 10,
+            ),
           ],
         ),
       ),

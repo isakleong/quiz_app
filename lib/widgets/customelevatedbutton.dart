@@ -14,6 +14,7 @@ class CustomElevatedButton extends StatelessWidget {
   Color? bordercolor;
   String? headings;
   Icon? icon;
+  double? space;
   CustomElevatedButton(
       {super.key,
       this.text,
@@ -26,7 +27,8 @@ class CustomElevatedButton extends StatelessWidget {
       this.elevation,
       this.bordercolor,
       this.headings,
-      this.icon});
+      this.icon,
+      this.space});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +39,9 @@ class CustomElevatedButton extends StatelessWidget {
               color: bordercolor == null ? Colors.white : bordercolor!,
               width: 1),
           backgroundColor: backgroundColor,
-          elevation: elevation,
           fixedSize: Size(width == null ? 0.2 * Get.width : width!,
               height == null ? 0.2 * Get.height : height!),
+          elevation: elevation,
           shape: RoundedRectangleBorder(
               borderRadius:
                   BorderRadius.circular(radius == null ? 0 : radius!)),
@@ -47,7 +49,8 @@ class CustomElevatedButton extends StatelessWidget {
         ),
         child: icon == null
             ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextView(
                     text: text,
@@ -58,10 +61,15 @@ class CustomElevatedButton extends StatelessWidget {
                 ],
               )
             : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   icon!,
+                  space != null
+                      ? SizedBox(
+                          width: space,
+                        )
+                      : Container(),
                   TextView(
                     text: text,
                     color: textcolor,
