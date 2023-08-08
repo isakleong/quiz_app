@@ -8,7 +8,6 @@ import 'package:sfa_tools/screens/transaction/reporting/searchreport.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-
 class ReportMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
   ReportMainPage({super.key});
@@ -47,7 +46,7 @@ class ReportMainPage extends StatelessWidget {
                   child: BackButtonAction()),
               Padding(
                   padding: EdgeInsets.only(
-                      left: 0.05 * Get.width, top: 0.02 * Get.height),
+                      left: 0.05 * Get.width, top: 0.01 * Get.height),
                   child: SearchReport(
                     value:
                         _takingOrderVendorController.choosedReport.value == ""
