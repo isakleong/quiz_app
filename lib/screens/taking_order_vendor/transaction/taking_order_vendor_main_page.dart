@@ -3,10 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/cartheader.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/cartlist.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/productsearch.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/shoppingcart.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/cartheader.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/cartlist.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/productsearch.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/shoppingcart.dart';
 
 class TakingOrderVendorMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController =

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
-import 'package:sfa_tools/screens/transaction/reporting/itemlistpembayaran.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/reporting/itemlistpembayaran.dart';
 
 import '../../../widgets/textview.dart';
-import '../takingordervendor/chipsitem.dart';
+import '../transaction/chipsitem.dart';
 
 class ItemReportPembayaran extends StatelessWidget {
   String idx;

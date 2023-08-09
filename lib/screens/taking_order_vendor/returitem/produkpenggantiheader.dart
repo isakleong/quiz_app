@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 
 import '../../../widgets/textview.dart';
 

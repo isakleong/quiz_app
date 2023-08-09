@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';

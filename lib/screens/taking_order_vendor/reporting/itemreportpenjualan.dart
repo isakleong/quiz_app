@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
-import 'package:sfa_tools/screens/transaction/reporting/itemlistpenjualan.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/reporting/itemlistpenjualan.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 
 import '../../../widgets/textview.dart';
 

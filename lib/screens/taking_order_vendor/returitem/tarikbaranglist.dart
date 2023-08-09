@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/models/tarikbarangmodel.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../takingordervendor/chipsitem.dart';
+import '../transaction/chipsitem.dart';
 
 class TarikBarangList extends StatelessWidget {
   String idx;

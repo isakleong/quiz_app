@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
-import 'package:sfa_tools/screens/transaction/returitem/dialogdeletetukarwarna.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/dialogdeletetukarwarna.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogdelete.dart';
 
 import '../models/cartmodel.dart';
 import '../models/productdata.dart';
 import '../models/tarikbarangmodel.dart';
-import '../screens/transaction/returitem/bottomsheettukarwarna.dart';
-import '../screens/transaction/returitem/dialogcheckoutgb.dart';
-import '../screens/transaction/returitem/dialogcheckoutsm.dart';
-import '../screens/transaction/returitem/dialogcheckouttb.dart';
+import '../screens/taking_order_vendor/returitem/bottomsheettukarwarna.dart';
+import '../screens/taking_order_vendor/returitem/dialogcheckoutgb.dart';
+import '../screens/taking_order_vendor/returitem/dialogcheckoutsm.dart';
+import '../screens/taking_order_vendor/returitem/dialogcheckouttb.dart';
 
 class ReturController extends GetxController {
   RxList<bool> selectedsegment = [true, false, false, false, false].obs;

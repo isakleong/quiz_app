@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/doubleunit.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/singleunit.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/tripleunit.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/doubleunit.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/singleunit.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/tripleunit.dart';
 import '../../../common/app_config.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';

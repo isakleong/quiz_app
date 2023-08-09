@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 
 class TripleUnit extends StatelessWidget {
   TextEditingController ctrl;

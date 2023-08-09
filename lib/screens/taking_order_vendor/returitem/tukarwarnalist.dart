@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../takingordervendor/chipsitem.dart';
+import '../transaction/chipsitem.dart';
 
 class TukarWarnaList extends StatelessWidget {
   String idx;
@@ -190,8 +190,7 @@ class TukarWarnaList extends StatelessWidget {
                                 width: 10,
                               ),
                               TextView(
-                                text:
-                                    data.listitemdetail[innerindex].nmProduct,
+                                text: data.listitemdetail[innerindex].nmProduct,
                                 fontSize: 14,
                               )
                             ],

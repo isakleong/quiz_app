@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/dialogcheckout.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout.dart';
 
 import '../models/cartmodel.dart';
 import '../models/productdata.dart';
-import '../screens/transaction/takingordervendor/dialogdelete.dart';
+import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 
 class PenjualanController extends GetxController {
   RxString selectedValue = "".obs;

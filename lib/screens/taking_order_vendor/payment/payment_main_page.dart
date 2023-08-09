@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/transaction/payment/bannernopayment.dart';
-import 'package:sfa_tools/screens/transaction/payment/paymentheader.dart';
-import 'package:sfa_tools/screens/transaction/payment/paymentlist.dart';
-import 'package:sfa_tools/screens/transaction/payment/paymenttab.dart';
-import 'package:sfa_tools/screens/transaction/payment/piutangcard.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/payment/bannernopayment.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/payment/paymentheader.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/payment/paymentlist.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/payment/paymenttab.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/payment/piutangcard.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
 
 class PaymentMainPage extends StatelessWidget {

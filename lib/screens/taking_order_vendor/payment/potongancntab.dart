@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/transaction/payment/buttonpayment.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/payment/buttonpayment.dart';
 import 'package:sfa_tools/tools/textfieldformatter.dart';
 
 class PotonganCnTab extends StatelessWidget {

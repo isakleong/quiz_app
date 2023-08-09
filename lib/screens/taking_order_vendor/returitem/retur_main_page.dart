@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/transaction/returitem/gantibarang.dart';
-import 'package:sfa_tools/screens/transaction/returitem/gantikemasan.dart';
-import 'package:sfa_tools/screens/transaction/returitem/returcard.dart';
-import 'package:sfa_tools/screens/transaction/returitem/segmentbutton.dart';
-import 'package:sfa_tools/screens/transaction/returitem/servismebel.dart';
-import 'package:sfa_tools/screens/transaction/returitem/tarikbarangpage.dart';
-import 'package:sfa_tools/screens/transaction/returitem/tukarwarnapage.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/gantibarang.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/gantikemasan.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/returcard.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/segmentbutton.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/servismebel.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/tarikbarangpage.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/tukarwarnapage.dart';
 
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/backbuttonaction.dart';

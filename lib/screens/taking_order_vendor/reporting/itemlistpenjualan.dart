@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../models/cartmodel.dart';
 import '../../../widgets/textview.dart';
-import '../takingordervendor/chipsitem.dart';
+import '../transaction/chipsitem.dart';
 
 class ItemListPenjualan extends StatelessWidget {
   String idx;
@@ -68,7 +68,8 @@ class ItemListPenjualan extends StatelessWidget {
                                   children: [
                                     data.itemOrder.isNotEmpty
                                         ? Padding(
-                                            padding: const EdgeInsets.only(left: 0.0),
+                                            padding: const EdgeInsets.only(
+                                                left: 0.0),
                                             child: ChipsItem(
                                               satuan:
                                                   "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
@@ -77,7 +78,8 @@ class ItemListPenjualan extends StatelessWidget {
                                         : Container(),
                                     data.itemOrder.length > 1
                                         ? Padding(
-                                            padding: const EdgeInsets.only(left: 5.0),
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
                                             child: ChipsItem(
                                               satuan:
                                                   "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
@@ -86,7 +88,8 @@ class ItemListPenjualan extends StatelessWidget {
                                         : Container(),
                                     data.itemOrder.length > 2
                                         ? Padding(
-                                            padding: const EdgeInsets.only(left: 5.0),
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
                                             child: ChipsItem(
                                               satuan:
                                                   "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",

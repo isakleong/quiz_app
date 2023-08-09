@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../common/app_config.dart';
 import '../../../widgets/textview.dart';
-import '../takingordervendor/chipsitem.dart';
+import '../transaction/chipsitem.dart';
 
 class ReturHeader extends StatelessWidget {
   String jumlahproduk;
@@ -82,8 +82,8 @@ class ReturHeader extends StatelessWidget {
                   elevation: 5,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  padding:
-                      const EdgeInsets.only(left: 15, right: 15, top: 2, bottom: 2),
+                  padding: const EdgeInsets.only(
+                      left: 15, right: 15, top: 2, bottom: 2),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

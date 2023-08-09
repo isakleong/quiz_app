@@ -3,10 +3,10 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/transaction/returitem/produkpenggantiheader.dart';
-import 'package:sfa_tools/screens/transaction/returitem/shopcartprodukpengganti.dart';
-import 'package:sfa_tools/screens/transaction/returitem/tarikbaranglist.dart';
-import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/produkpenggantiheader.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/shopcartprodukpengganti.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/returitem/tarikbaranglist.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 
 import '../../../common/app_config.dart';
 import '../../../widgets/textview.dart';

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../common/app_config.dart';
 import '../models/paymentdata.dart';
-import '../screens/transaction/takingordervendor/dialogdelete.dart';
+import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 
 class PembayaranController extends GetxController {
   //for payment page

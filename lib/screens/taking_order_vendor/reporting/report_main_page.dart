@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/transaction/reporting/reportbody.dart';
-import 'package:sfa_tools/screens/transaction/reporting/searchreport.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/reporting/reportbody.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/reporting/searchreport.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
