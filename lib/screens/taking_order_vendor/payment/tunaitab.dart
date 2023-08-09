@@ -114,7 +114,18 @@ class TunaiTab extends StatelessWidget {
                     children: [
                       ButtonPayment(
                         ontap: () {
-                          _takingOrderVendorController.insertRecord("Tunai");
+                          if (_takingOrderVendorController
+                                      .choosedTunaiMethod.value ==
+                                  "Pilih Lokasi Setoran" ||
+                              _takingOrderVendorController
+                                      .choosedTunaiMethod.value ==
+                                  "") {
+                            Get.snackbar("Error",
+                                "Pilih Lokasi Setoran Terlebih Dahulu !",
+                                backgroundColor: Colors.red.withOpacity(0.5));
+                          } else {
+                            _takingOrderVendorController.insertRecord("Tunai");
+                          }
                         },
                         bgcolor: _takingOrderVendorController.listpaymentdata
                                 .any((data) => data.jenis == 'Tunai')

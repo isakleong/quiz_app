@@ -133,6 +133,20 @@ class CekTab extends StatelessWidget {
                     ),
                     ButtonPayment(
                       ontap: () {
+                        print(_takingOrderVendorController.nmbank.value.text);
+                        if (_takingOrderVendorController
+                                    .jatuhtempotgl.value.text ==
+                                "" ||
+                            _takingOrderVendorController.nmbank.value.text ==
+                                "" ||
+                            _takingOrderVendorController.nomorcek.value.text ==
+                                "") {
+                          print("here");
+                          Get.snackbar(
+                              "Error", "Pastikan semua form sudah di isi !",
+                              backgroundColor: Colors.red.withOpacity(0.5));
+                          return;
+                        }
                         _takingOrderVendorController.insertRecord("cek");
                       },
                       bgcolor: _takingOrderVendorController.listpaymentdata

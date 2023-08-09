@@ -116,7 +116,19 @@ class TransferTab extends StatelessWidget {
                     children: [
                       ButtonPayment(
                         ontap: () {
-                          _takingOrderVendorController.insertRecord("Transfer");
+                          if (_takingOrderVendorController
+                                      .choosedTransferMethod.value ==
+                                  "Pilih Bank" ||
+                              _takingOrderVendorController
+                                      .choosedTransferMethod.value ==
+                                  "") {
+                            Get.snackbar(
+                                "Error", "Pilih Bank Terlebih Dahulu !",
+                                backgroundColor: Colors.red.withOpacity(0.5));
+                          } else {
+                            _takingOrderVendorController
+                                .insertRecord("Transfer");
+                          }
                         },
                         bgcolor: _takingOrderVendorController.listpaymentdata
                                 .any((data) => data.jenis == 'Transfer')
