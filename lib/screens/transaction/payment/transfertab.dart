@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/payment/buttonpayment.dart';
+import 'package:sfa_tools/tools/textfieldformatter.dart';
 
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
@@ -90,12 +91,13 @@ class TransferTab extends StatelessWidget {
                           controller: _takingOrderVendorController
                               .nominaltransfer.value,
                           keyboardType: TextInputType.number,
-                          onChanged: _takingOrderVendorController
-                              .formatMoneyTextField(_takingOrderVendorController
-                                  .nominaltransfer.value),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          // onChanged: _takingOrderVendorController
+                          //     .formatMoneyTextField(_takingOrderVendorController
+                          //         .nominaltransfer.value),
+                          // inputFormatters: [
+                          //   FilteringTextInputFormatter.digitsOnly
+                          // ],
+                          inputFormatters: [NumberInputFormatter()],
                           style: const TextStyle(fontSize: 14),
                           decoration: const InputDecoration(
                               contentPadding: EdgeInsets.zero,

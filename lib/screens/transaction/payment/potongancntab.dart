@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/transaction/payment/buttonpayment.dart';
+import 'package:sfa_tools/tools/textfieldformatter.dart';
 
 class PotonganCnTab extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -29,13 +30,14 @@ class PotonganCnTab extends StatelessWidget {
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: TextField(
-                      onChanged:
-                          _takingOrderVendorController.formatMoneyTextField(
-                              _takingOrderVendorController.nominalCn.value),
+                      // onChanged:
+                      //     _takingOrderVendorController.formatMoneyTextField(
+                      //         _takingOrderVendorController.nominalCn.value),
                       controller: _takingOrderVendorController.nominalCn.value,
                       style: const TextStyle(fontSize: 14),
                       keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      inputFormatters: [NumberInputFormatter()],
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.zero,
                           labelText: 'Nominal Potongan CN',
