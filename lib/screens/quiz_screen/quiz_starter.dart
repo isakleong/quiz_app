@@ -121,7 +121,7 @@ class StartQuiz extends GetView<QuizController> {
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: [
+                          children: const [
                             Icon(Icons.history),
                             SizedBox(width: 10),
                             TextView(

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +19,7 @@ class ItemReportRetur extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
-              padding: EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.only(top: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +38,7 @@ class ItemReportRetur extends StatelessWidget {
                             color: Color(0xFF512da7),
                             shape: BoxShape.circle,
                           ),
-                          child: Center(
+                          child: const Center(
                             child: TextView(
                               text: "1",
                               color: Colors.white,
@@ -55,7 +53,7 @@ class ItemReportRetur extends StatelessWidget {
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: const [
                           TextView(
                             text: "GR-00AC1A0103-202308070932-002",
                             headings: 'H4',
@@ -78,7 +76,7 @@ class ItemReportRetur extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
+                      children: const [
                         TextView(
                           text: "07-08-2023",
                           fontSize: 14,
@@ -93,7 +91,7 @@ class ItemReportRetur extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Center(
@@ -112,7 +110,7 @@ class ItemReportRetur extends StatelessWidget {
                 child: Row(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 7, bottom: 7),
+                      padding: const EdgeInsets.only(top: 7, bottom: 7),
                       child: Container(
                         width: 5,
                         decoration:
@@ -158,7 +156,7 @@ class ItemReportRetur extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          TextView(
+                                          const TextView(
                                             headings: 'H4',
                                             fontSize: 13,
                                             text:
@@ -214,7 +212,7 @@ class ItemReportRetur extends StatelessWidget {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 10),
+                              padding: const EdgeInsets.only(top: 10),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -225,15 +223,15 @@ class ItemReportRetur extends StatelessWidget {
                                       SizedBox(
                                         width: 0.025 * Get.width,
                                       ),
-                                      Icon(
+                                      const Icon(
                                         FontAwesomeIcons.circleChevronRight,
                                         color: Color(0XFF6c4d43),
                                         size: 16,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 10,
                                       ),
-                                      TextView(
+                                      const TextView(
                                         text:
                                             "AVIAN Cling Zinc Chromate 901 - 1 KG",
                                         fontSize: 13,
@@ -252,7 +250,7 @@ class ItemReportRetur extends StatelessWidget {
                                                   ? "1 dos"
                                                   : "2 inner plas",
                                               fontSize: 12,
-                                              color: Color(0xFFe44b1b),
+                                              color: const Color(0xFFe44b1b),
                                             ))
                                     ],
                                   )

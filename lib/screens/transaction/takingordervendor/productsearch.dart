@@ -1,4 +1,3 @@
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -111,8 +110,8 @@ class ProductSearch extends StatelessWidget {
                       child: TypeAheadField(
                         textFieldConfiguration: TextFieldConfiguration(
                           controller: _takingOrderVendorController.cnt.value,
-                          style: TextStyle(fontSize: 16),
-                          decoration: InputDecoration(
+                          style: const TextStyle(fontSize: 16),
+                          decoration: const InputDecoration(
                               labelText: 'Cari Produk',
                               labelStyle: TextStyle(fontSize: 16),
                               border: InputBorder.none,

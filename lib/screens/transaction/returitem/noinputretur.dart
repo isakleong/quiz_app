@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
@@ -28,7 +26,7 @@ class NoInputRetur extends StatelessWidget {
                 height: 0.2 * Get.width,
                 fit: BoxFit.scaleDown,
               ),
-              Container(
+              SizedBox(
                 width: 0.6 * Get.width,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,

@@ -108,7 +108,7 @@ class HistoryPage extends GetView<HistoryController> {
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: [
+                                  children: const [
                                     FaIcon(FontAwesomeIcons.arrowsRotate),
                                     SizedBox(width: 10),
                                     TextView(
@@ -237,7 +237,7 @@ class HistoryPage extends GetView<HistoryController> {
                                       ),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
-                                        children: [
+                                        children: const [
                                           Icon(Icons.history),
                                           SizedBox(width: 10),
                                           TextView(

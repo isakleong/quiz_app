@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/returitem/checkoutlistgb.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
@@ -73,7 +71,7 @@ class DialogCheckoutSm extends StatelessWidget {
             SizedBox(
               height: 0.02 * Get.height,
             ),
-            TextView(
+            const TextView(
               text: "Servis Mebel - Aceh Indah",
               headings: 'H3',
               fontSize: 16,

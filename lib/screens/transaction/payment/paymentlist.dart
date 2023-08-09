@@ -106,7 +106,7 @@ class PaymentList extends StatelessWidget {
                               color: Colors.green.shade700),
                           child: Stack(
                             alignment: Alignment.center,
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.edit,
                                 color: Colors.white,
@@ -132,7 +132,7 @@ class PaymentList extends StatelessWidget {
                               color: Colors.red.shade700),
                           child: Stack(
                             alignment: Alignment.center,
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.delete_forever,
                                 color: Colors.white,

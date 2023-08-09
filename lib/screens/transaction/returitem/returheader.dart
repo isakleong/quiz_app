@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../../common/app_config.dart';
-import '../../../controllers/taking_order_vendor_controller.dart';
-import '../../../widgets/customelevatedbutton.dart';
 import '../../../widgets/textview.dart';
 import '../takingordervendor/chipsitem.dart';
 
@@ -15,6 +11,7 @@ class ReturHeader extends StatelessWidget {
   var onTap;
   ReturHeader({super.key, required this.jumlahproduk, required this.onTap});
 
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -71,7 +68,7 @@ class ReturHeader extends StatelessWidget {
                   width: 0.02 * Get.width,
                 ),
                 ChipsItem(
-                  satuan: "${jumlahproduk}",
+                  satuan: jumlahproduk,
                   fontSize: 14,
                 )
               ],
@@ -86,12 +83,12 @@ class ReturHeader extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   padding:
-                      EdgeInsets.only(left: 15, right: 15, top: 2, bottom: 2),
+                      const EdgeInsets.only(left: 15, right: 15, top: 2, bottom: 2),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+                  children: const [
                     Icon(
                       FontAwesomeIcons.solidCheckCircle,
                       size: 18,

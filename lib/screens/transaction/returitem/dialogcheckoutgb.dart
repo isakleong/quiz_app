@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 
 import '../../../common/app_config.dart';
@@ -72,7 +70,7 @@ class DialogCheckoutGb extends StatelessWidget {
             SizedBox(
               height: 0.02 * Get.height,
             ),
-            TextView(
+            const TextView(
               text: "Retur Ganti Barang - Aceh Indah",
               headings: 'H3',
               fontSize: 16,
@@ -80,7 +78,7 @@ class DialogCheckoutGb extends StatelessWidget {
             SizedBox(
               height: 0.01 * Get.height,
             ),
-            TextView(
+            const TextView(
               text: "Total : 153,650",
               headings: 'H3',
               fontSize: 14,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/returitem/tarikbaranglist.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
@@ -73,7 +71,7 @@ class DialogCheckOutTb extends StatelessWidget {
             SizedBox(
               height: 0.02 * Get.height,
             ),
-            TextView(
+            const TextView(
               text: "Retur Tarik Barang - Aceh Indah",
               headings: 'H3',
               fontSize: 16,
@@ -81,7 +79,7 @@ class DialogCheckOutTb extends StatelessWidget {
             SizedBox(
               height: 0.01 * Get.height,
             ),
-            TextView(
+            const TextView(
               text: "Total : 153,650",
               headings: 'H3',
               fontSize: 14,

@@ -7,7 +7,6 @@ import 'package:sfa_tools/screens/transaction/takingordervendor/singleunit.dart'
 import 'package:sfa_tools/screens/transaction/takingordervendor/tripleunit.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../../../common/app_config.dart';
 
 class ShopCartProdukPenganti extends StatelessWidget {
   ShopCartProdukPenganti({super.key});
@@ -25,7 +24,7 @@ class ShopCartProdukPenganti extends StatelessWidget {
           child: Container(
             width: 0.9 * width,
             decoration: BoxDecoration(
-                border: Border.all(color: Color(0XFF398f3e), width: 2),
+                border: Border.all(color: const Color(0XFF398f3e), width: 2),
                 borderRadius: BorderRadius.circular(10)),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -36,7 +35,7 @@ class ShopCartProdukPenganti extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.auto_awesome_mosaic_rounded,
                           color: Color(0XFF398f3e),
                         ),
@@ -58,22 +57,22 @@ class ShopCartProdukPenganti extends StatelessWidget {
                           _takingOrderVendorController.addToCartPp();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0XFF398f3e),
+                          backgroundColor: const Color(0XFF398f3e),
                           elevation: 5,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                               left: 15, right: 15, top: 2, bottom: 2),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               FontAwesomeIcons.cartShopping,
                               size: 18,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 8,
                             ),
                             TextView(
@@ -121,9 +120,9 @@ class ShopCartProdukPenganti extends StatelessWidget {
                       child: Container(
                         width: 0.86 * width,
                         decoration: BoxDecoration(
-                            color: Color(0xFFc4185c),
+                            color: const Color(0xFFc4185c),
                             borderRadius: BorderRadius.circular(5)),
-                        child: Center(
+                        child: const Center(
                             child: TextView(
                           text: "Melebihi batas kuantiti yang ditukar",
                           color: Colors.white,
@@ -145,7 +144,7 @@ class ShopCartProdukPenganti extends StatelessWidget {
                                   .detailProduct[0]
                                   .satuan,
                               ctrl: _takingOrderVendorController.qty1pp.value,
-                              colorChips: Color(0xFFe64a19),
+                              colorChips: const Color(0xFFe64a19),
                               onTapMinus: () {
                                 _takingOrderVendorController.handleAddMinusBtn(
                                     _takingOrderVendorController.qty1pp.value,
@@ -171,7 +170,7 @@ class ShopCartProdukPenganti extends StatelessWidget {
                                       .satuan,
                                   ctrl:
                                       _takingOrderVendorController.qty1pp.value,
-                                  colorChips: Color(0xFFe64a19),
+                                  colorChips: const Color(0xFFe64a19),
                                   onTapMinus: () {
                                     _takingOrderVendorController
                                         .handleAddMinusBtn(
@@ -194,7 +193,7 @@ class ShopCartProdukPenganti extends StatelessWidget {
                                       .satuan,
                                   ctrl:
                                       _takingOrderVendorController.qty2pp.value,
-                                  colorChips: Color(0xFFe64a19),
+                                  colorChips: const Color(0xFFe64a19),
                                   onTapMinus: () {
                                     _takingOrderVendorController
                                         .handleAddMinusBtn(
@@ -227,7 +226,7 @@ class ShopCartProdukPenganti extends StatelessWidget {
                                           .satuan,
                                       ctrl: _takingOrderVendorController
                                           .qty1pp.value,
-                                      colorChips: Color(0xFFe64a19),
+                                      colorChips: const Color(0xFFe64a19),
                                       onTapMinus: () {
                                         _takingOrderVendorController
                                             .handleAddMinusBtn(
@@ -250,7 +249,7 @@ class ShopCartProdukPenganti extends StatelessWidget {
                                           .satuan,
                                       ctrl: _takingOrderVendorController
                                           .qty2pp.value,
-                                      colorChips: Color(0xFFe64a19),
+                                      colorChips: const Color(0xFFe64a19),
                                       onTapMinus: () {
                                         _takingOrderVendorController
                                             .handleAddMinusBtn(
@@ -273,7 +272,7 @@ class ShopCartProdukPenganti extends StatelessWidget {
                                           .satuan,
                                       ctrl: _takingOrderVendorController
                                           .qty3pp.value,
-                                      colorChips: Color(0xFFe64a19),
+                                      colorChips: const Color(0xFFe64a19),
                                       onTapMinus: () {
                                         _takingOrderVendorController
                                             .handleAddMinusBtn(

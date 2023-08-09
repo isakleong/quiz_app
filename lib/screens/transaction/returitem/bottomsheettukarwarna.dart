@@ -9,7 +9,6 @@ import 'package:sfa_tools/screens/transaction/returitem/tarikbaranglist.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 
 import '../../../common/app_config.dart';
-import '../../../widgets/customelevatedbutton.dart';
 import '../../../widgets/textview.dart';
 
 class BottomSheetTukarWarna extends StatelessWidget {
@@ -22,7 +21,7 @@ class BottomSheetTukarWarna extends StatelessWidget {
     return FractionallySizedBox(
       heightFactor: 0.68,
       child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
             color: Colors.white,
             boxShadow: [
@@ -106,14 +105,14 @@ class BottomSheetTukarWarna extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 0.02 * Get.height),
-                    child: Container(
+                    child: SizedBox(
                       width: 0.9 * Get.width,
                       child: TypeAheadField(
                         textFieldConfiguration: TextFieldConfiguration(
                           controller: _takingOrderVendorController
                               .produkpenggantifield.value,
-                          style: TextStyle(fontSize: 16),
-                          decoration: InputDecoration(
+                          style: const TextStyle(fontSize: 16),
+                          decoration: const InputDecoration(
                               labelText: 'Cari Produk Pengganti',
                               labelStyle: TextStyle(fontSize: 16),
                               border: OutlineInputBorder(),
@@ -197,8 +196,8 @@ class BottomSheetTukarWarna extends StatelessWidget {
                                       top: 5,
                                       right: 0.05 * Get.width),
                                   child: TarikBarangList(
-                                    btndelete: Color(0xFFe43936),
-                                    unit: Color(0xFFe43936),
+                                    btndelete: const Color(0xFFe43936),
+                                    unit: const Color(0xFFe43936),
                                     idx: (index + 1).toString(),
                                     data: _takingOrderVendorController
                                         .listProdukPengganti[index],

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
-import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
 import 'package:sfa_tools/screens/transaction/returitem/dialogdeletetukarwarna.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/dialogdelete.dart';
-import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 
 import '../models/cartmodel.dart';
 import '../models/productdata.dart';
@@ -15,7 +12,6 @@ import '../screens/transaction/returitem/bottomsheettukarwarna.dart';
 import '../screens/transaction/returitem/dialogcheckoutgb.dart';
 import '../screens/transaction/returitem/dialogcheckoutsm.dart';
 import '../screens/transaction/returitem/dialogcheckouttb.dart';
-import '../widgets/textview.dart';
 
 class ReturController extends GetxController {
   RxList<bool> selectedsegment = [true, false, false, false, false].obs;
@@ -438,16 +434,16 @@ class ReturController extends GetxController {
         break;
       }
     }
-    print("ini isi flag ${flag}");
+    print("ini isi flag $flag");
     if (flag == "null") {
-      List<CartModel> _items = <CartModel>[];
+      List<CartModel> items = <CartModel>[];
       for (var i = 0;
           i < selectedProducttarikbarang[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1tb.value.text != "" &&
             int.parse(qty1tb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty1tb.value.text),
@@ -456,7 +452,7 @@ class ReturController extends GetxController {
         } else if (i == 1 &&
             qty2tb.value.text != "" &&
             int.parse(qty2tb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty2tb.value.text),
@@ -465,7 +461,7 @@ class ReturController extends GetxController {
         } else if (i == 2 &&
             qty3tb.value.text != "" &&
             int.parse(qty3tb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty3tb.value.text),
@@ -473,11 +469,11 @@ class ReturController extends GetxController {
               0));
         }
       }
-      if (!_items.isEmpty) {
+      if (items.isNotEmpty) {
         listTarikBarang.add(TarikBarangModel(
             selectedProducttarikbarang[0].kdProduct,
             selectedProducttarikbarang[0].nmProduct,
-            _items,
+            items,
             selectedAlasantb.value));
       }
 
@@ -490,14 +486,14 @@ class ReturController extends GetxController {
       qty3tb.value.clear();
     } else {
       print("already added");
-      List<CartModel> _items = <CartModel>[];
+      List<CartModel> items = <CartModel>[];
       for (var i = 0;
           i < selectedProducttarikbarang[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1tb.value.text != "" &&
             int.parse(qty1tb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty1tb.value.text),
@@ -506,7 +502,7 @@ class ReturController extends GetxController {
         } else if (i == 1 &&
             qty2tb.value.text != "" &&
             int.parse(qty2tb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty2tb.value.text),
@@ -515,7 +511,7 @@ class ReturController extends GetxController {
         } else if (i == 2 &&
             qty3tb.value.text != "" &&
             int.parse(qty3tb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,
               selectedProducttarikbarang[0].nmProduct,
               int.parse(qty3tb.value.text),
@@ -523,12 +519,12 @@ class ReturController extends GetxController {
               0));
         }
       }
-      if (_items.isNotEmpty) {
+      if (items.isNotEmpty) {
         listTarikBarang[int.parse(flag)].kdProduct =
             selectedProducttarikbarang[0].kdProduct;
         listTarikBarang[int.parse(flag)].nmProduct =
             selectedProducttarikbarang[0].nmProduct;
-        listTarikBarang[int.parse(flag)].itemOrder = _items;
+        listTarikBarang[int.parse(flag)].itemOrder = items;
         listTarikBarang[int.parse(flag)].alasan = selectedAlasantb.value;
       } else {
         listTarikBarang.removeAt(int.parse(flag));
@@ -569,16 +565,16 @@ class ReturController extends GetxController {
         break;
       }
     }
-    print("ini isi flag ${flag}");
+    print("ini isi flag $flag");
     if (flag == "null") {
-      List<CartModel> _items = <CartModel>[];
+      List<CartModel> items = <CartModel>[];
       for (var i = 0;
           i < selectedProductgantikemasan[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1gk.value.text != "" &&
             int.parse(qty1gk.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty1gk.value.text),
@@ -587,7 +583,7 @@ class ReturController extends GetxController {
         } else if (i == 1 &&
             qty2gk.value.text != "" &&
             int.parse(qty2gk.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty2gk.value.text),
@@ -596,7 +592,7 @@ class ReturController extends GetxController {
         } else if (i == 2 &&
             qty3gk.value.text != "" &&
             int.parse(qty3gk.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty3gk.value.text),
@@ -604,11 +600,11 @@ class ReturController extends GetxController {
               0));
         }
       }
-      if (!_items.isEmpty) {
+      if (items.isNotEmpty) {
         listgantikemasan.add(TarikBarangModel(
             selectedProductgantikemasan[0].kdProduct,
             selectedProductgantikemasan[0].nmProduct,
-            _items,
+            items,
             selectedAlasangk.value));
       }
 
@@ -621,14 +617,14 @@ class ReturController extends GetxController {
       qty3gk.value.clear();
     } else {
       print("already added");
-      List<CartModel> _items = <CartModel>[];
+      List<CartModel> items = <CartModel>[];
       for (var i = 0;
           i < selectedProductgantikemasan[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1gk.value.text != "" &&
             int.parse(qty1gk.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty1gk.value.text),
@@ -637,7 +633,7 @@ class ReturController extends GetxController {
         } else if (i == 1 &&
             qty2gk.value.text != "" &&
             int.parse(qty2gk.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty2gk.value.text),
@@ -646,7 +642,7 @@ class ReturController extends GetxController {
         } else if (i == 2 &&
             qty3gk.value.text != "" &&
             int.parse(qty3gk.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantikemasan[0].kdProduct,
               selectedProductgantikemasan[0].nmProduct,
               int.parse(qty3gk.value.text),
@@ -654,12 +650,12 @@ class ReturController extends GetxController {
               0));
         }
       }
-      if (_items.isNotEmpty) {
+      if (items.isNotEmpty) {
         listgantikemasan[int.parse(flag)].kdProduct =
             selectedProductgantikemasan[0].kdProduct;
         listgantikemasan[int.parse(flag)].nmProduct =
             selectedProductgantikemasan[0].nmProduct;
-        listgantikemasan[int.parse(flag)].itemOrder = _items;
+        listgantikemasan[int.parse(flag)].itemOrder = items;
         listgantikemasan[int.parse(flag)].alasan = selectedAlasangk.value;
       } else {
         listgantikemasan.removeAt(int.parse(flag));
@@ -693,14 +689,14 @@ class ReturController extends GetxController {
       }
     }
     if (flag == "null") {
-      List<CartModel> _items = <CartModel>[];
+      List<CartModel> items = <CartModel>[];
       for (var i = 0;
           i < selectedProductservismebel[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1sm.value.text != "" &&
             int.parse(qty1sm.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty1sm.value.text),
@@ -709,7 +705,7 @@ class ReturController extends GetxController {
         } else if (i == 1 &&
             qty2sm.value.text != "" &&
             int.parse(qty2sm.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty2sm.value.text),
@@ -718,7 +714,7 @@ class ReturController extends GetxController {
         } else if (i == 2 &&
             qty3sm.value.text != "" &&
             int.parse(qty3sm.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty3sm.value.text),
@@ -726,11 +722,11 @@ class ReturController extends GetxController {
               0));
         }
       }
-      if (!_items.isEmpty) {
+      if (items.isNotEmpty) {
         listServisMebel.add(TarikBarangModel(
             selectedProductservismebel[0].kdProduct,
             selectedProductservismebel[0].nmProduct,
-            _items,
+            items,
             ""));
       }
 
@@ -741,14 +737,14 @@ class ReturController extends GetxController {
       qty2sm.value.clear();
       qty3sm.value.clear();
     } else {
-      List<CartModel> _items = <CartModel>[];
+      List<CartModel> items = <CartModel>[];
       for (var i = 0;
           i < selectedProductservismebel[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1sm.value.text != "" &&
             int.parse(qty1sm.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty1sm.value.text),
@@ -757,7 +753,7 @@ class ReturController extends GetxController {
         } else if (i == 1 &&
             qty2sm.value.text != "" &&
             int.parse(qty2sm.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty2sm.value.text),
@@ -766,7 +762,7 @@ class ReturController extends GetxController {
         } else if (i == 2 &&
             qty3sm.value.text != "" &&
             int.parse(qty3sm.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductservismebel[0].kdProduct,
               selectedProductservismebel[0].nmProduct,
               int.parse(qty3sm.value.text),
@@ -774,12 +770,12 @@ class ReturController extends GetxController {
               0));
         }
       }
-      if (_items.isNotEmpty) {
+      if (items.isNotEmpty) {
         listServisMebel[int.parse(flag)].kdProduct =
             selectedProductservismebel[0].kdProduct;
         listServisMebel[int.parse(flag)].nmProduct =
             selectedProductservismebel[0].nmProduct;
-        listServisMebel[int.parse(flag)].itemOrder = _items;
+        listServisMebel[int.parse(flag)].itemOrder = items;
         listServisMebel[int.parse(flag)].alasan = "";
       } else {
         listServisMebel.removeAt(int.parse(flag));
@@ -812,14 +808,14 @@ class ReturController extends GetxController {
       }
     }
     if (flag == "null") {
-      List<CartModel> _items = <CartModel>[];
+      List<CartModel> items = <CartModel>[];
       for (var i = 0;
           i < selectedProductgantibarang[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1gb.value.text != "" &&
             int.parse(qty1gb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty1gb.value.text),
@@ -828,7 +824,7 @@ class ReturController extends GetxController {
         } else if (i == 1 &&
             qty2gb.value.text != "" &&
             int.parse(qty2gb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty2gb.value.text),
@@ -837,7 +833,7 @@ class ReturController extends GetxController {
         } else if (i == 2 &&
             qty3gb.value.text != "" &&
             int.parse(qty3gb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty3gb.value.text),
@@ -845,11 +841,11 @@ class ReturController extends GetxController {
               0));
         }
       }
-      if (!_items.isEmpty) {
+      if (items.isNotEmpty) {
         listGantiBarang.add(TarikBarangModel(
             selectedProductgantibarang[0].kdProduct,
             selectedProductgantibarang[0].nmProduct,
-            _items,
+            items,
             ""));
       }
 
@@ -860,14 +856,14 @@ class ReturController extends GetxController {
       qty2gb.value.clear();
       qty3gb.value.clear();
     } else {
-      List<CartModel> _items = <CartModel>[];
+      List<CartModel> items = <CartModel>[];
       for (var i = 0;
           i < selectedProductgantibarang[0].detailProduct.length;
           i++) {
         if (i == 0 &&
             qty1gb.value.text != "" &&
             int.parse(qty1gb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty1gb.value.text),
@@ -876,7 +872,7 @@ class ReturController extends GetxController {
         } else if (i == 1 &&
             qty2gb.value.text != "" &&
             int.parse(qty2gb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty2gb.value.text),
@@ -885,7 +881,7 @@ class ReturController extends GetxController {
         } else if (i == 2 &&
             qty3gb.value.text != "" &&
             int.parse(qty3gb.value.text) != 0) {
-          _items.add(CartModel(
+          items.add(CartModel(
               selectedProductgantibarang[0].kdProduct,
               selectedProductgantibarang[0].nmProduct,
               int.parse(qty3gb.value.text),
@@ -893,12 +889,12 @@ class ReturController extends GetxController {
               0));
         }
       }
-      if (_items.isNotEmpty) {
+      if (items.isNotEmpty) {
         listGantiBarang[int.parse(flag)].kdProduct =
             selectedProductgantibarang[0].kdProduct;
         listGantiBarang[int.parse(flag)].nmProduct =
             selectedProductgantibarang[0].nmProduct;
-        listGantiBarang[int.parse(flag)].itemOrder = _items;
+        listGantiBarang[int.parse(flag)].itemOrder = items;
         listGantiBarang[int.parse(flag)].alasan = "";
       } else {
         listGantiBarang.removeAt(int.parse(flag));
@@ -923,14 +919,14 @@ class ReturController extends GetxController {
 
   addToCartPp() {
     var itemtotal = countTotalpengganti();
-    List<CartModel> _list = <CartModel>[];
+    List<CartModel> list = <CartModel>[];
     for (var i = 0;
         i < selectedProductProdukPengganti[0].detailProduct.length;
         i++) {
       if (i == 0 &&
           qty1pp.value.text != "" &&
           int.parse(qty1pp.value.text) > 0) {
-        _list.add(CartModel(
+        list.add(CartModel(
             selectedProductProdukPengganti[0].kdProduct,
             selectedProductProdukPengganti[0].nmProduct,
             int.parse(qty1pp.value.text),
@@ -939,7 +935,7 @@ class ReturController extends GetxController {
       } else if (i == 1 &&
           qty2pp.value.text != "" &&
           int.parse(qty2pp.value.text) > 0) {
-        _list.add(CartModel(
+        list.add(CartModel(
             selectedProductProdukPengganti[0].kdProduct,
             selectedProductProdukPengganti[0].nmProduct,
             int.parse(qty2pp.value.text),
@@ -948,7 +944,7 @@ class ReturController extends GetxController {
       } else if (i == 2 &&
           qty3pp.value.text != "" &&
           int.parse(qty3pp.value.text) > 0) {
-        _list.add(CartModel(
+        list.add(CartModel(
             selectedProductProdukPengganti[0].kdProduct,
             selectedProductProdukPengganti[0].nmProduct,
             int.parse(qty3pp.value.text),
@@ -956,16 +952,16 @@ class ReturController extends GetxController {
             selectedProductProdukPengganti[0].detailProduct[i].hrg));
       }
     }
-    print("awal ${itemtotal}");
-    for (var i = 0; i < _list.length; i++) {
-      if ("dos" == _list[i].Satuan) {
-        itemtotal = itemtotal - (_list[i].Qty * 8);
-      } else if ("biji" == _list[i].Satuan) {
-        itemtotal = itemtotal - _list[i].Qty;
-      } else if ("kaleng" == _list[i].Satuan) {
-        itemtotal = itemtotal - _list[i].Qty;
-      } else if ("inner plas" == _list[i].Satuan) {
-        itemtotal = itemtotal - (_list[i].Qty * 4);
+    print("awal $itemtotal");
+    for (var i = 0; i < list.length; i++) {
+      if ("dos" == list[i].Satuan) {
+        itemtotal = itemtotal - (list[i].Qty * 8);
+      } else if ("biji" == list[i].Satuan) {
+        itemtotal = itemtotal - list[i].Qty;
+      } else if ("kaleng" == list[i].Satuan) {
+        itemtotal = itemtotal - list[i].Qty;
+      } else if ("inner plas" == list[i].Satuan) {
+        itemtotal = itemtotal - (list[i].Qty * 4);
       }
     }
     for (var i = 0; i < listProdukPengganti.length; i++) {
@@ -987,7 +983,7 @@ class ReturController extends GetxController {
         }
       }
     }
-    print("after minus by all item ${itemtotal}");
+    print("after minus by all item $itemtotal");
     if (itemtotal < 0) {
       isOverfow.value = true;
       print("overflow");
@@ -1001,9 +997,9 @@ class ReturController extends GetxController {
         if (listProdukPengganti[i].kdProduct ==
             selectedProductProdukPengganti[0].kdProduct) {
           listProdukPengganti[i].itemOrder.clear();
-          print(_list.length.toString() + " list length");
-          if (_list.isNotEmpty) {
-            listProdukPengganti[i].itemOrder.addAll(_list);
+          print("${list.length} list length");
+          if (list.isNotEmpty) {
+            listProdukPengganti[i].itemOrder.addAll(list);
           } else {
             listProdukPengganti.removeAt(i);
           }
@@ -1011,11 +1007,11 @@ class ReturController extends GetxController {
         }
       }
     } else {
-      if (_list.isNotEmpty) {
+      if (list.isNotEmpty) {
         listProdukPengganti.add(TarikBarangModel(
             selectedProductProdukPengganti[0].kdProduct,
             selectedProductProdukPengganti[0].nmProduct,
-            _list,
+            list,
             ""));
       }
     }
@@ -1134,20 +1130,20 @@ class ReturController extends GetxController {
   }
 
   handlesaveprodukpengganti(BuildContext context) {
-    List<CartModel> _list = <CartModel>[];
+    List<CartModel> list = <CartModel>[];
     for (var i = 0; i < listitemforProdukPengganti[0].itemOrder.length; i++) {
       CartModel data = listitemforProdukPengganti[0].itemOrder[i];
-      _list.add(CartModel(data.kdProduct, data.nmProduct, data.Qty, data.Satuan,
+      list.add(CartModel(data.kdProduct, data.nmProduct, data.Qty, data.Satuan,
           data.hrgPerPieces));
     }
-    List<CartDetail> _listdetail = <CartDetail>[];
+    List<CartDetail> listdetail = <CartDetail>[];
     for (var i = 0; i < listProdukPengganti.length; i++) {
-      _listdetail.add(CartDetail(listProdukPengganti[i].kdProduct,
+      listdetail.add(CartDetail(listProdukPengganti[i].kdProduct,
           listProdukPengganti[i].nmProduct, listProdukPengganti[i].itemOrder));
     }
     if (listTukarWarna.isEmpty) {
       listTukarWarna.add(TukarWarnaModel(selectedProductTukarWarna[0].kdProduct,
-          selectedProductTukarWarna[0].nmProduct, _list, _listdetail));
+          selectedProductTukarWarna[0].nmProduct, list, listdetail));
     } else {
       if (listTukarWarna.any(
           (data) => data.kdProduct == selectedProductTukarWarna[0].kdProduct)) {
@@ -1156,16 +1152,16 @@ class ReturController extends GetxController {
               selectedProductTukarWarna[0].kdProduct) {
             listTukarWarna[i].listqtyheader.clear();
             listTukarWarna[i].listitemdetail.clear();
-            listTukarWarna[i].listqtyheader.addAll(_list);
-            listTukarWarna[i].listitemdetail.addAll(_listdetail);
+            listTukarWarna[i].listqtyheader.addAll(list);
+            listTukarWarna[i].listitemdetail.addAll(listdetail);
           }
         }
       } else {
         listTukarWarna.add(TukarWarnaModel(
             selectedProductTukarWarna[0].kdProduct,
             selectedProductTukarWarna[0].nmProduct,
-            _list,
-            _listdetail));
+            list,
+            listdetail));
       }
     }
     selectedKdProductTukarWarna.value = "";
@@ -1193,7 +1189,7 @@ class ReturController extends GetxController {
     listProdukPengganti.clear();
     produkpenggantifield.value.clear();
     listitemforProdukPengganti.clear();
-    List<CartModel> _list = <CartModel>[];
+    List<CartModel> list = <CartModel>[];
     for (var i = 0; i < _penjualanController.listProduct.length; i++) {
       if (_penjualanController.listProduct[i].kdProduct ==
           selectedProductTukarWarna[0].kdProduct) {
@@ -1203,7 +1199,7 @@ class ReturController extends GetxController {
           if (k == 0 &&
               qty1tw.value.text != "" &&
               int.tryParse(qty1tw.value.text)! > 0) {
-            _list.add(CartModel(
+            list.add(CartModel(
                 _penjualanController.listProduct[i].kdProduct,
                 _penjualanController.listProduct[i].nmProduct,
                 int.tryParse(qty1tw.value.text)!,
@@ -1212,7 +1208,7 @@ class ReturController extends GetxController {
           } else if (k == 1 &&
               qty2tw.value.text != "" &&
               int.tryParse(qty2tw.value.text)! > 0) {
-            _list.add(CartModel(
+            list.add(CartModel(
                 _penjualanController.listProduct[i].kdProduct,
                 _penjualanController.listProduct[i].nmProduct,
                 int.tryParse(qty2tw.value.text)!,
@@ -1221,7 +1217,7 @@ class ReturController extends GetxController {
           } else if (k == 2 &&
               qty3tw.value.text != "" &&
               int.tryParse(qty3tw.value.text)! > 0) {
-            _list.add(CartModel(
+            list.add(CartModel(
                 _penjualanController.listProduct[i].kdProduct,
                 _penjualanController.listProduct[i].nmProduct,
                 int.tryParse(qty3tw.value.text)!,
@@ -1232,7 +1228,7 @@ class ReturController extends GetxController {
         break;
       }
     }
-    if (_list.isEmpty) {
+    if (list.isEmpty) {
       selectedProductTukarWarna.clear();
       selectedKdProductTukarWarna.value = "";
       tukarwarnafield.value.clear();
@@ -1240,13 +1236,13 @@ class ReturController extends GetxController {
       listitemforProdukPengganti.add(TarikBarangModel(
           selectedProductTukarWarna[0].kdProduct,
           selectedProductTukarWarna[0].nmProduct,
-          _list,
+          list,
           ""));
       showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         barrierColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
         ),
         elevation: 8.0,
@@ -1278,14 +1274,14 @@ class ReturController extends GetxController {
         break;
       }
     }
-    List<CartModel> _list = <CartModel>[];
+    List<CartModel> list = <CartModel>[];
     for (var i = 0;
         i < selectedProductTukarWarna[0].detailProduct.length;
         i++) {
       if (i == 0 &&
           qty1tw.value.text != "" &&
           int.tryParse(qty1tw.value.text)! > 0) {
-        _list.add(CartModel(
+        list.add(CartModel(
             selectedProductTukarWarna[0].kdProduct,
             selectedProductTukarWarna[0].nmProduct,
             int.tryParse(qty1tw.value.text)!,
@@ -1294,7 +1290,7 @@ class ReturController extends GetxController {
       } else if (i == 1 &&
           qty2tw.value.text != "" &&
           int.tryParse(qty2tw.value.text)! > 0) {
-        _list.add(CartModel(
+        list.add(CartModel(
             selectedProductTukarWarna[0].kdProduct,
             selectedProductTukarWarna[0].nmProduct,
             int.tryParse(qty2tw.value.text)!,
@@ -1303,7 +1299,7 @@ class ReturController extends GetxController {
       } else if (i == 2 &&
           qty3tw.value.text != "" &&
           int.tryParse(qty3tw.value.text)! > 0) {
-        _list.add(CartModel(
+        list.add(CartModel(
             selectedProductTukarWarna[0].kdProduct,
             selectedProductTukarWarna[0].nmProduct,
             int.tryParse(qty3tw.value.text)!,
@@ -1312,13 +1308,13 @@ class ReturController extends GetxController {
       }
     }
     var curritem = 0;
-    for (var i = 0; i < _list.length; i++) {
-      if (_list[i].Satuan == "dos") {
-        curritem = curritem + (_list[i].Qty * 8);
-      } else if (_list[i].Satuan == "biji" || _list[i].Satuan == "kaleng") {
-        curritem = curritem + (_list[i].Qty);
-      } else if (_list[i].Satuan == "inner plas") {
-        curritem = curritem + (_list[i].Qty * 4);
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].Satuan == "dos") {
+        curritem = curritem + (list[i].Qty * 8);
+      } else if (list[i].Satuan == "biji" || list[i].Satuan == "kaleng") {
+        curritem = curritem + (list[i].Qty);
+      } else if (list[i].Satuan == "inner plas") {
+        curritem = curritem + (list[i].Qty * 4);
       }
     }
     if (curritem < previtem && curritem != 0) {
@@ -1335,7 +1331,7 @@ class ReturController extends GetxController {
     listitemforProdukPengganti.add(TarikBarangModel(
         selectedProductTukarWarna[0].kdProduct,
         selectedProductTukarWarna[0].nmProduct,
-        _list,
+        list,
         ""));
     listProdukPengganti.clear();
     for (var i = 0; i < listTukarWarna.length; i++) {
@@ -1358,7 +1354,7 @@ class ReturController extends GetxController {
       context: context,
       isScrollControlled: true,
       barrierColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       elevation: 8.0,
@@ -1412,13 +1408,13 @@ class ReturController extends GetxController {
         if (itemtotal >= 8) {
           int qty = (itemtotal / 8).toInt();
           itemtotal = itemtotal - (8 * qty);
-          listSisa.add("${qty} dos");
+          listSisa.add("$qty dos");
         } else if (itemtotal >= 4) {
           int qty = (itemtotal / 4).toInt();
           itemtotal = itemtotal - (4 * qty);
-          listSisa.add("${qty} inner plas");
+          listSisa.add("$qty inner plas");
         } else {
-          listSisa.add("${itemtotal} biji");
+          listSisa.add("$itemtotal biji");
           itemtotal = itemtotal - itemtotal;
         }
       }

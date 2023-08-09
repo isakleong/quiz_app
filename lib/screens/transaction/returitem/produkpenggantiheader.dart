@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
-import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 
 import '../../../widgets/textview.dart';
 
@@ -15,7 +14,7 @@ class ProdukPenggantiHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -32,7 +31,7 @@ class ProdukPenggantiHeader extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: Color(0xFFc4185c),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     FontAwesomeIcons.layerGroup,
                     color: Colors.white,
                   )),
@@ -56,13 +55,13 @@ class ProdukPenggantiHeader extends StatelessWidget {
                       elevation: 5,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                           left: 15, right: 15, top: 2, bottom: 2),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
+                      children: const [
                         Icon(
                           FontAwesomeIcons.checkCircle,
                           size: 18,
@@ -80,13 +79,13 @@ class ProdukPenggantiHeader extends StatelessWidget {
                     ),
                   )
                 : Row(children: [
-                    TextView(text: "Sisa : "),
+                    const TextView(text: "Sisa : "),
                     for (var j = 0; j < list.length; j++)
                       Padding(
-                        padding: EdgeInsets.only(left: 5),
+                        padding: const EdgeInsets.only(left: 5),
                         child: ChipsItem(
                           satuan: list[j],
-                          color: Color(0xFFc4185c),
+                          color: const Color(0xFFc4185c),
                         ),
                       )
                   ]),

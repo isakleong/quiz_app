@@ -49,7 +49,7 @@ class TakingOrderVendorController extends GetxController
   handleSaveConfirm(String msg, String title) {
     Get.dialog(Dialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: DialogConfirm(message: msg, title: title)));
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/transaction/returitem/bottomsheettukarwarna.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/doubleunit.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/singleunit.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/tripleunit.dart';
@@ -74,13 +73,13 @@ class ShopCartTukarWarna extends StatelessWidget {
                           elevation: 5,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                               left: 15, right: 15, top: 2, bottom: 2),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(
                               Icons.repeat,
                               size: 18,

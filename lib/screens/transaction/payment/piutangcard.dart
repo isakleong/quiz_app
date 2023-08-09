@@ -108,7 +108,7 @@ class PiutangCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 Column(
-                  children: [
+                  children: const [
                     TextView(
                       text: "20,752,392",
                       headings: 'H3',
@@ -133,7 +133,7 @@ class PiutangCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 Column(
-                  children: [
+                  children: const [
                     TextView(
                       text: "20,752,392",
                       color: Color(0xFFf5511e),

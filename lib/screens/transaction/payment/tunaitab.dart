@@ -21,7 +21,7 @@ class TunaiTab extends StatelessWidget {
               color: Colors.grey.shade200,
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.only(top: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -36,7 +36,7 @@ class TunaiTab extends StatelessWidget {
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButtonFormField<String>(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               contentPadding:
                                   EdgeInsets.zero, // Remove content padding
                               border: InputBorder.none, // Remove border

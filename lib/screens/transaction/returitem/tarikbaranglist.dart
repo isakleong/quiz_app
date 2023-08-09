@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/tarikbarangmodel.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-import '../../../controllers/taking_order_vendor_controller.dart';
 import '../takingordervendor/chipsitem.dart';
 
 class TarikBarangList extends StatelessWidget {
@@ -83,7 +80,7 @@ class TarikBarangList extends StatelessWidget {
                                       satuan:
                                           "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
                                       fontSize: 12,
-                                      color: unit ?? Color(0XFF0098a6),
+                                      color: unit ?? const Color(0XFF0098a6),
                                     )
                                   : Container(),
                               data.itemOrder.length > 1
@@ -93,7 +90,7 @@ class TarikBarangList extends StatelessWidget {
                                         satuan:
                                             "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
                                         fontSize: 12,
-                                        color: unit ?? Color(0XFF0098a6),
+                                        color: unit ?? const Color(0XFF0098a6),
                                       ))
                                   : Container(),
                               data.itemOrder.length > 2
@@ -103,7 +100,7 @@ class TarikBarangList extends StatelessWidget {
                                         satuan:
                                             "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
                                         fontSize: 12,
-                                        color: unit ?? Color(0XFF0098a6),
+                                        color: unit ?? const Color(0XFF0098a6),
                                       ))
                                   : Container()
                               // SizedBox(
@@ -192,12 +189,12 @@ class TarikBarangList extends StatelessWidget {
                       SizedBox(
                         width: 0.025 * Get.width,
                       ),
-                      Icon(
+                      const Icon(
                         FontAwesomeIcons.circleChevronRight,
                         color: Colors.brown,
                         size: 16,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       TextView(

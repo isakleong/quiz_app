@@ -26,11 +26,11 @@ class TripleUnit extends StatelessWidget {
       children: [
         ChipsItem(
           satuan: satuan,
-          color: colorChips ?? Color(0XFF0098a6),
+          color: colorChips ?? const Color(0XFF0098a6),
         ),
         Padding(
             padding: const EdgeInsets.only(top: 10),
-            child: Container(
+            child: SizedBox(
               width: 0.25 * width, // Set the desired width
               child: TextFormField(
                 controller: ctrl,
@@ -58,7 +58,7 @@ class TripleUnit extends StatelessWidget {
                     padding:
                         EdgeInsets.zero, // Remove the padding around the icon
                   ),
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(6)),
                   ),
                 ),

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -24,14 +22,14 @@ class TukarWarnaPage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(
                       top: 0.02 * Get.height, left: 0.05 * Get.width),
-                  child: Container(
+                  child: SizedBox(
                     width: 0.9 * Get.width,
                     child: TypeAheadField(
                       textFieldConfiguration: TextFieldConfiguration(
                         controller:
                             _takingOrderVendorController.tukarwarnafield.value,
-                        style: TextStyle(fontSize: 16),
-                        decoration: InputDecoration(
+                        style: const TextStyle(fontSize: 16),
+                        decoration: const InputDecoration(
                             labelText: 'Cari Produk',
                             labelStyle: TextStyle(fontSize: 16),
                             border: OutlineInputBorder(),

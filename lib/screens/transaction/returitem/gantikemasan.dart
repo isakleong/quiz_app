@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/returitem/noinputretur.dart';
 import 'package:sfa_tools/screens/transaction/returitem/returheader.dart';
 import 'package:sfa_tools/screens/transaction/returitem/shopcartgantikemasan.dart';
-import 'package:sfa_tools/screens/transaction/returitem/shopcarttarikbarang.dart';
-import 'package:sfa_tools/screens/transaction/returitem/tarikbarangheader.dart';
 import 'package:sfa_tools/screens/transaction/returitem/tarikbaranglist.dart';
 
 import '../../../controllers/taking_order_vendor_controller.dart';
@@ -27,14 +23,14 @@ class GantiKemasan extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(
                     top: 0.02 * Get.height, left: 0.05 * Get.width),
-                child: Container(
+                child: SizedBox(
                   width: 0.9 * Get.width,
                   child: TypeAheadField(
                     textFieldConfiguration: TextFieldConfiguration(
                       controller:
                           _takingOrderVendorController.gantikemasanfield.value,
-                      style: TextStyle(fontSize: 16),
-                      decoration: InputDecoration(
+                      style: const TextStyle(fontSize: 16),
+                      decoration: const InputDecoration(
                           labelText: 'Cari Produk',
                           labelStyle: TextStyle(fontSize: 16),
                           border: OutlineInputBorder(),

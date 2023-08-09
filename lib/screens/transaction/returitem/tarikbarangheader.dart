@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 import '../../../common/app_config.dart';
-import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/customelevatedbutton.dart';
 
 class TarikBarangHeader extends StatelessWidget {

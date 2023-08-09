@@ -21,7 +21,7 @@ class TransferTab extends StatelessWidget {
               color: Colors.grey.shade200,
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.only(top: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

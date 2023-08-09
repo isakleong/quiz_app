@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/widgets/textview.dart';
@@ -42,7 +40,7 @@ class DialogDeleteTukarWarna extends StatelessWidget {
                 ),
                 SizedBox(
                   width: Get.width * 0.7,
-                  child: TextView(
+                  child: const TextView(
                     text:
                         "Jumlah kuantiti lebih kecil dari sebelumnya, barang pengganti sebelumnya akan terhapus semua, lanjutkan?",
                     headings: 'H4',
@@ -89,10 +87,10 @@ class DialogDeleteTukarWarna extends StatelessWidget {
                       elevation: 5,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                           left: 15, right: 15, top: 2, bottom: 2),
                     ),
-                    child: TextView(
+                    child: const TextView(
                       text: "YA, LANJUTKAN",
                       headings: 'H2',
                       fontSize: 14,

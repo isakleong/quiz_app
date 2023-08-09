@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/transaction/payment/paymentheader.dart';
 import 'package:sfa_tools/screens/transaction/returitem/noinputretur.dart';
 import 'package:sfa_tools/screens/transaction/returitem/shopcarttarikbarang.dart';
 import 'package:sfa_tools/screens/transaction/returitem/tarikbarangheader.dart';
@@ -12,8 +9,6 @@ import 'package:sfa_tools/screens/transaction/returitem/tarikbaranglist.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 import '../../../controllers/taking_order_vendor_controller.dart';
-import '../takingordervendor/cartheader.dart';
-import '../takingordervendor/cartlist.dart';
 
 class TarikBarangPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -28,14 +23,14 @@ class TarikBarangPage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(
                       top: 0.02 * Get.height, left: 0.05 * Get.width),
-                  child: Container(
+                  child: SizedBox(
                     width: 0.9 * Get.width,
                     child: TypeAheadField(
                       textFieldConfiguration: TextFieldConfiguration(
                         controller:
                             _takingOrderVendorController.tarikbarangfield.value,
-                        style: TextStyle(fontSize: 16),
-                        decoration: InputDecoration(
+                        style: const TextStyle(fontSize: 16),
+                        decoration: const InputDecoration(
                             labelText: 'Cari Produk',
                             labelStyle: TextStyle(fontSize: 16),
                             border: OutlineInputBorder(),

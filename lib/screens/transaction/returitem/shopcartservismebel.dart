@@ -1,8 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/doubleunit.dart';
 import 'package:sfa_tools/screens/transaction/takingordervendor/tripleunit.dart';
@@ -65,14 +61,14 @@ class ShopCartServisMebel extends StatelessWidget {
                           elevation: 5,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                               left: 15, right: 15, top: 2, bottom: 2),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(Icons.shopping_cart),
+                            const Icon(Icons.shopping_cart),
                             const SizedBox(
                                 width:
                                     8), // Add some space between the icon and text

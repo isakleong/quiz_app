@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
@@ -87,7 +85,7 @@ class TukarWarnaList extends StatelessWidget {
                                       satuan:
                                           "${data.listqtyheader[j].Qty} ${data.listqtyheader[j].Satuan}",
                                       fontSize: 12,
-                                      color: unit ?? Color(0XFF0098a6),
+                                      color: unit ?? const Color(0XFF0098a6),
                                     ))
 
                               // SizedBox(
@@ -165,15 +163,15 @@ class TukarWarnaList extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Container(
+            SizedBox(
               width: 0.9 * Get.width,
               child: ListView.builder(
                   itemCount: data.listitemdetail.length,
                   shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   itemBuilder: ((context, innerindex) {
                     return Padding(
-                      padding: EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.only(bottom: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -183,17 +181,17 @@ class TukarWarnaList extends StatelessWidget {
                               SizedBox(
                                 width: 0.025 * Get.width,
                               ),
-                              Icon(
+                              const Icon(
                                 FontAwesomeIcons.circleChevronRight,
                                 color: Colors.brown,
                                 size: 16,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               TextView(
                                 text:
-                                    "${data.listitemdetail[innerindex].nmProduct}",
+                                    data.listitemdetail[innerindex].nmProduct,
                                 fontSize: 14,
                               )
                             ],
@@ -218,7 +216,7 @@ class TukarWarnaList extends StatelessWidget {
                                       satuan:
                                           "${data.listitemdetail[innerindex].itemOrder[k].Qty} ${data.listitemdetail[innerindex].itemOrder[k].Satuan}",
                                       fontSize: 12,
-                                      color: Color(0xFFe44b1b),
+                                      color: const Color(0xFFe44b1b),
                                     ))
                             ],
                           )

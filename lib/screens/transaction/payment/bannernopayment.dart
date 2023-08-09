@@ -20,7 +20,7 @@ class BannerNoPayment extends StatelessWidget {
             SizedBox(
               width: 0.45 * Get.width,
               child: Column(
-                children: [
+                children: const [
                   TextView(
                     text: "Belum Ada Pembayaran",
                     headings: 'H2',
