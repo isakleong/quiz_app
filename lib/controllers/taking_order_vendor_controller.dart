@@ -103,6 +103,10 @@ class TakingOrderVendorController extends GetxController
     _penjualanController.handleDeleteItem(data);
   }
 
+  showProdukSerupa(CartDetail data) {
+    _penjualanController.showProdukSerupa(data);
+  }
+
   //for laporan page
   RxString get choosedReport => _laporanController.choosedReport;
   RxList<ReportPembayaranModel> get listReportPembayaranshow =>

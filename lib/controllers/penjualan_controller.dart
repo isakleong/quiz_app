@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukserupa.dart';
 
 import '../models/cartmodel.dart';
 import '../models/productdata.dart';
@@ -253,5 +254,13 @@ class PenjualanController extends GetxController {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: DialogCheckOut()));
+  }
+
+  showProdukSerupa(CartDetail data) {
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(5))),
+        child: DialogProdukSerupa()));
   }
 }

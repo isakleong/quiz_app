@@ -62,10 +62,21 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                                           left: 0.05 * width,
                                           top: 5,
                                           right: 0.05 * width),
-                                      child: CartList(
-                                          idx: (index + 1).toString(),
-                                          data: _takingOrderVendorController
-                                              .cartDetailList[index]),
+                                      child: InkWell(
+                                        onTap: () {
+                                          print(_takingOrderVendorController
+                                              .cartDetailList[index].nmProduct
+                                              .toString());
+                                          _takingOrderVendorController
+                                              .showProdukSerupa(
+                                                  _takingOrderVendorController
+                                                      .cartDetailList[index]);
+                                        },
+                                        child: CartList(
+                                            idx: (index + 1).toString(),
+                                            data: _takingOrderVendorController
+                                                .cartDetailList[index]),
+                                      ),
                                     );
                                   },
                                   physics: const BouncingScrollPhysics(),

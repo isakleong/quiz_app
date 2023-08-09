@@ -5,7 +5,7 @@ import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/returitem/retur_main_page.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/payment_main_page.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/report_main_page.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/transaction/taking_order_vendor_main_page.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/transaction_main_page.dart';
 
 class BottomBartransaction extends StatelessWidget {
   BottomBartransaction({super.key});
