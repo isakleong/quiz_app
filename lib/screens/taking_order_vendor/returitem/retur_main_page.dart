@@ -16,11 +16,11 @@ class ReturMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
   ReturMainPage({super.key});
   List pages = [
-    TukarWarnaPage(),
+    // TukarWarnaPage(),
     TarikBarangPage(),
-    GantiKemasan(),
-    ServisMebel(),
-    GantiBarang(),
+    // GantiKemasan(),
+    // ServisMebel(),
+    // GantiBarang(),
   ];
 
   @override
@@ -44,10 +44,10 @@ class ReturMainPage extends StatelessWidget {
                     padding: EdgeInsets.only(
                         left: 0.05 * Get.width, top: 0.01 * Get.height),
                     child: const ReturCard()),
-                Padding(
-                    padding: EdgeInsets.only(
-                        left: 0.05 * Get.width, top: 0.02 * Get.height),
-                    child: SegmentButton()),
+                // Padding(
+                //     padding: EdgeInsets.only(
+                //         left: 0.05 * Get.width, top: 0.02 * Get.height),
+                //     child: SegmentButton()),
                 Obx(() =>
                     pages[_takingOrderVendorController.indexSegment.value])
               ],

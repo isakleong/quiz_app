@@ -27,7 +27,7 @@ class TakingOrderVendorController extends GetxController
   void onInit() {
     super.onInit();
     _pembayaranController.controller =
-        TabController(vsync: this, length: 4, initialIndex: 0);
+        TabController(vsync: this, length: 3, initialIndex: 0);
     _penjualanController.getListItem();
     _laporanController.getReportList();
   }

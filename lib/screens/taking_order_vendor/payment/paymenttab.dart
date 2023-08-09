@@ -35,9 +35,9 @@ class PaymentTab extends StatelessWidget {
                 Tab(
                   text: "TRANSFER",
                 ),
-                Tab(
-                  text: "POTONGAN CN",
-                ),
+                // Tab(
+                //   text: "POTONGAN CN",
+                // ),
                 Tab(
                   text: "CEK/GIRO/SLIP",
                 ),
@@ -50,7 +50,7 @@ class PaymentTab extends StatelessWidget {
           children: <Widget>[
             TunaiTab(),
             TransferTab(),
-            PotonganCnTab(),
+            // PotonganCnTab(),
             CekTab()
           ],
         ),

@@ -21,6 +21,11 @@ class PembayaranController extends GetxController {
   RxInt selectedTab = 0.obs;
   late TabController controller;
 
+  var tabvalueCn = 3;
+  var tabvaluetunai = 0;
+  var tabvaluetransfer = 1;
+  var tabvaluecek = 2;
+
   Future<void> selectDate(BuildContext context) async {
     DateTime currentDate = DateTime.now();
     DateTime next90Days = currentDate.add(const Duration(days: 90));
@@ -192,22 +197,22 @@ class PembayaranController extends GetxController {
         choosedTunaiMethod.value = listpaymentdata[idx].tipe;
         nominaltunai.value.text =
             formatNumber(listpaymentdata[idx].value.toInt());
-        controller.index = 0;
+        controller.index = tabvaluetunai;
       } else if (jenis == "Transfer") {
         choosedTransferMethod.value = listpaymentdata[idx].tipe;
         nominaltransfer.value.text =
             formatNumber(listpaymentdata[idx].value.toInt());
-        controller.index = 1;
+        controller.index = tabvaluetransfer;
       } else if (jenis == "cn") {
         nominalCn.value.text = formatNumber(listpaymentdata[idx].value.toInt());
-        controller.index = 2;
-      } else {
+        controller.index = tabvalueCn;
+      } else if (jenis == "cek") {
         nomorcek.value.text = listpaymentdata[idx].nomor.toString();
         nmbank.value.text = listpaymentdata[idx].tipe.toString();
         jatuhtempotgl.value.text = listpaymentdata[idx].jatuhtempo.toString();
         nominalcek.value.text =
             formatNumber(listpaymentdata[idx].value.toInt());
-        controller.index = 3;
+        controller.index = tabvaluecek;
       }
     } catch (e) {
       print(e);
