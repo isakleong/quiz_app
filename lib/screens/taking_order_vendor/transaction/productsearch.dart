@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 
 class ProductSearch extends StatelessWidget {
@@ -32,8 +32,8 @@ class ProductSearch extends StatelessWidget {
                       alignment: Alignment.center,
                       children: [
                         Container(
-                          width: 60,
-                          height: 60,
+                          width: 40.sp,
+                          height: 40.sp,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: AppConfig.mainCyan,
@@ -41,8 +41,8 @@ class ProductSearch extends StatelessWidget {
                         ),
                         Image.asset(
                           'assets/images/custorder.png',
-                          width: 50,
-                          height: 50,
+                          width: 30.sp,
+                          height: 30.sp,
                           fit: BoxFit.cover,
                         ),
                       ],
@@ -53,8 +53,8 @@ class ProductSearch extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const TextView(
-                            headings: "H2", text: "Penjualan", fontSize: 14),
+                        TextView(
+                            headings: "H2", text: "Penjualan", fontSize: 12.sp),
                         const SizedBox(
                           height: 5,
                         ),
@@ -71,17 +71,20 @@ class ProductSearch extends StatelessWidget {
                                     color: AppConfig.mainCyan,
                                   ),
                                 ),
-                                const Icon(
+                                Icon(
                                   Icons.home,
                                   color: Colors.white,
-                                  size: 15,
+                                  size: 11.sp,
                                 )
                               ],
                             ),
-                            const SizedBox(
+                            SizedBox(
                               width: 5,
                             ),
-                            const Text("Adek Abang"),
+                            TextView(
+                              text: "Adek Abang",
+                              fontSize: 10.sp,
+                            ),
                           ],
                         ),
                       ],
@@ -110,14 +113,15 @@ class ProductSearch extends StatelessWidget {
                       child: TypeAheadField(
                         textFieldConfiguration: TextFieldConfiguration(
                           controller: _takingOrderVendorController.cnt.value,
-                          style: const TextStyle(fontSize: 16),
-                          decoration: const InputDecoration(
+                          style: TextStyle(fontSize: 12.sp),
+                          decoration: InputDecoration(
                               labelText: 'Cari Produk',
-                              labelStyle: TextStyle(fontSize: 16),
+                              labelStyle: TextStyle(fontSize: 12.sp),
                               border: InputBorder.none,
                               prefixIcon: Icon(
                                 FontAwesomeIcons.search,
                                 color: Color(0XFF319088),
+                                size: 14.sp,
                               )),
                         ),
                         suggestionsCallback: (pattern) {
@@ -140,14 +144,14 @@ class ProductSearch extends StatelessWidget {
                                 Icon(
                                   FontAwesomeIcons.solidCircle,
                                   color: Colors.grey.shade600,
-                                  size: 14,
+                                  size: 10.sp,
                                 ),
                                 SizedBox(
                                   width: 0.02 * Get.width,
                                 ),
                                 TextView(
                                   text: suggestion.nmProduct,
-                                  fontSize: 15,
+                                  fontSize: 11.sp,
                                 ),
                               ],
                             ),

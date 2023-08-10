@@ -4,7 +4,7 @@ import 'package:sfa_tools/screens/taking_order_vendor/transaction/doubleunit.dar
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/singleunit.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/tripleunit.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 
@@ -36,13 +36,14 @@ class Shoppingcart extends StatelessWidget {
                     Icon(
                       Icons.auto_awesome_mosaic_rounded,
                       color: AppConfig.mainCyan,
+                      size: 12.sp,
                     ),
                     const SizedBox(
                       width: 10,
                     ),
                     TextView(
                       headings: 'H4',
-                      fontSize: 14,
+                      fontSize: 10.sp,
                       text: _takingOrderVendorController
                           .selectedProduct[0].nmProduct,
                     )
@@ -71,14 +72,19 @@ class Shoppingcart extends StatelessWidget {
                       elevation: 5,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)),
-                      padding: const EdgeInsets.only(
-                          left: 15, right: 15, top: 2, bottom: 2),
+                      padding: EdgeInsets.only(
+                        left: 10.sp,
+                        right: 10.sp,
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Icon(Icons.shopping_cart),
+                        Icon(
+                          Icons.shopping_cart,
+                          size: 12.sp,
+                        ),
                         const SizedBox(
                             width:
                                 8), // Add some space between the icon and text
@@ -93,7 +99,7 @@ class Shoppingcart extends StatelessWidget {
                                   ? "Ganti"
                                   : "Tambah",
                           headings: 'H4',
-                          fontSize: 14,
+                          fontSize: 10.sp,
                           color: Colors.white,
                         ),
                       ],

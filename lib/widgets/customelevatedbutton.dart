@@ -15,6 +15,7 @@ class CustomElevatedButton extends StatelessWidget {
   String? headings;
   Icon? icon;
   double? space;
+  double? fonts;
   CustomElevatedButton(
       {super.key,
       this.text,
@@ -28,7 +29,8 @@ class CustomElevatedButton extends StatelessWidget {
       this.bordercolor,
       this.headings,
       this.icon,
-      this.space});
+      this.space,
+      this.fonts});
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +41,6 @@ class CustomElevatedButton extends StatelessWidget {
               color: bordercolor == null ? Colors.white : bordercolor!,
               width: 1),
           backgroundColor: backgroundColor,
-          fixedSize: Size(width == null ? 0.2 * Get.width : width!,
-              height == null ? 0.2 * Get.height : height!),
           elevation: elevation,
           shape: RoundedRectangleBorder(
               borderRadius:
@@ -56,7 +56,7 @@ class CustomElevatedButton extends StatelessWidget {
                     text: text,
                     color: textcolor,
                     headings: headings ?? "H1",
-                    fontSize: 14,
+                    fontSize: fonts ?? 14,
                   ),
                 ],
               )

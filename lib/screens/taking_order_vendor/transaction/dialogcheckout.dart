@@ -5,7 +5,7 @@ import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/checkoutlist.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 
 class DialogCheckOut extends StatelessWidget {
@@ -24,78 +24,82 @@ class DialogCheckOut extends StatelessWidget {
             SizedBox(
               height: Get.height * 0.03,
             ),
-            const TextView(
+            TextView(
               text: "Penjualan - Adek Abang",
               headings: 'H3',
-              fontSize: 17,
+              fontSize: 13.sp,
             ),
             SizedBox(
               height: Get.height * 0.01,
             ),
-            const TextView(
+            TextView(
               text: "Alamat Pengiriman",
               headings: 'H3',
-              fontSize: 15,
+              fontSize: 10.5.sp,
             ),
             SizedBox(
               height: Get.height * 0.01,
             ),
-            Container(
-              width: 0.8 * Get.width,
-              height: 0.05 * Get.height,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade500),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Icon(Icons.home,
-                      color: AppConfig.mainCyan,
-                      size:
-                          16), // Use any desired icon from flutter_icons package
-                  const SizedBox(
-                      width: 8), // Adjust the space between icon and text
-                  Obx(
-                    () => Expanded(
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          isExpanded: true,
-                          value: _takingOrderVendorController
-                                      .choosedAddress.value ==
-                                  ""
-                              ? 'Pilih Alamat Pengiriman'
-                              : _takingOrderVendorController
-                                  .choosedAddress.value,
-                          onChanged: (String? newValue) {
-                            _takingOrderVendorController.choosedAddress.value =
-                                newValue!;
-                          },
-                          items: <String>[
-                            'Pilih Alamat Pengiriman',
-                            'Pemancar Lamtemen Timur',
-                            'Alamat Dummy',
-                          ].map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: TextView(
-                                text: value,
-                                textAlign: TextAlign.left,
-                                fontSize: 14,
-                                headings: 'H4',
-                              ),
-                            );
-                          }).toList(),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: 0.02 * Get.width, right: 0.01 * Get.width),
+              child: Container(
+                width: 0.8 * Get.width,
+                height: 0.05 * Get.height,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade500),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Icon(Icons.home,
+                        color: AppConfig.mainCyan,
+                        size: 12
+                            .sp), // Use any desired icon from flutter_icons package
+                    const SizedBox(
+                        width: 8), // Adjust the space between icon and text
+                    Obx(
+                      () => Expanded(
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            value: _takingOrderVendorController
+                                        .choosedAddress.value ==
+                                    ""
+                                ? 'Pilih Alamat Pengiriman'
+                                : _takingOrderVendorController
+                                    .choosedAddress.value,
+                            onChanged: (String? newValue) {
+                              _takingOrderVendorController
+                                  .choosedAddress.value = newValue!;
+                            },
+                            items: <String>[
+                              'Pilih Alamat Pengiriman',
+                              'Pemancar Lamtemen Timur',
+                              'Alamat Dummy',
+                            ].map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: TextView(
+                                  text: value,
+                                  textAlign: TextAlign.left,
+                                  fontSize: 10.sp,
+                                  headings: 'H4',
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                ],
+                    const SizedBox(
+                      width: 10,
+                    ),
+                  ],
+                ),
               ),
             ),
             SizedBox(
@@ -122,8 +126,8 @@ class DialogCheckOut extends StatelessWidget {
                       labelText: 'Catatan / Keterangan',
                       icon: Image.asset(
                         'assets/images/notes.png',
-                        width: 45,
-                        height: 45,
+                        width: 35.sp,
+                        height: 35.sp,
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -131,7 +135,7 @@ class DialogCheckOut extends StatelessWidget {
                     maxLines: null,
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     keyboardType: TextInputType.multiline,
-                    style: const TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: 10.sp),
                     onChanged: (text) {
                       // Handle text changes here
                     },
@@ -143,37 +147,43 @@ class DialogCheckOut extends StatelessWidget {
                       side: BorderSide(color: Colors.grey.shade500, width: 1),
                       backgroundColor: Colors.white,
                       elevation: 2,
-                      fixedSize: Size(0.27 * Get.width, 0.07 * Get.height),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                       padding: const EdgeInsets.all(10),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const TextView(
-                          text: 'Ganti Barang',
-                          color: Colors.black,
-                          headings: 'H4',
-                          fontSize: 14,
-                        ),
-                        Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.green.shade700),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: const [
-                              Icon(
-                                Icons.manage_search,
-                                color: Colors.white,
-                              )
-                            ],
+                    child: Padding(
+                      padding: EdgeInsets.all(3.0.sp),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          TextView(
+                            text: 'Ganti Barang',
+                            color: Colors.black,
+                            headings: 'H4',
+                            fontSize: 10.sp,
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            width: 0.01 * Get.width,
+                          ),
+                          Container(
+                            width: 25.sp,
+                            height: 25.sp,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.green.shade700),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Icon(
+                                  Icons.manage_search,
+                                  color: Colors.white,
+                                  size: 14.sp,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ))
               ],
             ),
@@ -202,115 +212,97 @@ class DialogCheckOut extends StatelessWidget {
             ),
             Container(
               width: 0.75 * Get.width,
-              height: 0.06 * Get.height,
+              // height: 0.06 * Get.height,
               decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.all(color: Colors.grey.shade300, width: 1.5),
                   borderRadius: BorderRadius.circular(8)),
-              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      TextView(
-                        text:
-                            "${_takingOrderVendorController.cartDetailList.length}",
-                        headings: 'H2',
-                        fontSize: 15,
-                        color: Colors.amber.shade900,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          TextView(
+                            text:
+                                "${_takingOrderVendorController.cartDetailList.length}",
+                            headings: 'H2',
+                            fontSize: 11.sp,
+                            color: Colors.amber.shade900,
+                          ),
+                          TextView(
+                            text: "Produk",
+                            headings: 'H4',
+                            fontSize: 9.sp,
+                          )
+                        ],
                       ),
-                      const TextView(
-                        text: "Produk",
-                        headings: 'H4',
-                        fontSize: 13,
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Container(
-                  width: 1.5,
-                  height: 0.06 * Get.height,
-                  color: Colors.grey.shade400,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Image.asset(
-                  'assets/images/custorder.png',
-                  width: 35,
-                  height: 35,
-                  fit: BoxFit.fill,
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      TextView(
-                        text: _takingOrderVendorController.formatNumber(
-                            _takingOrderVendorController.countPriceTotal()),
-                        headings: 'H2',
-                        fontSize: 15,
-                        color: Colors.amber.shade900,
+                    ),
+                    Container(
+                      width: 1.5,
+                      height: 0.06 * Get.height,
+                      color: Colors.grey.shade400,
+                    ),
+                    Image.asset(
+                      'assets/images/custorder.png',
+                      width: 25.sp,
+                      height: 25.sp,
+                      fit: BoxFit.fill,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          TextView(
+                            text: _takingOrderVendorController.formatNumber(
+                                _takingOrderVendorController.countPriceTotal()),
+                            headings: 'H2',
+                            fontSize: 11.sp,
+                            color: Colors.amber.shade900,
+                          ),
+                          TextView(
+                            text: "Perkiraan Pesanan",
+                            headings: 'H4',
+                            fontSize: 9.sp,
+                          )
+                        ],
                       ),
-                      const TextView(
-                        text: "Perkiraan Pesanan",
-                        headings: 'H4',
-                        fontSize: 13,
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                Container(
-                  width: 1.5,
-                  height: 0.06 * Get.height,
-                  color: Colors.grey.shade400,
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                Image.asset(
-                  'assets/images/komisi.png',
-                  width: 35,
-                  height: 35,
-                  fit: BoxFit.fill,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      TextView(
-                        text: _takingOrderVendorController.formatNumber(2500),
-                        headings: 'H2',
-                        fontSize: 15,
-                        color: Colors.amber.shade900,
+                    ),
+                    Container(
+                      width: 1.5,
+                      height: 0.06 * Get.height,
+                      color: Colors.grey.shade400,
+                    ),
+                    Image.asset(
+                      'assets/images/komisi.png',
+                      width: 25.sp,
+                      height: 25.sp,
+                      fit: BoxFit.fill,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          TextView(
+                            text:
+                                _takingOrderVendorController.formatNumber(2500),
+                            headings: 'H2',
+                            fontSize: 10.sp,
+                            color: Colors.amber.shade900,
+                          ),
+                          TextView(
+                            text: "Perkiraan Komisi",
+                            headings: 'H4',
+                            fontSize: 9.sp,
+                          )
+                        ],
                       ),
-                      const TextView(
-                        text: "Perkiraan Komisi",
-                        headings: 'H4',
-                        fontSize: 13,
-                      )
-                    ],
-                  ),
-                ),
-              ]),
+                    ),
+                  ]),
             ),
             SizedBox(
               height: 0.02 * Get.height,
@@ -322,34 +314,32 @@ class DialogCheckOut extends StatelessWidget {
                     icon: Icon(
                       Icons.cancel_outlined,
                       color: AppConfig.mainCyan,
-                      size: 21,
+                      size: 14.sp,
                     ),
                     text: "BATAL",
                     onTap: () {
                       Get.back();
                     },
-                    width: 0.18 * Get.width,
-                    height: 0.04 * Get.height,
                     radius: 4,
                     space: 5,
                     backgroundColor: Colors.white,
                     bordercolor: AppConfig.mainCyan,
                     elevation: 0,
+                    fonts: 10.sp,
                     textcolor: AppConfig.mainCyan,
                     headings: 'H2'),
                 CustomElevatedButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.check_circle_outline_rounded,
-                      size: 21,
+                      size: 14.sp,
                     ),
                     text: "SIMPAN",
                     onTap: () async {
                       Get.back();
                     },
-                    width: 0.18 * Get.width,
-                    height: 0.04 * Get.height,
                     radius: 4,
                     space: 5,
+                    fonts: 10.sp,
                     backgroundColor: AppConfig.mainCyan,
                     textcolor: Colors.white,
                     elevation: 2,

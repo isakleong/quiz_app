@@ -7,6 +7,7 @@ import 'package:sfa_tools/screens/taking_order_vendor/transaction/cartheader.dar
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/cartlist.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/productsearch.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/shoppingcart.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TakingOrderVendorMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController =
@@ -15,76 +16,103 @@ class TakingOrderVendorMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: Obx(() => SafeArea(
-              child: Stack(
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/bg-homepage.svg',
-                    fit: BoxFit.cover,
-                  ),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                            padding: EdgeInsets.only(left: 20, top: 10),
-                            child: BackButtonAction()),
-                        Padding(
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      builder: (BuildContext context, Widget? child) {
+        final width = ScreenUtil().screenWidth;
+        final height = ScreenUtil().screenHeight;
+
+        return Padding(
+          padding: EdgeInsets.only(top: 0.035 * Get.height),
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            body: Obx(() => SafeArea(
+                  child: Stack(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/bg-homepage.svg',
+                        fit: BoxFit.cover,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
                             padding: EdgeInsets.only(
-                                left: 0.05 * width, top: 0.01 * height),
-                            child: ProductSearch()),
-                        _takingOrderVendorController.selectedValue.value == ""
-                            ? Container()
-                            : Padding(
-                                padding: EdgeInsets.only(
-                                    left: 0.05 * width, top: 0.02 * height),
-                                child: Shoppingcart()),
-                        _takingOrderVendorController.cartList.isEmpty
-                            ? Container()
-                            : Padding(
-                                padding: EdgeInsets.only(
-                                    left: 0.05 * width,
-                                    top: 0.02 * height,
-                                    bottom: 0.01 * height),
-                                child: CartHeader()),
-                        _takingOrderVendorController.cartList.isEmpty
-                            ? Container()
-                            : Expanded(
-                                child: ListView.builder(
-                                  itemCount: _takingOrderVendorController
-                                      .cartDetailList.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 0.05 * width,
-                                          top: 5,
-                                          right: 0.05 * width),
-                                      child: InkWell(
-                                        onTap: () {
-                                          print(_takingOrderVendorController
-                                              .cartDetailList[index].nmProduct
-                                              .toString());
-                                          _takingOrderVendorController
-                                              .showProdukSerupa(
-                                                  _takingOrderVendorController
-                                                      .cartDetailList[index]);
-                                        },
-                                        child: CartList(
-                                            idx: (index + 1).toString(),
-                                            data: _takingOrderVendorController
-                                                .cartDetailList[index]),
-                                      ),
-                                    );
-                                  },
-                                  physics: const BouncingScrollPhysics(),
-                                ),
+                              left: 0.05 * width,
+                              top: 0.01 * height,
+                            ),
+                            child: BackButtonAction(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 0.05 * width,
+                              top: 0.01 * height,
+                            ),
+                            child: ProductSearch(),
+                          ),
+                          if (_takingOrderVendorController
+                                  .selectedValue.value !=
+                              "")
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 0.05 * width,
+                                top: 0.02 * height,
                               ),
-                      ]),
-                ],
-              ),
-            )));
+                              child: Shoppingcart(),
+                            ),
+                          if (_takingOrderVendorController.cartList.isNotEmpty)
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 0.05 * width,
+                                top: 0.02 * height,
+                                bottom: 0.01 * height,
+                              ),
+                              child: CartHeader(),
+                            ),
+                          if (_takingOrderVendorController.cartList.isNotEmpty)
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: _takingOrderVendorController
+                                    .cartDetailList.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 0.05 * width,
+                                      top: 5,
+                                      right: 0.05 * width,
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        print((1 * width).toString());
+                                        print(_takingOrderVendorController
+                                            .cartDetailList[index].nmProduct
+                                            .toString());
+                                        _takingOrderVendorController
+                                            .showProdukSerupa(
+                                          _takingOrderVendorController
+                                              .cartDetailList[index],
+                                        );
+                                      },
+                                      child: CartList(
+                                        idx: (index + 1).toString(),
+                                        data: _takingOrderVendorController
+                                            .cartDetailList[index],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                physics: const BouncingScrollPhysics(),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )),
+          ),
+        );
+      },
+    );
   }
 }

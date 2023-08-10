@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 
 class CheckoutList extends StatelessWidget {
@@ -43,7 +43,7 @@ class CheckoutList extends StatelessWidget {
                             child: TextView(
                               text: idx,
                               headings: 'H3',
-                              fontSize: 20,
+                              fontSize: 14.sp,
                               color: Colors.white,
                             ),
                           ),
@@ -56,7 +56,7 @@ class CheckoutList extends StatelessWidget {
                           children: [
                             TextView(
                               headings: 'H4',
-                              fontSize: 13,
+                              fontSize: 9.5.sp,
                               text: data.nmProduct,
                             ),
                             Row(
@@ -66,7 +66,7 @@ class CheckoutList extends StatelessWidget {
                                     ? ChipsItem(
                                         satuan:
                                             "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
-                                        fontSize: 12,
+                                        fontSize: 8.sp,
                                       )
                                     : Container(),
                                 data.itemOrder.length > 1
@@ -76,7 +76,7 @@ class CheckoutList extends StatelessWidget {
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
-                                          fontSize: 12,
+                                          fontSize: 8.sp,
                                         ))
                                     : Container(),
                                 data.itemOrder.length > 2
@@ -86,7 +86,7 @@ class CheckoutList extends StatelessWidget {
                                         child: ChipsItem(
                                           satuan:
                                               "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
-                                          fontSize: 12,
+                                          fontSize: 8.sp,
                                         ))
                                     : Container()
                                 // SizedBox(

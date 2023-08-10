@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TripleUnit extends StatelessWidget {
   TextEditingController ctrl;
@@ -26,51 +27,69 @@ class TripleUnit extends StatelessWidget {
       children: [
         ChipsItem(
           satuan: satuan,
+          fontSize: 10.sp,
           color: colorChips ?? const Color(0XFF0098a6),
         ),
         Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: SizedBox(
-              width: 0.25 * width, // Set the desired width
-              child: TextFormField(
-                controller: ctrl,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.zero, // Remove the default padding
-                  suffixIcon: IconButton(
-                    onPressed: onTapPlus,
-                    icon: Icon(
-                      FontAwesomeIcons.plus,
-                      size: 16, // Set the desired icon size
-                      color: Colors.grey.shade500,
+          padding: const EdgeInsets.only(top: 10),
+          child: Container(
+            width: 0.25 * width, // Set the desired width
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.shade500),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: onTapMinus,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(
+                        FontAwesomeIcons.minus,
+                        size: 12.sp,
+                        color: Colors.grey.shade500,
+                      ),
                     ),
-                    padding:
-                        EdgeInsets.zero, // Remove the padding around the icon
                   ),
-                  prefixIcon: IconButton(
-                    onPressed: onTapMinus,
-                    icon: Icon(
-                      FontAwesomeIcons.minus,
-                      size: 16, // Set the desired icon size
-                      color: Colors.grey.shade500,
+                  Expanded(
+                    child: TextFormField(
+                      controller: ctrl,
+                      style: TextStyle(fontSize: 12.sp),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(
+                        border: InputBorder.none, // Remove the border
+                        isDense: true, // Reduce the vertical padding
+                      ),
+                      textAlign: TextAlign.center,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter an integer';
+                        }
+                        return null;
+                      },
                     ),
-                    padding:
-                        EdgeInsets.zero, // Remove the padding around the icon
                   ),
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: onTapPlus,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(
+                        FontAwesomeIcons.plus,
+                        size: 12.sp,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
                   ),
-                ),
-                textAlign: TextAlign.center,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter an integer';
-                  }
-                  return null;
-                },
+                ],
               ),
-            ))
+            ),
+          ),
+        )
       ],
     );
   }

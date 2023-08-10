@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 
@@ -21,8 +21,8 @@ class CartHeader extends StatelessWidget {
         Row(
           children: [
             Container(
-              width: 45,
-              height: 45,
+              width: 32.sp,
+              height: 32.sp,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
@@ -39,8 +39,8 @@ class CartHeader extends StatelessWidget {
                 children: [
                   Image.asset(
                     'assets/images/cart.png',
-                    width: 25,
-                    height: 25,
+                    width: 17.sp,
+                    height: 17.sp,
                     color: Colors.white,
                     fit: BoxFit.cover,
                   ),
@@ -53,10 +53,10 @@ class CartHeader extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const TextView(
+                TextView(
                   text: "Keranjang",
                   headings: 'H3',
-                  fontSize: 16,
+                  fontSize: 11.sp,
                 ),
                 const SizedBox(
                   height: 5,
@@ -66,7 +66,7 @@ class CartHeader extends StatelessWidget {
                     ChipsItem(
                       satuan:
                           "${_takingOrderVendorController.cartDetailList.length} produk",
-                      fontSize: 12,
+                      fontSize: 8.sp,
                     ),
                     const SizedBox(
                       width: 10,
@@ -75,7 +75,7 @@ class CartHeader extends StatelessWidget {
                       satuan:
                           "Total : ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.countPriceTotal())}",
                       color: const Color(0xFF8B4513),
-                      fontSize: 12,
+                      fontSize: 8.sp,
                     ),
                   ],
                 )
@@ -86,16 +86,17 @@ class CartHeader extends StatelessWidget {
         Padding(
             padding: EdgeInsets.only(right: 0.05 * width),
             child: CustomElevatedButton(
-                text: "LANJUTKAN   >>",
+                text: "LANJUTKAN  >>",
                 onTap: () {
                   _takingOrderVendorController.previewCheckOut();
                 },
                 width: 0.25 * width,
                 height: 0.045 * height,
-                radius: 20,
+                radius: 15,
                 backgroundColor: AppConfig.mainCyan,
                 textcolor: Colors.white,
                 elevation: 5,
+                fonts: 10.sp,
                 bordercolor: AppConfig.mainCyan,
                 headings: 'H2'))
       ],
