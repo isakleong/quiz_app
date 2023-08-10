@@ -5,6 +5,7 @@ import 'package:sfa_tools/screens/taking_order_vendor/payment/cektab.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/potongancntab.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/transfertab.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/tunaitab.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PaymentTab extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -24,6 +25,7 @@ class PaymentTab extends StatelessWidget {
             elevation: 0,
             toolbarHeight: 20,
             bottom: TabBar(
+              labelStyle: TextStyle(fontSize: 10.sp),
               controller: _takingOrderVendorController.controller,
               indicatorColor: const Color.fromARGB(255, 13, 101, 91),
               unselectedLabelColor: Colors.grey,

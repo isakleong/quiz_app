@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 
@@ -32,10 +32,10 @@ class PaymentHeader extends StatelessWidget {
                 SizedBox(
                   width: 0.02 * Get.width,
                 ),
-                const TextView(
+                TextView(
                   text: "Daftar Pembayaran",
                   headings: 'H3',
-                  fontSize: 18,
+                  fontSize: 12.sp,
                 ),
                 SizedBox(
                   width: 0.02 * Get.width,
@@ -43,16 +43,16 @@ class PaymentHeader extends StatelessWidget {
                 Obx(() => ChipsItem(
                       satuan:
                           "${_takingOrderVendorController.listpaymentdata.length} Metode",
-                      fontSize: 14,
+                      fontSize: 10.sp,
                     ))
               ],
             ),
             Padding(
               padding: EdgeInsets.only(right: 0.05 * Get.width),
               child: CustomElevatedButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.check_circle_outline_rounded,
-                    size: 21,
+                    size: 14.sp,
                   ),
                   text: "SIMPAN",
                   onTap: () {
@@ -60,10 +60,9 @@ class PaymentHeader extends StatelessWidget {
                         "Yakin untuk simpan pembayaran?",
                         "Konfirmasi Pembayaran");
                   },
-                  width: 0.2 * Get.width,
-                  height: 0.04 * Get.height,
-                  radius: 15,
+                  radius: 10,
                   space: 5,
+                  fonts: 10.sp,
                   backgroundColor: AppConfig.mainCyan,
                   textcolor: Colors.white,
                   elevation: 2,

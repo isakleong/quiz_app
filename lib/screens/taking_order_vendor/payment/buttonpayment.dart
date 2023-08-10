@@ -5,12 +5,16 @@ class ButtonPayment extends StatelessWidget {
   Color bgcolor;
   IconData icon;
   String txt;
+  double? fonts;
+  double? icsize;
   ButtonPayment(
       {super.key,
       required this.ontap,
       required this.bgcolor,
       required this.icon,
-      required this.txt});
+      required this.txt,
+      this.fonts,
+      this.icsize});
 
   @override
   Widget build(BuildContext context) {
@@ -22,30 +26,24 @@ class ButtonPayment extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        padding: EdgeInsets
-            .zero, // Set padding to zero to let the child determine the button's size
+        padding: EdgeInsets.all(
+            10), // Set padding to zero to let the child determine the button's size
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(
-              width: 10,
-            ),
-            Icon(icon),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              txt,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-          ],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Icon(
+            icon,
+            size: icsize ?? 16,
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            txt,
+            style: TextStyle(color: Colors.white, fontSize: fonts ?? 14),
+          ),
+        ],
       ),
     );
   }

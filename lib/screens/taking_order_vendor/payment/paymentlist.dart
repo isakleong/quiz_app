@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
 
@@ -52,7 +52,7 @@ class PaymentList extends StatelessWidget {
                           child: TextView(
                             text: idx,
                             headings: 'H2',
-                            fontSize: 20,
+                            fontSize: 14.sp,
                             color: Colors.white,
                           ),
                         ),
@@ -65,7 +65,7 @@ class PaymentList extends StatelessWidget {
                         children: [
                           TextView(
                             headings: 'H4',
-                            fontSize: 14,
+                            fontSize: 10.sp,
                             text: metode,
                           ),
                           Row(
@@ -73,7 +73,7 @@ class PaymentList extends StatelessWidget {
                             children: [
                               TextView(
                                 text: value,
-                                fontSize: 14,
+                                fontSize: 10.sp,
                               ),
                               SizedBox(
                                 width: 0.01 * Get.width,
@@ -82,7 +82,7 @@ class PaymentList extends StatelessWidget {
                                   ? Container()
                                   : ChipsItem(
                                       satuan: jatuhtempo,
-                                      fontSize: 12,
+                                      fontSize: 8.sp,
                                     )
                             ],
                           )
@@ -99,24 +99,25 @@ class PaymentList extends StatelessWidget {
                           _takingOrderVendorController.handleeditpayment(jenis);
                         },
                         child: Container(
-                          width: 40,
-                          height: 40,
+                          width: 30.sp,
+                          height: 30.sp,
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.green.shade700),
                           child: Stack(
                             alignment: Alignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.edit,
                                 color: Colors.white,
+                                size: 14.sp,
                               )
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        width: 10,
+                      SizedBox(
+                        width: 0.01 * Get.width,
                       ),
                       InkWell(
                         onTap: () {
@@ -125,17 +126,18 @@ class PaymentList extends StatelessWidget {
                               metode, jenis);
                         },
                         child: Container(
-                          width: 40,
-                          height: 40,
+                          width: 30.sp,
+                          height: 30.sp,
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.red.shade700),
                           child: Stack(
                             alignment: Alignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.delete_forever,
                                 color: Colors.white,
+                                size: 14.sp,
                               )
                             ],
                           ),

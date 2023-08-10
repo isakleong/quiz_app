@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/buttonpayment.dart';
 import 'package:sfa_tools/tools/textfieldformatter.dart';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 
 class CekTab extends StatelessWidget {
@@ -36,13 +37,18 @@ class CekTab extends StatelessWidget {
                       ),
                       child: TextField(
                         controller: _takingOrderVendorController.nomorcek.value,
-                        decoration: const InputDecoration(
+                        style: TextStyle(fontSize: 12.sp),
+                        decoration: InputDecoration(
                             contentPadding: EdgeInsets.zero,
                             labelText: 'Nomor Cek / Giro / Slip',
+                            labelStyle: TextStyle(
+                              fontSize: 10.sp,
+                            ),
                             border: OutlineInputBorder(),
                             prefixIcon: Icon(
                               FontAwesomeIcons.moneyCheck,
                               color: Color(0XFF319088),
+                              size: 12.sp,
                             )),
                       ),
                     ),
@@ -58,6 +64,7 @@ class CekTab extends StatelessWidget {
                         controller:
                             _takingOrderVendorController.nominalcek.value,
                         keyboardType: TextInputType.number,
+                        style: TextStyle(fontSize: 12.sp),
                         // onChanged:
                         //     _takingOrderVendorController.formatMoneyTextField(
                         //         _takingOrderVendorController.nominalcek.value),
@@ -65,13 +72,17 @@ class CekTab extends StatelessWidget {
                         //   FilteringTextInputFormatter.digitsOnly
                         // ],
                         inputFormatters: [NumberInputFormatter()],
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                             contentPadding: EdgeInsets.zero,
                             labelText: 'Nominal',
+                            labelStyle: TextStyle(
+                              fontSize: 10.sp,
+                            ),
                             border: OutlineInputBorder(),
                             prefixIcon: Icon(
                               FontAwesomeIcons.calculator,
                               color: Color(0XFF319088),
+                              size: 12.sp,
                             )),
                       ),
                     )
@@ -90,13 +101,18 @@ class CekTab extends StatelessWidget {
                       ),
                       child: TextField(
                         controller: _takingOrderVendorController.nmbank.value,
-                        decoration: const InputDecoration(
+                        style: TextStyle(fontSize: 12.sp),
+                        decoration: InputDecoration(
                             contentPadding: EdgeInsets.zero,
                             labelText: 'Bank',
+                            labelStyle: TextStyle(
+                              fontSize: 10.sp,
+                            ),
                             border: OutlineInputBorder(),
                             prefixIcon: Icon(
                               FontAwesomeIcons.bank,
                               color: Color(0XFF319088),
+                              size: 12.sp,
                             )),
                       ),
                     ),
@@ -115,24 +131,28 @@ class CekTab extends StatelessWidget {
                         focusNode: FocusNode(canRequestFocus: false),
                         controller:
                             _takingOrderVendorController.jatuhtempotgl.value,
+                        style: TextStyle(fontSize: 12.sp),
                         keyboardType: null,
                         readOnly: true,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                             contentPadding: EdgeInsets.zero,
                             labelText: 'Jatuh Tempo',
-                            labelStyle: TextStyle(fontSize: 14),
+                            labelStyle: TextStyle(
+                              fontSize: 10.sp,
+                            ),
                             border: OutlineInputBorder(),
                             prefixIcon: Icon(
                               FontAwesomeIcons.calendar,
                               color: Color(0XFF319088),
+                              size: 12.sp,
                             )),
                       ),
                     ),
                     SizedBox(
                       width: 0.05 * Get.width,
                     ),
-                    ButtonPayment(
-                      ontap: () {
+                    ElevatedButton(
+                      onPressed: () {
                         print(_takingOrderVendorController.nmbank.value.text);
                         if (_takingOrderVendorController
                                     .jatuhtempotgl.value.text ==
@@ -149,18 +169,55 @@ class CekTab extends StatelessWidget {
                         }
                         _takingOrderVendorController.insertRecord("cek");
                       },
-                      bgcolor: _takingOrderVendorController.listpaymentdata
-                              .any((data) => data.jenis == 'cek')
-                          ? const Color(0xFF398e3d)
-                          : const Color(0XFF319088),
-                      icon: _takingOrderVendorController.listpaymentdata
-                              .any((data) => data.jenis == 'cek')
-                          ? FontAwesomeIcons.pencilSquare
-                          : FontAwesomeIcons.plusSquare,
-                      txt: _takingOrderVendorController.listpaymentdata
-                              .any((data) => data.jenis == 'cek')
-                          ? "Ganti\nPembayaran"
-                          : "Tambah\nPembayaran",
+                      style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor: _takingOrderVendorController
+                                .listpaymentdata
+                                .any((data) => data.jenis == 'cek')
+                            ? const Color(0xFF398e3d)
+                            : const Color(0XFF319088),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        padding: EdgeInsets.all(
+                            0), // Set padding to zero to let the child determine the button's size
+                      ),
+                      child: Container(
+                        width: 0.275 * Get.width,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 5.sp, bottom: 5.sp),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              SizedBox(
+                                width: 0.01 * Get.width,
+                              ),
+                              Icon(
+                                _takingOrderVendorController.listpaymentdata
+                                        .any((data) => data.jenis == 'cek')
+                                    ? FontAwesomeIcons.pencilSquare
+                                    : FontAwesomeIcons.plusSquare,
+                                size: 14.sp,
+                              ),
+                              SizedBox(
+                                width: 0.01 * Get.width,
+                              ),
+                              Container(
+                                width: 0.18 * Get.width,
+                                child: Text(
+                                  _takingOrderVendorController.listpaymentdata
+                                          .any((data) => data.jenis == 'cek')
+                                      ? "Ganti Pembayaran"
+                                      : "Tambah Pembayaran",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 9.5.sp),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     )
                   ],
                 )

@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/buttonpayment.dart';
 import 'package:sfa_tools/tools/textfieldformatter.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
 
@@ -30,7 +30,7 @@ class TransferTab extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Container(
-                        width: 0.425 * Get.width,
+                        width: 0.45 * Get.width,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             border: Border.all(color: Colors.grey, width: 1)),
@@ -61,10 +61,10 @@ class TransferTab extends StatelessWidget {
                                     const SizedBox(
                                       width: 10,
                                     ),
-                                    const Icon(
+                                    Icon(
                                       FontAwesomeIcons.bank,
                                       color: Color(0XFF319088),
-                                      size: 16,
+                                      size: 12.sp,
                                     ),
                                     const SizedBox(
                                       width: 15,
@@ -72,7 +72,7 @@ class TransferTab extends StatelessWidget {
                                     TextView(
                                       text: value,
                                       textAlign: TextAlign.left,
-                                      fontSize: 14,
+                                      fontSize: 10.sp,
                                       headings: 'H4',
                                     ),
                                   ],
@@ -83,7 +83,7 @@ class TransferTab extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        width: 0.425 * Get.width,
+                        width: 0.45 * Get.width,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -99,13 +99,17 @@ class TransferTab extends StatelessWidget {
                           // ],
                           inputFormatters: [NumberInputFormatter()],
                           style: const TextStyle(fontSize: 14),
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                               contentPadding: EdgeInsets.zero,
                               labelText: 'Nominal Transfer',
+                              labelStyle: TextStyle(
+                                fontSize: 10.sp,
+                              ),
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(
                                 FontAwesomeIcons.calculator,
                                 color: Color(0XFF319088),
+                                size: 12.sp,
                               )),
                         ),
                       )
@@ -142,6 +146,8 @@ class TransferTab extends StatelessWidget {
                                 .any((data) => data.jenis == 'Transfer')
                             ? "Ganti Pembayaran"
                             : "Tambah Pembayaran",
+                        fonts: 10.5.sp,
+                        icsize: 14.sp,
                       )
                     ],
                   ),

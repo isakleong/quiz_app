@@ -32,8 +32,8 @@ class ProductSearch extends StatelessWidget {
                       alignment: Alignment.center,
                       children: [
                         Container(
-                          width: 40.sp,
-                          height: 40.sp,
+                          width: 50.sp,
+                          height: 50.sp,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: AppConfig.mainCyan,
@@ -41,8 +41,8 @@ class ProductSearch extends StatelessWidget {
                         ),
                         Image.asset(
                           'assets/images/custorder.png',
-                          width: 30.sp,
-                          height: 30.sp,
+                          width: 35.sp,
+                          height: 35.sp,
                           fit: BoxFit.cover,
                         ),
                       ],
@@ -54,7 +54,7 @@ class ProductSearch extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextView(
-                            headings: "H2", text: "Penjualan", fontSize: 12.sp),
+                            headings: "H2", text: "Penjualan", fontSize: 10.sp),
                         const SizedBox(
                           height: 5,
                         ),
@@ -64,8 +64,8 @@ class ProductSearch extends StatelessWidget {
                               alignment: Alignment.center,
                               children: [
                                 Container(
-                                  width: 20,
-                                  height: 20,
+                                  width: 14.sp,
+                                  height: 14.sp,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: AppConfig.mainCyan,
@@ -74,11 +74,11 @@ class ProductSearch extends StatelessWidget {
                                 Icon(
                                   Icons.home,
                                   color: Colors.white,
-                                  size: 11.sp,
+                                  size: 10.sp,
                                 )
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
                             TextView(

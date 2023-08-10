@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../widgets/textview.dart';
 
 class BannerNoPayment extends StatelessWidget {
@@ -20,10 +20,11 @@ class BannerNoPayment extends StatelessWidget {
             SizedBox(
               width: 0.45 * Get.width,
               child: Column(
-                children: const [
+                children: [
                   TextView(
                     text: "Belum Ada Pembayaran",
                     headings: 'H2',
+                    fontSize: 12.sp,
                   ),
                   SizedBox(
                     height: 20,
@@ -31,9 +32,9 @@ class BannerNoPayment extends StatelessWidget {
                   TextView(
                     text:
                         "Anda dapat mulai menambahkan pembayaran untuk toko ini",
-                    fontSize: 14,
                     textAlign: TextAlign.center,
                     headings: 'H4',
+                    fontSize: 10.sp,
                   )
                 ],
               ),

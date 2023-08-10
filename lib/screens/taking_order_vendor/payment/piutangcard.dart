@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../widgets/textview.dart';
 
 class PiutangCard extends StatelessWidget {
@@ -24,8 +24,8 @@ class PiutangCard extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      width: 60,
-                      height: 60,
+                      width: 50.sp,
+                      height: 50.sp,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color(0XFF008996),
@@ -33,8 +33,8 @@ class PiutangCard extends StatelessWidget {
                     ),
                     Image.asset(
                       'assets/images/custpayment.png',
-                      width: 45,
-                      height: 45,
+                      width: 35.sp,
+                      height: 35.sp,
                       fit: BoxFit.cover,
                     ),
                   ],
@@ -45,8 +45,8 @@ class PiutangCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const TextView(
-                        headings: "H2", text: "Pembayaran", fontSize: 14),
+                    TextView(
+                        headings: "H2", text: "Pembayaran", fontSize: 10.sp),
                     const SizedBox(
                       height: 5,
                     ),
@@ -56,24 +56,27 @@ class PiutangCard extends StatelessWidget {
                           alignment: Alignment.center,
                           children: [
                             Container(
-                              width: 20,
-                              height: 20,
+                              width: 14.sp,
+                              height: 14.sp,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: AppConfig.mainCyan,
                               ),
                             ),
-                            const Icon(
+                            Icon(
                               Icons.home,
                               color: Colors.white,
-                              size: 15,
+                              size: 10.sp,
                             )
                           ],
                         ),
                         const SizedBox(
                           width: 5,
                         ),
-                        const Text("Adek Abang"),
+                        TextView(
+                          text: "Adek Abang",
+                          fontSize: 10.sp,
+                        ),
                       ],
                     ),
                   ],
@@ -103,21 +106,22 @@ class PiutangCard extends StatelessWidget {
               children: [
                 Image.asset(
                   'assets/images/paymenttotal.png',
-                  width: 50,
-                  height: 50,
+                  width: 35.sp,
+                  height: 35.sp,
                   fit: BoxFit.cover,
                 ),
                 Column(
-                  children: const [
+                  children: [
                     TextView(
                       text: "20,752,392",
                       headings: 'H3',
+                      fontSize: 11.sp,
                       color: Color(0xFFf5511e),
                     ),
                     TextView(
                       text: "Total Piutang",
                       headings: 'H4',
-                      fontSize: 14,
+                      fontSize: 10.sp,
                     )
                   ],
                 ),
@@ -128,21 +132,22 @@ class PiutangCard extends StatelessWidget {
                 ),
                 Image.asset(
                   'assets/images/datetime.png',
-                  width: 50,
-                  height: 50,
+                  width: 35.sp,
+                  height: 35.sp,
                   fit: BoxFit.cover,
                 ),
                 Column(
-                  children: const [
+                  children: [
                     TextView(
                       text: "20,752,392",
                       color: Color(0xFFf5511e),
                       headings: 'H3',
+                      fontSize: 11.sp,
                     ),
                     TextView(
                       text: "Total Jatuh Tempo",
                       headings: 'H4',
-                      fontSize: 14,
+                      fontSize: 10.sp,
                     )
                   ],
                 ),
