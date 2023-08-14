@@ -10,7 +10,8 @@ import '../models/cartmodel.dart';
 import '../models/productdata.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 
-class PenjualanController extends GetxController {
+class PenjualanController extends GetxController
+    with GetTickerProviderStateMixin {
   RxString selectedValue = "".obs;
   RxList<ProductData> selectedProduct = <ProductData>[].obs;
   RxList<ProductData> listProduct = <ProductData>[].obs;
@@ -23,6 +24,7 @@ class PenjualanController extends GetxController {
   Rx<TextEditingController> qty2 = TextEditingController().obs;
   Rx<TextEditingController> qty3 = TextEditingController().obs;
   RxString choosedAddress = "".obs;
+  List<Animation<Offset>> listAnimation = <Animation<Offset>>[];
 
   final LaporanController _laporanController = Get.find();
 
@@ -109,12 +111,37 @@ class PenjualanController extends GetxController {
 
   fillCartDetail() {
     cartDetailList.clear();
+    listAnimation.clear();
     for (var i = 0; i < cartList.length; i++) {
       if (cartDetailList.isEmpty) {
         List<CartModel> data = [
           CartModel(cartList[i].kdProduct, cartList[i].nmProduct,
               cartList[i].Qty, cartList[i].Satuan, cartList[i].hrgPerPieces)
         ];
+        // if (cartList.length - 1 == i) {
+        listAnimation.add(Tween<Offset>(
+          begin: Offset((-0.9 - (i * 0.06)), 0),
+          end: Offset(0, 0),
+        ).animate(CurvedAnimation(
+          parent: AnimationController(
+            vsync: this,
+            duration: Duration(milliseconds: 700),
+          )..forward(),
+          curve: Curves.easeInOut,
+        )));
+        // } else {
+        //   listAnimation.add(Tween<Offset>(
+        //     begin: Offset(0, 0),
+        //     end: Offset(0, 0),
+        //   ).animate(CurvedAnimation(
+        //     parent: AnimationController(
+        //       vsync: this,
+        //       duration: Duration(milliseconds: 500),
+        //     )..forward(),
+        //     curve: Curves.easeInOut,
+        //   )));
+        // }
+
         cartDetailList.add(CartDetail(
           cartList[i].kdProduct,
           cartList[i].nmProduct,
@@ -155,6 +182,16 @@ class PenjualanController extends GetxController {
                     cartList[i].Satuan,
                     cartList[i].hrgPerPieces)
               ];
+              listAnimation.add(Tween<Offset>(
+                begin: Offset((-0.9 - (i * 0.06)), 0),
+                end: Offset(0, 0),
+              ).animate(CurvedAnimation(
+                parent: AnimationController(
+                  vsync: this,
+                  duration: Duration(milliseconds: 700),
+                )..forward(),
+                curve: Curves.easeInOut,
+              )));
               cartDetailList.add(CartDetail(
                   cartList[i].kdProduct, cartList[i].nmProduct, data));
             }

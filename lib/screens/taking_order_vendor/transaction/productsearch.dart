@@ -169,6 +169,22 @@ class ProductSearch extends StatelessWidget {
                                     suggestion.kdProduct);
                           }
                         },
+                        hideSuggestionsOnKeyboardHide: true,
+                        noItemsFoundBuilder: (BuildContext context) =>
+                            Container(
+                          height: 43,
+                          margin: const EdgeInsets.only(left: 15),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                Icon(Icons.close, color: Colors.red.shade600),
+                                const SizedBox(width: 10),
+                                TextView(text: "Produk Tidak Ditemukan"),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],

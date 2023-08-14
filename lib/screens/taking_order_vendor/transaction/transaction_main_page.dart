@@ -18,6 +18,7 @@ class TakingOrderVendorMainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = Get.width;
     double height = Get.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Obx(() => SafeArea(
@@ -61,19 +62,18 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                         ),
                         child: CartHeader(),
                       ),
-                    if (_takingOrderVendorController.cartList.isNotEmpty)
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: _takingOrderVendorController
-                              .cartDetailList.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                left: 0.05 * width,
-                                top: 5,
-                                right: 0.05 * width,
-                              ),
-                              child: InkWell(
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount:
+                            _takingOrderVendorController.cartDetailList.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              left: 0.05 * width,
+                              top: 5,
+                              right: 0.05 * width,
+                            ),
+                            child: InkWell(
                                 onTap: () {
                                   print((1 * width).toString());
                                   print(_takingOrderVendorController
@@ -84,17 +84,20 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                                         .cartDetailList[index],
                                   );
                                 },
-                                child: CartList(
-                                  idx: (index + 1).toString(),
-                                  data: _takingOrderVendorController
-                                      .cartDetailList[index],
-                                ),
-                              ),
-                            );
-                          },
-                          physics: const BouncingScrollPhysics(),
-                        ),
+                                child: SlideTransition(
+                                  position: _takingOrderVendorController
+                                      .listAnimation[index],
+                                  child: CartList(
+                                    idx: (index + 1).toString(),
+                                    data: _takingOrderVendorController
+                                        .cartDetailList[index],
+                                  ),
+                                )),
+                          );
+                        },
+                        physics: const BouncingScrollPhysics(),
                       ),
+                    ),
                   ],
                 ),
               ],

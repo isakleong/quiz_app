@@ -22,10 +22,23 @@ class TakingOrderVendorController extends GetxController
       Get.put(PenjualanController());
 
   final ReturController _returController = Get.put(ReturController());
+  late AnimationController animationController;
+  late Animation<Offset> slideAnimation;
 
   @override
   void onInit() {
     super.onInit();
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    )..forward();
+    slideAnimation = Tween<Offset>(
+      begin: Offset(0, -0.2),
+      end: Offset(0, 0),
+    ).animate(CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeInOut,
+    ));
     _pembayaranController.controller =
         TabController(vsync: this, length: 3, initialIndex: 0);
     _penjualanController.getListItem();
@@ -66,6 +79,9 @@ class TakingOrderVendorController extends GetxController
   Rx<TextEditingController> get qty2 => _penjualanController.qty2;
   Rx<TextEditingController> get qty3 => _penjualanController.qty3;
   RxString get choosedAddress => _penjualanController.choosedAddress;
+  RxInt animated = 0.obs;
+  get listAnimation => _penjualanController.listAnimation;
+  RxList<String> items = <String>["asas"].obs;
 
   countPriceTotal() {
     return _penjualanController.countPriceTotal();
@@ -79,8 +95,13 @@ class TakingOrderVendorController extends GetxController
     _penjualanController.previewCheckOut();
   }
 
-  addToCart() {
+  addToCart() async {
+    // if (_penjualanController.cartList.isEmpty) {
+
     _penjualanController.addToCart();
+    // } else {
+    //   _penjualanController.addToCart();
+    // }
   }
 
   updateCart() {
@@ -88,7 +109,9 @@ class TakingOrderVendorController extends GetxController
   }
 
   handleProductSearchButton(String val) async {
+    await animationController.reverse();
     await _penjualanController.handleProductSearchButton(val);
+    await animationController.forward();
   }
 
   countTotalDetail(CartDetail data) {
