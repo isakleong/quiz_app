@@ -81,7 +81,6 @@ class TakingOrderVendorController extends GetxController
   RxString get choosedAddress => _penjualanController.choosedAddress;
   RxInt animated = 0.obs;
   get listAnimation => _penjualanController.listAnimation;
-  RxList<String> items = <String>["asas"].obs;
 
   countPriceTotal() {
     return _penjualanController.countPriceTotal();
