@@ -158,6 +158,8 @@ class TakingOrderVendorController extends GetxController
   RxString get choosedTunaiMethod => _pembayaranController.choosedTunaiMethod;
   Rx<TextEditingController> get nominaltunai =>
       _pembayaranController.nominaltunai;
+  get pembayaranListKey => _pembayaranController.pembayaranListKey;
+  get showBanner => _pembayaranController.showBanner;
 
   formatMoneyTextField(TextEditingController ctrl) {
     _pembayaranController.formatMoneyTextField(ctrl);

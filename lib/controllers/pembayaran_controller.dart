@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/payment/paymentlist.dart';
 
 import '../common/app_config.dart';
 import '../models/paymentdata.dart';
@@ -20,7 +21,8 @@ class PembayaranController extends GetxController {
   RxList<PaymentData> listpaymentdata = <PaymentData>[].obs;
   RxInt selectedTab = 0.obs;
   late TabController controller;
-
+  final pembayaranListKey = GlobalKey<AnimatedListState>();
+  RxInt showBanner = 1.obs;
   var tabvalueCn = 3;
   var tabvaluetunai = 0;
   var tabvaluetransfer = 1;
@@ -69,7 +71,6 @@ class PembayaranController extends GetxController {
             nmProduct: metode,
             ontap: () async {
               await deletePayment(jenis);
-              Get.back();
             })));
   }
 
@@ -86,6 +87,7 @@ class PembayaranController extends GetxController {
               double.parse(
                   nominaltunai.value.text.toString().replaceAll(',', ''))));
         } else {
+          pembayaranListKey.currentState?.insertItem(listpaymentdata.length);
           listpaymentdata.add(PaymentData(
               type,
               "",
@@ -105,6 +107,7 @@ class PembayaranController extends GetxController {
               double.parse(
                   nominaltransfer.value.text.toString().replaceAll(',', ''))));
         } else {
+          pembayaranListKey.currentState?.insertItem(listpaymentdata.length);
           listpaymentdata.add(PaymentData(
               type,
               "",
@@ -124,6 +127,7 @@ class PembayaranController extends GetxController {
               double.parse(
                   nominalCn.value.text.toString().replaceAll(',', ''))));
         } else {
+          pembayaranListKey.currentState?.insertItem(listpaymentdata.length);
           listpaymentdata.add(PaymentData(
               "cn",
               "",
@@ -143,6 +147,7 @@ class PembayaranController extends GetxController {
               double.parse(
                   nominalcek.value.text.toString().replaceAll(',', ''))));
         } else {
+          pembayaranListKey.currentState?.insertItem(listpaymentdata.length);
           listpaymentdata.add(PaymentData(
               "cek",
               nomorcek.value.text,
@@ -157,9 +162,54 @@ class PembayaranController extends GetxController {
     }
   }
 
-  deletePayment(String jenis) {
+  deletePayment(String jenis) async {
     try {
-      listpaymentdata.removeWhere((element) => element.jenis == jenis);
+      for (var i = 0; i < listpaymentdata.length; i++) {
+        if (listpaymentdata[i].jenis == jenis) {
+          print(i);
+          Get.back();
+          PaymentData _dataTemp = listpaymentdata[i];
+          listpaymentdata.removeWhere((element) => element.jenis == jenis);
+          pembayaranListKey.currentState!.removeItem(
+              i,
+              (context, animation) => SlideTransition(
+                    position: Tween<Offset>(
+                      begin: Offset(-1, 0),
+                      end: Offset(0, 0),
+                    ).animate(CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOut,
+                      reverseCurve: Curves.easeOut,
+                    )),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: 0.05 * Get.width,
+                          top: 5,
+                          right: 0.05 * Get.width),
+                      child: PaymentList(
+                        idx: (i + 1).toString(),
+                        metode: _dataTemp.jenis == "cn"
+                            ? "Potongan CN"
+                            : _dataTemp.jenis == "cek"
+                                ? "Cek / Giro / Slip - ${_dataTemp.tipe} [${_dataTemp.nomor}]"
+                                : "${_dataTemp.jenis} - ${_dataTemp.tipe}",
+                        jatuhtempo: _dataTemp.jatuhtempo == ""
+                            ? _dataTemp.jatuhtempo
+                            : "Jatuh Tempo : ${_dataTemp.jatuhtempo}",
+                        value: "Rp ${formatNumber(_dataTemp.value.toInt())}",
+                        jenis: _dataTemp.jenis,
+                      ),
+                    ),
+                  ),
+              duration: Duration(milliseconds: 500));
+
+          await Future.delayed(Duration(milliseconds: 700));
+          listpaymentdata.isEmpty ? showBanner.value = 0 : showBanner.value = 1;
+          // listpaymentdata.removeWhere((element) => element.jenis == jenis);
+          break;
+        }
+      }
+
       if (jenis == "Tunai") {
         choosedTunaiMethod.value = "";
         nominaltunai.value.clear();

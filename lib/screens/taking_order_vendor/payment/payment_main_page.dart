@@ -45,46 +45,94 @@ class PaymentMainPage extends StatelessWidget {
                       color: Colors.grey.shade200,
                     ),
                     // BannerNoPayment()
-                    _takingOrderVendorController.listpaymentdata.isEmpty
+                    _takingOrderVendorController.listpaymentdata.isEmpty &&
+                            _takingOrderVendorController.showBanner.value == 1
                         ? const BannerNoPayment()
                         : PaymentHeader(),
+                    // Expanded(
+                    //   child: ListView.builder(
+                    //     itemCount:
+                    //         _takingOrderVendorController.listpaymentdata.length,
+                    //     itemBuilder: (context, index) {
+                    //       return Padding(
+                    //         padding: EdgeInsets.only(
+                    //             left: 0.05 * Get.width,
+                    //             top: 5,
+                    //             right: 0.05 * Get.width),
+                    //         child: PaymentList(
+                    //           idx: (index + 1).toString(),
+                    //           metode: _takingOrderVendorController
+                    //                       .listpaymentdata[index].jenis ==
+                    //                   "cn"
+                    //               ? "Potongan CN"
+                    //               : _takingOrderVendorController
+                    //                           .listpaymentdata[index].jenis ==
+                    //                       "cek"
+                    //                   ? "Cek / Giro / Slip - ${_takingOrderVendorController.listpaymentdata[index].tipe} [${_takingOrderVendorController.listpaymentdata[index].nomor}]"
+                    //                   : "${_takingOrderVendorController.listpaymentdata[index].jenis} - ${_takingOrderVendorController.listpaymentdata[index].tipe}",
+                    //           jatuhtempo: _takingOrderVendorController
+                    //                       .listpaymentdata[index].jatuhtempo ==
+                    //                   ""
+                    //               ? _takingOrderVendorController
+                    //                   .listpaymentdata[index].jatuhtempo
+                    //               : "Jatuh Tempo : ${_takingOrderVendorController.listpaymentdata[index].jatuhtempo}",
+                    //           value:
+                    //               "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listpaymentdata[index].value.toInt())}",
+                    //           jenis: _takingOrderVendorController
+                    //               .listpaymentdata[index].jenis,
+                    //         ),
+                    //       );
+                    //     },
+                    //     physics: const BouncingScrollPhysics(),
+                    //   ),
+                    // ),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount:
-                            _takingOrderVendorController.listpaymentdata.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                                left: 0.05 * Get.width,
-                                top: 5,
-                                right: 0.05 * Get.width),
-                            child: PaymentList(
-                              idx: (index + 1).toString(),
-                              metode: _takingOrderVendorController
-                                          .listpaymentdata[index].jenis ==
-                                      "cn"
-                                  ? "Potongan CN"
-                                  : _takingOrderVendorController
-                                              .listpaymentdata[index].jenis ==
-                                          "cek"
-                                      ? "Cek / Giro / Slip - ${_takingOrderVendorController.listpaymentdata[index].tipe} [${_takingOrderVendorController.listpaymentdata[index].nomor}]"
-                                      : "${_takingOrderVendorController.listpaymentdata[index].jenis} - ${_takingOrderVendorController.listpaymentdata[index].tipe}",
-                              jatuhtempo: _takingOrderVendorController
-                                          .listpaymentdata[index].jatuhtempo ==
-                                      ""
-                                  ? _takingOrderVendorController
-                                      .listpaymentdata[index].jatuhtempo
-                                  : "Jatuh Tempo : ${_takingOrderVendorController.listpaymentdata[index].jatuhtempo}",
-                              value:
-                                  "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listpaymentdata[index].value.toInt())}",
-                              jenis: _takingOrderVendorController
-                                  .listpaymentdata[index].jenis,
-                            ),
-                          );
-                        },
-                        physics: const BouncingScrollPhysics(),
-                      ),
-                    ),
+                        child: AnimatedList(
+                            key: _takingOrderVendorController.pembayaranListKey,
+                            initialItemCount: _takingOrderVendorController
+                                .listpaymentdata.length,
+                            itemBuilder: ((context, index, animation) {
+                              return SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: Offset(-1, 0),
+                                    end: Offset(0, 0),
+                                  ).animate(CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeInOut,
+                                    reverseCurve: Curves.easeInOut,
+                                  )),
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 0.05 * Get.width,
+                                        top: 5,
+                                        right: 0.05 * Get.width),
+                                    child: PaymentList(
+                                      idx: (index + 1).toString(),
+                                      metode: _takingOrderVendorController
+                                                  .listpaymentdata[index]
+                                                  .jenis ==
+                                              "cn"
+                                          ? "Potongan CN"
+                                          : _takingOrderVendorController
+                                                      .listpaymentdata[index]
+                                                      .jenis ==
+                                                  "cek"
+                                              ? "Cek / Giro / Slip - ${_takingOrderVendorController.listpaymentdata[index].tipe} [${_takingOrderVendorController.listpaymentdata[index].nomor}]"
+                                              : "${_takingOrderVendorController.listpaymentdata[index].jenis} - ${_takingOrderVendorController.listpaymentdata[index].tipe}",
+                                      jatuhtempo: _takingOrderVendorController
+                                                  .listpaymentdata[index]
+                                                  .jatuhtempo ==
+                                              ""
+                                          ? _takingOrderVendorController
+                                              .listpaymentdata[index].jatuhtempo
+                                          : "Jatuh Tempo : ${_takingOrderVendorController.listpaymentdata[index].jatuhtempo}",
+                                      value:
+                                          "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listpaymentdata[index].value.toInt())}",
+                                      jenis: _takingOrderVendorController
+                                          .listpaymentdata[index].jenis,
+                                    ),
+                                  ));
+                            })))
                   ],
                 )
               ],
