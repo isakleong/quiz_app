@@ -17,6 +17,7 @@ import 'package:sfa_tools/controllers/background_service_controller.dart';
 import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/module.dart';
 import 'package:sfa_tools/models/servicebox.dart';
+import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
@@ -590,9 +591,7 @@ class SplashscreenController extends GetxController
 
   getVendor() async {
     var result = await ApiClient().getData("${AppConfig.baseUrlVendor}","/tangki-air-jerapah-dev/api/setting/customer/01B05070012");
-    print(result);
     var data = VendorInfo.fromJson(result);
-    print(data);
     if(data.availVendors.isNotEmpty){
       int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
       var versi = moduleList[index].version;
@@ -602,19 +601,18 @@ class SplashscreenController extends GetxController
       }
       moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
     }
-    print("-------------------888888888888888888-------------------------------");
-    print("done");
-    print("-------------------88888888888889999999999-------------------------------");
     var moduleBox = await Hive.openBox<Module>('moduleBox');
     await moduleBox.clear();
     await moduleBox.addAll(moduleList);
-    print("-----------------------00000000000000000000000000---------------------------");
     var vendorBox = await Hive.openBox<Vendor>('vendorBox');
     await vendorBox.clear();
     await vendorBox.addAll(data.availVendors);
     var customerBox = await Hive.openBox<Customer>('customerBox');
     await customerBox.clear();
     await customerBox.add(Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no));
+    var shiptoBox = await Hive.openBox<ShipToAddress>('shiptoBox');
+    await shiptoBox.clear();
+    await shiptoBox.addAll(data.shipToAddresses);
   }
 
   // checkVersion() async {

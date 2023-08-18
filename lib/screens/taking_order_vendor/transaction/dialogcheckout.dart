@@ -25,7 +25,7 @@ class DialogCheckOut extends StatelessWidget {
               height: Get.height * 0.03,
             ),
             TextView(
-              text: "Penjualan - Adek Abang",
+              text: "Penjualan - ${_takingOrderVendorController.nmtoko.value}",
               headings: 'H3',
               fontSize: 13.sp,
             ),
@@ -76,21 +76,33 @@ class DialogCheckOut extends StatelessWidget {
                               _takingOrderVendorController
                                   .choosedAddress.value = newValue!;
                             },
-                            items: <String>[
-                              'Pilih Alamat Pengiriman',
-                              'Pemancar Lamtemen Timur',
-                              'Alamat Dummy',
-                            ].map((String value) {
+                            items: _takingOrderVendorController.listaddress.value.map((value) {
                               return DropdownMenuItem<String>(
-                                value: value,
+                                value: value.address,
                                 child: TextView(
-                                  text: value,
+                                  text: value.address,
                                   textAlign: TextAlign.left,
                                   fontSize: 10.sp,
                                   headings: 'H4',
                                 ),
                               );
                             }).toList(),
+                            
+                            // <String>[
+                            //   'Pilih Alamat Pengiriman',
+                            //   'Pemancar Lamtemen Timur',
+                            //   'Alamat Dummy',
+                            // ].map((String value) {
+                            //   return DropdownMenuItem<String>(
+                            //     value: value,
+                            //     child: TextView(
+                            //       text: value,
+                            //       textAlign: TextAlign.left,
+                            //       fontSize: 10.sp,
+                            //       headings: 'H4',
+                            //     ),
+                            //   );
+                            // }).toList(),
                           ),
                         ),
                       ),

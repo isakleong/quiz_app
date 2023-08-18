@@ -6,12 +6,14 @@ import 'package:intl/intl.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/models/masteritemvendor.dart';
 import 'package:sfa_tools/models/module.dart';
+import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukserupa.dart';
 
 import '../common/app_config.dart';
 import '../models/cartmodel.dart';
+import '../models/customer.dart';
 import '../models/productdata.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 import '../tools/service.dart';
@@ -32,10 +34,18 @@ class PenjualanController extends GetxController
   RxString choosedAddress = "".obs;
   List<Animation<Offset>> listAnimation = <Animation<Offset>>[];
   List<Vendor> vendorlist = <Vendor>[];
+  RxString nmtoko = "".obs;
+  RxList<ShipToAddress> listAddress = <ShipToAddress>[].obs;
 
   final LaporanController _laporanController = Get.find();
 
   getListItem() async {
+    var listaddressbox = await Hive.openBox<ShipToAddress>('shiptoBox');
+    listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Pengiriman", address: "Pilih Alamat Pengiriman", county: ""));
+    listAddress.addAll(listaddressbox.values.toList());
+    var customerBox = await Hive.openBox<Customer>('customerBox');
+    var listToko = customerBox.values.toList();
+    nmtoko.value = listToko[0].name;
     var vendorBox = await Hive.openBox<Vendor>('vendorBox');
     vendorlist.clear();
     vendorlist.addAll(vendorBox.values.toList());

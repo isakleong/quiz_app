@@ -9,6 +9,7 @@ import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/models/productdata.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
+import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
 import '../models/tarikbarangmodel.dart';
@@ -81,6 +82,8 @@ class TakingOrderVendorController extends GetxController
   RxString get choosedAddress => _penjualanController.choosedAddress;
   RxInt animated = 0.obs;
   get listAnimation => _penjualanController.listAnimation;
+  get nmtoko => _penjualanController.nmtoko;
+  RxList<ShipToAddress> get listaddress => _penjualanController.listAddress;
 
   countPriceTotal() {
     return _penjualanController.countPriceTotal();

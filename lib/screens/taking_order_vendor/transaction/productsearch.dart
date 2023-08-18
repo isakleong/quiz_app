@@ -82,7 +82,7 @@ class ProductSearch extends StatelessWidget {
                               width: 5,
                             ),
                             TextView(
-                              text: "Adek Abang",
+                              text: _takingOrderVendorController.nmtoko.value,
                               fontSize: 10.sp,
                             ),
                           ],
