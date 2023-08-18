@@ -169,7 +169,7 @@ class PembayaranController extends GetxController {
           print(i);
           Get.back();
           PaymentData _dataTemp = listpaymentdata[i];
-          listpaymentdata.removeWhere((element) => element.jenis == jenis);
+          // listpaymentdata.removeWhere((element) => element.jenis == jenis);
           pembayaranListKey.currentState!.removeItem(
               i,
               (context, animation) => SlideTransition(
@@ -203,9 +203,9 @@ class PembayaranController extends GetxController {
                   ),
               duration: Duration(milliseconds: 500));
 
-          await Future.delayed(Duration(milliseconds: 700));
-          listpaymentdata.isEmpty ? showBanner.value = 0 : showBanner.value = 1;
-          // listpaymentdata.removeWhere((element) => element.jenis == jenis);
+          await Future.delayed(Duration(milliseconds: 500));
+          listpaymentdata.removeWhere((element) => element.jenis == jenis);
+          listpaymentdata.isEmpty ? showBanner.value = 1 : showBanner.value = 0;
           break;
         }
       }

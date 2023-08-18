@@ -788,6 +788,8 @@ class SplashscreenController extends GetxController
   buttonAction(String moduleid) {
     if (moduleid == 'Kuis') {
       Get.toNamed(RouteName.quizDashboard);
+    } else {
+      Get.toNamed(RouteName.takingOrderVendor);
     }
   }
 
