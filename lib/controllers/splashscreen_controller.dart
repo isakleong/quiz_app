@@ -14,12 +14,16 @@ import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/controllers/background_service_controller.dart';
+import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/module.dart';
 import 'package:sfa_tools/models/servicebox.dart';
+import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
+
+import '../models/vendorinfomodel.dart';
 
 class SplashscreenController extends GetxController
     with StateMixin
@@ -500,6 +504,7 @@ class SplashscreenController extends GetxController
                   SystemNavigator.pop();
                 });
           } else {
+            await getVendor();
             await postTrackingVersion();
           }
         } catch (e) {
@@ -581,6 +586,35 @@ class SplashscreenController extends GetxController
       isError(true);
       change(null, status: RxStatus.error(errorMessage.value));
     }
+  }
+
+  getVendor() async {
+    var result = await ApiClient().getData("${AppConfig.baseUrlVendor}","/tangki-air-jerapah-dev/api/setting/customer/01B05070012");
+    print(result);
+    var data = VendorInfo.fromJson(result);
+    print(data);
+    if(data.availVendors.isNotEmpty){
+      int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+      var versi = moduleList[index].version;
+      var order = moduleList[index].orderNumber;
+      for (var i = 0; i < data.availVendors.length; i++) {
+        moduleList.add(Module(moduleID: "Taking order ${data.availVendors[i].name}", version: versi, orderNumber: order));
+      }
+      moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+    }
+    print("-------------------888888888888888888-------------------------------");
+    print("done");
+    print("-------------------88888888888889999999999-------------------------------");
+    var moduleBox = await Hive.openBox<Module>('moduleBox');
+    await moduleBox.clear();
+    await moduleBox.addAll(moduleList);
+    print("-----------------------00000000000000000000000000---------------------------");
+    var vendorBox = await Hive.openBox<Vendor>('vendorBox');
+    await vendorBox.clear();
+    await vendorBox.addAll(data.availVendors);
+    var customerBox = await Hive.openBox<Customer>('customerBox');
+    await customerBox.clear();
+    await customerBox.add(Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no));
   }
 
   // checkVersion() async {

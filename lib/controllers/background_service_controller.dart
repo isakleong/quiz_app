@@ -12,7 +12,10 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/servicebox.dart';
+import 'package:sfa_tools/models/shiptoaddress.dart';
+import 'package:sfa_tools/models/vendor.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import '../models/module.dart';
@@ -112,6 +115,9 @@ class Backgroundservicecontroller {
     Hive.registerAdapter(ModuleAdapter());
     Hive.registerAdapter(QuizAdapter());
     Hive.registerAdapter(ServiceBoxAdapter());
+    Hive.registerAdapter(CustomerAdapter());
+    Hive.registerAdapter(ShipToAddressAdapter());
+    Hive.registerAdapter(VendorAdapter());
   }
 
   initializeNotifConfiguration() async {

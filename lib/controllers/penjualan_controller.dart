@@ -1,14 +1,20 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
+import 'package:sfa_tools/models/masteritemvendor.dart';
+import 'package:sfa_tools/models/module.dart';
+import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukserupa.dart';
 
+import '../common/app_config.dart';
 import '../models/cartmodel.dart';
 import '../models/productdata.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
+import '../tools/service.dart';
 
 class PenjualanController extends GetxController
     with GetTickerProviderStateMixin {
@@ -25,33 +31,46 @@ class PenjualanController extends GetxController
   Rx<TextEditingController> qty3 = TextEditingController().obs;
   RxString choosedAddress = "".obs;
   List<Animation<Offset>> listAnimation = <Animation<Offset>>[];
+  List<Vendor> vendorlist = <Vendor>[];
 
   final LaporanController _laporanController = Get.find();
 
-  getListItem() {
-    listProduct.clear();
-    listProduct.add(ProductData('asc', _laporanController.dummyList[0],
-        [DetailProductData('dos', 15000)]));
-    listProduct.add(ProductData('desc', _laporanController.dummyList[1], [
-      DetailProductData('kaleng', 10000),
-      DetailProductData('biji', 20000)
-    ]));
-    listProduct.add(ProductData('ccc', _laporanController.dummyList[2],
-        [DetailProductData('inner plas', 25000)]));
-    listProduct.add(ProductData('acc', _laporanController.dummyList[3],
-        [DetailProductData('biji', 30000), DetailProductData('dos', 35000)]));
-    listProduct.add(ProductData('cca', _laporanController.dummyList[4], [
-      DetailProductData('dos', 50000),
-      DetailProductData('inner plas', 100000),
-      DetailProductData('biji', 120000)
-    ]));
-    listProduct.add(ProductData('cac', _laporanController.dummyList[5],
-        [DetailProductData('dos', 200000)]));
-
-    for (var i = 0; i < listProduct.length; i++) {
-      listDropDown.add(DropDownValueModel(
-          value: listProduct[i].kdProduct, name: listProduct[i].nmProduct));
+  getListItem() async {
+    var vendorBox = await Hive.openBox<Vendor>('vendorBox');
+    vendorlist.clear();
+    vendorlist.addAll(vendorBox.values.toList());
+    print(vendorlist[0].name);
+    var getVendorItem = await ApiClient().getData(vendorlist[0].baseApiUrl,"/setting/vendor/${vendorlist[0].prefix}");
+    print(getVendorItem);
+    var data = MasterItemVendor.fromJson(getVendorItem);
+    for (var i = 0; i < data.items.length; i++) {
+      listProduct.add(ProductData(data.items[i].code, data.items[i].name, [DetailProductData(data.items[i].uom.name, double.parse(data.items[i].price))]));
     }
+
+    // vendorBox.get("")
+    // listProduct.clear();
+    // listProduct.add(ProductData('asc', _laporanController.dummyList[0],
+    //     [DetailProductData('dos', 15000)]));
+    // listProduct.add(ProductData('desc', _laporanController.dummyList[1], [
+    //   DetailProductData('kaleng', 10000),
+    //   DetailProductData('biji', 20000)
+    // ]));
+    // listProduct.add(ProductData('ccc', _laporanController.dummyList[2],
+    //     [DetailProductData('inner plas', 25000)]));
+    // listProduct.add(ProductData('acc', _laporanController.dummyList[3],
+    //     [DetailProductData('biji', 30000), DetailProductData('dos', 35000)]));
+    // listProduct.add(ProductData('cca', _laporanController.dummyList[4], [
+    //   DetailProductData('dos', 50000),
+    //   DetailProductData('inner plas', 100000),
+    //   DetailProductData('biji', 120000)
+    // ]));
+    // listProduct.add(ProductData('cac', _laporanController.dummyList[5],
+    //     [DetailProductData('dos', 200000)]));
+
+    // for (var i = 0; i < listProduct.length; i++) {
+    //   listDropDown.add(DropDownValueModel(
+    //       value: listProduct[i].kdProduct, name: listProduct[i].nmProduct));
+    // }
   }
 
   addToCart() {

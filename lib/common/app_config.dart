@@ -14,6 +14,8 @@ class AppConfig {
   static const String initPublicUrl = "https://link.tirtakencana.com/SFATools";
   static const String tesPublicUrl = "https://link.tirtakencana.com/SFATools/public/test";
 
+  static const String baseUrlVendor = "https://mitra.tirtakencana.com";
+
   // static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
   // static const String initUrl = "https://link.tirtakencana.com/SFATools";
 
