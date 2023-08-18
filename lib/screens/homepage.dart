@@ -4,36 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
-import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
-import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-// ignore: must_be_immutable
 class Homepage extends StatelessWidget {
   Homepage({super.key});
 
   final splashscreenController = Get.find<SplashscreenController>();
-
-  DateTime? currentBackPressTime;
-
-  Future<bool> confirmExit() async {
-    FocusManager.instance.primaryFocus?.unfocus();
-    DateTime now = DateTime.now();
-
-    if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime!) > const Duration(seconds: 3)) {
-      currentBackPressTime = now;
-      Get.snackbar(
-        "Apakah Anda yakin ingin keluar?",
-        "Tekan sekali lagi untuk keluar dari aplikasi",
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } else {
-      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-    }
-    return Future.value(false);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +21,10 @@ class Homepage extends StatelessWidget {
         statusBarIconBrightness: Brightness.dark,
       ),
       child: WillPopScope(
-        onWillPop: confirmExit,
+        onWillPop: () {
+          SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+          return Future.value(false);
+        },
         child: Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -61,52 +41,19 @@ class Homepage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              appsDialog(
-                                type: "app_exit_confirm",
-                                title: const TextView(
-                                    headings: "H3",
-                                    text: Message.confirmExitApp,
-                                    fontSize: 16),
-                                content: const SizedBox(),
-                                isAnimated: true,
-                                isCancel: true,
-                                leftBtnMsg: "tidak",
-                                rightBtnMsg: "ya, keluar",
-                                leftActionClick: () {
-                                  Get.back();
-                                },
-                                rightActionClick: () {
-                                  SystemChannels.platform
-                                      .invokeMethod('SystemNavigator.pop');
-                                },
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              elevation: 5,
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(10),
-                            ),
-                            child: Icon(FontAwesomeIcons.xmark,
-                                size: 35, color: AppConfig.darkGreen),
-                          ),
-                          Row(
-                            children: [
-                              Icon(FontAwesomeIcons.solidCircleUser,
-                                  size: 25, color: AppConfig.darkGreen),
-                              const SizedBox(width: 10),
-                              TextView(
-                                  headings: "H2",
-                                  text: splashscreenController
-                                      .salesIdParams.value),
-                            ],
-                          )
-                        ],
+                      ElevatedButton(
+                        onPressed: () {
+                          SystemChannels.platform
+                              .invokeMethod('SystemNavigator.pop');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppConfig.darkGreen,
+                          elevation: 5,
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(10),
+                        ),
+                        child: const Icon(FontAwesomeIcons.xmark,
+                            size: 35, color: Colors.white),
                       ),
                       Expanded(
                         child: Center(
@@ -121,19 +68,20 @@ class Homepage extends StatelessWidget {
                                 child: Card(
                                   elevation: 10,
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16)),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            AppConfig.softGreen,
-                                            AppConfig.softCyan
-                                          ],
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(16)),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          AppConfig.softGreen,
+                                          AppConfig.softCyan,
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
                                     child: Material(
                                       color: Colors.transparent,
                                       child: InkWell(

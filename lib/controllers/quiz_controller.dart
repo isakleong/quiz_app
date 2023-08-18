@@ -426,9 +426,17 @@ class QuizController extends GetxController with StateMixin {
       //update txt after submit quiz (offline data handler), to keep notification running realtime
       String _filequiz = await Backgroundservicecontroller().readFileQuiz();
       if(passed == 1) {
-        await Backgroundservicecontroller().writeText("3;${salesId};${DateTime.now()};${_filequiz.split(";")[3]}");
+        if (await Backgroundservicecontroller().isSameSalesid()) {
+          await Backgroundservicecontroller().writeText("3;${salesId};${DateTime.now()};${_filequiz.split(";")[3]}");
+        } else {
+          await Backgroundservicecontroller().writeText("3;${salesId};${DateTime.now()};${DateTime.now()}");
+        }
       } else {
-        await Backgroundservicecontroller().writeText("2;${salesId};${DateTime.now()};${_filequiz.split(";")[3]}");
+        if (await Backgroundservicecontroller().isSameSalesid()) {
+          await Backgroundservicecontroller().writeText("2;${salesId};${DateTime.now()};${_filequiz.split(";")[3]}");
+        } else {
+          await Backgroundservicecontroller().writeText("2;${salesId};${DateTime.now()};${DateTime.now()}");
+        }
       }
 
       var connTest = await ApiClient().checkConnection();
@@ -439,11 +447,15 @@ class QuizController extends GetxController with StateMixin {
       if (isConnected) {
         var bodyData = jsonEncode(params);
         var resultSubmit = await ApiClient().postData(
-            urlAPI,
-            '/quiz/submit',
-            Utils.encryptData(bodyData),
-            Options(
-                headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+          urlAPI,
+          '/quiz/submit',
+          Utils.encryptData(bodyData),
+          Options(
+            headers: {
+              HttpHeaders.contentTypeHeader: "application/json"
+            }
+          )
+        );
 
         if(resultSubmit == "success") {
           Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);

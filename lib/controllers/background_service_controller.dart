@@ -114,6 +114,26 @@ class Backgroundservicecontroller {
     Hive.registerAdapter(ServiceBoxAdapter());
   }
 
+  initializeNotifConfiguration() async {
+    String fileNotif = "";
+    fileNotif = await readFileQuiz();
+    if (fileNotif == "") {
+      String _salesidVendor = await Utils().readParameter();
+      if (_salesidVendor != "") {
+        //hit api only when there is salesid from vendor
+        String status = await getLatestStatusQuiz(_salesidVendor.split(';')[0]);
+        if (status != "err") {
+          //status;salesid;service time;last hit api time
+          await writeText("${status};${_salesidVendor.split(';')[0]};${DateTime.now()};${DateTime.now()}");
+        } else {
+          await writeText(";;${DateTime.now()};");
+        }
+      } else {
+        await writeText(";;${DateTime.now()};");
+      }
+    }
+  }
+
   Future writeText(String teks) async {
     File(join(AppConfig.filequiz))
       ..createSync(recursive: true)

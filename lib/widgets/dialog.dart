@@ -32,9 +32,6 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
                 type == "quiz_confirm" ? 
                 'assets/lottie/quiz-confirm.json'
                 :
-                type == "app_exit_confirm" ? 
-                'assets/lottie/app-exit-confirm.json'
-                :
                 type == "quiz_passed" ? 
                 'assets/lottie/quiz-passed.json' 
                 :
@@ -57,8 +54,8 @@ void appsDialog ({required String type, bool isDismmisible = false, required Wid
               :
               Image.asset(
                 iconAsset,
-                width: 220,
-                height: 220
+                width: 250,
+                height: 250,
               ),
               const SizedBox(height: 30),
               type == "confirm_dialog" ?
