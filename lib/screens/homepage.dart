@@ -21,7 +21,7 @@ class Homepage extends StatelessWidget {
         statusBarIconBrightness: Brightness.dark,
       ),
       child: WillPopScope(
-        onWillPop: (){
+        onWillPop: () {
           SystemChannels.platform.invokeMethod('SystemNavigator.pop');
           return Future.value(false);
         },
@@ -35,14 +35,16 @@ class Homepage extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                          SystemChannels.platform
+                              .invokeMethod('SystemNavigator.pop');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppConfig.darkGreen,
@@ -50,7 +52,8 @@ class Homepage extends StatelessWidget {
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(10),
                         ),
-                        child: const Icon(FontAwesomeIcons.xmark, size: 35, color: Colors.white),
+                        child: const Icon(FontAwesomeIcons.xmark,
+                            size: 35, color: Colors.white),
                       ),
                       Expanded(
                         child: Center(
@@ -60,7 +63,8 @@ class Homepage extends StatelessWidget {
                             itemCount: splashscreenController.moduleList.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
                                 child: Card(
                                   elevation: 10,
                                   shape: RoundedRectangleBorder(
@@ -82,13 +86,20 @@ class Homepage extends StatelessWidget {
                                       color: Colors.transparent,
                                       child: InkWell(
                                         borderRadius: BorderRadius.circular(16),
-                                        splashColor: AppConfig.mainGreen.withOpacity(0.5),
+                                        splashColor: AppConfig.mainGreen
+                                            .withOpacity(0.5),
                                         onTap: () async {
-                                          splashscreenController.buttonAction(splashscreenController.moduleList[index].moduleID);
+                                          splashscreenController.buttonAction(
+                                              splashscreenController
+                                                  .moduleList[index].moduleID);
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(20),
-                                          child: TextView(headings: "H2", text: splashscreenController.moduleList[index].moduleID, fontSize: 20),
+                                          child: TextView(
+                                              headings: "H2",
+                                              text: splashscreenController
+                                                  .moduleList[index].moduleID,
+                                              fontSize: 20),
                                         ),
                                       ),
                                     ),
@@ -99,7 +110,10 @@ class Homepage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      TextView(headings: "H3", text: "v ${splashscreenController.appVersion.value}", fontSize: 14),
+                      TextView(
+                          headings: "H3",
+                          text: "v ${splashscreenController.appVersion.value}",
+                          fontSize: 14),
                     ],
                   ),
                 ),

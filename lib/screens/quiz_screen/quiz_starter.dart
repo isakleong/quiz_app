@@ -11,7 +11,7 @@ import 'package:sfa_tools/controllers/quiz_controller.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-class StartQuiz extends GetView<QuizController>  {
+class StartQuiz extends GetView<QuizController> {
   StartQuiz({super.key});
 
   // final QuizController quizController = Get.find();
@@ -29,7 +29,7 @@ class StartQuiz extends GetView<QuizController>  {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Stack(
-          children:[
+          children: [
             SvgPicture.asset(
               'assets/images/bg-quiz-starter.svg',
               fit: BoxFit.cover,
@@ -46,7 +46,8 @@ class StartQuiz extends GetView<QuizController>  {
                   shape: const CircleBorder(),
                   padding: const EdgeInsets.all(16),
                 ),
-                child: const Icon(FontAwesomeIcons.arrowLeft, size: 25, color: Colors.white),
+                child: const Icon(FontAwesomeIcons.arrowLeft,
+                    size: 25, color: Colors.white),
               ),
             ),
             controller.obx(
@@ -62,12 +63,15 @@ class StartQuiz extends GetView<QuizController>  {
                     children: [
                       Lottie.asset(
                         'assets/lottie/quiz-retry.json',
-                        width: Get.width*0.5,
+                        width: Get.width * 0.5,
                       ),
                       const SizedBox(height: 15),
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 30),
-                        child: TextView(headings: "H3", text: Message.warningQuizNotSent, textAlign: TextAlign.center),
+                        child: TextView(
+                            headings: "H3",
+                            text: Message.warningQuizNotSent,
+                            textAlign: TextAlign.center),
                       ),
                       const SizedBox(height: 30),
                       ElevatedButton(
@@ -78,7 +82,11 @@ class StartQuiz extends GetView<QuizController>  {
                           backgroundColor: AppConfig.darkGreen,
                           padding: const EdgeInsets.all(12),
                         ),
-                        child: const TextView(headings: "H3", text: "ok", color: Colors.white, isCapslock: true),
+                        child: const TextView(
+                            headings: "H3",
+                            text: "ok",
+                            color: Colors.white,
+                            isCapslock: true),
                       ),
                     ],
                   ),
@@ -92,12 +100,15 @@ class StartQuiz extends GetView<QuizController>  {
                     children: [
                       Lottie.asset(
                         'assets/lottie/error.json',
-                        width: Get.width*0.5,
+                        width: Get.width * 0.5,
                       ),
                       const SizedBox(height: 15),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: TextView(headings: "H3", text: controller.errorMessage.value, textAlign: TextAlign.center),
+                        child: TextView(
+                            headings: "H3",
+                            text: controller.errorMessage.value,
+                            textAlign: TextAlign.center),
                       ),
                       const SizedBox(height: 30),
                       ElevatedButton(
@@ -113,7 +124,11 @@ class StartQuiz extends GetView<QuizController>  {
                           children: const [
                             Icon(Icons.history),
                             SizedBox(width: 10),
-                            TextView(headings: "H3", text: Message.retry, color: Colors.white, isCapslock: true),
+                            TextView(
+                                headings: "H3",
+                                text: Message.retry,
+                                color: Colors.white,
+                                isCapslock: true),
                           ],
                         ),
                       ),
@@ -147,7 +162,6 @@ class CircularButton extends StatelessWidget {
             ),
           ),
         ),
-
         Center(
           child: Container(
             height: 230,
@@ -155,10 +169,7 @@ class CircularButton extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.white,
-                width: 10,
-                style: BorderStyle.solid
-              ),
+                  color: Colors.white, width: 10, style: BorderStyle.solid),
             ),
             child: Material(
               color: AppConfig.mainGreen,
@@ -174,13 +185,18 @@ class CircularButton extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: const Center(
-                    child: TextView(headings: "H1", text: "mulai", fontSize: 40, color: Colors.white, isCapslock: true),
-                    ),
+                    child: TextView(
+                        headings: "H1",
+                        text: "mulai",
+                        fontSize: 40,
+                        color: Colors.white,
+                        isCapslock: true),
                   ),
                 ),
               ),
             ),
           ),
+        ),
       ],
     );
   }
