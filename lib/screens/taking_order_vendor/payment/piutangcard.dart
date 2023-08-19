@@ -5,7 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../widgets/textview.dart';
 
 class PiutangCard extends StatelessWidget {
-  const PiutangCard({super.key});
+  String nmtoko;
+  PiutangCard({super.key,required this.nmtoko});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +75,7 @@ class PiutangCard extends StatelessWidget {
                           width: 5,
                         ),
                         TextView(
-                          text: "Adek Abang",
+                          text: nmtoko,
                           fontSize: 10.sp,
                         ),
                       ],

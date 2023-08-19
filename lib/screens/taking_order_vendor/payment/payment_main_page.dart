@@ -34,7 +34,7 @@ class PaymentMainPage extends StatelessWidget {
                     Padding(
                         padding: EdgeInsets.only(
                             left: 0.05 * Get.width, top: 0.01 * Get.height),
-                        child: PiutangCard()),
+                        child: PiutangCard(nmtoko : _takingOrderVendorController.nmtoko.value)),
                     const SizedBox(
                       height: 15,
                     ),

@@ -143,7 +143,7 @@ class DialogCheckOut extends StatelessWidget {
                         fit: BoxFit.fill,
                       ),
                     ),
-                    maxLength: 150,
+                    maxLength: 150,controller: _takingOrderVendorController.notes.value,
                     maxLines: null,
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     keyboardType: TextInputType.multiline,
@@ -347,6 +347,7 @@ class DialogCheckOut extends StatelessWidget {
                     ),
                     text: "SIMPAN",
                     onTap: () async {
+                      _takingOrderVendorController.checkout();
                       Get.back();
                     },
                     radius: 4,

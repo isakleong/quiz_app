@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/pembayaran_controller.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
@@ -25,6 +26,8 @@ class TakingOrderVendorController extends GetxController
   final ReturController _returController = Get.put(ReturController());
   late AnimationController animationController;
   late Animation<Offset> slideAnimation;
+  
+  final PersistentTabController controllerBar = PersistentTabController(initialIndex: 0);
 
   @override
   void onInit() {
@@ -79,6 +82,7 @@ class TakingOrderVendorController extends GetxController
   Rx<TextEditingController> get qty1 => _penjualanController.qty1;
   Rx<TextEditingController> get qty2 => _penjualanController.qty2;
   Rx<TextEditingController> get qty3 => _penjualanController.qty3;
+  Rx<TextEditingController> get notes => _penjualanController.notes;
   RxString get choosedAddress => _penjualanController.choosedAddress;
   RxInt animated = 0.obs;
   get listAnimation => _penjualanController.listAnimation;
@@ -130,6 +134,27 @@ class TakingOrderVendorController extends GetxController
 
   showProdukSerupa(CartDetail data) {
     _penjualanController.showProdukSerupa(data);
+  }
+
+  checkout() async {
+    print("**************** : ${_laporanController.listReportPenjualan.length}");
+    var data =  await _penjualanController.checkout(_laporanController.listReportPenjualan.isEmpty ? 0 : _laporanController.listReportPenjualan.length);
+    _laporanController.listReportPenjualan.add(data);
+    _laporanController.listReportPenjualanShow.clear();
+    _laporanController.listReportPenjualanShow.addAll(_laporanController.listReportPenjualan);
+    _laporanController.allReportlength.value = _laporanController.listReportPenjualanShow.length + _laporanController.listReportPembayaranshow.length;
+    notes.value.clear();
+    cartDetailList.clear();
+    cartList.clear();
+    selectedProduct.clear();
+    cnt.value.clear(); 
+    qty1.value.clear();
+    qty2.value.clear();
+    qty3.value.clear();
+    listAnimation.clear();
+    choosedAddress.value = "";
+    controllerBar.jumpToTab(3);
+    
   }
 
   //for laporan page

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/models/masteritemvendor.dart';
 import 'package:sfa_tools/models/module.dart';
+import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout.dart';
@@ -15,8 +16,10 @@ import '../common/app_config.dart';
 import '../models/cartmodel.dart';
 import '../models/customer.dart';
 import '../models/productdata.dart';
+import '../models/reportpembayaranmodel.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 import '../tools/service.dart';
+import '../tools/utils.dart';
 
 class PenjualanController extends GetxController
     with GetTickerProviderStateMixin {
@@ -36,6 +39,7 @@ class PenjualanController extends GetxController
   List<Vendor> vendorlist = <Vendor>[];
   RxString nmtoko = "".obs;
   RxList<ShipToAddress> listAddress = <ShipToAddress>[].obs;
+  Rx<TextEditingController> notes = TextEditingController().obs;
 
   final LaporanController _laporanController = Get.find();
 
@@ -329,4 +333,46 @@ class PenjualanController extends GetxController
             borderRadius: BorderRadius.all(Radius.circular(5))),
         child: DialogProdukSerupa()));
   }
+
+  checkout(int idx) async {
+    // url : https://mitra.tirtakencana.com/tangki-air-jerapah-dev/api/sales-orders/store
+    // print("checkout");
+    //  List<ReportPenjualanModel> listReportPenjualan = <ReportPenjualanModel>[];
+    String inc = "000";
+    idx = idx + 1;
+    if (idx < 10){
+      inc = "00$idx";
+    } else if (idx < 100 && idx > 9){
+      inc = "0$idx";
+    } else {
+      inc = "$idx";
+    }
+    String salesid = await getParameterData("sales");
+    DateTime now = DateTime.now();
+    String noorder = "GO-$salesid-${DateFormat('yyMMddHHmm').format(now)}-$inc";
+    String date = DateFormat('dd-MM-yyyy').format(now);
+    String time = DateFormat('HH:mm').format(now);
+    // listReportPenjualan.add(ReportPenjualanModel(noorder,"penjualan" , date, time, cartDetailList, notes.value.text));
+    List<CartDetail> listcopy = [];
+    listcopy.addAll(cartDetailList);
+    return ReportPenjualanModel(noorder,"penjualan" , date, time, listcopy, notes.value.text);
+  }
+
+  getParameterData(String type) async {
+    //SalesID;CustID;LocCheckIn
+    String parameter = await Utils().readParameter();
+    if (parameter != "") {
+      var arrParameter = parameter.split(';');
+      for (int i = 0; i < arrParameter.length; i++) {
+        if (i == 0 && type == "sales") {
+          return arrParameter[i];
+        } else if (i == 1 && type == "cust") {
+          return arrParameter[i];
+        } else {
+          return arrParameter[2];
+        }
+      }
+    }
+  }
+
 }

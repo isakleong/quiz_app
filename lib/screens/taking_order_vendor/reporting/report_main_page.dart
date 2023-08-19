@@ -48,6 +48,7 @@ class ReportMainPage extends StatelessWidget {
                   padding: EdgeInsets.only(
                       left: 0.05 * Get.width, top: 0.01 * Get.height),
                   child: SearchReport(
+                    nmToko: "${_takingOrderVendorController.nmtoko.value}",
                     value:
                         _takingOrderVendorController.choosedReport.value == ""
                             ? 'Semua Transaksi'
