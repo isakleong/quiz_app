@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/cektab.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/payment/potongancntab.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/transfertab.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/tunaitab.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

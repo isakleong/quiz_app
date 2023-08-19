@@ -64,7 +64,7 @@ class CartList extends StatelessWidget {
                               fontSize: 9.5.sp,
                             )
                           else
-                            Container(
+                            SizedBox(
                               height: 0.015 * height,
                               child: FittedBox(
                                 child: TextView(

@@ -5,7 +5,6 @@ import 'package:dio/io.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/tools/logging.dart';
-import 'package:http/http.dart' as https;
 // show Client, Request;
 
 class ApiClient {

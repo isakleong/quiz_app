@@ -117,7 +117,7 @@ class PiutangCard extends StatelessWidget {
                       text: "20,752,392",
                       headings: 'H3',
                       fontSize: 11.sp,
-                      color: Color(0xFFf5511e),
+                      color: const Color(0xFFf5511e),
                     ),
                     TextView(
                       text: "Total Piutang",
@@ -141,7 +141,7 @@ class PiutangCard extends StatelessWidget {
                   children: [
                     TextView(
                       text: "20,752,392",
-                      color: Color(0xFFf5511e),
+                      color: const Color(0xFFf5511e),
                       headings: 'H3',
                       fontSize: 11.sp,
                     ),

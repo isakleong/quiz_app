@@ -592,7 +592,7 @@ class SplashscreenController extends GetxController
   getVendor() async {
     print("${AppConfig.baseUrlVendor}/tangki-air-jerapah-dev/api/setting/customer/${customerIdParams.value}");
     
-    var result = await ApiClient().getData("${AppConfig.baseUrlVendor}","/tangki-air-jerapah-dev/api/setting/customer/01B05070012");
+    var result = await ApiClient().getData(AppConfig.baseUrlVendor,"/tangki-air-jerapah-dev/api/setting/customer/01B05070012");
     
     print("${AppConfig.baseUrlVendor}/tangki-air-jerapah-dev/api/setting/customer/${customerIdParams.value}");
     var data = VendorInfo.fromJson(result);

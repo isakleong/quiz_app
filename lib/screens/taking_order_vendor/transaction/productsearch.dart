@@ -120,7 +120,7 @@ class ProductSearch extends StatelessWidget {
                               border: InputBorder.none,
                               prefixIcon: Icon(
                                 FontAwesomeIcons.search,
-                                color: Color(0XFF319088),
+                                color: const Color(0XFF319088),
                                 size: 14.sp,
                               )),
                         ),
@@ -180,7 +180,7 @@ class ProductSearch extends StatelessWidget {
                               children: [
                                 Icon(Icons.close, color: Colors.red.shade600),
                                 const SizedBox(width: 10),
-                                TextView(text: "Produk Tidak Ditemukan"),
+                                const TextView(text: "Produk Tidak Ditemukan"),
                               ],
                             ),
                           ),

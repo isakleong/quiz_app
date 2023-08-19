@@ -5,18 +5,15 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/models/masteritemvendor.dart';
-import 'package:sfa_tools/models/module.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukserupa.dart';
 
-import '../common/app_config.dart';
 import '../models/cartmodel.dart';
 import '../models/customer.dart';
 import '../models/productdata.dart';
-import '../models/reportpembayaranmodel.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 import '../tools/service.dart';
 import '../tools/utils.dart';
@@ -154,11 +151,11 @@ class PenjualanController extends GetxController
         // if (cartList.length - 1 == i) {
         listAnimation.add(Tween<Offset>(
           begin: Offset((-0.9 - (i * 0.06)), 0),
-          end: Offset(0, 0),
+          end: const Offset(0, 0),
         ).animate(CurvedAnimation(
           parent: AnimationController(
             vsync: this,
-            duration: Duration(milliseconds: 700),
+            duration: const Duration(milliseconds: 700),
           )..forward(),
           curve: Curves.easeInOut,
         )));
@@ -217,11 +214,11 @@ class PenjualanController extends GetxController
               ];
               listAnimation.add(Tween<Offset>(
                 begin: Offset((-0.9 - (i * 0.06)), 0),
-                end: Offset(0, 0),
+                end: const Offset(0, 0),
               ).animate(CurvedAnimation(
                 parent: AnimationController(
                   vsync: this,
-                  duration: Duration(milliseconds: 700),
+                  duration: const Duration(milliseconds: 700),
                 )..forward(),
                 curve: Curves.easeInOut,
               )));

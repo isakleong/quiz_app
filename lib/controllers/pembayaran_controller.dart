@@ -168,14 +168,14 @@ class PembayaranController extends GetxController {
         if (listpaymentdata[i].jenis == jenis) {
           print(i);
           Get.back();
-          PaymentData _dataTemp = listpaymentdata[i];
+          PaymentData dataTemp = listpaymentdata[i];
           // listpaymentdata.removeWhere((element) => element.jenis == jenis);
           pembayaranListKey.currentState!.removeItem(
               i,
               (context, animation) => SlideTransition(
                     position: Tween<Offset>(
-                      begin: Offset(-1, 0),
-                      end: Offset(0, 0),
+                      begin: const Offset(-1, 0),
+                      end: const Offset(0, 0),
                     ).animate(CurvedAnimation(
                       parent: animation,
                       curve: Curves.easeOut,
@@ -188,22 +188,22 @@ class PembayaranController extends GetxController {
                           right: 0.05 * Get.width),
                       child: PaymentList(
                         idx: (i + 1).toString(),
-                        metode: _dataTemp.jenis == "cn"
+                        metode: dataTemp.jenis == "cn"
                             ? "Potongan CN"
-                            : _dataTemp.jenis == "cek"
-                                ? "Cek / Giro / Slip - ${_dataTemp.tipe} [${_dataTemp.nomor}]"
-                                : "${_dataTemp.jenis} - ${_dataTemp.tipe}",
-                        jatuhtempo: _dataTemp.jatuhtempo == ""
-                            ? _dataTemp.jatuhtempo
-                            : "Jatuh Tempo : ${_dataTemp.jatuhtempo}",
-                        value: "Rp ${formatNumber(_dataTemp.value.toInt())}",
-                        jenis: _dataTemp.jenis,
+                            : dataTemp.jenis == "cek"
+                                ? "Cek / Giro / Slip - ${dataTemp.tipe} [${dataTemp.nomor}]"
+                                : "${dataTemp.jenis} - ${dataTemp.tipe}",
+                        jatuhtempo: dataTemp.jatuhtempo == ""
+                            ? dataTemp.jatuhtempo
+                            : "Jatuh Tempo : ${dataTemp.jatuhtempo}",
+                        value: "Rp ${formatNumber(dataTemp.value.toInt())}",
+                        jenis: dataTemp.jenis,
                       ),
                     ),
                   ),
-              duration: Duration(milliseconds: 500));
+              duration: const Duration(milliseconds: 500));
 
-          await Future.delayed(Duration(milliseconds: 500));
+          await Future.delayed(const Duration(milliseconds: 500));
           listpaymentdata.removeWhere((element) => element.jenis == jenis);
           listpaymentdata.isEmpty ? showBanner.value = 1 : showBanner.value = 0;
           break;

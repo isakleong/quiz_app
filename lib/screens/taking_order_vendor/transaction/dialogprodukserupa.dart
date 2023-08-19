@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/widgets/textview.dart';
@@ -122,9 +120,9 @@ class DialogProdukSerupa extends StatelessWidget {
                           child: Container(
                             width: 0.7 * Get.width,
                             color:
-                                i % 2 == 0 ? Colors.white : Color(0XFFe0f2f2),
+                                i % 2 == 0 ? Colors.white : const Color(0XFFe0f2f2),
                             child: Padding(
-                              padding: EdgeInsets.only(top: 8, bottom: 8),
+                              padding: const EdgeInsets.only(top: 8, bottom: 8),
                               child: Row(children: [
                                 SizedBox(
                                   width: 0.01 * Get.width,
@@ -144,7 +142,7 @@ class DialogProdukSerupa extends StatelessWidget {
                                     fontSize: 10.sp,
                                   )
                                 else
-                                  Container(
+                                  SizedBox(
                                     height: 0.02 * Get.height,
                                     child: FittedBox(
                                       child: TextView(

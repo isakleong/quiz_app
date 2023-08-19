@@ -7,7 +7,6 @@ import 'package:sfa_tools/screens/taking_order_vendor/transaction/cartheader.dar
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/cartlist.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/productsearch.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/shoppingcart.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TakingOrderVendorMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController =
@@ -36,7 +35,7 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                         left: 0.05 * width,
                         top: 0.01 * height,
                       ),
-                      child: BackButtonAction(),
+                      child: const BackButtonAction(),
                     ),
                     Padding(
                       padding: EdgeInsets.only(

@@ -26,7 +26,7 @@ class ButtonPayment extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        padding: EdgeInsets.all(
+        padding: const EdgeInsets.all(
             10), // Set padding to zero to let the child determine the button's size
       ),
       child: Row(
@@ -36,7 +36,7 @@ class ButtonPayment extends StatelessWidget {
             icon,
             size: icsize ?? 16,
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Text(

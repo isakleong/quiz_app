@@ -34,11 +34,11 @@ class TakingOrderVendorController extends GetxController
     super.onInit();
     animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
     )..forward();
     slideAnimation = Tween<Offset>(
-      begin: Offset(0, -0.2),
-      end: Offset(0, 0),
+      begin: const Offset(0, -0.2),
+      end: const Offset(0, 0),
     ).animate(CurvedAnimation(
       parent: animationController,
       curve: Curves.easeInOut,
