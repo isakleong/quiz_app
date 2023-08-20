@@ -108,7 +108,7 @@ class TukarWarnaPage extends StatelessWidget {
                                   _takingOrderVendorController
                                       .handleSaveConfirm(
                                           "Yakin untuk simpan tukar warna ?",
-                                          "Konfirmasi Tukar Warna");
+                                          "Konfirmasi Tukar Warna", (){Get.back();});
                                 }),
                             Expanded(
                               child: ListView.builder(

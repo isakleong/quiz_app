@@ -26,7 +26,7 @@ class TakingOrderVendorController extends GetxController
   final ReturController _returController = Get.put(ReturController());
   late AnimationController animationController;
   late Animation<Offset> slideAnimation;
-  
+  final keyconfirm = GlobalKey();
   final PersistentTabController controllerBar = PersistentTabController(initialIndex: 0);
 
   @override
@@ -63,12 +63,13 @@ class TakingOrderVendorController extends GetxController
     }
   }
 
-  handleSaveConfirm(String msg, String title) {
+  handleSaveConfirm(String msg, String title, var ontap) {
     Get.dialog(Dialog(
+      key: keyconfirm,
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: DialogConfirm(message: msg, title: title)));
+        child: DialogConfirm(message: msg, title: title, onTap: ontap,)));
   }
 
   // for penjualan page
@@ -87,6 +88,7 @@ class TakingOrderVendorController extends GetxController
   RxInt animated = 0.obs;
   get listAnimation => _penjualanController.listAnimation;
   get nmtoko => _penjualanController.nmtoko;
+  GlobalKey get keychecout => _penjualanController.keycheckout;
   RxList<ShipToAddress> get listaddress => _penjualanController.listAddress;
 
   countPriceTotal() {
@@ -137,7 +139,6 @@ class TakingOrderVendorController extends GetxController
   }
 
   checkout() async {
-    print("**************** : ${_laporanController.listReportPenjualan.length}");
     var data =  await _penjualanController.checkout(_laporanController.listReportPenjualan.isEmpty ? 0 : _laporanController.listReportPenjualan.length);
     _laporanController.listReportPenjualan.add(data);
     _laporanController.listReportPenjualanShow.clear();
@@ -153,8 +154,15 @@ class TakingOrderVendorController extends GetxController
     qty3.value.clear();
     listAnimation.clear();
     choosedAddress.value = "";
+    try{
+      Navigator.pop(keychecout.currentContext!);
+      Navigator.pop(keyconfirm.currentContext!);
+    // ignore: empty_catches
+    }catch(e){
+
+    }
     controllerBar.jumpToTab(3);
-    
+
   }
 
   //for laporan page

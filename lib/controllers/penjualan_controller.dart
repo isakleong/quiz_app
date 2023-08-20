@@ -41,7 +41,7 @@ class PenjualanController extends GetxController
   late Box<List<Vendor>> vendorBox; 
   late Box<List<ShipToAddress>> listaddressbox; 
   late Box<Customer> customerBox; 
-
+  final keycheckout = GlobalKey();
   final LaporanController _laporanController = Get.find();
 
   getBox() async {
@@ -351,6 +351,7 @@ class PenjualanController extends GetxController
 
   previewCheckOut() {
     Get.dialog(Dialog(
+      key: keycheckout,
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),

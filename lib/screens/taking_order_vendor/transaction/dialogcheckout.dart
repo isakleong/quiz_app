@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/checkoutlist.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
@@ -346,9 +348,12 @@ class DialogCheckOut extends StatelessWidget {
                       size: 14.sp,
                     ),
                     text: "SIMPAN",
-                    onTap: () async {
-                      _takingOrderVendorController.checkout();
-                      Get.back();
+                    onTap: ()  {
+                      _takingOrderVendorController.handleSaveConfirm( "Yakin untuk simpan penjualan ?",
+                         "Konfirmasi Penjualan", 
+                         () async {
+                            await _takingOrderVendorController.checkout();
+                        });
                     },
                     radius: 4,
                     space: 5,

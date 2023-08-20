@@ -58,7 +58,9 @@ class PaymentHeader extends StatelessWidget {
                   onTap: () {
                     _takingOrderVendorController.handleSaveConfirm(
                         "Yakin untuk simpan pembayaran?",
-                        "Konfirmasi Pembayaran");
+                        "Konfirmasi Pembayaran",(){
+                          Get.back();
+                        });
                   },
                   radius: 10,
                   space: 5,

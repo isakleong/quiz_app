@@ -119,7 +119,9 @@ class GantiKemasan extends StatelessWidget {
                             onTap: () {
                               _takingOrderVendorController.handleSaveConfirm(
                                   "Yakin untuk simpan ganti kemasan?",
-                                  "Konfirmasi Ganti Kemasan");
+                                  "Konfirmasi Ganti Kemasan",(){
+                                    Get.back();
+                                  });
                             }),
                         Expanded(
                           child: ListView.builder(

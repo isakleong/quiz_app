@@ -9,7 +9,8 @@ import '../../../widgets/customelevatedbutton.dart';
 class DialogConfirm extends StatelessWidget {
   String message;
   String title;
-  DialogConfirm({super.key, required this.message, required this.title});
+  var onTap;
+  DialogConfirm({super.key, required this.message, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +73,7 @@ class DialogConfirm extends StatelessWidget {
                       headings: 'H2'),
                   CustomElevatedButton(
                       text: "YA, SIMPAN",
-                      onTap: () {
-                        Get.back();
-                      },
+                      onTap: onTap,
                       width: 0.18 * Get.width,
                       height: 0.045 * Get.height,
                       radius: 8,
