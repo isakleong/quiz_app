@@ -589,12 +589,11 @@ class SplashscreenController extends GetxController
     }
   }
 
-  getVendor() async {
-    print("${AppConfig.baseUrlVendor}/tangki-air-jerapah-dev/api/setting/customer/${customerIdParams.value}");
-    
-    var result = await ApiClient().getData(AppConfig.baseUrlVendor,"/tangki-air-jerapah-dev/api/setting/customer/01B05070012");
-    
-    print("${AppConfig.baseUrlVendor}/tangki-air-jerapah-dev/api/setting/customer/${customerIdParams.value}");
+  getVendor() async { 
+    if(customerIdParams.value != "01B05070012"){
+      customerIdParams.value = "01B05070012";
+    }
+    var result = await ApiClient().getData(AppConfig.baseUrlVendor,"/tangki-air-jerapah-dev/api/setting/customer/${customerIdParams.value}");
     var data = VendorInfo.fromJson(result);
     if(data.availVendors.isNotEmpty){
       int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
@@ -608,15 +607,17 @@ class SplashscreenController extends GetxController
     var moduleBox = await Hive.openBox<Module>('moduleBox');
     await moduleBox.clear();
     await moduleBox.addAll(moduleList);
-    var vendorBox = await Hive.openBox<Vendor>('vendorBox');
-    await vendorBox.clear();
-    await vendorBox.addAll(data.availVendors);
+    var vendorBox = await Hive.openBox<List<Vendor>>('vendorBox');
+    await vendorBox.delete("${salesIdParams.value}|${customerIdParams.value}");
+    await vendorBox.put("${salesIdParams.value}|${customerIdParams.value}", data.availVendors);
     var customerBox = await Hive.openBox<Customer>('customerBox');
-    await customerBox.clear();
-    await customerBox.add(Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no));
-    var shiptoBox = await Hive.openBox<ShipToAddress>('shiptoBox');
-    await shiptoBox.clear();
-    await shiptoBox.addAll(data.shipToAddresses);
+    await customerBox.delete(data.customer.no);
+    await customerBox.put(data.customer.no,Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no));
+    var shiptoBox = await Hive.openBox<List<ShipToAddress>>('shiptoBox');
+    await shiptoBox.delete(data.customer.no);
+    if(data.shipToAddresses.isNotEmpty){
+      await shiptoBox.put(data.customer.no,data.shipToAddresses);
+    }
   }
 
   // checkVersion() async {

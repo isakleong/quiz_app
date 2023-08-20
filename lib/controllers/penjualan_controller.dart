@@ -37,20 +37,54 @@ class PenjualanController extends GetxController
   RxString nmtoko = "".obs;
   RxList<ShipToAddress> listAddress = <ShipToAddress>[].obs;
   Rx<TextEditingController> notes = TextEditingController().obs;
+  //box
+  late Box<List<Vendor>> vendorBox; 
+  late Box<List<ShipToAddress>> listaddressbox; 
+  late Box<Customer> customerBox; 
 
   final LaporanController _laporanController = Get.find();
 
+  getBox() async {
+    try {
+      vendorBox = await Hive.openBox<List<Vendor>>('vendorBox');
+      listaddressbox = await Hive.openBox<List<ShipToAddress>>('shiptoBox');
+      customerBox = await Hive.openBox<Customer>('customerBox');
+    } catch (e) {
+      vendorBox = await Hive.openBox('vendorBox');
+      listaddressbox = await Hive.openBox('shiptoBox');
+      customerBox = await Hive.openBox('customerBox');
+    }
+  }
+
   getListItem() async {
-    var listaddressbox = await Hive.openBox<ShipToAddress>('shiptoBox');
-    listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Pengiriman", address: "Pilih Alamat Pengiriman", county: ""));
-    listAddress.addAll(listaddressbox.values.toList());
-    var customerBox = await Hive.openBox<Customer>('customerBox');
-    var listToko = customerBox.values.toList();
-    nmtoko.value = listToko[0].name;
-    var vendorBox = await Hive.openBox<Vendor>('vendorBox');
+    await getBox();
+
+    //get salesid and custid data
+    String salesid = await getParameterData("sales");
+    String custid = await getParameterData("cust");
+    if(custid != "01B05070012"){
+      custid = "01B05070012";
+    }
+    
+    //get customer data
+    var dataToko = customerBox.get(custid);
+    nmtoko.value = dataToko!.name;
+
+    //get shippping address data
+    var addressdata = listaddressbox.get(custid);
+    if(addressdata == null || addressdata.isEmpty ){
+      listAddress.add(ShipToAddress(code: dataToko.no, name: dataToko.name, address: dataToko.address, county: dataToko.county));
+    } else {
+      listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Pengiriman", address: "Pilih Alamat Pengiriman", county: ""));
+      listAddress.addAll(addressdata);
+    }
+
+    //get vendor data
+    var datavendor = vendorBox.get("$salesid|$custid");
     vendorlist.clear();
-    vendorlist.addAll(vendorBox.values.toList());
-    print(vendorlist[0].name);
+    vendorlist.addAll(datavendor!);
+
+    //get list product vendor
     var getVendorItem = await ApiClient().getData(vendorlist[0].baseApiUrl,"/setting/vendor/${vendorlist[0].prefix}");
     print(getVendorItem);
     var data = MasterItemVendor.fromJson(getVendorItem);
