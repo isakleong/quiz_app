@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
+import 'package:sfa_tools/models/cartdetail.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/returitem/dialogdeletetukarwarna.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogdelete.dart';
@@ -386,7 +387,6 @@ class ReturController extends GetxController {
   handleEditProdukPenggantiItem(TarikBarangModel data) {
     isOverfow.value = false;
     selectedKdProductProdukPengganti.value = data.kdProduct.toString();
-    print(data.nmProduct.toString());
     qty1pp.value.text = '0';
     qty2pp.value.text = '0';
     qty3pp.value.text = '0';
@@ -426,15 +426,12 @@ class ReturController extends GetxController {
     }
     var flag = "null";
     for (var i = 0; i < listTarikBarang.length; i++) {
-      print(listTarikBarang[i].kdProduct);
       if (selectedProducttarikbarang[0].kdProduct ==
           listTarikBarang[i].kdProduct) {
-        print("same");
         flag = i.toString();
         break;
       }
     }
-    print("ini isi flag $flag");
     if (flag == "null") {
       List<CartModel> items = <CartModel>[];
       for (var i = 0;
@@ -485,7 +482,6 @@ class ReturController extends GetxController {
       qty2tb.value.clear();
       qty3tb.value.clear();
     } else {
-      print("already added");
       List<CartModel> items = <CartModel>[];
       for (var i = 0;
           i < selectedProducttarikbarang[0].detailProduct.length;
@@ -557,15 +553,12 @@ class ReturController extends GetxController {
     }
     var flag = "null";
     for (var i = 0; i < listgantikemasan.length; i++) {
-      print(listgantikemasan[i].kdProduct);
       if (selectedProductgantikemasan[0].kdProduct ==
           listgantikemasan[i].kdProduct) {
-        print("same");
         flag = i.toString();
         break;
       }
     }
-    print("ini isi flag $flag");
     if (flag == "null") {
       List<CartModel> items = <CartModel>[];
       for (var i = 0;
@@ -616,7 +609,6 @@ class ReturController extends GetxController {
       qty2gk.value.clear();
       qty3gk.value.clear();
     } else {
-      print("already added");
       List<CartModel> items = <CartModel>[];
       for (var i = 0;
           i < selectedProductgantikemasan[0].detailProduct.length;
@@ -952,7 +944,6 @@ class ReturController extends GetxController {
             selectedProductProdukPengganti[0].detailProduct[i].hrg));
       }
     }
-    print("awal $itemtotal");
     for (var i = 0; i < list.length; i++) {
       if ("dos" == list[i].Satuan) {
         itemtotal = itemtotal - (list[i].Qty * 8);
@@ -983,10 +974,8 @@ class ReturController extends GetxController {
         }
       }
     }
-    print("after minus by all item $itemtotal");
     if (itemtotal < 0) {
       isOverfow.value = true;
-      print("overflow");
       return;
     }
 
@@ -997,7 +986,6 @@ class ReturController extends GetxController {
         if (listProdukPengganti[i].kdProduct ==
             selectedProductProdukPengganti[0].kdProduct) {
           listProdukPengganti[i].itemOrder.clear();
-          print("${list.length} list length");
           if (list.isNotEmpty) {
             listProdukPengganti[i].itemOrder.addAll(list);
           } else {
