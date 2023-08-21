@@ -156,7 +156,8 @@ class LaporanController extends GetxController {
         listReportPenjualanShow.length + listReportPembayaranshow.length;
   }
 
-  filteReport() {
+  filteReport() async {
+    await getReportList();
     if (choosedReport.value.contains("Semua")) {
       listReportPenjualanShow.value.clear();
       listReportPenjualanShow.value.addAll(listReportPenjualan);

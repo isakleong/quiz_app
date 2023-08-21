@@ -1,12 +1,19 @@
-class ProductData {
-  String kdProduct;
-  String nmProduct;
-  List<DetailProductData> detailProduct;
-  ProductData(this.kdProduct, this.nmProduct, this.detailProduct);
-}
+import 'package:hive/hive.dart';
 
-class DetailProductData {
-  String satuan;
-  double hrg;
-  DetailProductData(this.satuan, this.hrg);
+import 'detailproductdata.dart';
+part 'productdata.g.dart';
+
+@HiveType(typeId: 11)
+class ProductData {
+
+  @HiveField(0)
+  String kdProduct;
+
+  @HiveField(1)
+  String nmProduct;
+
+  @HiveField(2)
+  List<DetailProductData> detailProduct;
+
+  ProductData(this.kdProduct, this.nmProduct, this.detailProduct);
 }

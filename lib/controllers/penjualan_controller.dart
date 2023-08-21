@@ -18,6 +18,7 @@ import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukse
 import 'package:http/http.dart' as http;
 import '../models/cartmodel.dart';
 import '../models/customer.dart';
+import '../models/detailproductdata.dart';
 import '../models/productdata.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 import '../tools/service.dart';
@@ -86,6 +87,7 @@ class PenjualanController extends GetxController
       listAddress.add(ShipToAddress(code: dataToko.no, name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
     } else {
       listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Pengiriman", address: "Pilih Alamat Pengiriman", county: "", City: "", PostCode: ""));
+      listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
       listAddress.addAll(addressdata);
     }
 
@@ -99,7 +101,7 @@ class PenjualanController extends GetxController
     print(getVendorItem);
     var data = MasterItemVendor.fromJson(getVendorItem);
     for (var i = 0; i < data.items.length; i++) {
-      listProduct.add(ProductData(data.items[i].code, data.items[i].name, [DetailProductData(data.items[i].uom.name, double.parse(data.items[i].price))]));
+      listProduct.add(ProductData(data.items[i].code, data.items[i].name, [DetailProductData(data.items[i].uom.name, double.parse(data.items[i].price), data.items[i].uomId)]));
     }
 
     // vendorBox.get("")
