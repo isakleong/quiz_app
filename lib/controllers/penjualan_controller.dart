@@ -46,6 +46,8 @@ class PenjualanController extends GetxController
   late Box<List<Vendor>> vendorBox; 
   late Box<List<ShipToAddress>> listaddressbox; 
   late Box<Customer> customerBox; 
+  late Box<List<PenjualanPostModel>> boxpostpenjualan;
+  late Box boxreportpenjualan;
   final keycheckout = GlobalKey();
   final LaporanController _laporanController = Get.find();
 
@@ -54,10 +56,13 @@ class PenjualanController extends GetxController
       vendorBox = await Hive.openBox<List<Vendor>>('vendorBox');
       listaddressbox = await Hive.openBox<List<ShipToAddress>>('shiptoBox');
       customerBox = await Hive.openBox<Customer>('customerBox');
+      boxpostpenjualan =  await Hive.openBox<List<PenjualanPostModel>>('penjualanReportpostdata');
+      boxreportpenjualan = await Hive.openBox('penjualanReport');
     } catch (e) {
       vendorBox = await Hive.openBox('vendorBox');
       listaddressbox = await Hive.openBox('shiptoBox');
       customerBox = await Hive.openBox('customerBox');
+      boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
     }
   }
 
@@ -371,8 +376,18 @@ class PenjualanController extends GetxController
         child: DialogProdukSerupa()));
   }
 
-  checkout(int idx) async {
+  checkout() async {
+    await getBox();
+    String salesid = await getParameterData("sales");
+    String cust = await getParameterData("cust");
+    if(cust != "01B05070012"){
+      cust = "01B05070012";
+    }
+    var _datapenjualan = await boxreportpenjualan.get("$salesid|$cust");
     String inc = "000";
+    var idx = 0;
+    if(_datapenjualan != null)
+    idx =  _datapenjualan!.isEmpty ? 0 : _datapenjualan.length;
     idx = idx + 1;
     if (idx < 10){
       inc = "00$idx";
@@ -380,11 +395,6 @@ class PenjualanController extends GetxController
       inc = "0$idx";
     } else {
       inc = "$idx";
-    }
-    String salesid = await getParameterData("sales");
-    String cust = await getParameterData("cust");
-    if(cust != "01B05070012"){
-      cust = "01B05070012";
     }
     DateTime now = DateTime.now();
     String noorder = "GO-$salesid-${DateFormat('yyMMddHHmm').format(now)}-$inc";
@@ -398,23 +408,21 @@ class PenjualanController extends GetxController
   }
 
   saveOrderToReport(String noorder,String date, String time, String notestext , List<CartDetail> dataList, String salesid, String cust) async {
-    late Box boxreportpenjualan;
-    if(!Hive.isBoxOpen('penjualanReport')){
-      print("here");
-      boxreportpenjualan = await Hive.openBox<List<ReportPenjualanModel>>('penjualanReport');
-    }
-    List<ReportPenjualanModel>? dataPenjualanbox = await boxreportpenjualan.get("$salesid|$cust");
+    var dataPenjualanbox = await boxreportpenjualan.get("$salesid|$cust");
     List<ReportPenjualanModel> dataPenjualan = <ReportPenjualanModel>[];
     if (dataPenjualanbox == null){
       dataPenjualan.add(ReportPenjualanModel('pending',noorder,"penjualan" , date, time, dataList, notestext));
     } else {
-      dataPenjualan.addAll(dataPenjualanbox);
+      for (var i = 0; i < dataPenjualanbox.length; i++) {
+        dataPenjualan.add(dataPenjualanbox[i]);
+      }
       dataPenjualan.add(ReportPenjualanModel('pending',noorder,"penjualan" , date, time, dataList, notestext));
     }
     await boxreportpenjualan.put("$salesid|$cust",dataPenjualan);
   }
 
   saveOrderToApi(String salesid,String custid, String notestext, String orderdate, String noorder) async {
+      print("saveOrderToApi");
       var idx = listAddress.indexWhere((element) => element.address == choosedAddress.value);
       List<Map<String, dynamic>> _data = [];
       for (var i = 0; i < cartDetailList.length; i++) {
@@ -432,7 +440,6 @@ class PenjualanController extends GetxController
           }
         );
       }
-      late Box boxpostpenjualan;
       if(!Hive.isBoxOpen('penjualanReportpostdata')){
         boxpostpenjualan =  await Hive.openBox<List<PenjualanPostModel>>('penjualanReportpostdata');
       }
@@ -449,62 +456,46 @@ class PenjualanController extends GetxController
   }
 
   Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ) async {
-  late Box boxpostpenjualan;
-  late Box boxreportpenjualan;
-  if(!Hive.isBoxOpen('penjualanReportpostdata')){
-    boxpostpenjualan =  await Hive.openBox<List<PenjualanPostModel>>('penjualanReportpostdata');
-  }
-  if(!Hive.isBoxOpen('penjualanReport')){
-     boxreportpenjualan = await Hive.openBox<List<ReportPenjualanModel>>('penjualanReport');
-  }
-  String key = "$salesid|$custid";
-  String noorder = data[0]['extDocId'];
-  List<ReportPenjualanModel> _datareportpenjualan = await boxreportpenjualan.get(key);
-  var idx = _datareportpenjualan.indexWhere((element) => element.id == noorder);
-  final url = Uri.parse('https://mitra.tirtakencana.com/tangki-air-jerapah-dev/api/sales-orders/store');
-  final request = http.MultipartRequest('POST', url);
-    for (var i = 0; i < data.length; i++) {
-      request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
-      request.fields['data[$i][orderDate]'] = data[i]['orderDate'];
-      request.fields['data[$i][customerNo]'] = data[i]['customerNo'];
-      request.fields['data[$i][lineNo]'] = data[i]['lineNo'];
-      request.fields['data[$i][itemNo]'] = data[i]['itemNo'];
-      request.fields['data[$i][qty]'] = data[i]['qty'];
-      request.fields['data[$i][note]'] = data[i]['note'];
-      request.fields['data[$i][shipTo]'] = data[i]['shipTo'];
-      request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
-    }try {
-      final response = await request.send();
-      final responseString = await response.stream.bytesToString();
+    String key = "$salesid|$custid";
+    String noorder = data[0]['extDocId'];
+    var _datareportpenjualan = await boxreportpenjualan.get(key);
+    var idx = _datareportpenjualan!.indexWhere((element) => element.id == noorder);
+    final url = Uri.parse('https://mitra.tirtakencana.com/tangki-air-jerapah-dev/api/sales-orders/store');
+    final request = http.MultipartRequest('POST', url);
+      for (var i = 0; i < data.length; i++) {
+        request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
+        request.fields['data[$i][orderDate]'] = data[i]['orderDate'];
+        request.fields['data[$i][customerNo]'] = data[i]['customerNo'];
+        request.fields['data[$i][lineNo]'] = data[i]['lineNo'];
+        request.fields['data[$i][itemNo]'] = data[i]['itemNo'];
+        request.fields['data[$i][qty]'] = data[i]['qty'];
+        request.fields['data[$i][note]'] = data[i]['note'];
+        request.fields['data[$i][shipTo]'] = data[i]['shipTo'];
+        request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
+      }try {
+        final response = await request.send();
+        final responseString = await response.stream.bytesToString();
 
-      if (response.statusCode == 200) {
-        _datareportpenjualan[idx].condition = "success";
-        await boxpostpenjualan.delete(key);
-        await boxreportpenjualan.delete(key);
-        await boxreportpenjualan.put(key,_datareportpenjualan);
-
-        print('Form data posted successfully');
-        print('Response: $responseString');
-      } else {
-        _datareportpenjualan[idx].condition = "error";
-        await boxreportpenjualan.delete(key);
-        await boxreportpenjualan.put(key,_datareportpenjualan);
-        print('Failed to post form data: ${response.statusCode}');
-        print('Response: $responseString');
-      }
-    } on SocketException {
-        _datareportpenjualan[idx].condition = "pending";
-        await boxreportpenjualan.delete(key);
-        await boxreportpenjualan.put(key,_datareportpenjualan);
-        print('No internet connection');
-    } catch (e) {
-        _datareportpenjualan[idx].condition = "pending";
-        await boxreportpenjualan.delete(key);
-        await boxreportpenjualan.put(key,_datareportpenjualan);
-        print('An error occurred: $e');
-    }
-  
-}
+        if (response.statusCode == 200) {
+          _datareportpenjualan[idx].condition = "success";
+          await boxpostpenjualan.delete(key);
+          await boxreportpenjualan.delete(key);
+          await boxreportpenjualan.put(key,_datareportpenjualan);
+        } else {
+          _datareportpenjualan[idx].condition = "error";
+          await boxreportpenjualan.delete(key);
+          await boxreportpenjualan.put(key,_datareportpenjualan);
+        }
+      } on SocketException {
+          _datareportpenjualan[idx].condition = "pending";
+          await boxreportpenjualan.delete(key);
+          await boxreportpenjualan.put(key,_datareportpenjualan);
+      } catch (e) {
+          _datareportpenjualan[idx].condition = "pending";
+          await boxreportpenjualan.delete(key);
+          await boxreportpenjualan.put(key,_datareportpenjualan);
+      } 
+  }
 
   getParameterData(String type) async {
     //SalesID;CustID;LocCheckIn

@@ -1,8 +1,14 @@
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 
+import '../models/customer.dart';
+import '../models/penjualanpostmodel.dart';
 import '../models/reportpembayaranmodel.dart';
 import '../models/reportpenjualanmodel.dart';
+import '../models/shiptoaddress.dart';
+import '../models/vendor.dart';
+import '../tools/utils.dart';
 
 class LaporanController extends GetxController {
   RxString choosedReport = "".obs;
@@ -21,8 +27,67 @@ class LaporanController extends GetxController {
     'Acura Sb 120 Sonoma Oak',
     'AVIAN Cling Zinc Chromate 901 - 1 KG'
   ];
+  late Box<Customer> customerBox; 
+  late Box boxreportpenjualan;
 
-  getReportList() {
+   getBox() async {
+    try {
+      customerBox = await Hive.openBox<Customer>('customerBox');
+      boxreportpenjualan = await Hive.openBox('penjualanReport');
+      print("try 1");
+    } catch (e) {
+      customerBox = await Hive.openBox('customerBox');
+      // boxreportpenjualan = await Hive.openBox('penjualanReport');
+      print("catch");
+    }
+  }
+  
+  getParameterData(String type) async {
+    //SalesID;CustID;LocCheckIn
+    String parameter = await Utils().readParameter();
+    if (parameter != "") {
+      var arrParameter = parameter.split(';');
+      for (int i = 0; i < arrParameter.length; i++) {
+        if (i == 0 && type == "sales") {
+          return arrParameter[i];
+        } else if (i == 1 && type == "cust") {
+          return arrParameter[i];
+        } else {
+          return arrParameter[2];
+        }
+      }
+    }
+  }
+
+  getReportList() async {
+    await getBox();
+    String salesid = await getParameterData("sales");
+    String cust = await getParameterData("cust");
+    if(cust != "01B05070012"){
+      cust = "01B05070012";
+    }
+    var dataPenjualanbox = boxreportpenjualan.get("$salesid|$cust");
+    // print(dataPenjualanbox[0].id);
+    if(dataPenjualanbox != null){
+      
+      listReportPenjualan.clear();
+      for (var i = 0; i < dataPenjualanbox.length; i++) {
+        listReportPenjualan.add(dataPenjualanbox[i]);
+      }
+      
+      listReportPenjualanShow.clear();
+      listReportPenjualanShow.addAll(listReportPenjualan);
+
+    } else {
+      listReportPenjualanShow.clear();
+      listReportPenjualan.clear();
+    }
+    // listReportPenjualan.add(data);
+    // listReportPenjualanShow.clear();
+    // listReportPenjualanShow.addAll(listReportPenjualan);
+    // allReportlength.value = listReportPenjualanShow.length + listReportPembayaranshow.length;
+    
+
     // listReportPenjualan.clear();
     // List<CartModel> data = [
     //   CartModel("asc", dummyList[0], 2, "dos", 10000),
@@ -85,6 +150,7 @@ class LaporanController extends GetxController {
         "02-08-2023",
         "14:35",
         payment1));
+    listReportPembayaranshow.clear();
     listReportPembayaranshow.addAll(listReportPembayaran);
     allReportlength.value =
         listReportPenjualanShow.length + listReportPembayaranshow.length;

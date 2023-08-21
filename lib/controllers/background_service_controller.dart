@@ -12,6 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/models/cartdetail.dart';
+import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/servicebox.dart';
@@ -122,6 +124,8 @@ class Backgroundservicecontroller {
     Hive.registerAdapter(VendorAdapter());
     Hive.registerAdapter(ReportPenjualanModelAdapter());
     Hive.registerAdapter(PenjualanPostModelAdapter());
+    Hive.registerAdapter(CartDetailAdapter());
+    Hive.registerAdapter(CartModelAdapter());
   }
 
   initializeNotifConfiguration() async {

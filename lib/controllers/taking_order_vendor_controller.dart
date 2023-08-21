@@ -140,11 +140,8 @@ class TakingOrderVendorController extends GetxController
   }
 
   checkout() async {
-    var data =  await _penjualanController.checkout(_laporanController.listReportPenjualan.isEmpty ? 0 : _laporanController.listReportPenjualan.length);
-    _laporanController.listReportPenjualan.add(data);
-    _laporanController.listReportPenjualanShow.clear();
-    _laporanController.listReportPenjualanShow.addAll(_laporanController.listReportPenjualan);
-    _laporanController.allReportlength.value = _laporanController.listReportPenjualanShow.length + _laporanController.listReportPembayaranshow.length;
+    await _penjualanController.checkout();
+    _laporanController.getReportList();
     notes.value.clear();
     cartDetailList.clear();
     cartList.clear();
