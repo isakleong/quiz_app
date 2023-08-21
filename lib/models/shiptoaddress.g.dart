@@ -21,13 +21,15 @@ class ShipToAddressAdapter extends TypeAdapter<ShipToAddress> {
       name: fields[1] as String,
       address: fields[2] as String,
       county: fields[3] as String,
+      PostCode: fields[4] as String,
+      City: fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, ShipToAddress obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.code)
       ..writeByte(1)
@@ -35,7 +37,11 @@ class ShipToAddressAdapter extends TypeAdapter<ShipToAddress> {
       ..writeByte(2)
       ..write(obj.address)
       ..writeByte(3)
-      ..write(obj.county);
+      ..write(obj.county)
+      ..writeByte(4)
+      ..write(obj.PostCode)
+      ..writeByte(5)
+      ..write(obj.City);
   }
 
   @override
@@ -59,6 +65,8 @@ ShipToAddress _$ShipToAddressFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       address: json['address'] as String,
       county: json['county'] as String,
+      PostCode: json['PostCode'] as String,
+      City: json['City'] as String,
     );
 
 Map<String, dynamic> _$ShipToAddressToJson(ShipToAddress instance) =>
@@ -67,4 +75,6 @@ Map<String, dynamic> _$ShipToAddressToJson(ShipToAddress instance) =>
       'name': instance.name,
       'address': instance.address,
       'county': instance.county,
+      'PostCode': instance.PostCode,
+      'City': instance.City,
     };

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/itemlistpenjualan.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../widgets/textview.dart';
 
 class ItemReportPenjualan extends StatelessWidget {
@@ -53,10 +53,22 @@ class ItemReportPenjualan extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextView(
-                          text: data.id,
-                          headings: 'H4',
-                          fontSize: 14,
+                        Row(
+                          children: [
+                            TextView(
+                              text: data.id,
+                              headings: 'H4',
+                              fontSize: 14,
+                            ),
+                            if(data.condition != 'success')
+                            SizedBox(width: 5.sp,),
+                            if(data.condition != 'success')
+                           ChipsItem(
+                                satuan: data.condition,
+                                color: data.condition == 'pending' ? Colors.amber : Colors.red,
+                                fontSize: 12,
+                              )
+                          ],
                         ),
                         data.notes == ""
                             ? Container()

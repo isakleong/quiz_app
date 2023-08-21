@@ -13,6 +13,7 @@ import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
+import '../models/cartdetail.dart';
 import '../models/tarikbarangmodel.dart';
 
 class TakingOrderVendorController extends GetxController

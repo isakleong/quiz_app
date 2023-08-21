@@ -13,12 +13,14 @@ import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/models/customer.dart';
+import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/servicebox.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import '../models/module.dart';
+import '../models/penjualanpostmodel.dart';
 import '../models/quiz.dart';
 import '../tools/service.dart';
 import '../tools/utils.dart';
@@ -118,6 +120,8 @@ class Backgroundservicecontroller {
     Hive.registerAdapter(CustomerAdapter());
     Hive.registerAdapter(ShipToAddressAdapter());
     Hive.registerAdapter(VendorAdapter());
+    Hive.registerAdapter(ReportPenjualanModelAdapter());
+    Hive.registerAdapter(PenjualanPostModelAdapter());
   }
 
   initializeNotifConfiguration() async {
