@@ -79,6 +79,7 @@ void onStart(ServiceInstance service) async {
 
   Timer.periodic(const Duration(minutes: 5), (timer) async {
     await Backgroundservicecontroller().retrySubmitQuiz();
+    
 
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {
@@ -112,6 +113,7 @@ void onStart(ServiceInstance service) async {
 }
 
 class Backgroundservicecontroller {
+  
   Future hiveInitializer() async {
     Directory directory =
         await path_provider.getApplicationDocumentsDirectory();

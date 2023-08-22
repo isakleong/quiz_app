@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 
 import '../models/customer.dart';
@@ -13,24 +14,14 @@ import '../tools/utils.dart';
 class LaporanController extends GetxController {
   RxString choosedReport = "".obs;
   List<ReportPenjualanModel> listReportPenjualan = <ReportPenjualanModel>[];
-  RxList<ReportPembayaranModel> listReportPembayaranshow =
-      <ReportPembayaranModel>[].obs;
-  RxList<ReportPenjualanModel> listReportPenjualanShow =
-      <ReportPenjualanModel>[].obs;
+  RxList<ReportPembayaranModel> listReportPembayaranshow = <ReportPembayaranModel>[].obs;
+  RxList<ReportPenjualanModel> listReportPenjualanShow = <ReportPenjualanModel>[].obs;
   List<ReportPembayaranModel> listReportPembayaran = <ReportPembayaranModel>[];
   RxInt allReportlength = 0.obs;
-  var dummyList = [
-    'Aries Bling Emulsion SW - 18 KG',
-    'ABSOLUTE Roof 30 - 2.5 LT',
-    'AVIAN Cling Synthetic SWM - 3.4 LT',
-    'AVIAN Cling Synthetic 11 - 17 LT',
-    'Acura Sb 120 Sonoma Oak',
-    'AVIAN Cling Zinc Chromate 901 - 1 KG'
-  ];
   late Box<Customer> customerBox; 
   late Box boxreportpenjualan;
 
-   getBox() async {
+  getBox() async {
     try {
       customerBox = await Hive.openBox<Customer>('customerBox');
       boxreportpenjualan = await Hive.openBox('penjualanReport');
@@ -81,6 +72,12 @@ class LaporanController extends GetxController {
     } else {
       listReportPenjualanShow.clear();
       listReportPenjualan.clear();
+    }
+
+    
+    for (var i = 0; i < listReportPenjualanShow.length; i++) {
+      print("show ${listReportPenjualanShow[i].id} ${listReportPenjualanShow[i].condition}");
+      print("list ${listReportPenjualan[i].id} ${listReportPenjualan[i].condition}");
     }
     // listReportPenjualan.add(data);
     // listReportPenjualanShow.clear();
@@ -157,7 +154,7 @@ class LaporanController extends GetxController {
   }
 
   filteReport() async {
-    await getReportList();
+    // await getReportList();
     if (choosedReport.value.contains("Semua")) {
       listReportPenjualanShow.value.clear();
       listReportPenjualanShow.value.addAll(listReportPenjualan);

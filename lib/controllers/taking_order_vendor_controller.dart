@@ -21,8 +21,7 @@ class TakingOrderVendorController extends GetxController
   final PembayaranController _pembayaranController =
       Get.put(PembayaranController());
   final LaporanController _laporanController = Get.put(LaporanController());
-  final PenjualanController _penjualanController =
-      Get.put(PenjualanController());
+  final PenjualanController _penjualanController = Get.put(PenjualanController());
 
   final ReturController _returController = Get.put(ReturController());
   late AnimationController animationController;

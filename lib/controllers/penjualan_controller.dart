@@ -47,23 +47,21 @@ class PenjualanController extends GetxController
   late Box<List<Vendor>> vendorBox; 
   late Box<List<ShipToAddress>> listaddressbox; 
   late Box<Customer> customerBox; 
-  late Box<List<PenjualanPostModel>> boxpostpenjualan;
+  late Box boxpostpenjualan;
   late Box boxreportpenjualan;
   final keycheckout = GlobalKey();
-  final LaporanController _laporanController = Get.find();
 
   getBox() async {
     try {
       vendorBox = await Hive.openBox<List<Vendor>>('vendorBox');
       listaddressbox = await Hive.openBox<List<ShipToAddress>>('shiptoBox');
       customerBox = await Hive.openBox<Customer>('customerBox');
-      boxpostpenjualan =  await Hive.openBox<List<PenjualanPostModel>>('penjualanReportpostdata');
+      boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
       boxreportpenjualan = await Hive.openBox('penjualanReport');
     } catch (e) {
       vendorBox = await Hive.openBox('vendorBox');
       listaddressbox = await Hive.openBox('shiptoBox');
       customerBox = await Hive.openBox('customerBox');
-      boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
     }
   }
 
@@ -378,6 +376,17 @@ class PenjualanController extends GetxController
         child: DialogProdukSerupa()));
   }
 
+  callcontroller(){
+    final isControllerRegistered = GetInstance().isRegistered<LaporanController>();
+    if(!isControllerRegistered){
+      final LaporanController _controller =  Get.put(LaporanController());
+      return _controller;
+    } else {
+      final LaporanController _controller = Get.find();
+      return _controller;
+    }
+  }
+
   checkout() async {
     await getBox();
     String salesid = await getParameterData("sales");
@@ -404,9 +413,9 @@ class PenjualanController extends GetxController
     String time = DateFormat('HH:mm').format(now);
     List<CartDetail> listcopy = [];
     listcopy.addAll(cartDetailList);
-    saveOrderToReport(noorder, date, time,  notes.value.text, listcopy,salesid,cust);
+    await saveOrderToReport(noorder, date, time,  notes.value.text, listcopy,salesid,cust);
     saveOrderToApi(salesid, cust, notes.value.text, date, noorder);
-    return ReportPenjualanModel('pending',noorder,"penjualan" , date, time, listcopy, notes.value.text);
+    //return ReportPenjualanModel('pending',noorder,"penjualan" , date, time, listcopy, notes.value.text);
   }
 
   saveOrderToReport(String noorder,String date, String time, String notestext , List<CartDetail> dataList, String salesid, String cust) async {
@@ -442,10 +451,7 @@ class PenjualanController extends GetxController
           }
         );
       }
-      if(!Hive.isBoxOpen('penjualanReportpostdata')){
-        boxpostpenjualan =  await Hive.openBox<List<PenjualanPostModel>>('penjualanReportpostdata');
-      }
-      List<PenjualanPostModel>? listpostbox = await boxpostpenjualan.get("$salesid|$custid");
+      var listpostbox = await boxpostpenjualan.get("$salesid|$custid");
       List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
       if (listpostbox == null){
           listpost.add(PenjualanPostModel(_data));
@@ -460,6 +466,7 @@ class PenjualanController extends GetxController
   Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ) async {
     String key = "$salesid|$custid";
     String noorder = data[0]['extDocId'];
+    LaporanController controllerLaporan = callcontroller();
     var _datareportpenjualan = await boxreportpenjualan.get(key);
     var idx = _datareportpenjualan!.indexWhere((element) => element.id == noorder);
     final url = Uri.parse('https://mitra.tirtakencana.com/tangki-air-jerapah-dev/api/sales-orders/store');
@@ -483,6 +490,8 @@ class PenjualanController extends GetxController
           await boxpostpenjualan.delete(key);
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
+          print(responseString);
+
         } else {
           _datareportpenjualan[idx].condition = "error";
           await boxreportpenjualan.delete(key);
@@ -496,7 +505,9 @@ class PenjualanController extends GetxController
           _datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
-      } 
+      } finally{
+          controllerLaporan.listReportPenjualanShow.refresh();
+      }
   }
 
   getParameterData(String type) async {
