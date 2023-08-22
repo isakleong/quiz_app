@@ -456,7 +456,9 @@ class PenjualanController extends GetxController
       if (listpostbox == null){
           listpost.add(PenjualanPostModel(_data));
       } else {
-        listpost.addAll(listpostbox);
+        for (var i = 0; i < listpostbox.length; i++) {
+          listpost.add(listpostbox[i]);
+        }
         listpost.add(PenjualanPostModel(_data));
       }
       await boxpostpenjualan.put("$salesid|$custid",listpost);
@@ -467,9 +469,17 @@ class PenjualanController extends GetxController
     String key = "$salesid|$custid";
     String noorder = data[0]['extDocId'];
     LaporanController controllerLaporan = callcontroller();
+    List<PenjualanPostModel> listpostbox = await boxpostpenjualan.get("$salesid|$custid");
     var _datareportpenjualan = await boxreportpenjualan.get(key);
     var idx = _datareportpenjualan!.indexWhere((element) => element.id == noorder);
-    final url = Uri.parse('https://mitra.tirtakencana.com/tangki-air-jerapah-dev/api/sales-orders/store');
+    var idxpost = -1;
+    for (var i = 0; i < listpostbox.length; i++) {
+      if(listpostbox[i].dataList[0]['extDocId'] == noorder){
+          idxpost = i;
+          break;
+      }
+    }
+    final url = Uri.parse('${vendorlist[0].baseApiUrl}sales-orders/store');
     final request = http.MultipartRequest('POST', url);
       for (var i = 0; i < data.length; i++) {
         request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
@@ -487,7 +497,11 @@ class PenjualanController extends GetxController
 
         if (response.statusCode == 200) {
           _datareportpenjualan[idx].condition = "success";
+          listpostbox.removeAt(idxpost);
           await boxpostpenjualan.delete(key);
+          if(listpostbox.isNotEmpty) {
+            await boxpostpenjualan.put(key,listpostbox);
+          }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
           print(responseString);
@@ -496,16 +510,19 @@ class PenjualanController extends GetxController
           _datareportpenjualan[idx].condition = "error";
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
+          print(responseString);
         }
       } on SocketException {
           _datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
+          print("socketexception");
       } catch (e) {
           _datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
-      } finally{
+          print(e.toString() + " abnormal ");
+      }  finally{
           controllerLaporan.listReportPenjualanShow.refresh();
       }
   }
