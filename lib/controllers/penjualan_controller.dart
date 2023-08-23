@@ -7,12 +7,14 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/cartdetail.dart';
 import 'package:sfa_tools/models/masteritemvendor.dart';
 import 'package:sfa_tools/models/penjualanpostmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
+import 'package:sfa_tools/screens/splash_screen.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukserupa.dart';
 import 'package:http/http.dart' as http;
@@ -44,24 +46,34 @@ class PenjualanController extends GetxController
   RxList<ShipToAddress> listAddress = <ShipToAddress>[].obs;
   Rx<TextEditingController> notes = TextEditingController().obs;
   //box
-  late Box<List<Vendor>> vendorBox; 
-  late Box<List<ShipToAddress>> listaddressbox; 
-  late Box<Customer> customerBox; 
+  late Box vendorBox; 
+  late Box listaddressbox; 
+  late Box customerBox; 
   late Box boxpostpenjualan;
   late Box boxreportpenjualan;
   final keycheckout = GlobalKey();
+  var idvendor = -1;
+  var globalkeybox = "";
 
   getBox() async {
     try {
-      vendorBox = await Hive.openBox<List<Vendor>>('vendorBox');
-      listaddressbox = await Hive.openBox<List<ShipToAddress>>('shiptoBox');
-      customerBox = await Hive.openBox<Customer>('customerBox');
-      boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
-      boxreportpenjualan = await Hive.openBox('penjualanReport');
-    } catch (e) {
       vendorBox = await Hive.openBox('vendorBox');
       listaddressbox = await Hive.openBox('shiptoBox');
       customerBox = await Hive.openBox('customerBox');
+      boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
+      boxreportpenjualan = await Hive.openBox('penjualanReport');
+    } catch (e) {
+    }
+  }
+
+  closebox() async{
+    try {
+      vendorBox.close();
+      listaddressbox.close();
+      customerBox.close();
+      boxpostpenjualan.close();
+      boxreportpenjualan.close();
+    } catch (e) {
     }
   }
 
@@ -76,27 +88,35 @@ class PenjualanController extends GetxController
     }
     
     //get customer data
+    if(!customerBox.isOpen) await getBox();
     var dataToko = customerBox.get(custid);
     nmtoko.value = dataToko!.name;
 
     //get shippping address data
+    if(!listaddressbox.isOpen) await getBox();
     var addressdata = listaddressbox.get(custid);
     if(addressdata == null || addressdata.isEmpty ){
       listAddress.add(ShipToAddress(code: dataToko.no, name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
     } else {
       listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Pengiriman", address: "Pilih Alamat Pengiriman", county: "", City: "", PostCode: ""));
       listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
-      listAddress.addAll(addressdata);
+      for (var i = 0; i < addressdata.length; i++) {
+        listAddress.add(addressdata[i]);
+      }
     }
 
     //get vendor data
+    if(!vendorBox.isOpen) await getBox();
     var datavendor = vendorBox.get("$salesid|$custid");
     vendorlist.clear();
-    vendorlist.addAll(datavendor!);
-
+    for (var i = 0; i < datavendor.length; i++) {
+      vendorlist.add(datavendor[i]);
+    }
+    SplashscreenController _splashscreenController = callcontroller("splashscreencontroller");
+    idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == _splashscreenController.selectedVendor.value.toLowerCase());
+    globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}";
     //get list product vendor
-    var getVendorItem = await ApiClient().getData(vendorlist[0].baseApiUrl,"/setting/vendor/${vendorlist[0].prefix}");
-    print(getVendorItem);
+    var getVendorItem = await ApiClient().getData(vendorlist[idvendor].baseApiUrl,"/setting/vendor/${vendorlist[idvendor].prefix}");
     var data = MasterItemVendor.fromJson(getVendorItem);
     for (var i = 0; i < data.items.length; i++) {
       listProduct.add(ProductData(data.items[i].code, data.items[i].name, [DetailProductData(data.items[i].uom.name, double.parse(data.items[i].price), data.items[i].uomId)]));
@@ -126,6 +146,8 @@ class PenjualanController extends GetxController
     //   listDropDown.add(DropDownValueModel(
     //       value: listProduct[i].kdProduct, name: listProduct[i].nmProduct));
     // }
+
+    await closebox();
   }
 
   addToCart() {
@@ -376,15 +398,27 @@ class PenjualanController extends GetxController
         child: DialogProdukSerupa()));
   }
 
-  callcontroller(){
-    final isControllerRegistered = GetInstance().isRegistered<LaporanController>();
-    if(!isControllerRegistered){
-      final LaporanController _controller =  Get.put(LaporanController());
-      return _controller;
-    } else {
-      final LaporanController _controller = Get.find();
-      return _controller;
+  callcontroller(String controllername){
+    if(controllername.toLowerCase() == "LaporanController".toLowerCase()){
+      final isControllerRegistered = GetInstance().isRegistered<LaporanController>();
+      if(!isControllerRegistered){
+          final LaporanController _controller =  Get.put(LaporanController());
+          return _controller;
+      } else {
+          final LaporanController _controller = Get.find();
+          return _controller;
+      }
+    } else if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()){
+      final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
+      if(!isControllerRegistered){
+          final SplashscreenController _controller =  Get.put(SplashscreenController());
+          return _controller;
+      } else {
+          final SplashscreenController _controller = Get.find();
+          return _controller;
+      }    
     }
+    
   }
 
   checkout() async {
@@ -394,7 +428,7 @@ class PenjualanController extends GetxController
     if(cust != "01B05070012"){
       cust = "01B05070012";
     }
-    var _datapenjualan = await boxreportpenjualan.get("$salesid|$cust");
+    var _datapenjualan = await boxreportpenjualan.get(globalkeybox);
     String inc = "000";
     var idx = 0;
     if(_datapenjualan != null)
@@ -413,13 +447,17 @@ class PenjualanController extends GetxController
     String time = DateFormat('HH:mm').format(now);
     List<CartDetail> listcopy = [];
     listcopy.addAll(cartDetailList);
+    String alm = choosedAddress.value;
+    print("length cartdetailist ${cartDetailList.length}");
+    await closebox();
     await saveOrderToReport(noorder, date, time,  notes.value.text, listcopy,salesid,cust);
-    saveOrderToApi(salesid, cust, notes.value.text, date, noorder);
+    saveOrderToApi(salesid, cust, notes.value.text, date, noorder,listcopy,alm);
     //return ReportPenjualanModel('pending',noorder,"penjualan" , date, time, listcopy, notes.value.text);
   }
 
   saveOrderToReport(String noorder,String date, String time, String notestext , List<CartDetail> dataList, String salesid, String cust) async {
-    var dataPenjualanbox = await boxreportpenjualan.get("$salesid|$cust");
+    await getBox();
+    var dataPenjualanbox = await boxreportpenjualan.get(globalkeybox);
     List<ReportPenjualanModel> dataPenjualan = <ReportPenjualanModel>[];
     if (dataPenjualanbox == null){
       dataPenjualan.add(ReportPenjualanModel('pending',noorder,"penjualan" , date, time, dataList, notestext));
@@ -429,29 +467,39 @@ class PenjualanController extends GetxController
       }
       dataPenjualan.add(ReportPenjualanModel('pending',noorder,"penjualan" , date, time, dataList, notestext));
     }
-    await boxreportpenjualan.put("$salesid|$cust",dataPenjualan);
+    await boxreportpenjualan.put(globalkeybox,dataPenjualan);
+    await closebox();
   }
 
-  saveOrderToApi(String salesid,String custid, String notestext, String orderdate, String noorder) async {
+  saveOrderToApi(String salesid,String custid, String notestext, String orderdate, String noorder, List<CartDetail> _listdetail, String choosedAddressdata) async {
+      await getBox();
       print("saveOrderToApi");
-      var idx = listAddress.indexWhere((element) => element.address == choosedAddress.value);
+      print(choosedAddress.value);
+      print(listAddress.length);
+      for (var i = 0; i < listAddress.length; i++) {
+        print(listAddress[i].address);
+      }
+      var idx = listAddress.indexWhere((element) => element.address == choosedAddressdata);
       List<Map<String, dynamic>> _data = [];
-      for (var i = 0; i < cartDetailList.length; i++) {
+      print("-------------------------");
+      print(_listdetail.length);
+      print("-------------------------");
+      for (var i = 0; i < _listdetail.length; i++) {
         _data.add(
           {
             'extDocId' : noorder,
             'orderDate' : orderdate,
             'customerNo' : custid,
             'lineNo' : (i+1).toString(),
-            'itemNo' : cartDetailList[i].kdProduct,
-            'qty' : cartDetailList[i].itemOrder[0].Qty.toString(),
+            'itemNo' : _listdetail[i].kdProduct,
+            'qty' : _listdetail[i].itemOrder[0].Qty.toString(),
             'note' : notestext,
             'shipTo' : listAddress[idx].code,
             'salesPersonCode' : salesid
           }
         );
       }
-      var listpostbox = await boxpostpenjualan.get("$salesid|$custid");
+      var listpostbox = await boxpostpenjualan.get(globalkeybox);
       List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
       if (listpostbox == null){
           listpost.add(PenjualanPostModel(_data));
@@ -461,25 +509,26 @@ class PenjualanController extends GetxController
         }
         listpost.add(PenjualanPostModel(_data));
       }
-      await boxpostpenjualan.put("$salesid|$custid",listpost);
-      await postDataOrder(_data,salesid,custid);
+      await boxpostpenjualan.put(globalkeybox,listpost);
+      await closebox();
+      await postDataOrder(_data,salesid,custid,listpost);
   }
 
-  Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ) async {
-    String key = "$salesid|$custid";
+  Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,List<PenjualanPostModel> listpostdata) async {
+    await getBox();
+    print(data);
     String noorder = data[0]['extDocId'];
-    LaporanController controllerLaporan = callcontroller();
-    List<PenjualanPostModel> listpostbox = await boxpostpenjualan.get("$salesid|$custid");
-    var _datareportpenjualan = await boxreportpenjualan.get(key);
+    LaporanController controllerLaporan = callcontroller("laporancontroller");
+    var _datareportpenjualan = await boxreportpenjualan.get(globalkeybox);
     var idx = _datareportpenjualan!.indexWhere((element) => element.id == noorder);
     var idxpost = -1;
-    for (var i = 0; i < listpostbox.length; i++) {
-      if(listpostbox[i].dataList[0]['extDocId'] == noorder){
+    for (var i = 0; i < listpostdata.length; i++) {
+      if(listpostdata[i].dataList[0]['extDocId'] == noorder){
           idxpost = i;
           break;
       }
     }
-    final url = Uri.parse('${vendorlist[0].baseApiUrl}sales-orders/store');
+    final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}sales-orders/store');
     final request = http.MultipartRequest('POST', url);
       for (var i = 0; i < data.length; i++) {
         request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
@@ -497,33 +546,34 @@ class PenjualanController extends GetxController
 
         if (response.statusCode == 200) {
           _datareportpenjualan[idx].condition = "success";
-          listpostbox.removeAt(idxpost);
-          await boxpostpenjualan.delete(key);
-          if(listpostbox.isNotEmpty) {
-            await boxpostpenjualan.put(key,listpostbox);
+          listpostdata.removeAt(idxpost);
+          await boxpostpenjualan.delete(globalkeybox);
+          if(listpostdata.isNotEmpty) {
+            await boxpostpenjualan.put(globalkeybox,listpostdata);
           }
-          await boxreportpenjualan.delete(key);
-          await boxreportpenjualan.put(key,_datareportpenjualan);
+          await boxreportpenjualan.delete(globalkeybox);
+          await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
           print(responseString);
 
         } else {
-          _datareportpenjualan[idx].condition = "error";
-          await boxreportpenjualan.delete(key);
-          await boxreportpenjualan.put(key,_datareportpenjualan);
+          _datareportpenjualan[idx].condition = "gagal";
+          await boxreportpenjualan.delete(globalkeybox);
+          await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
           print(responseString);
         }
       } on SocketException {
           _datareportpenjualan[idx].condition = "pending";
-          await boxreportpenjualan.delete(key);
-          await boxreportpenjualan.put(key,_datareportpenjualan);
+          await boxreportpenjualan.delete(globalkeybox);
+          await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
           print("socketexception");
       } catch (e) {
           _datareportpenjualan[idx].condition = "pending";
-          await boxreportpenjualan.delete(key);
-          await boxreportpenjualan.put(key,_datareportpenjualan);
+          await boxreportpenjualan.delete(globalkeybox);
+          await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
           print(e.toString() + " abnormal ");
       }  finally{
-          controllerLaporan.listReportPenjualanShow.refresh();
+          await closebox();
+          controllerLaporan.getReportList();
       }
   }
 

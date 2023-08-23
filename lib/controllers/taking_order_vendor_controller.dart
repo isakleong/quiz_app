@@ -16,13 +16,10 @@ import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart
 import '../models/cartdetail.dart';
 import '../models/tarikbarangmodel.dart';
 
-class TakingOrderVendorController extends GetxController
-    with GetTickerProviderStateMixin {
-  final PembayaranController _pembayaranController =
-      Get.put(PembayaranController());
+class TakingOrderVendorController extends GetxController with GetTickerProviderStateMixin {
+  final PembayaranController _pembayaranController = Get.put(PembayaranController());
   final LaporanController _laporanController = Get.put(LaporanController());
   final PenjualanController _penjualanController = Get.put(PenjualanController());
-
   final ReturController _returController = Get.put(ReturController());
   late AnimationController animationController;
   late Animation<Offset> slideAnimation;
@@ -32,19 +29,9 @@ class TakingOrderVendorController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    )..forward();
-    slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -0.2),
-      end: const Offset(0, 0),
-    ).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeInOut,
-    ));
-    _pembayaranController.controller =
-        TabController(vsync: this, length: 3, initialIndex: 0);
+    animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..forward();
+    slideAnimation = Tween<Offset>(begin: const Offset(0, -0.2),end: const Offset(0, 0),).animate(CurvedAnimation(parent: animationController,curve: Curves.easeInOut,));
+    _pembayaranController.controller = TabController(vsync: this, length: 3, initialIndex: 0);
     _penjualanController.getListItem();
     _laporanController.getReportList();
   }
@@ -141,6 +128,7 @@ class TakingOrderVendorController extends GetxController
   checkout() async {
     await _penjualanController.checkout();
     _laporanController.getReportList();
+    selectedValue.value = "";
     notes.value.clear();
     cartDetailList.clear();
     cartList.clear();

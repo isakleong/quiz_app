@@ -1,13 +1,10 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:sfa_tools/controllers/penjualan_controller.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
-
 import '../models/customer.dart';
-import '../models/penjualanpostmodel.dart';
 import '../models/reportpembayaranmodel.dart';
 import '../models/reportpenjualanmodel.dart';
-import '../models/shiptoaddress.dart';
 import '../models/vendor.dart';
 import '../tools/utils.dart';
 
@@ -18,21 +15,30 @@ class LaporanController extends GetxController {
   RxList<ReportPenjualanModel> listReportPenjualanShow = <ReportPenjualanModel>[].obs;
   List<ReportPembayaranModel> listReportPembayaran = <ReportPembayaranModel>[];
   RxInt allReportlength = 0.obs;
-  late Box<Customer> customerBox; 
   late Box boxreportpenjualan;
+  late Box vendorBox; 
+  List<Vendor> vendorlist = <Vendor>[];
+  var idvendor = -1;
 
   getBox() async {
     try {
-      customerBox = await Hive.openBox<Customer>('customerBox');
       boxreportpenjualan = await Hive.openBox('penjualanReport');
+      vendorBox = await Hive.openBox('vendorBox');
       print("try 1");
     } catch (e) {
-      customerBox = await Hive.openBox('customerBox');
-      // boxreportpenjualan = await Hive.openBox('penjualanReport');
       print("catch");
     }
   }
   
+  closebox(){
+    try {
+      vendorBox.close();
+      boxreportpenjualan.close();
+    } catch (e) {
+      
+    }
+  }
+
   getParameterData(String type) async {
     //SalesID;CustID;LocCheckIn
     String parameter = await Utils().readParameter();
@@ -57,28 +63,28 @@ class LaporanController extends GetxController {
     if(cust != "01B05070012"){
       cust = "01B05070012";
     }
-    var dataPenjualanbox = boxreportpenjualan.get("$salesid|$cust");
-    // print(dataPenjualanbox[0].id);
+    var datavendor = vendorBox.get("$salesid|$cust");
+    vendorlist.clear();
+    for (var i = 0; i < datavendor.length; i++) {
+        vendorlist.add(datavendor[i]);
+    }
+    SplashscreenController _splashscreenController = callcontroller("splashscreencontroller");
+    idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == _splashscreenController.selectedVendor.value.toLowerCase());
+    var dataPenjualanbox = boxreportpenjualan.get("$salesid|$cust|${vendorlist[idvendor].prefix}");
     if(dataPenjualanbox != null){
-      
       listReportPenjualan.clear();
       for (var i = 0; i < dataPenjualanbox.length; i++) {
         listReportPenjualan.add(dataPenjualanbox[i]);
       }
-      
-      listReportPenjualanShow.clear();
-      listReportPenjualanShow.addAll(listReportPenjualan);
-
     } else {
       listReportPenjualanShow.clear();
       listReportPenjualan.clear();
     }
 
-    
-    for (var i = 0; i < listReportPenjualanShow.length; i++) {
-      print("show ${listReportPenjualanShow[i].id} ${listReportPenjualanShow[i].condition}");
-      print("list ${listReportPenjualan[i].id} ${listReportPenjualan[i].condition}");
+    for (var i = 0; i < listReportPenjualan.length; i++) {
+      print(listReportPenjualan[i].id + " " + listReportPenjualan[i].condition);
     }
+
     // listReportPenjualan.add(data);
     // listReportPenjualanShow.clear();
     // listReportPenjualanShow.addAll(listReportPenjualan);
@@ -141,21 +147,40 @@ class LaporanController extends GetxController {
       PaymentData("cek", "uvusadeawdssa", "MANDIRI", "02-08-2023", 750000),
       PaymentData("cn", "", "", "", 250000),
     ];
-    listReportPembayaran.add(ReportPembayaranModel(
-        "GP-00AC1A0103-2308021435-001",
-        1150000.0,
-        "02-08-2023",
-        "14:35",
-        payment1));
-    listReportPembayaranshow.clear();
-    listReportPembayaranshow.addAll(listReportPembayaran);
-    allReportlength.value =
-        listReportPenjualanShow.length + listReportPembayaranshow.length;
+    listReportPembayaran.add(ReportPembayaranModel("GP-00AC1A0103-2308021435-001",1150000.0,"02-08-2023","14:35",payment1));
+     if (choosedReport.value.contains("Semua") || choosedReport.value == "") {
+      print("semua");
+      listReportPenjualanShow.value.clear();
+      listReportPenjualanShow.value.addAll(listReportPenjualan);
+      listReportPembayaranshow.clear();
+      listReportPembayaranshow.value.addAll(listReportPembayaran);
+      allReportlength.value = listReportPenjualanShow.length + listReportPembayaranshow.length;
+    } 
+    else if (choosedReport.value == "Transaksi Penjualan") {
+      listReportPenjualanShow.value.clear();
+      listReportPembayaranshow.clear();
+      listReportPenjualanShow.value.addAll(listReportPenjualan);
+      allReportlength.value = listReportPenjualanShow.length ;
+    } 
+    else if (choosedReport.value == "Transaksi Pembayaran") {
+      listReportPenjualanShow.value.clear();
+      listReportPembayaranshow.clear();
+      listReportPembayaranshow.value.addAll(listReportPembayaran);
+      allReportlength.value = listReportPembayaranshow.length;
+    } 
+    else if (choosedReport.value == "Transaksi Retur") {
+      listReportPenjualanShow.clear();
+      listReportPembayaranshow.clear();
+      allReportlength.value = 0;
+    }
+    await closebox();
+    listReportPenjualanShow.refresh();
+    listReportPembayaranshow.refresh();
   }
 
   filteReport() async {
-    // await getReportList();
-    if (choosedReport.value.contains("Semua")) {
+    await getReportList();
+    if (choosedReport.value.contains("Semua") || choosedReport.value == "") {
       listReportPenjualanShow.value.clear();
       listReportPenjualanShow.value.addAll(listReportPenjualan);
       listReportPembayaranshow.clear();
@@ -179,5 +204,22 @@ class LaporanController extends GetxController {
       listReportPembayaranshow.clear();
       allReportlength.value = 0;
     }
+    listReportPenjualanShow.refresh();
+    listReportPembayaranshow.refresh();
   }
+
+  callcontroller(String controllername){
+     if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()){
+      final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
+      if(!isControllerRegistered){
+          final SplashscreenController _controller =  Get.put(SplashscreenController());
+          return _controller;
+      } else {
+          final SplashscreenController _controller = Get.find();
+          return _controller;
+      }    
+    }
+    
+  }
+
 }

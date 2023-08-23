@@ -111,6 +111,39 @@ void onStart(ServiceInstance service) async {
       },
     );
   });
+
+  Timer.periodic(const Duration(minutes: 1), (timer) async {
+    await Backgroundservicecontroller().getPendingData();
+
+    if (service is AndroidServiceInstance) {
+      if (await service.isForegroundService()) {
+        service.setForegroundNotificationInfo(
+          title: "SFA Tools Service",   
+          content: "pending data Updated at ${DateTime.now()}",
+        );
+      }
+    }
+
+    final deviceInfo = DeviceInfoPlugin();
+    String? device;
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      device = androidInfo.model;
+    }
+
+    if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      device = iosInfo.model;
+    }
+
+    service.invoke(
+      'update',
+      {
+        "current_date": DateTime.now().toIso8601String(),
+        "device": device,
+      },
+    );
+  });
 }
 
 class Backgroundservicecontroller {
@@ -336,32 +369,74 @@ class Backgroundservicecontroller {
     }
   }
 
-  sendVendorData() async {
+  getPendingData() async {
+    print("trying to get pending data");
     await getBox();
-    String salesid = await getParameterData("sales");
-    String cust = await getParameterData("cust");
-    if(cust != "01B05070012"){
-      cust = "01B05070012";
+    print("finish get box");
+    List<dynamic> keys = await getListKey();
+    print("finish get key");
+    print(keys);
+    await closebox();
+    if(keys.isNotEmpty){
+    print("key not empty");
+      for (var m = 0; m < keys.length; m++) {
+        await sendPendingData(keys[m]);
+      }
     }
-    var listpostbox = await boxpostpenjualan.get("$salesid|$cust");
+  }
+
+  sendPendingData(String keybox) async {
+    print("send pending data for key $keybox");
+    await getBox();
+    List<String> parts = keybox.split('|');
+    String salesid = parts[0].trim();
+    String cust = parts[1].trim();
+    String vendorprefix = parts[2].trim();
+    var listpostbox = await boxpostpenjualan.get(keybox);
     List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
     if (listpostbox != null){
       listpost.clear();
       for (var i = 0; i < listpostbox.length; i++) {
         listpost.add(listpostbox[i]);
       }
+      await closebox();
       for (var i = 0; i < listpost.length; i++) {
-        await postDataOrder(listpost[i].dataList,salesid,cust);
+        await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorprefix);
       }
     }
   }
 
+  getListKey() async {
+      List<dynamic> keys = await boxpostpenjualan.keys.toList();
+      return keys;
+  }
+
   getBox() async {
     try {
-      vendorBox = await Hive.openBox('vendorBox');
-      boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
-      boxreportpenjualan = await Hive.openBox('penjualanReport');
+      await hiveInitializer();
+      try {
+        vendorBox = await Hive.openBox('vendorBox');
+        boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
+        boxreportpenjualan = await Hive.openBox('penjualanReport');
+      } catch (e) {
+      }
     } catch (e) {
+      try {
+        vendorBox = await Hive.openBox('vendorBox');
+        boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
+        boxreportpenjualan = await Hive.openBox('penjualanReport');
+      } catch (err) {
+      }
+    }
+  }
+
+  closebox(){
+    try {
+        vendorBox.close();
+        boxpostpenjualan.close();
+        boxreportpenjualan.close();
+    } catch (e) {
+      
     }
   }
 
@@ -431,23 +506,31 @@ class Backgroundservicecontroller {
     return "err";
   }
 
-  Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ) async {
-    String key = "$salesid|$custid";
+  Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,String key,String vendorprefix) async {
+    print("send to api");
+    await getBox();
     String noorder = data[0]['extDocId'];
-    var datavendor = vendorBox.get(key);
+    var datavendor = vendorBox.get("$salesid|$custid");
     vendorlist.clear();
-    vendorlist.addAll(datavendor);
+    for (var i = 0; i < datavendor.length; i++) {
+        vendorlist.add(datavendor[i]);
+    }
+    var idvendor =  vendorlist.indexWhere((element) => element.prefix == vendorprefix);
     var _datareportpenjualan = await boxreportpenjualan.get(key);
-    List<PenjualanPostModel> listpostbox = await boxpostpenjualan.get("$salesid|$custid");
+    var listpostbox = await boxpostpenjualan.get(key);
+    List<PenjualanPostModel> listpost = [];
+    for (var i = 0; i < listpostbox.length; i++) {
+      listpost.add(listpostbox[i]);
+    }
     var idx = _datareportpenjualan!.indexWhere((element) => element.id == noorder);
     var idxpost = -1;
-    for (var i = 0; i < listpostbox.length; i++) {
-      if(listpostbox[i].dataList[0]['extDocId'] == noorder){
+    for (var i = 0; i < listpost.length; i++) {
+      if(listpost[i].dataList[0]['extDocId'] == noorder){
           idxpost = i;
           break;
       }
     }
-    final url = Uri.parse('${vendorlist[0].baseApiUrl}sales-orders/store');
+    final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}sales-orders/store');
     final request = http.MultipartRequest('POST', url);
       for (var i = 0; i < data.length; i++) {
         request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
@@ -459,18 +542,23 @@ class Backgroundservicecontroller {
         request.fields['data[$i][note]'] = data[i]['note'];
         request.fields['data[$i][shipTo]'] = data[i]['shipTo'];
         request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
-      }try {
+      }
+      
+      print(_datareportpenjualan[idx].id);
+      try {
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
 
         if (response.statusCode == 200) {
           _datareportpenjualan[idx].condition = "success";
-          listpostbox.removeAt(idxpost);
+          listpost.removeAt(idxpost);
           await boxpostpenjualan.delete(key);
-          if(listpostbox.isNotEmpty) {
-            await boxpostpenjualan.put(key,listpostbox);
+          if(listpost.isNotEmpty) {
+            print("isi list post ulang");
+            await boxpostpenjualan.put(key,listpost);
           }
           await boxreportpenjualan.delete(key);
+          print("isi ulang data report penjualan");
           await boxreportpenjualan.put(key,_datareportpenjualan);
           print(responseString);
 
@@ -491,5 +579,6 @@ class Backgroundservicecontroller {
           await boxreportpenjualan.put(key,_datareportpenjualan);
           print(e.toString() + " abnormal ");
       } 
+      await closebox();
   }
 }

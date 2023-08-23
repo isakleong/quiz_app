@@ -26,9 +26,7 @@ import 'package:sfa_tools/widgets/textview.dart';
 
 import '../models/vendorinfomodel.dart';
 
-class SplashscreenController extends GetxController
-    with StateMixin
-    implements WidgetsBindingObserver {
+class SplashscreenController extends GetxController with StateMixin implements WidgetsBindingObserver {
   var errorMessage = "".obs;
   var isError = false.obs;
 
@@ -45,6 +43,13 @@ class SplashscreenController extends GetxController
   var salesIdParams = "".obs;
   var customerIdParams = "".obs;
   var isCheckInParams = "".obs;
+
+  RxString selectedVendor = "".obs;
+  late Box vendorBox; 
+  late Box customerBox; 
+  late Box boxpostpenjualan;
+  late Box boxreportpenjualan;
+  late Box shiptobox;
 
   @override
   void onInit() {
@@ -589,14 +594,34 @@ class SplashscreenController extends GetxController
     }
   }
 
+  getBox() async {
+    try {
+      vendorBox = await Hive.openBox('vendorBox');
+      shiptobox = await Hive.openBox('shiptoBox');
+      customerBox = await Hive.openBox('customerBox');
+      boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
+      boxreportpenjualan = await Hive.openBox('penjualanReport');
+    } catch (e) {
+    }
+  }
+
+  closebox() async{
+    try {
+      vendorBox.close();
+      shiptobox.close();
+      customerBox.close();
+      boxpostpenjualan.close();
+      boxreportpenjualan.close();
+    } catch (e) {
+    }
+  }
+
   getVendor() async { 
+    await getBox();
     if(customerIdParams.value != "01B05070012"){
       customerIdParams.value = "01B05070012";
     }
     var result = await ApiClient().getData(AppConfig.baseUrlVendor,"/tangki-air-jerapah-dev/api/setting/customer/${customerIdParams.value}");
-    print("**************************************");
-    print(result);
-    print("**************************************");
     var data = VendorInfo.fromJson(result);
     if(data.availVendors.isNotEmpty){
       int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
@@ -610,17 +635,15 @@ class SplashscreenController extends GetxController
     var moduleBox = await Hive.openBox<Module>('moduleBox');
     await moduleBox.clear();
     await moduleBox.addAll(moduleList);
-    var vendorBox = await Hive.openBox<List<Vendor>>('vendorBox');
     await vendorBox.delete("${salesIdParams.value}|${customerIdParams.value}");
     await vendorBox.put("${salesIdParams.value}|${customerIdParams.value}", data.availVendors);
-    var customerBox = await Hive.openBox<Customer>('customerBox');
     await customerBox.delete(data.customer.no);
     await customerBox.put(data.customer.no,Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no));
-    var shiptoBox = await Hive.openBox<List<ShipToAddress>>('shiptoBox');
-    await shiptoBox.delete(data.customer.no);
+    await shiptobox.delete(data.customer.no);
     if(data.shipToAddresses.isNotEmpty){
-      await shiptoBox.put(data.customer.no,data.shipToAddresses);
+      await shiptobox.put(data.customer.no,data.shipToAddresses);
     }
+    await closebox();
   }
 
   // checkVersion() async {
@@ -829,6 +852,8 @@ class SplashscreenController extends GetxController
     if (moduleid == 'Kuis') {
       Get.toNamed(RouteName.quizDashboard);
     } else {
+      String pattern = "Taking order ";
+      selectedVendor.value = moduleid.substring(pattern.length);
       Get.toNamed(RouteName.takingOrderVendor);
     }
   }
