@@ -447,6 +447,9 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     if (idx != -1) {
       isvalid = true;
     } 
+    if (listAddress.length > 1 && idx == 0){
+      isvalid = false;
+    }
     return isvalid;
   }
 
