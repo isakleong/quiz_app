@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,20 +12,17 @@ import 'package:sfa_tools/models/penjualanpostmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
-import 'package:sfa_tools/screens/splash_screen.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukserupa.dart';
 import 'package:http/http.dart' as http;
 import '../models/cartmodel.dart';
-import '../models/customer.dart';
 import '../models/detailproductdata.dart';
 import '../models/productdata.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 import '../tools/service.dart';
 import '../tools/utils.dart';
 
-class PenjualanController extends GetxController
-    with GetTickerProviderStateMixin {
+class PenjualanController extends GetxController with GetTickerProviderStateMixin {
   RxString selectedValue = "".obs;
   RxList<ProductData> selectedProduct = <ProductData>[].obs;
   RxList<ProductData> listProduct = <ProductData>[].obs;
