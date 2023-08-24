@@ -44,13 +44,14 @@ class LaporanController extends GetxController {
     String parameter = await Utils().readParameter();
     if (parameter != "") {
       var arrParameter = parameter.split(';');
+      print(parameter);
       for (int i = 0; i < arrParameter.length; i++) {
         if (i == 0 && type == "sales") {
-          return arrParameter[i];
+          return arrParameter[0];
         } else if (i == 1 && type == "cust") {
           return arrParameter[i];
-        } else {
-          return arrParameter[2];
+        } else if (type == "") {
+          return arrParameter[i];
         }
       }
     }
@@ -60,9 +61,10 @@ class LaporanController extends GetxController {
     await getBox();
     String salesid = await getParameterData("sales");
     String cust = await getParameterData("cust");
-    if(cust != "01B05070012"){
-      cust = "01B05070012";
-    }
+    // if(cust != "01B05070012"){
+    //   cust = "01B05070012";
+    // }
+    print("$salesid|$cust");
     var datavendor = vendorBox.get("$salesid|$cust");
     vendorlist.clear();
     for (var i = 0; i < datavendor.length; i++) {

@@ -43,7 +43,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
   var salesIdParams = "".obs;
   var customerIdParams = "".obs;
   var isCheckInParams = "".obs;
-
+  
+  //about taking order vendor
   RxString selectedVendor = "".obs;
   late Box vendorBox; 
   late Box customerBox; 
@@ -553,19 +554,15 @@ class SplashscreenController extends GetxController with StateMixin implements W
       String latestVersion = data[0]["Value"];
       appName.value = data[0]["AppName"];
 
-      int currentVersionConverted =
-          Utils().convertVersionNumber(currentVersion);
+      int currentVersionConverted =Utils().convertVersionNumber(currentVersion);
       int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
 
       //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
       bool moduleVersionStatus = true;
-      int cntPendingData =
-          0; //count pending data (if there is pending data, then app should not be updated)
+      int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
 
-      Box retrySubmitQuizBox =
-          await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
-      var isRetrySubmit =
-          retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
+      Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
+      var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
       retrySubmitQuizBox.close();
 
       if (isRetrySubmit != null && isRetrySubmit.value == "true") {
@@ -573,17 +570,14 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
 
       for (int i = 0; i < moduleList.length; i++) {
-        int moduleVersionConverted =
-            Utils().convertVersionNumber(moduleList[i].version);
+        int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
         if (moduleVersionConverted > currentVersionConverted) {
           moduleVersionStatus = false;
           break;
         }
       }
 
-      if (latestVersionConverted > currentVersionConverted &&
-          !moduleVersionStatus &&
-          cntPendingData == 0) {
+      if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
         isNeedUpdate(true);
       }
     } catch (e) {
@@ -618,111 +612,45 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
   getVendor() async { 
     await getBox();
-    if(customerIdParams.value != "01B05070012"){
-      customerIdParams.value = "01B05070012";
-    }
+    // if(customerIdParams.value != "01B05070012"){
+    //   customerIdParams.value = "01B05070012";
+    // }
+    print("getvendor");
     var result = await ApiClient().getData(AppConfig.baseUrlVendor,"/tangki-air-jerapah-dev/api/setting/customer/${customerIdParams.value}");
-    var data = VendorInfo.fromJson(result);
-    if(data.availVendors.isNotEmpty){
-      int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
-      var versi = moduleList[index].version;
-      var order = moduleList[index].orderNumber;
-      for (var i = 0; i < data.availVendors.length; i++) {
-        moduleList.add(Module(moduleID: "Taking order ${data.availVendors[i].name}", version: versi, orderNumber: order));
+    print(result);
+    try {
+      var data = VendorInfo.fromJson(result);
+      if(data.availVendors.isNotEmpty){
+        int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+        var versi = moduleList[index].version;
+        var order = moduleList[index].orderNumber;
+        for (var i = 0; i < data.availVendors.length; i++) {
+          moduleList.add(Module(moduleID: "Taking order ${data.availVendors[i].name}", version: versi, orderNumber: order));
+        }
+        moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
       }
+      var moduleBox = await Hive.openBox<Module>('moduleBox');
+      await moduleBox.clear();
+      await moduleBox.addAll(moduleList);
+      await vendorBox.delete("${salesIdParams.value}|${customerIdParams.value}");
+      print("${salesIdParams.value}|${customerIdParams.value} keybox");
+      await vendorBox.put("${salesIdParams.value}|${customerIdParams.value}", data.availVendors);
+      await customerBox.delete(data.customer.no);
+      await customerBox.put(data.customer.no,Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no));
+      await shiptobox.delete(data.customer.no);
+      if(data.shipToAddresses.isNotEmpty){
+        await shiptobox.put(data.customer.no,data.shipToAddresses);
+      }
+    } on SocketException{
+      print("socket error getvendor");
+      moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+    } catch (e) {
+      print("catch error getvendor ${e.toString()}");
       moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
     }
-    var moduleBox = await Hive.openBox<Module>('moduleBox');
-    await moduleBox.clear();
-    await moduleBox.addAll(moduleList);
-    await vendorBox.delete("${salesIdParams.value}|${customerIdParams.value}");
-    await vendorBox.put("${salesIdParams.value}|${customerIdParams.value}", data.availVendors);
-    await customerBox.delete(data.customer.no);
-    await customerBox.put(data.customer.no,Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no));
-    await shiptobox.delete(data.customer.no);
-    if(data.shipToAddresses.isNotEmpty){
-      await shiptobox.put(data.customer.no,data.shipToAddresses);
-    }
+    
     await closebox();
   }
-
-  // checkVersion() async {
-  //   isNeedUpdate(false);
-
-  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  //   String currentVersion = packageInfo.version;
-  //   appVersion.value = currentVersion;
-
-  //   var connTest = await ApiClient().checkConnection();
-  //   var arrConnTest = connTest.split("|");
-  //   bool isConnected = arrConnTest[0] == 'true';
-  //   String urlAPI = arrConnTest[1];
-
-  //   if (salesIdParams.value != "") {
-  //     if (isConnected) {
-  //       try {
-  //         final encryptedParam = await Utils.encryptData(salesIdParams.value);
-
-  //         final result = await ApiClient().getData(urlAPI, "/version?sales_id=$encryptedParam");
-  //         var data = jsonDecode(result.toString());
-
-  //         String latestVersion = data[0]["Value"];
-  //         appName.value = data[0]["AppName"];
-
-  //         int currentVersionConverted = Utils().convertVersionNumber(currentVersion);
-  //         int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
-
-  //         //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
-  //         bool moduleVersionStatus = true;
-  //         int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
-
-  //         Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
-  //         var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
-  //         retrySubmitQuizBox.close();
-
-  //         if (isRetrySubmit != null && isRetrySubmit.value == "true") {
-  //           cntPendingData = 1;
-  //         }
-
-  //         for (int i = 0; i < moduleList.length; i++) {
-  //           int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
-  //           if (moduleVersionConverted > currentVersionConverted) {
-  //             moduleVersionStatus = false;
-  //             break;
-  //           }
-  //         }
-
-  //         if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
-  //           isNeedUpdate(true);
-  //         }
-  //       } catch (e) {
-  //         errorMessage.value = e.toString();
-  //         openErrorDialog();
-  //         isError(true);
-  //         change(null, status: RxStatus.error(errorMessage.value));
-  //       }
-  //     } else {
-  //       var moduleBox = await Hive.openBox<Module>('moduleBox');
-  //       if (moduleBox.length > 0) {
-  //         moduleList.clear();
-  //         moduleList.addAll(moduleBox.values);
-
-  //         change(null, status: RxStatus.success());
-  //         Get.offAndToNamed(RouteName.homepage);
-  //       } else {
-  //         errorMessage(Message.errorConnection);
-  //         openErrorDialog();
-  //         isError(true);
-  //         change(null, status: RxStatus.error(errorMessage.value));
-  //       }
-  //     }
-  //   } else {
-  //     errorMessage(Message.errorParameterData);
-  //     openErrorDialog();
-  //     isError(true);
-  //     change(null, status: RxStatus.error(errorMessage.value));
-  //   }
-  // }
 
   postTrackingVersion() async {
     var trackVersionBox = await Hive.openBox('trackVersionBox');
@@ -907,4 +835,83 @@ class SplashscreenController extends GetxController with StateMixin implements W
   Future<bool> didPushRouteInformation(RouteInformation routeInformation) {
     throw UnimplementedError();
   }
+
+  // unused
+  // checkVersion() async {
+  //   isNeedUpdate(false);
+
+  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  //   String currentVersion = packageInfo.version;
+  //   appVersion.value = currentVersion;
+
+  //   var connTest = await ApiClient().checkConnection();
+  //   var arrConnTest = connTest.split("|");
+  //   bool isConnected = arrConnTest[0] == 'true';
+  //   String urlAPI = arrConnTest[1];
+
+  //   if (salesIdParams.value != "") {
+  //     if (isConnected) {
+  //       try {
+  //         final encryptedParam = await Utils.encryptData(salesIdParams.value);
+
+  //         final result = await ApiClient().getData(urlAPI, "/version?sales_id=$encryptedParam");
+  //         var data = jsonDecode(result.toString());
+
+  //         String latestVersion = data[0]["Value"];
+  //         appName.value = data[0]["AppName"];
+
+  //         int currentVersionConverted = Utils().convertVersionNumber(currentVersion);
+  //         int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
+
+  //         //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
+  //         bool moduleVersionStatus = true;
+  //         int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
+
+  //         Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
+  //         var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
+  //         retrySubmitQuizBox.close();
+
+  //         if (isRetrySubmit != null && isRetrySubmit.value == "true") {
+  //           cntPendingData = 1;
+  //         }
+
+  //         for (int i = 0; i < moduleList.length; i++) {
+  //           int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
+  //           if (moduleVersionConverted > currentVersionConverted) {
+  //             moduleVersionStatus = false;
+  //             break;
+  //           }
+  //         }
+
+  //         if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
+  //           isNeedUpdate(true);
+  //         }
+  //       } catch (e) {
+  //         errorMessage.value = e.toString();
+  //         openErrorDialog();
+  //         isError(true);
+  //         change(null, status: RxStatus.error(errorMessage.value));
+  //       }
+  //     } else {
+  //       var moduleBox = await Hive.openBox<Module>('moduleBox');
+  //       if (moduleBox.length > 0) {
+  //         moduleList.clear();
+  //         moduleList.addAll(moduleBox.values);
+
+  //         change(null, status: RxStatus.success());
+  //         Get.offAndToNamed(RouteName.homepage);
+  //       } else {
+  //         errorMessage(Message.errorConnection);
+  //         openErrorDialog();
+  //         isError(true);
+  //         change(null, status: RxStatus.error(errorMessage.value));
+  //       }
+  //     }
+  //   } else {
+  //     errorMessage(Message.errorParameterData);
+  //     openErrorDialog();
+  //     isError(true);
+  //     change(null, status: RxStatus.error(errorMessage.value));
+  //   }
+  // }
 }

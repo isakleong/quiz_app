@@ -83,9 +83,9 @@ class PenjualanController extends GetxController
     //get salesid and custid data
     String salesid = await getParameterData("sales");
     String custid = await getParameterData("cust");
-    if(custid != "01B05070012"){
-      custid = "01B05070012";
-    }
+    // if(custid != "01B05070012"){
+    //   custid = "01B05070012";
+    // }
     
     //get customer data
     if(!customerBox.isOpen) await getBox();
@@ -96,7 +96,8 @@ class PenjualanController extends GetxController
     if(!listaddressbox.isOpen) await getBox();
     var addressdata = listaddressbox.get(custid);
     if(addressdata == null || addressdata.isEmpty ){
-      listAddress.add(ShipToAddress(code: dataToko.no, name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
+      choosedAddress.value = dataToko.address;
+      listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
     } else {
       listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Pengiriman", address: "Pilih Alamat Pengiriman", county: "", City: "", PostCode: ""));
       listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
@@ -421,13 +422,22 @@ class PenjualanController extends GetxController
     
   }
 
+  cekvalidcheckout(){
+    bool isvalid = false;
+    var idx = listAddress.indexWhere((element) => element.address == choosedAddress.value);
+    if (idx != -1) {
+      isvalid = true;
+    } 
+    return isvalid;
+  }
+
   checkout() async {
     await getBox();
     String salesid = await getParameterData("sales");
     String cust = await getParameterData("cust");
-    if(cust != "01B05070012"){
-      cust = "01B05070012";
-    }
+    // if(cust != "01B05070012"){
+    //   cust = "01B05070012";
+    // }
     var _datapenjualan = await boxreportpenjualan.get(globalkeybox);
     String inc = "000";
     var idx = 0;
@@ -587,8 +597,8 @@ class PenjualanController extends GetxController
           return arrParameter[i];
         } else if (i == 1 && type == "cust") {
           return arrParameter[i];
-        } else {
-          return arrParameter[2];
+        } else if (type == "") {
+          return arrParameter[i];
         }
       }
     }

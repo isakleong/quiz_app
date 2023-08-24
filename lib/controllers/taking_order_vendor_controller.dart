@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/pembayaran_controller.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
@@ -126,27 +127,33 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   }
 
   checkout() async {
-    await _penjualanController.checkout();
-    _laporanController.getReportList();
-    selectedValue.value = "";
-    notes.value.clear();
-    cartDetailList.clear();
-    cartList.clear();
-    selectedProduct.clear();
-    cnt.value.clear(); 
-    qty1.value.clear();
-    qty2.value.clear();
-    qty3.value.clear();
-    listAnimation.clear();
-    choosedAddress.value = "";
-    try{
-      Navigator.pop(keychecout.currentContext!);
-      Navigator.pop(keyconfirm.currentContext!);
-    // ignore: empty_catches
-    }catch(e){
+    if(await _penjualanController.cekvalidcheckout()){
+       await _penjualanController.checkout();
+      _laporanController.getReportList();
+      selectedValue.value = "";
+      notes.value.clear();
+      cartDetailList.clear();
+      cartList.clear();
+      selectedProduct.clear();
+      cnt.value.clear(); 
+      qty1.value.clear();
+      qty2.value.clear();
+      qty3.value.clear();
+      listAnimation.clear();
+      choosedAddress.value = "";
+      try{
+        Navigator.pop(keychecout.currentContext!);
+        Navigator.pop(keyconfirm.currentContext!);
+      // ignore: empty_catches
+      }catch(e){
 
+      }
+      controllerBar.jumpToTab(3);
+    } else {
+      Navigator.pop(keyconfirm.currentContext!);
+      Get.snackbar("error", "silahkan pilih alamat pengiriman terlebih dahulu",backgroundColor: Colors.white,colorText: Colors.red);
     }
-    controllerBar.jumpToTab(3);
+    
 
   }
 

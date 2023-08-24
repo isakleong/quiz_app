@@ -12,7 +12,7 @@ class ApiClient {
     try {
       print(url);
       final dio = Dio(  
-        BaseOptions(baseUrl: url)
+        BaseOptions(baseUrl: url,connectTimeout: Duration(seconds: 15))
       )..interceptors.add(Logging());
 
       dio.httpClientAdapter = IOHttpClientAdapter(
