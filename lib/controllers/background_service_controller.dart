@@ -21,8 +21,10 @@ import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import '../models/detailproductdata.dart';
 import '../models/module.dart';
 import '../models/penjualanpostmodel.dart';
+import '../models/productdata.dart';
 import '../models/quiz.dart';
 import '../tools/service.dart';
 import '../tools/utils.dart';
@@ -166,6 +168,8 @@ class Backgroundservicecontroller {
     Hive.registerAdapter(PenjualanPostModelAdapter());
     Hive.registerAdapter(CartDetailAdapter());
     Hive.registerAdapter(CartModelAdapter());
+    Hive.registerAdapter(ProductDataAdapter());
+    Hive.registerAdapter(DetailProductDataAdapter());
   }
 
   initializeNotifConfiguration() async {

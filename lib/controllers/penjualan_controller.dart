@@ -51,9 +51,11 @@ class PenjualanController extends GetxController
   late Box customerBox; 
   late Box boxpostpenjualan;
   late Box boxreportpenjualan;
+  late Box itemvendorbox;
   final keycheckout = GlobalKey();
   var idvendor = -1;
   var globalkeybox = "";
+  RxBool needtorefresh = false.obs;
 
   getBox() async {
     try {
@@ -62,6 +64,7 @@ class PenjualanController extends GetxController
       customerBox = await Hive.openBox('customerBox');
       boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
       boxreportpenjualan = await Hive.openBox('penjualanReport');
+      itemvendorbox = await Hive.openBox("itemVendorBox");
     } catch (e) {
     }
   }
@@ -73,11 +76,13 @@ class PenjualanController extends GetxController
       customerBox.close();
       boxpostpenjualan.close();
       boxreportpenjualan.close();
+      itemvendorbox.close();
     } catch (e) {
     }
   }
 
   getListItem() async {
+    needtorefresh.value = false;
     await getBox();
 
     //get salesid and custid data
@@ -116,11 +121,30 @@ class PenjualanController extends GetxController
     SplashscreenController _splashscreenController = callcontroller("splashscreencontroller");
     idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == _splashscreenController.selectedVendor.value.toLowerCase());
     globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}";
+    
     //get list product vendor
-    var getVendorItem = await ApiClient().getData(vendorlist[idvendor].baseApiUrl,"/setting/vendor/${vendorlist[idvendor].prefix}");
-    var data = MasterItemVendor.fromJson(getVendorItem);
-    for (var i = 0; i < data.items.length; i++) {
-      listProduct.add(ProductData(data.items[i].code, data.items[i].name, [DetailProductData(data.items[i].uom.name, double.parse(data.items[i].price), data.items[i].uomId)]));
+    try {
+      var itemvendorhive = itemvendorbox.get(globalkeybox);
+      print(itemvendorhive);
+      if(itemvendorhive!= null){
+        listProduct.clear();
+        for (var i = 0; i < itemvendorhive.length; i++) {
+          listProduct.add(itemvendorhive[i]);
+        }
+        print("from hive");
+      } else {
+        var getVendorItem = await ApiClient().getData(vendorlist[idvendor].baseApiUrl,"/setting/vendor/${vendorlist[idvendor].prefix}");
+        var data = MasterItemVendor.fromJson(getVendorItem);
+        print(data);
+        listProduct.clear();
+        for (var i = 0; i < data.items.length; i++) {
+          listProduct.add(ProductData(data.items[i].code, data.items[i].name, [DetailProductData(data.items[i].uom.name, double.parse(data.items[i].price), data.items[i].uomId)]));
+        }
+        itemvendorbox.delete(globalkeybox);
+        itemvendorbox.put(globalkeybox,listProduct);
+      }
+    } catch (e) {
+      needtorefresh.value = true;
     }
 
     // vendorBox.get("")

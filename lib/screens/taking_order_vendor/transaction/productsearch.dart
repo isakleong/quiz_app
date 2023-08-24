@@ -3,8 +3,10 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../common/app_config.dart';
 
 class ProductSearch extends StatelessWidget {
@@ -15,7 +17,17 @@ class ProductSearch extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Obx(() => Card(
+    return Obx(() => _takingOrderVendorController.nmtoko.value == "" ? Shimmer.fromColors(
+            baseColor: Colors.grey.shade400,
+            highlightColor: Colors.grey.shade200,
+            child: Container(
+              width: 0.9 * width,
+              height: 0.2 * height,
+              color: Colors.white,
+              // Add any other child widgets you want inside the shimmering container
+            ),
+          ):
+      Card(
           elevation: 10,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -103,6 +115,46 @@ class ProductSearch extends StatelessWidget {
                   color: Colors.grey.shade300,
                 ),
               ),
+              _takingOrderVendorController.listProduct.isEmpty && _takingOrderVendorController.needtorefresh.value == false ? 
+                Padding(
+                  padding: EdgeInsets.only(left: 0.02 * width, top: 5, bottom: 10),
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade400,
+                      highlightColor: Colors.grey.shade200,
+                      child: Container(
+                        width: 0.86 * width,
+                        height: 40,
+                        color: Colors.white,
+                        // Add any other child widgets you want inside the shimmering container
+                      ),
+                  ),
+              ): _takingOrderVendorController.needtorefresh.value == true ? 
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                                  onPressed: () {
+                                    _takingOrderVendorController.getListItem();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppConfig.mainCyan,
+                                    padding:  EdgeInsets.only(left: 10,right: 10,top: 5,bottom: 5),
+                                    shape: const StadiumBorder(),
+                                    elevation: 5,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children:  [
+                                      FaIcon(FontAwesomeIcons.arrowsRotate,size: 12.sp,),
+                                      SizedBox(width: 10),
+                                      TextView(
+                                          headings: "H4",
+                                          text: "Refresh",
+                                          fontSize: 12.sp,
+                                          color: Colors.white),
+                                    ],
+                                  ),
+                                ),
+                        ):
               Padding(
                 padding:
                     EdgeInsets.only(left: 0.02 * width, top: 5, bottom: 10),

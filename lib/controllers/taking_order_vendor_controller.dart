@@ -78,6 +78,11 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   get nmtoko => _penjualanController.nmtoko;
   GlobalKey get keychecout => _penjualanController.keycheckout;
   RxList<ShipToAddress> get listaddress => _penjualanController.listAddress;
+  RxBool get needtorefresh => _penjualanController.needtorefresh;
+
+  getListItem(){
+     _penjualanController.getListItem();
+  }
 
   countPriceTotal() {
     return _penjualanController.countPriceTotal();
