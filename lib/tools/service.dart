@@ -8,11 +8,11 @@ import 'package:sfa_tools/tools/logging.dart';
 // show Client, Request;
 
 class ApiClient {
-  Future getData(String url, String path) async {
+  Future getData(String url, String path, {int? timeouttime}) async {
     try {
       print(url);
       final dio = Dio(  
-        BaseOptions(baseUrl: url,connectTimeout: Duration(seconds: 15))
+        BaseOptions(baseUrl: url,connectTimeout: Duration(seconds: timeouttime ?? 5 ))
       )..interceptors.add(Logging());
 
       dio.httpClientAdapter = IOHttpClientAdapter(

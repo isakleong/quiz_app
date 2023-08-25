@@ -120,17 +120,17 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     //get list product vendor
     try {
       var itemvendorhive = itemvendorbox.get(globalkeybox);
-      print(itemvendorhive);
+      // print(itemvendorhive);
       if(itemvendorhive!= null){
         listProduct.clear();
         for (var i = 0; i < itemvendorhive.length; i++) {
           listProduct.add(itemvendorhive[i]);
         }
-        print("from hive");
+        // print("from hive");
       } else {
-        var getVendorItem = await ApiClient().getData(vendorlist[idvendor].baseApiUrl,"/setting/vendor/${vendorlist[idvendor].prefix}");
+        var getVendorItem = await ApiClient().getData(vendorlist[idvendor].baseApiUrl,"/setting/vendor/${vendorlist[idvendor].prefix}",timeouttime: 10);
         var data = MasterItemVendor.fromJson(getVendorItem);
-        print(data);
+        // print(data);
         listProduct.clear();
         for (var i = 0; i < data.items.length; i++) {
           listProduct.add(ProductData(data.items[i].code, data.items[i].name, [DetailProductData(data.items[i].uom.name, double.parse(data.items[i].price), data.items[i].uomId)]));
@@ -475,12 +475,12 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     }
     DateTime now = DateTime.now();
     String noorder = "GO-$salesid-${DateFormat('yyMMddHHmm').format(now)}-$inc";
-    String date = DateFormat('dd-MM-yyyy').format(now);
+    String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(now);
     String time = DateFormat('HH:mm').format(now);
     List<CartDetail> listcopy = [];
     listcopy.addAll(cartDetailList);
     String alm = choosedAddress.value;
-    print("length cartdetailist ${cartDetailList.length}");
+    // print("length cartdetailist ${cartDetailList.length}");
     await closebox();
     await saveOrderToReport(noorder, date, time,  notes.value.text, listcopy,salesid,cust);
     saveOrderToApi(salesid, cust, notes.value.text, date, noorder,listcopy,alm);
@@ -505,17 +505,17 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   saveOrderToApi(String salesid,String custid, String notestext, String orderdate, String noorder, List<CartDetail> _listdetail, String choosedAddressdata) async {
       await getBox();
-      print("saveOrderToApi");
-      print(choosedAddress.value);
-      print(listAddress.length);
+      // print("saveOrderToApi");
+      // print(choosedAddress.value);
+      // print(listAddress.length);
       for (var i = 0; i < listAddress.length; i++) {
         print(listAddress[i].address);
       }
       var idx = listAddress.indexWhere((element) => element.address == choosedAddressdata);
       List<Map<String, dynamic>> _data = [];
-      print("-------------------------");
-      print(_listdetail.length);
-      print("-------------------------");
+      // print("-------------------------");
+      // print(_listdetail.length);
+      // print("-------------------------");
       for (var i = 0; i < _listdetail.length; i++) {
         _data.add(
           {
@@ -548,7 +548,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,List<PenjualanPostModel> listpostdata) async {
     await getBox();
-    print(data);
+    // print(data);
     String noorder = data[0]['extDocId'];
     LaporanController controllerLaporan = callcontroller("laporancontroller");
     var _datareportpenjualan = await boxreportpenjualan.get(globalkeybox);
@@ -563,6 +563,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}sales-orders/store');
     final request = http.MultipartRequest('POST', url);
       for (var i = 0; i < data.length; i++) {
+        // print(data[i]['orderDate'].toString());
         request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
         request.fields['data[$i][orderDate]'] = data[i]['orderDate'];
         request.fields['data[$i][customerNo]'] = data[i]['customerNo'];
@@ -585,24 +586,24 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
           }
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
-          print(responseString);
+          // print(responseString);
 
         } else {
           _datareportpenjualan[idx].condition = "gagal";
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
-          print(responseString);
+          // print(responseString);
         }
       } on SocketException {
           _datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
-          print("socketexception");
+          // print("socketexception");
       } catch (e) {
           _datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
-          print(e.toString() + " abnormal ");
+          // print(e.toString() + " abnormal ");
       }  finally{
           await closebox();
           controllerLaporan.getReportList();
