@@ -475,14 +475,14 @@ class SplashscreenController extends GetxController with StateMixin implements W
     String urlAPI = arrConnTest[1];
 
     if (isConnected) {
+      // print("isconnected");
       moduleList.clear();
 
       if (salesIdParams.value != "") {
         try {
           final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
-          final result = await ApiClient()
-              .getData(urlAPI, "/data?sales_id=$encryptedParam");
+          final result = await ApiClient().getData(urlAPI, "/data?sales_id=$encryptedParam");
           var data = jsonDecode(result.toString());
           data["AppModule"].map((item) {
             moduleList.add(Module.from(item));
@@ -518,6 +518,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
             await postTrackingVersion();
           }
         } catch (e) {
+
           errorMessage(e.toString());
           openErrorDialog();
           isError(true);
@@ -532,24 +533,73 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } else {
       var moduleBox = await Hive.openBox<Module>('moduleBox');
       if (moduleBox.length > 0) {
+        // print("first if");
         moduleList.clear();
         moduleList.addAll(moduleBox.values);
-        var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
-        if(idx != -1){
-          moduleList.removeAt(idx);
-          moduleBox.delete(moduleBox);
-          moduleBox.addAll(moduleList);
-        } 
+        // print("before ${moduleBox.length} , ${moduleList.length}");
 
-        change(null, status: RxStatus.success());
-        Get.offAndToNamed(RouteName.homepage);
+        await checkofflinevendor();
+
+        await moduleBox.clear();
+        moduleBox.addAll(moduleList);
+
+        if(moduleBox.length > 0){
+            // print("second if");
+            change(null, status: RxStatus.success());
+            Get.offAndToNamed(RouteName.homepage);
+        } else {
+            // print("second else");
+            errorMessage(Message.errorConnection);
+            openErrorDialog();
+            isError(true);
+            change(null, status: RxStatus.error(errorMessage.value));
+        }
+       
       } else {
+        // print(" else");
         errorMessage(Message.errorConnection);
         openErrorDialog();
         isError(true);
         change(null, status: RxStatus.error(errorMessage.value));
       }
     }
+  }
+
+  checkofflinevendor() async {
+    await getBox();
+    var datavendor = vendorBox.get("${salesIdParams.value}|${customerIdParams.value}");
+    var listindexdelete = [];
+    for (var i = 0; i < moduleList.length; i++) {
+        if(moduleList[i].moduleID.contains("Taking order ")){
+          if(listindexdelete.isEmpty){
+            listindexdelete.add(i);
+          } else {
+            listindexdelete.add(i-1);
+          }
+        }
+    }
+    var vendorversion = "";
+    var vendororder = "";
+    for (var i = 0; i < listindexdelete.length; i++) {
+      if(vendorversion == ""){
+        vendorversion = moduleList[i].version;
+        vendororder = moduleList[i].orderNumber;
+      }
+      moduleList.removeAt(listindexdelete[i]);
+    }
+
+    if (datavendor != null){
+      List<Vendor> vendorlist = <Vendor>[];
+      for (var i = 0; i < datavendor.length; i++) {
+          vendorlist.add(datavendor[i]);
+      }
+      for (var i = 0; i < vendorlist.length; i++) {
+          moduleList.add(Module(moduleID: "Taking order ${vendorlist[i].name}", version: vendorversion, orderNumber: vendororder));
+      }
+    }
+    
+    moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+    await closebox();
   }
 
   checkVersion(var data) async {
@@ -625,9 +675,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
     //   customerIdParams.value = "01B05070012";
     // }
     try {
-      print("getvendor");
+      // print("getvendor");
       var result = await ApiClient().getData(AppConfig.baseUrlVendor,"/tangki-air-jerapah-dev/api/setting/customer/${customerIdParams.value}");
-      print(result);
+      // print(result);
       var data = VendorInfo.fromJson(result);
       if(data.availVendors.isNotEmpty){
         int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
@@ -642,7 +692,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
       await moduleBox.clear();
       await moduleBox.addAll(moduleList);
       await vendorBox.delete("${salesIdParams.value}|${customerIdParams.value}");
-      print("${salesIdParams.value}|${customerIdParams.value} keybox");
       await vendorBox.put("${salesIdParams.value}|${customerIdParams.value}", data.availVendors);
       await customerBox.delete(data.customer.no);
       await customerBox.put(data.customer.no,Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no));
@@ -651,10 +700,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
         await shiptobox.put(data.customer.no,data.shipToAddresses);
       }
     } on SocketException{
-      print("socket error getvendor");
+      // print("socket error getvendor");
       moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
     } catch (e) {
-      print("catch error getvendor ${e.toString()}");
+      // print("catch error getvendor ${e.toString()}");
       moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
     }
     
