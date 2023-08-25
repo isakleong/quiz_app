@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/payment/buttonpayment.dart';
 import 'package:sfa_tools/tools/textfieldformatter.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,10 +42,10 @@ class CekTab extends StatelessWidget {
                             labelStyle: TextStyle(
                               fontSize: 10.sp,
                             ),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             prefixIcon: Icon(
                               FontAwesomeIcons.moneyCheck,
-                              color: Color(0XFF319088),
+                              color: const Color(0XFF319088),
                               size: 12.sp,
                             )),
                       ),
@@ -78,10 +76,10 @@ class CekTab extends StatelessWidget {
                             labelStyle: TextStyle(
                               fontSize: 10.sp,
                             ),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             prefixIcon: Icon(
                               FontAwesomeIcons.calculator,
-                              color: Color(0XFF319088),
+                              color: const Color(0XFF319088),
                               size: 12.sp,
                             )),
                       ),
@@ -108,10 +106,10 @@ class CekTab extends StatelessWidget {
                             labelStyle: TextStyle(
                               fontSize: 10.sp,
                             ),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             prefixIcon: Icon(
                               FontAwesomeIcons.bank,
-                              color: Color(0XFF319088),
+                              color: const Color(0XFF319088),
                               size: 12.sp,
                             )),
                       ),
@@ -140,10 +138,10 @@ class CekTab extends StatelessWidget {
                             labelStyle: TextStyle(
                               fontSize: 10.sp,
                             ),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             prefixIcon: Icon(
                               FontAwesomeIcons.calendar,
-                              color: Color(0XFF319088),
+                              color: const Color(0XFF319088),
                               size: 12.sp,
                             )),
                       ),
@@ -179,10 +177,10 @@ class CekTab extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        padding: EdgeInsets.all(
+                        padding: const EdgeInsets.all(
                             0), // Set padding to zero to let the child determine the button's size
                       ),
-                      child: Container(
+                      child: SizedBox(
                         width: 0.275 * Get.width,
                         child: Padding(
                           padding: EdgeInsets.only(top: 5.sp, bottom: 5.sp),
@@ -203,7 +201,7 @@ class CekTab extends StatelessWidget {
                               SizedBox(
                                 width: 0.01 * Get.width,
                               ),
-                              Container(
+                              SizedBox(
                                 width: 0.18 * Get.width,
                                 child: Text(
                                   _takingOrderVendorController.listpaymentdata

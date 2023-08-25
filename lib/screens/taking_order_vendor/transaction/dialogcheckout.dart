@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/checkoutlist.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
@@ -25,7 +27,7 @@ class DialogCheckOut extends StatelessWidget {
               height: Get.height * 0.03,
             ),
             TextView(
-              text: "Penjualan - Adek Abang",
+              text: "Penjualan - ${_takingOrderVendorController.nmtoko.value}",
               headings: 'H3',
               fontSize: 13.sp,
             ),
@@ -66,31 +68,40 @@ class DialogCheckOut extends StatelessWidget {
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
                             isExpanded: true,
-                            value: _takingOrderVendorController
-                                        .choosedAddress.value ==
-                                    ""
-                                ? 'Pilih Alamat Pengiriman'
-                                : _takingOrderVendorController
-                                    .choosedAddress.value,
+                            value:  
+                            _takingOrderVendorController.listaddress.length > 1 ?
+                            _takingOrderVendorController.choosedAddress.value == "" ? 'Pilih Alamat Pengiriman' : _takingOrderVendorController.choosedAddress.value :
+                             _takingOrderVendorController.listaddress[0].address,
                             onChanged: (String? newValue) {
-                              _takingOrderVendorController
-                                  .choosedAddress.value = newValue!;
+                              _takingOrderVendorController.choosedAddress.value = newValue!;
                             },
-                            items: <String>[
-                              'Pilih Alamat Pengiriman',
-                              'Pemancar Lamtemen Timur',
-                              'Alamat Dummy',
-                            ].map((String value) {
+                            items: _takingOrderVendorController.listaddress.value.map((value) {
                               return DropdownMenuItem<String>(
-                                value: value,
+                                value: value.address,
                                 child: TextView(
-                                  text: value,
+                                  text: value.address,
                                   textAlign: TextAlign.left,
                                   fontSize: 10.sp,
                                   headings: 'H4',
                                 ),
                               );
                             }).toList(),
+                            
+                            // <String>[
+                            //   'Pilih Alamat Pengiriman',
+                            //   'Pemancar Lamtemen Timur',
+                            //   'Alamat Dummy',
+                            // ].map((String value) {
+                            //   return DropdownMenuItem<String>(
+                            //     value: value,
+                            //     child: TextView(
+                            //       text: value,
+                            //       textAlign: TextAlign.left,
+                            //       fontSize: 10.sp,
+                            //       headings: 'H4',
+                            //     ),
+                            //   );
+                            // }).toList(),
                           ),
                         ),
                       ),
@@ -131,7 +142,7 @@ class DialogCheckOut extends StatelessWidget {
                         fit: BoxFit.fill,
                       ),
                     ),
-                    maxLength: 150,
+                    maxLength: 150,controller: _takingOrderVendorController.notes.value,
                     maxLines: null,
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     keyboardType: TextInputType.multiline,
@@ -334,8 +345,12 @@ class DialogCheckOut extends StatelessWidget {
                       size: 14.sp,
                     ),
                     text: "SIMPAN",
-                    onTap: () async {
-                      Get.back();
+                    onTap: ()  {
+                      _takingOrderVendorController.handleSaveConfirm( "Yakin untuk simpan penjualan ?",
+                         "Konfirmasi Penjualan", 
+                         () async {
+                            await _takingOrderVendorController.checkout();
+                        });
                     },
                     radius: 4,
                     space: 5,

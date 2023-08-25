@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 class CustomElevatedButton extends StatelessWidget {

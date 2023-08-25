@@ -14,16 +14,19 @@ import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/controllers/background_service_controller.dart';
+import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/module.dart';
 import 'package:sfa_tools/models/servicebox.dart';
+import 'package:sfa_tools/models/shiptoaddress.dart';
+import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
-class SplashscreenController extends GetxController
-    with StateMixin
-    implements WidgetsBindingObserver {
+import '../models/vendorinfomodel.dart';
+
+class SplashscreenController extends GetxController with StateMixin implements WidgetsBindingObserver {
   var errorMessage = "".obs;
   var isError = false.obs;
 
@@ -40,6 +43,14 @@ class SplashscreenController extends GetxController
   var salesIdParams = "".obs;
   var customerIdParams = "".obs;
   var isCheckInParams = "".obs;
+  
+  //about taking order vendor
+  RxString selectedVendor = "".obs;
+  late Box vendorBox; 
+  late Box customerBox; 
+  late Box boxpostpenjualan;
+  late Box boxreportpenjualan;
+  late Box shiptobox;
 
   @override
   void onInit() {
@@ -500,6 +511,10 @@ class SplashscreenController extends GetxController
                   SystemNavigator.pop();
                 });
           } else {
+            var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
+            if(idx != -1){
+              await getVendor();
+            }
             await postTrackingVersion();
           }
         } catch (e) {
@@ -519,6 +534,12 @@ class SplashscreenController extends GetxController
       if (moduleBox.length > 0) {
         moduleList.clear();
         moduleList.addAll(moduleBox.values);
+        var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+        if(idx != -1){
+          moduleList.removeAt(idx);
+          moduleBox.delete(moduleBox);
+          moduleBox.addAll(moduleList);
+        } 
 
         change(null, status: RxStatus.success());
         Get.offAndToNamed(RouteName.homepage);
@@ -542,19 +563,15 @@ class SplashscreenController extends GetxController
       String latestVersion = data[0]["Value"];
       appName.value = data[0]["AppName"];
 
-      int currentVersionConverted =
-          Utils().convertVersionNumber(currentVersion);
+      int currentVersionConverted =Utils().convertVersionNumber(currentVersion);
       int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
 
       //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
       bool moduleVersionStatus = true;
-      int cntPendingData =
-          0; //count pending data (if there is pending data, then app should not be updated)
+      int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
 
-      Box retrySubmitQuizBox =
-          await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
-      var isRetrySubmit =
-          retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
+      Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
+      var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
       retrySubmitQuizBox.close();
 
       if (isRetrySubmit != null && isRetrySubmit.value == "true") {
@@ -562,17 +579,14 @@ class SplashscreenController extends GetxController
       }
 
       for (int i = 0; i < moduleList.length; i++) {
-        int moduleVersionConverted =
-            Utils().convertVersionNumber(moduleList[i].version);
+        int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
         if (moduleVersionConverted > currentVersionConverted) {
           moduleVersionStatus = false;
           break;
         }
       }
 
-      if (latestVersionConverted > currentVersionConverted &&
-          !moduleVersionStatus &&
-          cntPendingData == 0) {
+      if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
         isNeedUpdate(true);
       }
     } catch (e) {
@@ -583,83 +597,69 @@ class SplashscreenController extends GetxController
     }
   }
 
-  // checkVersion() async {
-  //   isNeedUpdate(false);
+  getBox() async {
+    try {
+      vendorBox = await Hive.openBox('vendorBox');
+      shiptobox = await Hive.openBox('shiptoBox');
+      customerBox = await Hive.openBox('customerBox');
+      boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
+      boxreportpenjualan = await Hive.openBox('penjualanReport');
+    } catch (e) {
+    }
+  }
 
-  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  //   String currentVersion = packageInfo.version;
-  //   appVersion.value = currentVersion;
+  closebox() async{
+    try {
+      vendorBox.close();
+      shiptobox.close();
+      customerBox.close();
+      boxpostpenjualan.close();
+      boxreportpenjualan.close();
+    } catch (e) {
+    }
+  }
 
-  //   var connTest = await ApiClient().checkConnection();
-  //   var arrConnTest = connTest.split("|");
-  //   bool isConnected = arrConnTest[0] == 'true';
-  //   String urlAPI = arrConnTest[1];
-
-  //   if (salesIdParams.value != "") {
-  //     if (isConnected) {
-  //       try {
-  //         final encryptedParam = await Utils.encryptData(salesIdParams.value);
-
-  //         final result = await ApiClient().getData(urlAPI, "/version?sales_id=$encryptedParam");
-  //         var data = jsonDecode(result.toString());
-
-  //         String latestVersion = data[0]["Value"];
-  //         appName.value = data[0]["AppName"];
-
-  //         int currentVersionConverted = Utils().convertVersionNumber(currentVersion);
-  //         int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
-
-  //         //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
-  //         bool moduleVersionStatus = true;
-  //         int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
-
-  //         Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
-  //         var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
-  //         retrySubmitQuizBox.close();
-
-  //         if (isRetrySubmit != null && isRetrySubmit.value == "true") {
-  //           cntPendingData = 1;
-  //         }
-
-  //         for (int i = 0; i < moduleList.length; i++) {
-  //           int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
-  //           if (moduleVersionConverted > currentVersionConverted) {
-  //             moduleVersionStatus = false;
-  //             break;
-  //           }
-  //         }
-
-  //         if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
-  //           isNeedUpdate(true);
-  //         }
-  //       } catch (e) {
-  //         errorMessage.value = e.toString();
-  //         openErrorDialog();
-  //         isError(true);
-  //         change(null, status: RxStatus.error(errorMessage.value));
-  //       }
-  //     } else {
-  //       var moduleBox = await Hive.openBox<Module>('moduleBox');
-  //       if (moduleBox.length > 0) {
-  //         moduleList.clear();
-  //         moduleList.addAll(moduleBox.values);
-
-  //         change(null, status: RxStatus.success());
-  //         Get.offAndToNamed(RouteName.homepage);
-  //       } else {
-  //         errorMessage(Message.errorConnection);
-  //         openErrorDialog();
-  //         isError(true);
-  //         change(null, status: RxStatus.error(errorMessage.value));
-  //       }
-  //     }
-  //   } else {
-  //     errorMessage(Message.errorParameterData);
-  //     openErrorDialog();
-  //     isError(true);
-  //     change(null, status: RxStatus.error(errorMessage.value));
-  //   }
-  // }
+  getVendor() async { 
+    await getBox();
+    // if(customerIdParams.value != "01B05070012"){
+    //   customerIdParams.value = "01B05070012";
+    // }
+    try {
+      print("getvendor");
+      var result = await ApiClient().getData(AppConfig.baseUrlVendor,"/tangki-air-jerapah-dev/api/setting/customer/${customerIdParams.value}");
+      print(result);
+      var data = VendorInfo.fromJson(result);
+      if(data.availVendors.isNotEmpty){
+        int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+        var versi = moduleList[index].version;
+        var order = moduleList[index].orderNumber;
+        for (var i = 0; i < data.availVendors.length; i++) {
+          moduleList.add(Module(moduleID: "Taking order ${data.availVendors[i].name}", version: versi, orderNumber: order));
+        }
+        moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+      }
+      var moduleBox = await Hive.openBox<Module>('moduleBox');
+      await moduleBox.clear();
+      await moduleBox.addAll(moduleList);
+      await vendorBox.delete("${salesIdParams.value}|${customerIdParams.value}");
+      print("${salesIdParams.value}|${customerIdParams.value} keybox");
+      await vendorBox.put("${salesIdParams.value}|${customerIdParams.value}", data.availVendors);
+      await customerBox.delete(data.customer.no);
+      await customerBox.put(data.customer.no,Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no));
+      await shiptobox.delete(data.customer.no);
+      if(data.shipToAddresses.isNotEmpty){
+        await shiptobox.put(data.customer.no,data.shipToAddresses);
+      }
+    } on SocketException{
+      print("socket error getvendor");
+      moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+    } catch (e) {
+      print("catch error getvendor ${e.toString()}");
+      moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+    }
+    
+    await closebox();
+  }
 
   postTrackingVersion() async {
     var trackVersionBox = await Hive.openBox('trackVersionBox');
@@ -789,6 +789,8 @@ class SplashscreenController extends GetxController
     if (moduleid == 'Kuis') {
       Get.toNamed(RouteName.quizDashboard);
     } else {
+      String pattern = "Taking order ";
+      selectedVendor.value = moduleid.substring(pattern.length);
       Get.toNamed(RouteName.takingOrderVendor);
     }
   }
@@ -842,4 +844,5 @@ class SplashscreenController extends GetxController
   Future<bool> didPushRouteInformation(RouteInformation routeInformation) {
     throw UnimplementedError();
   }
+
 }

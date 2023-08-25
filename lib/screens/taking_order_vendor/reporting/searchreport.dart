@@ -6,8 +6,9 @@ import '../../../widgets/textview.dart';
 
 class SearchReport extends StatelessWidget {
   String value;
+  String nmToko;
   var onChanged;
-  SearchReport({super.key, required this.value, required this.onChanged});
+  SearchReport({super.key, required this.value, required this.onChanged, required this.nmToko});
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +79,7 @@ class SearchReport extends StatelessWidget {
                         const SizedBox(
                           width: 5,
                         ),
-                        const Text("Adek Abang"),
+                         Text(nmToko),
                       ],
                     ),
                   ],

@@ -5,7 +5,8 @@ import '../../../common/app_config.dart';
 import '../../../widgets/textview.dart';
 
 class ReturCard extends StatelessWidget {
-  const ReturCard({super.key});
+  String nmToko;
+  ReturCard({super.key,required this.nmToko});
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +73,7 @@ class ReturCard extends StatelessWidget {
                         const SizedBox(
                           width: 5,
                         ),
-                        const Text("Adek Abang"),
+                         Text(nmToko),
                       ],
                     ),
                   ],

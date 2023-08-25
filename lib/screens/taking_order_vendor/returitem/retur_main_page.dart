@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/returitem/gantibarang.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/returitem/gantikemasan.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/returitem/returcard.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/returitem/segmentbutton.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/returitem/servismebel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/returitem/tarikbarangpage.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/returitem/tukarwarnapage.dart';
 
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/backbuttonaction.dart';
@@ -43,7 +38,7 @@ class ReturMainPage extends StatelessWidget {
                 Padding(
                     padding: EdgeInsets.only(
                         left: 0.05 * Get.width, top: 0.01 * Get.height),
-                    child: const ReturCard()),
+                    child:  ReturCard(nmToko: _takingOrderVendorController.nmtoko.value,)),
                 // Padding(
                 //     padding: EdgeInsets.only(
                 //         left: 0.05 * Get.width, top: 0.02 * Get.height),

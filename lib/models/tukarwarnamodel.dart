@@ -1,5 +1,7 @@
 import 'package:sfa_tools/models/cartmodel.dart';
 
+import 'cartdetail.dart';
+
 class TukarWarnaModel {
   String kdProduct;
   String nmProduct;

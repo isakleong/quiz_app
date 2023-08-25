@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../models/cartdetail.dart';
 import '../../../models/cartmodel.dart';
 import '../../../widgets/textview.dart';
 import '../transaction/chipsitem.dart';

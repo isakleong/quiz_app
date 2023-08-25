@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/pembayaran_controller.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
@@ -9,38 +11,28 @@ import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/models/productdata.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
+import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
+import '../models/cartdetail.dart';
 import '../models/tarikbarangmodel.dart';
 
-class TakingOrderVendorController extends GetxController
-    with GetTickerProviderStateMixin {
-  final PembayaranController _pembayaranController =
-      Get.put(PembayaranController());
+class TakingOrderVendorController extends GetxController with GetTickerProviderStateMixin {
+  final PembayaranController _pembayaranController = Get.put(PembayaranController());
   final LaporanController _laporanController = Get.put(LaporanController());
-  final PenjualanController _penjualanController =
-      Get.put(PenjualanController());
-
+  final PenjualanController _penjualanController = Get.put(PenjualanController());
   final ReturController _returController = Get.put(ReturController());
   late AnimationController animationController;
   late Animation<Offset> slideAnimation;
+  final keyconfirm = GlobalKey();
+  final PersistentTabController controllerBar = PersistentTabController(initialIndex: 0);
 
   @override
   void onInit() {
     super.onInit();
-    animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 500),
-    )..forward();
-    slideAnimation = Tween<Offset>(
-      begin: Offset(0, -0.2),
-      end: Offset(0, 0),
-    ).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeInOut,
-    ));
-    _pembayaranController.controller =
-        TabController(vsync: this, length: 3, initialIndex: 0);
+    animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..forward();
+    slideAnimation = Tween<Offset>(begin: const Offset(0, -0.2),end: const Offset(0, 0),).animate(CurvedAnimation(parent: animationController,curve: Curves.easeInOut,));
+    _pembayaranController.controller = TabController(vsync: this, length: 3, initialIndex: 0);
     _penjualanController.getListItem();
     _laporanController.getReportList();
   }
@@ -59,12 +51,13 @@ class TakingOrderVendorController extends GetxController
     }
   }
 
-  handleSaveConfirm(String msg, String title) {
+  handleSaveConfirm(String msg, String title, var ontap) {
     Get.dialog(Dialog(
+      key: keyconfirm,
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: DialogConfirm(message: msg, title: title)));
+        child: DialogConfirm(message: msg, title: title, onTap: ontap,)));
   }
 
   // for penjualan page
@@ -72,15 +65,23 @@ class TakingOrderVendorController extends GetxController
   RxList<CartDetail> get cartDetailList => _penjualanController.cartDetailList;
   RxList<CartModel> get cartList => _penjualanController.cartList;
   RxString get selectedValue => _penjualanController.selectedValue;
-  RxList<ProductData> get selectedProduct =>
-      _penjualanController.selectedProduct;
+  RxList<ProductData> get selectedProduct => _penjualanController.selectedProduct;
   Rx<TextEditingController> get cnt => _penjualanController.cnt;
   Rx<TextEditingController> get qty1 => _penjualanController.qty1;
   Rx<TextEditingController> get qty2 => _penjualanController.qty2;
   Rx<TextEditingController> get qty3 => _penjualanController.qty3;
+  Rx<TextEditingController> get notes => _penjualanController.notes;
   RxString get choosedAddress => _penjualanController.choosedAddress;
   RxInt animated = 0.obs;
   get listAnimation => _penjualanController.listAnimation;
+  get nmtoko => _penjualanController.nmtoko;
+  GlobalKey get keychecout => _penjualanController.keycheckout;
+  RxList<ShipToAddress> get listaddress => _penjualanController.listAddress;
+  RxBool get needtorefresh => _penjualanController.needtorefresh;
+
+  getListItem(){
+     _penjualanController.getListItem();
+  }
 
   countPriceTotal() {
     return _penjualanController.countPriceTotal();
@@ -95,12 +96,7 @@ class TakingOrderVendorController extends GetxController
   }
 
   addToCart() async {
-    // if (_penjualanController.cartList.isEmpty) {
-
     _penjualanController.addToCart();
-    // } else {
-    //   _penjualanController.addToCart();
-    // }
   }
 
   updateCart() {
@@ -129,12 +125,41 @@ class TakingOrderVendorController extends GetxController
     _penjualanController.showProdukSerupa(data);
   }
 
+  checkout() async {
+    if(await _penjualanController.cekvalidcheckout()){
+       await _penjualanController.checkout();
+      _laporanController.getReportList();
+      selectedValue.value = "";
+      notes.value.clear();
+      cartDetailList.clear();
+      cartList.clear();
+      selectedProduct.clear();
+      cnt.value.clear(); 
+      qty1.value.clear();
+      qty2.value.clear();
+      qty3.value.clear();
+      listAnimation.clear();
+      choosedAddress.value = "";
+      try{
+        Navigator.pop(keychecout.currentContext!);
+        Navigator.pop(keyconfirm.currentContext!);
+      // ignore: empty_catches
+      }catch(e){
+
+      }
+      controllerBar.jumpToTab(3);
+    } else {
+      Navigator.pop(keyconfirm.currentContext!);
+      Get.snackbar("error", "silahkan pilih alamat pengiriman terlebih dahulu",backgroundColor: Colors.white,colorText: Colors.red);
+    }
+    
+
+  }
+
   //for laporan page
   RxString get choosedReport => _laporanController.choosedReport;
-  RxList<ReportPembayaranModel> get listReportPembayaranshow =>
-      _laporanController.listReportPembayaranshow;
-  RxList<ReportPenjualanModel> get listReportPenjualanShow =>
-      _laporanController.listReportPenjualanShow;
+  RxList<ReportPembayaranModel> get listReportPembayaranshow => _laporanController.listReportPembayaranshow;
+  RxList<ReportPenjualanModel> get listReportPenjualanShow => _laporanController.listReportPenjualanShow;
   RxInt get allReportlength => _laporanController.allReportlength;
 
   filteReport() {
@@ -145,19 +170,14 @@ class TakingOrderVendorController extends GetxController
   Rx<TextEditingController> get nomorcek => _pembayaranController.nomorcek;
   Rx<TextEditingController> get nominalcek => _pembayaranController.nominalcek;
   Rx<TextEditingController> get nmbank => _pembayaranController.nmbank;
-  Rx<TextEditingController> get jatuhtempotgl =>
-      _pembayaranController.jatuhtempotgl;
-  RxList<PaymentData> get listpaymentdata =>
-      _pembayaranController.listpaymentdata;
+  Rx<TextEditingController> get jatuhtempotgl => _pembayaranController.jatuhtempotgl;
+  RxList<PaymentData> get listpaymentdata => _pembayaranController.listpaymentdata;
   TabController get controller => _pembayaranController.controller;
   Rx<TextEditingController> get nominalCn => _pembayaranController.nominalCn;
-  Rx<TextEditingController> get nominaltransfer =>
-      _pembayaranController.nominaltransfer;
-  RxString get choosedTransferMethod =>
-      _pembayaranController.choosedTransferMethod;
+  Rx<TextEditingController> get nominaltransfer => _pembayaranController.nominaltransfer;
+  RxString get choosedTransferMethod => _pembayaranController.choosedTransferMethod;
   RxString get choosedTunaiMethod => _pembayaranController.choosedTunaiMethod;
-  Rx<TextEditingController> get nominaltunai =>
-      _pembayaranController.nominaltunai;
+  Rx<TextEditingController> get nominaltunai => _pembayaranController.nominaltunai;
   get pembayaranListKey => _pembayaranController.pembayaranListKey;
   get showBanner => _pembayaranController.showBanner;
 
@@ -182,43 +202,25 @@ class TakingOrderVendorController extends GetxController
   }
 
   //for retur page
-  Rx<TextEditingController> get tarikbarangfield =>
-      _returController.tarikbarangfield;
-  Rx<TextEditingController> get tukarwarnafield =>
-      _returController.tukarwarnafield;
-  Rx<TextEditingController> get gantikemasanfield =>
-      _returController.gantikemasanfield;
-  Rx<TextEditingController> get servismebelfield =>
-      _returController.servismebelfield;
-  Rx<TextEditingController> get gantibarangfield =>
-      _returController.gantibarangfield;
-  Rx<TextEditingController> get produkpenggantifield =>
-      _returController.produkpenggantifield;
-  RxList<ProductData> get selectedProducttarikbarang =>
-      _returController.selectedProducttarikbarang;
-  RxList<ProductData> get selectedProductgantikemasan =>
-      _returController.selectedProductgantikemasan;
-  RxList<ProductData> get selectedProductservismebel =>
-      _returController.selectedProductservismebel;
-  RxList<ProductData> get selectedProductgantibarang =>
-      _returController.selectedProductgantibarang;
-  RxList<ProductData> get selectedProductTukarWarna =>
-      _returController.selectedProductTukarWarna;
-  RxList<ProductData> get selectedProductProdukPengganti =>
-      _returController.selectedProductProdukPengganti;
-  RxList<TarikBarangModel> get listTarikBarang =>
-      _returController.listTarikBarang;
-  RxList<TarikBarangModel> get listgantikemasan =>
-      _returController.listgantikemasan;
-  RxList<TarikBarangModel> get listServisMebel =>
-      _returController.listServisMebel;
-  RxList<TarikBarangModel> get listGantiBarang =>
-      _returController.listGantiBarang;
+  Rx<TextEditingController> get tarikbarangfield => _returController.tarikbarangfield;
+  Rx<TextEditingController> get tukarwarnafield => _returController.tukarwarnafield;
+  Rx<TextEditingController> get gantikemasanfield => _returController.gantikemasanfield;
+  Rx<TextEditingController> get servismebelfield => _returController.servismebelfield;
+  Rx<TextEditingController> get gantibarangfield => _returController.gantibarangfield;
+  Rx<TextEditingController> get produkpenggantifield => _returController.produkpenggantifield;
+  RxList<ProductData> get selectedProducttarikbarang => _returController.selectedProducttarikbarang;
+  RxList<ProductData> get selectedProductgantikemasan => _returController.selectedProductgantikemasan;
+  RxList<ProductData> get selectedProductservismebel => _returController.selectedProductservismebel;
+  RxList<ProductData> get selectedProductgantibarang => _returController.selectedProductgantibarang;
+  RxList<ProductData> get selectedProductTukarWarna => _returController.selectedProductTukarWarna;
+  RxList<ProductData> get selectedProductProdukPengganti => _returController.selectedProductProdukPengganti;
+  RxList<TarikBarangModel> get listTarikBarang => _returController.listTarikBarang;
+  RxList<TarikBarangModel> get listgantikemasan => _returController.listgantikemasan;
+  RxList<TarikBarangModel> get listServisMebel => _returController.listServisMebel;
+  RxList<TarikBarangModel> get listGantiBarang => _returController.listGantiBarang;
   RxList<TukarWarnaModel> get listTukarWarna => _returController.listTukarWarna;
-  RxList<TarikBarangModel> get listProdukPengganti =>
-      _returController.listProdukPengganti;
-  RxList<TarikBarangModel> get listitemforProdukPengganti =>
-      _returController.listitemforProdukPengganti;
+  RxList<TarikBarangModel> get listProdukPengganti => _returController.listProdukPengganti;
+  RxList<TarikBarangModel> get listitemforProdukPengganti => _returController.listitemforProdukPengganti;
   RxList get listSisa => _returController.listSisa;
   RxInt get indexSegment => _returController.indexSegment;
   RxList<bool> get selectedsegment => _returController.selectedsegment;
@@ -245,18 +247,12 @@ class TakingOrderVendorController extends GetxController
   RxBool get gantikemasanhorizontal => _returController.gantikemasanhorizontal;
   RxBool get servismebelhorizontal => _returController.servismebelhorizontal;
   RxBool get gantibaranghorizontal => _returController.gantibaranghorizontal;
-  RxString get selectedKdProducttarikbarang =>
-      _returController.selectedKdProducttarikbarang;
-  RxString get selectedKdProductgantikemasan =>
-      _returController.selectedKdProductgantikemasan;
-  RxString get selectedKdProductservismebel =>
-      _returController.selectedKdProductservismebel;
-  RxString get selectedKdProductgantibarang =>
-      _returController.selectedKdProductgantibarang;
-  RxString get selectedKdProductTukarWarna =>
-      _returController.selectedKdProductTukarWarna;
-  RxString get selectedKdProductProdukPengganti =>
-      _returController.selectedKdProductProdukPengganti;
+  RxString get selectedKdProducttarikbarang => _returController.selectedKdProducttarikbarang;
+  RxString get selectedKdProductgantikemasan => _returController.selectedKdProductgantikemasan;
+  RxString get selectedKdProductservismebel => _returController.selectedKdProductservismebel;
+  RxString get selectedKdProductgantibarang => _returController.selectedKdProductgantibarang;
+  RxString get selectedKdProductTukarWarna => _returController.selectedKdProductTukarWarna;
+  RxString get selectedKdProductProdukPengganti => _returController.selectedKdProductProdukPengganti;
   RxString get selectedAlasantb => _returController.selectedAlasantb;
   RxString get selectedAlasangk => _returController.selectedAlasangk;
   RxBool get isOverfow => _returController.isOverfow;

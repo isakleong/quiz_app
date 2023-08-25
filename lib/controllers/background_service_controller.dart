@@ -12,13 +12,23 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/models/cartdetail.dart';
+import 'package:sfa_tools/models/cartmodel.dart';
+import 'package:sfa_tools/models/customer.dart';
+import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/servicebox.dart';
+import 'package:sfa_tools/models/shiptoaddress.dart';
+import 'package:sfa_tools/models/vendor.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import '../models/detailproductdata.dart';
 import '../models/module.dart';
+import '../models/penjualanpostmodel.dart';
+import '../models/productdata.dart';
 import '../models/quiz.dart';
 import '../tools/service.dart';
 import '../tools/utils.dart';
+import 'package:http/http.dart' as http;
 
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
@@ -72,6 +82,7 @@ void onStart(ServiceInstance service) async {
 
   Timer.periodic(const Duration(minutes: 5), (timer) async {
     await Backgroundservicecontroller().retrySubmitQuiz();
+    
 
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {
@@ -102,9 +113,47 @@ void onStart(ServiceInstance service) async {
       },
     );
   });
+
+  Timer.periodic(const Duration(minutes: 3), (timer) async {
+    await Backgroundservicecontroller().getPendingData();
+
+    if (service is AndroidServiceInstance) {
+      if (await service.isForegroundService()) {
+        service.setForegroundNotificationInfo(
+          title: "SFA Tools Service",   
+          content: "pending data Updated at ${DateTime.now()}",
+        );
+      }
+    }
+
+    final deviceInfo = DeviceInfoPlugin();
+    String? device;
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      device = androidInfo.model;
+    }
+
+    if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      device = iosInfo.model;
+    }
+
+    service.invoke(
+      'update',
+      {
+        "current_date": DateTime.now().toIso8601String(),
+        "device": device,
+      },
+    );
+  });
 }
 
 class Backgroundservicecontroller {
+  late Box boxpostpenjualan;
+  late Box boxreportpenjualan;
+  late Box vendorBox; 
+  List<Vendor> vendorlist = [];
+  
   Future hiveInitializer() async {
     Directory directory =
         await path_provider.getApplicationDocumentsDirectory();
@@ -112,6 +161,15 @@ class Backgroundservicecontroller {
     Hive.registerAdapter(ModuleAdapter());
     Hive.registerAdapter(QuizAdapter());
     Hive.registerAdapter(ServiceBoxAdapter());
+    Hive.registerAdapter(CustomerAdapter());
+    Hive.registerAdapter(ShipToAddressAdapter());
+    Hive.registerAdapter(VendorAdapter());
+    Hive.registerAdapter(ReportPenjualanModelAdapter());
+    Hive.registerAdapter(PenjualanPostModelAdapter());
+    Hive.registerAdapter(CartDetailAdapter());
+    Hive.registerAdapter(CartModelAdapter());
+    Hive.registerAdapter(ProductDataAdapter());
+    Hive.registerAdapter(DetailProductDataAdapter());
   }
 
   initializeNotifConfiguration() async {
@@ -315,6 +373,94 @@ class Backgroundservicecontroller {
     }
   }
 
+  getPendingData() async {
+    print("trying to get pending data");
+    await getBox();
+    print("finish get box");
+    List<dynamic> keys = await getListKey();
+    print("finish get key");
+    print(keys);
+    await closebox();
+    if(keys.isNotEmpty){
+    print("key not empty");
+      for (var m = 0; m < keys.length; m++) {
+        await sendPendingData(keys[m]);
+      }
+    }
+  }
+
+  sendPendingData(String keybox) async {
+    print("send pending data for key $keybox");
+    await getBox();
+    List<String> parts = keybox.split('|');
+    String salesid = parts[0].trim();
+    String cust = parts[1].trim();
+    String vendorprefix = parts[2].trim();
+    var listpostbox = await boxpostpenjualan.get(keybox);
+    List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
+    if (listpostbox != null){
+      listpost.clear();
+      for (var i = 0; i < listpostbox.length; i++) {
+        listpost.add(listpostbox[i]);
+      }
+      await closebox();
+      for (var i = 0; i < listpost.length; i++) {
+        await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorprefix);
+      }
+    }
+  }
+
+  getListKey() async {
+      List<dynamic> keys = await boxpostpenjualan.keys.toList();
+      return keys;
+  }
+
+  getBox() async {
+    try {
+      await hiveInitializer();
+      try {
+        vendorBox = await Hive.openBox('vendorBox');
+        boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
+        boxreportpenjualan = await Hive.openBox('penjualanReport');
+      } catch (e) {
+      }
+    } catch (e) {
+      try {
+        vendorBox = await Hive.openBox('vendorBox');
+        boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
+        boxreportpenjualan = await Hive.openBox('penjualanReport');
+      } catch (err) {
+      }
+    }
+  }
+
+  closebox(){
+    try {
+        vendorBox.close();
+        boxpostpenjualan.close();
+        boxreportpenjualan.close();
+    } catch (e) {
+      
+    }
+  }
+
+  getParameterData(String type) async {
+    //SalesID;CustID;LocCheckIn
+    String parameter = await Utils().readParameter();
+    if (parameter != "") {
+      var arrParameter = parameter.split(';');
+      for (int i = 0; i < arrParameter.length; i++) {
+        if (i == 0 && type == "sales") {
+          return arrParameter[i];
+        } else if (i == 1 && type == "cust") {
+          return arrParameter[i];
+        } else {
+          return arrParameter[2];
+        }
+      }
+    }
+  }
+
   accessBox(String type, String key ,String value, {String box='serviceBox'}) async {
     try {
       await hiveInitializer();
@@ -362,5 +508,81 @@ class Backgroundservicecontroller {
       }
     }
     return "err";
+  }
+
+  Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,String key,String vendorprefix) async {
+    print("send to api");
+    await getBox();
+    String noorder = data[0]['extDocId'];
+    var datavendor = vendorBox.get("$salesid|$custid");
+    vendorlist.clear();
+    for (var i = 0; i < datavendor.length; i++) {
+        vendorlist.add(datavendor[i]);
+    }
+    var idvendor =  vendorlist.indexWhere((element) => element.prefix == vendorprefix);
+    var _datareportpenjualan = await boxreportpenjualan.get(key);
+    var listpostbox = await boxpostpenjualan.get(key);
+    List<PenjualanPostModel> listpost = [];
+    for (var i = 0; i < listpostbox.length; i++) {
+      listpost.add(listpostbox[i]);
+    }
+    var idx = _datareportpenjualan!.indexWhere((element) => element.id == noorder);
+    var idxpost = -1;
+    for (var i = 0; i < listpost.length; i++) {
+      if(listpost[i].dataList[0]['extDocId'] == noorder){
+          idxpost = i;
+          break;
+      }
+    }
+    final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}sales-orders/store');
+    final request = http.MultipartRequest('POST', url);
+      for (var i = 0; i < data.length; i++) {
+        request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
+        request.fields['data[$i][orderDate]'] = data[i]['orderDate'];
+        request.fields['data[$i][customerNo]'] = data[i]['customerNo'];
+        request.fields['data[$i][lineNo]'] = data[i]['lineNo'];
+        request.fields['data[$i][itemNo]'] = data[i]['itemNo'];
+        request.fields['data[$i][qty]'] = data[i]['qty'];
+        request.fields['data[$i][note]'] = data[i]['note'];
+        request.fields['data[$i][shipTo]'] = data[i]['shipTo'];
+        request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
+      }
+      
+      print(_datareportpenjualan[idx].id);
+      try {
+        final response = await request.send();
+        final responseString = await response.stream.bytesToString();
+
+        if (response.statusCode == 200) {
+          _datareportpenjualan[idx].condition = "success";
+          listpost.removeAt(idxpost);
+          await boxpostpenjualan.delete(key);
+          if(listpost.isNotEmpty) {
+            print("isi list post ulang");
+            await boxpostpenjualan.put(key,listpost);
+          }
+          await boxreportpenjualan.delete(key);
+          print("isi ulang data report penjualan");
+          await boxreportpenjualan.put(key,_datareportpenjualan);
+          print(responseString);
+
+        } else {
+          _datareportpenjualan[idx].condition = "error";
+          await boxreportpenjualan.delete(key);
+          await boxreportpenjualan.put(key,_datareportpenjualan);
+          print(responseString);
+        }
+      } on SocketException {
+          _datareportpenjualan[idx].condition = "pending";
+          await boxreportpenjualan.delete(key);
+          await boxreportpenjualan.put(key,_datareportpenjualan);
+          print("socketexception");
+      } catch (e) {
+          _datareportpenjualan[idx].condition = "pending";
+          await boxreportpenjualan.delete(key);
+          await boxreportpenjualan.put(key,_datareportpenjualan);
+          print(e.toString() + " abnormal ");
+      } 
+      await closebox();
   }
 }

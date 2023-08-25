@@ -26,7 +26,7 @@ class BannerNoPayment extends StatelessWidget {
                     headings: 'H2',
                     fontSize: 12.sp,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   TextView(

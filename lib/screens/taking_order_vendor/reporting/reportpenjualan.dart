@@ -11,7 +11,7 @@ class ReportPenjualan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Obx(() => Column(
       children: [
         for (int index = 0;
             index <
@@ -117,6 +117,6 @@ class ReportPenjualan extends StatelessWidget {
                                 .listReportPenjualanShow.value[index],
                           )),
       ],
-    );
+    )); 
   }
 }

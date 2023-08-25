@@ -8,7 +8,6 @@ import 'package:sfa_tools/screens/taking_order_vendor/payment/paymentlist.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/paymenttab.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/piutangcard.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PaymentMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -34,7 +33,7 @@ class PaymentMainPage extends StatelessWidget {
                     Padding(
                         padding: EdgeInsets.only(
                             left: 0.05 * Get.width, top: 0.01 * Get.height),
-                        child: PiutangCard()),
+                        child: PiutangCard(nmtoko : _takingOrderVendorController.nmtoko.value)),
                     const SizedBox(
                       height: 15,
                     ),
@@ -94,8 +93,8 @@ class PaymentMainPage extends StatelessWidget {
                             itemBuilder: ((context, index, animation) {
                               return SlideTransition(
                                   position: Tween<Offset>(
-                                    begin: Offset(-1, 0),
-                                    end: Offset(0, 0),
+                                    begin: const Offset(-1, 0),
+                                    end: const Offset(0, 0),
                                   ).animate(CurvedAnimation(
                                     parent: animation,
                                     curve: Curves.easeInOut,

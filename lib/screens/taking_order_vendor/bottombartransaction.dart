@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/returitem/retur_main_page.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/payment_main_page.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/report_main_page.dart';
@@ -10,7 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BottomBartransaction extends StatelessWidget {
   BottomBartransaction({super.key});
-
+final TakingOrderVendorController _takingOrderVendorController =
+      Get.put(TakingOrderVendorController());
   List<Widget> _buildScreens() {
     return [
       TakingOrderVendorMainPage(),
@@ -56,8 +58,6 @@ class BottomBartransaction extends StatelessWidget {
     ];
   }
 
-  final PersistentTabController _controller =
-      PersistentTabController(initialIndex: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class BottomBartransaction extends StatelessWidget {
           return PersistentTabView(
             context,
             navBarHeight: 0.08 * Get.height,
-            controller: _controller,
+            controller: _takingOrderVendorController.controllerBar,
             screens: _buildScreens(),
             items: _navBarsItems(),
             confineInSafeArea: true,

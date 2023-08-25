@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/buttonpayment.dart';
@@ -63,7 +62,7 @@ class TransferTab extends StatelessWidget {
                                     ),
                                     Icon(
                                       FontAwesomeIcons.bank,
-                                      color: Color(0XFF319088),
+                                      color: const Color(0XFF319088),
                                       size: 12.sp,
                                     ),
                                     const SizedBox(
@@ -105,10 +104,10 @@ class TransferTab extends StatelessWidget {
                               labelStyle: TextStyle(
                                 fontSize: 10.sp,
                               ),
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               prefixIcon: Icon(
                                 FontAwesomeIcons.calculator,
-                                color: Color(0XFF319088),
+                                color: const Color(0XFF319088),
                                 size: 12.sp,
                               )),
                         ),

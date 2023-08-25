@@ -5,13 +5,14 @@ import 'package:dio/io.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/tools/logging.dart';
-// import 'package:http/http.dart' show Client, Request;
+// show Client, Request;
 
 class ApiClient {
   Future getData(String url, String path) async {
     try {
+      print(url);
       final dio = Dio(  
-        BaseOptions(baseUrl: url)
+        BaseOptions(baseUrl: url,connectTimeout: Duration(seconds: 15))
       )..interceptors.add(Logging());
 
       dio.httpClientAdapter = IOHttpClientAdapter(
@@ -147,6 +148,8 @@ class ApiClient {
 
   //   return testResult;
   // }
+  
+
 }
 
 class ApiHttpOverrides extends HttpOverrides {

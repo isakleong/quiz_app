@@ -46,7 +46,7 @@ class SingleUnit extends StatelessWidget {
                     behavior: HitTestBehavior.translucent,
                     onTap: onTapMinus,
                     child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Icon(
                         FontAwesomeIcons.minus,
                         size: 12.sp,
@@ -60,7 +60,7 @@ class SingleUnit extends StatelessWidget {
                       style: TextStyle(fontSize: 12.sp),
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none, // Remove the border
                         isDense: true, // Reduce the vertical padding
                       ),
@@ -77,7 +77,7 @@ class SingleUnit extends StatelessWidget {
                     behavior: HitTestBehavior.translucent,
                     onTap: onTapPlus,
                     child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Icon(
                         FontAwesomeIcons.plus,
                         size: 12.sp,
