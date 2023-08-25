@@ -29,7 +29,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   RxList<DropDownValueModel> listDropDown = <DropDownValueModel>[].obs;
   RxList<CartModel> cartList = <CartModel>[].obs;
   RxList<CartDetail> cartDetailList = <CartDetail>[].obs;
-  // late SingleValueDropDownController cnt;
   Rx<TextEditingController> cnt = TextEditingController().obs;
   Rx<TextEditingController> qty1 = TextEditingController().obs;
   Rx<TextEditingController> qty2 = TextEditingController().obs;
@@ -52,6 +51,26 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   var globalkeybox = "";
   RxBool needtorefresh = false.obs;
 
+  String formatDate(String dateTimeString) {
+    final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
+    final outputFormat = DateFormat('dd-MM-yyyy');
+
+    final dateTime = inputFormat.parse(dateTimeString);
+    final formattedDate = outputFormat.format(dateTime);
+
+    return formattedDate;
+  }
+
+  bool isDateNotToday(String dateTimeString) {
+    final inputFormat = DateFormat('dd-MM-yyyy');
+    final dateTime = inputFormat.parse(dateTimeString);
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    return dateTime.isBefore(today);
+  }
+
   getBox() async {
     try {
       vendorBox = await Hive.openBox('vendorBox');
@@ -73,6 +92,22 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       boxreportpenjualan.close();
       itemvendorbox.close();
     } catch (e) {
+    }
+  }
+
+  getproduct() async {
+    try {
+      var getVendorItem = await ApiClient().getData(vendorlist[idvendor].baseApiUrl,"/setting/vendor/${vendorlist[idvendor].prefix}",timeouttime: 10);
+      var data = MasterItemVendor.fromJson(getVendorItem);
+      // print(data);
+      listProduct.clear();
+      for (var i = 0; i < data.items.length; i++) {
+        listProduct.add(ProductData(data.items[i].code, data.items[i].name, [DetailProductData(data.items[i].uom.name, double.parse(data.items[i].price), data.items[i].uomId)],DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now())));
+      }
+      itemvendorbox.delete(globalkeybox);
+      itemvendorbox.put(globalkeybox,listProduct);
+    } catch (e) {
+      needtorefresh.value = true;
     }
   }
 
@@ -115,28 +150,21 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     }
     SplashscreenController _splashscreenController = callcontroller("splashscreencontroller");
     idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == _splashscreenController.selectedVendor.value.toLowerCase());
-    globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}";
+    globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
     
     //get list product vendor
     try {
       var itemvendorhive = itemvendorbox.get(globalkeybox);
-      // print(itemvendorhive);
-      if(itemvendorhive!= null){
+      if(itemvendorhive != null){
         listProduct.clear();
         for (var i = 0; i < itemvendorhive.length; i++) {
           listProduct.add(itemvendorhive[i]);
         }
-        // print("from hive");
-      } else {
-        var getVendorItem = await ApiClient().getData(vendorlist[idvendor].baseApiUrl,"/setting/vendor/${vendorlist[idvendor].prefix}",timeouttime: 10);
-        var data = MasterItemVendor.fromJson(getVendorItem);
-        // print(data);
-        listProduct.clear();
-        for (var i = 0; i < data.items.length; i++) {
-          listProduct.add(ProductData(data.items[i].code, data.items[i].name, [DetailProductData(data.items[i].uom.name, double.parse(data.items[i].price), data.items[i].uomId)]));
+        if(isDateNotToday(formatDate(listProduct[0].timestamp))){
+          await getproduct();
         }
-        itemvendorbox.delete(globalkeybox);
-        itemvendorbox.put(globalkeybox,listProduct);
+      } else {
+        await getproduct();
       }
     } catch (e) {
       needtorefresh.value = true;
@@ -505,17 +533,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   saveOrderToApi(String salesid,String custid, String notestext, String orderdate, String noorder, List<CartDetail> _listdetail, String choosedAddressdata) async {
       await getBox();
-      // print("saveOrderToApi");
-      // print(choosedAddress.value);
-      // print(listAddress.length);
-      for (var i = 0; i < listAddress.length; i++) {
-        print(listAddress[i].address);
-      }
       var idx = listAddress.indexWhere((element) => element.address == choosedAddressdata);
       List<Map<String, dynamic>> _data = [];
-      // print("-------------------------");
-      // print(_listdetail.length);
-      // print("-------------------------");
       for (var i = 0; i < _listdetail.length; i++) {
         _data.add(
           {

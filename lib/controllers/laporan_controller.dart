@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import '../models/customer.dart';
@@ -19,6 +20,26 @@ class LaporanController extends GetxController {
   late Box vendorBox; 
   List<Vendor> vendorlist = <Vendor>[];
   var idvendor = -1;
+
+  String formatDate(String dateTimeString) {
+    final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
+    final outputFormat = DateFormat('dd-MM-yyyy');
+
+    final dateTime = inputFormat.parse(dateTimeString);
+    final formattedDate = outputFormat.format(dateTime);
+
+    return formattedDate;
+  }
+
+  bool isDateNotToday(String dateTimeString) {
+    final inputFormat = DateFormat('dd-MM-yyyy');
+    final dateTime = inputFormat.parse(dateTimeString);
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    return dateTime.isBefore(today);
+  }
 
   getBox() async {
     try {
@@ -64,7 +85,7 @@ class LaporanController extends GetxController {
     // if(cust != "01B05070012"){
     //   cust = "01B05070012";
     // }
-    print("$salesid|$cust");
+    // print("$salesid|$cust");
     var datavendor = vendorBox.get("$salesid|$cust");
     vendorlist.clear();
     for (var i = 0; i < datavendor.length; i++) {
@@ -72,19 +93,25 @@ class LaporanController extends GetxController {
     }
     SplashscreenController _splashscreenController = callcontroller("splashscreencontroller");
     idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == _splashscreenController.selectedVendor.value.toLowerCase());
-    var dataPenjualanbox = boxreportpenjualan.get("$salesid|$cust|${vendorlist[idvendor].prefix}");
+    var gkey = "$salesid|$cust|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
+    var dataPenjualanbox = boxreportpenjualan.get(gkey);
     if(dataPenjualanbox != null){
       listReportPenjualan.clear();
+      var listdelindex = [];
       for (var i = 0; i < dataPenjualanbox.length; i++) {
         listReportPenjualan.add(dataPenjualanbox[i]);
+        if(isDateNotToday(formatDate(listReportPenjualan[i].tanggal))){
+          listdelindex.add(i == 0 ? i : (i-1));
+        }
       }
+      for (var i = 0; i < listdelindex.length; i++) {
+        listReportPenjualan.removeAt(listdelindex[i]);
+      }
+      await boxreportpenjualan.delete(gkey);
+      await boxreportpenjualan.put(gkey,listReportPenjualan);
     } else {
       listReportPenjualanShow.clear();
       listReportPenjualan.clear();
-    }
-
-    for (var i = 0; i < listReportPenjualan.length; i++) {
-      print(listReportPenjualan[i].id + " " + listReportPenjualan[i].condition);
     }
 
     // listReportPenjualan.add(data);

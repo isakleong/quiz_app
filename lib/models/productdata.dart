@@ -15,5 +15,8 @@ class ProductData {
   @HiveField(2)
   List<DetailProductData> detailProduct;
 
-  ProductData(this.kdProduct, this.nmProduct, this.detailProduct);
+  @HiveField(3)
+  String timestamp;
+
+  ProductData(this.kdProduct, this.nmProduct, this.detailProduct,this.timestamp);
 }

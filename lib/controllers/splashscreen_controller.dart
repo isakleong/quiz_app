@@ -513,7 +513,21 @@ class SplashscreenController extends GetxController with StateMixin implements W
           } else {
             var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
             if(idx != -1){
-              await getVendor();
+              await getBox();
+              var datacustomerbox = await customerBox.get(customerIdParams.value);
+              await closebox();
+                if(datacustomerbox!= null){
+                  Customer custdata = datacustomerbox;
+                  if(!isDateNotToday(formatDate(custdata.timestamp))){
+                    await checkofflinevendor();
+                    await moduleBox.clear();
+                    moduleBox.addAll(moduleList);
+                  } else {
+                    await getVendor();
+                  }
+                } else {
+                  await getVendor();
+                }
             }
             await postTrackingVersion();
           }
@@ -669,6 +683,26 @@ class SplashscreenController extends GetxController with StateMixin implements W
     }
   }
 
+  String formatDate(String dateTimeString) {
+    final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
+    final outputFormat = DateFormat('dd-MM-yyyy');
+
+    final dateTime = inputFormat.parse(dateTimeString);
+    final formattedDate = outputFormat.format(dateTime);
+
+    return formattedDate;
+  }
+
+  bool isDateNotToday(String dateTimeString) {
+    final inputFormat = DateFormat('dd-MM-yyyy');
+    final dateTime = inputFormat.parse(dateTimeString);
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    return dateTime.isBefore(today);
+  }
+
   getVendor() async { 
     await getBox();
     // if(customerIdParams.value != "01B05070012"){
@@ -694,7 +728,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       await vendorBox.delete("${salesIdParams.value}|${customerIdParams.value}");
       await vendorBox.put("${salesIdParams.value}|${customerIdParams.value}", data.availVendors);
       await customerBox.delete(data.customer.no);
-      await customerBox.put(data.customer.no,Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no));
+      await customerBox.put(data.customer.no,Customer(address: data.customer.address,city: data.customer.city,county:data.customer.county ,name: data.customer.name,no: data.customer.no,timestamp:  DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now())));
       await shiptobox.delete(data.customer.no);
       if(data.shipToAddresses.isNotEmpty){
         await shiptobox.put(data.customer.no,data.shipToAddresses);

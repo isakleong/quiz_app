@@ -395,7 +395,7 @@ class Backgroundservicecontroller {
     List<String> parts = keybox.split('|');
     String salesid = parts[0].trim();
     String cust = parts[1].trim();
-    String vendorprefix = parts[2].trim();
+    String vendorurl = parts[3].trim();
     var listpostbox = await boxpostpenjualan.get(keybox);
     List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
     if (listpostbox != null){
@@ -405,7 +405,7 @@ class Backgroundservicecontroller {
       }
       await closebox();
       for (var i = 0; i < listpost.length; i++) {
-        await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorprefix);
+        await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorurl);
       }
     }
   }
@@ -510,23 +510,28 @@ class Backgroundservicecontroller {
     return "err";
   }
 
-  Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,String key,String vendorprefix) async {
+  Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,String key,String vendorurl) async {
     print("send to api");
     await getBox();
+
     String noorder = data[0]['extDocId'];
-    var datavendor = vendorBox.get("$salesid|$custid");
-    vendorlist.clear();
-    for (var i = 0; i < datavendor.length; i++) {
-        vendorlist.add(datavendor[i]);
-    }
-    var idvendor =  vendorlist.indexWhere((element) => element.prefix == vendorprefix);
-    var _datareportpenjualan = await boxreportpenjualan.get(key);
+
     var listpostbox = await boxpostpenjualan.get(key);
     List<PenjualanPostModel> listpost = [];
     for (var i = 0; i < listpostbox.length; i++) {
       listpost.add(listpostbox[i]);
     }
-    var idx = _datareportpenjualan!.indexWhere((element) => element.id == noorder);
+
+    var _datareportpenjualan = await boxreportpenjualan.get(key);
+    var idx = -1;
+    if(_datareportpenjualan != null){
+      List<ReportPenjualanModel> _listreportpenjualan = [];
+        for (var i = 0; i < _datareportpenjualan.length; i++) {
+          _listreportpenjualan.add(_datareportpenjualan[i]);
+        }
+       idx = _listreportpenjualan.indexWhere((element) => element.id == noorder);
+    }
+    
     var idxpost = -1;
     for (var i = 0; i < listpost.length; i++) {
       if(listpost[i].dataList[0]['extDocId'] == noorder){
@@ -534,7 +539,7 @@ class Backgroundservicecontroller {
           break;
       }
     }
-    final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}sales-orders/store');
+    final url = Uri.parse('${vendorurl}sales-orders/store');
     final request = http.MultipartRequest('POST', url);
       for (var i = 0; i < data.length; i++) {
         request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
@@ -548,13 +553,14 @@ class Backgroundservicecontroller {
         request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
       }
       
-      print(_datareportpenjualan[idx].id);
       try {
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
 
         if (response.statusCode == 200) {
-          _datareportpenjualan[idx].condition = "success";
+          if(idx != -1){
+            _datareportpenjualan[idx].condition = "success";
+          }
           listpost.removeAt(idxpost);
           await boxpostpenjualan.delete(key);
           if(listpost.isNotEmpty) {
@@ -567,18 +573,24 @@ class Backgroundservicecontroller {
           print(responseString);
 
         } else {
-          _datareportpenjualan[idx].condition = "error";
+          if(idx != -1){
+            _datareportpenjualan[idx].condition = "error";
+          }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
           print(responseString);
         }
       } on SocketException {
-          _datareportpenjualan[idx].condition = "pending";
+          if(idx != -1){
+            _datareportpenjualan[idx].condition = "pending";
+          }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
           print("socketexception");
       } catch (e) {
-          _datareportpenjualan[idx].condition = "pending";
+          if(idx != -1){
+            _datareportpenjualan[idx].condition = "pending";
+          }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
           print(e.toString() + " abnormal ");

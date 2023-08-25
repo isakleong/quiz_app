@@ -20,19 +20,22 @@ class ProductDataAdapter extends TypeAdapter<ProductData> {
       fields[0] as String,
       fields[1] as String,
       (fields[2] as List).cast<DetailProductData>(),
+      fields[3] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProductData obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.kdProduct)
       ..writeByte(1)
       ..write(obj.nmProduct)
       ..writeByte(2)
-      ..write(obj.detailProduct);
+      ..write(obj.detailProduct)
+      ..writeByte(3)
+      ..write(obj.timestamp);
   }
 
   @override
