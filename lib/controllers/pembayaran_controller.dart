@@ -240,11 +240,59 @@ class PembayaranController extends GetxController {
     globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
     if(!Hive.isBoxOpen('BoxPembayaranReport')) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
     var datapembayaranreport = await boxPembayaranReport.get(globalkeybox);
-    boxPembayaranReport.close();
     if(datapembayaranreport != null){
       List<ReportPembayaranModel> listReportPembayaran = <ReportPembayaranModel>[];
       var converteddatapembayaran = json.decode(datapembayaranreport);
+      // print(converteddatapembayaran['data'].length);
+      List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
+      return {
+        'jenis': datalist.jenis,
+        'nomor': datalist.nomor,
+        'value': datalist.value,
+        'jatuhtempo': datalist.jatuhtempo,
+        'tipe': datalist.tipe
+      };
+    }).toList();
+      String jsonpembayaran = jsonEncode(listpaymentdatamap);
+      // print(jsonpembayaran);
+      var totalpayment = 0.0;
+      for (var i = 0; i < listpaymentdata.length; i++) {
+        totalpayment = totalpayment + listpaymentdata[i].value;
+      }
+      var length = converteddatapembayaran['data'].length + 1;
+      var inc = "0";
+      if(length < 10){
+        inc = "00$length";
+      } else if (length < 100) {
+        inc = "0$length";
+      } else {
+        inc = length.toString();
+      }
+      DateTime now = DateTime.now();
+      String noorder = "GP-$salesid-${DateFormat('yyMMddHHmm').format(now)}-$inc";
+      String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(now);
+      String time = DateFormat('HH:mm').format(now);
+      var jsondata = {
+          'id': noorder,
+          'total' : totalpayment,
+          'tanggal' :date,
+          'waktu' : time,
+          'listpayment' :jsonpembayaran
+        };
+      var datapembayaranlist = [];
+      for (var i = 0; i < converteddatapembayaran['data'].length; i++) {
+        datapembayaranlist.add(converteddatapembayaran['data'][i]);
+      }
+      datapembayaranlist.add(jsondata);
+      var joinedjson = {
+         "data" : datapembayaranlist
+      };
+      // print(jsonEncode(joinedjson));
+      boxPembayaranReport.delete(globalkeybox);
+      boxPembayaranReport.put(globalkeybox, jsonEncode(joinedjson));
+      boxPembayaranReport.close();
     }else {
+      print("else");
       List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
       return {
         'jenis': datalist.jenis,
@@ -256,14 +304,42 @@ class PembayaranController extends GetxController {
     }).toList();
       String jsonpembayaran = jsonEncode(listpaymentdatamap);
       print(jsonpembayaran);
-      // for (var i = 0; i < listpaymentdata.length; i++) {
-        
-      // }
+      var totalpayment = 0.0;
+      for (var i = 0; i < listpaymentdata.length; i++) {
+        totalpayment = totalpayment + listpaymentdata[i].value;
+      }
+      DateTime now = DateTime.now();
+      String noorder = "GP-$salesid-${DateFormat('yyMMddHHmm').format(now)}-001";
+      String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(now);
+      String time = DateFormat('HH:mm').format(now);
+      var jsondata = {
+         "data" : [{
+          'id': noorder,
+          'total' : totalpayment,
+          'tanggal' :date,
+          'waktu' : time,
+          'listpayment' :jsonpembayaran
+        }]
+      };
+      boxPembayaranReport.delete(globalkeybox);
+      boxPembayaranReport.put(globalkeybox, jsonEncode(jsondata));
     }
+    boxPembayaranReport.close();
+    clearvariable();
   }
 
-  savePaymenttoreport(){
-
+  clearvariable(){
+    choosedTransferMethod.value = "";
+    choosedTunaiMethod.value = "";
+    showBanner.value = 1;
+    listpaymentdata.clear();
+    nominaltunai.value.clear();
+    nominalCn.value.clear();
+    nominalcek.value.clear();
+    nominaltransfer.value.clear();
+    nomorcek.value.clear();
+    nmbank.value.clear();
+    jatuhtempotgl.value.clear();
   }
 
 }

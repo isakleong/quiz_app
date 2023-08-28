@@ -219,8 +219,16 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     _pembayaranController.handleDeleteItemPayment(metode, jenis);
   }
 
-  savepaymendata(){
-    _pembayaranController.savepaymendata();
+  savepaymendata() async {
+    await _pembayaranController.savepaymendata();
+    await _laporanController.getReportList();
+    try {
+      Navigator.pop(keyconfirm.currentContext!);
+    // ignore: empty_catches
+    } catch (e) {
+      
+    }
+    controllerBar.jumpToTab(3);
   }
 
   //for retur page
