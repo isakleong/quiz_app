@@ -264,9 +264,4 @@ class PembayaranController extends GetxController {
     }
   }
 
-  formatMoneyTextField(TextEditingController ctrl) {
-    try {
-      ctrl.text = Utils().formatNumber(int.parse(ctrl.text.toString().replaceAll(',', '')));
-    } catch (e) {}
-  }
 }
