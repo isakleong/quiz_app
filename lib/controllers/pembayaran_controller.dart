@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sfa_tools/controllers/penjualan_controller.dart';
+import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/paymentlist.dart';
+import 'package:sfa_tools/tools/utils.dart';
 
 import '../common/app_config.dart';
 import '../models/paymentdata.dart';
@@ -196,7 +199,7 @@ class PembayaranController extends GetxController {
                         jatuhtempo: dataTemp.jatuhtempo == ""
                             ? dataTemp.jatuhtempo
                             : "Jatuh Tempo : ${dataTemp.jatuhtempo}",
-                        value: "Rp ${formatNumber(dataTemp.value.toInt())}",
+                        value: "Rp ${Utils().formatNumber(dataTemp.value.toInt())}",
                         jenis: dataTemp.jenis,
                       ),
                     ),
@@ -229,11 +232,6 @@ class PembayaranController extends GetxController {
     }
   }
 
-  String formatNumber(int number) {
-    final NumberFormat numberFormat = NumberFormat('#,##0');
-    return numberFormat.format(number);
-  }
-
   handleeditpayment(String jenis) {
     try {
       var idx = 0;
@@ -245,23 +243,20 @@ class PembayaranController extends GetxController {
       }
       if (jenis == "Tunai") {
         choosedTunaiMethod.value = listpaymentdata[idx].tipe;
-        nominaltunai.value.text =
-            formatNumber(listpaymentdata[idx].value.toInt());
+        nominaltunai.value.text = Utils().formatNumber(listpaymentdata[idx].value.toInt());
         controller.index = tabvaluetunai;
       } else if (jenis == "Transfer") {
         choosedTransferMethod.value = listpaymentdata[idx].tipe;
-        nominaltransfer.value.text =
-            formatNumber(listpaymentdata[idx].value.toInt());
+        nominaltransfer.value.text = Utils().formatNumber(listpaymentdata[idx].value.toInt());
         controller.index = tabvaluetransfer;
       } else if (jenis == "cn") {
-        nominalCn.value.text = formatNumber(listpaymentdata[idx].value.toInt());
+        nominalCn.value.text = Utils().formatNumber(listpaymentdata[idx].value.toInt());
         controller.index = tabvalueCn;
       } else if (jenis == "cek") {
         nomorcek.value.text = listpaymentdata[idx].nomor.toString();
         nmbank.value.text = listpaymentdata[idx].tipe.toString();
         jatuhtempotgl.value.text = listpaymentdata[idx].jatuhtempo.toString();
-        nominalcek.value.text =
-            formatNumber(listpaymentdata[idx].value.toInt());
+        nominalcek.value.text = Utils().formatNumber(listpaymentdata[idx].value.toInt());
         controller.index = tabvaluecek;
       }
     } catch (e) {
@@ -271,8 +266,7 @@ class PembayaranController extends GetxController {
 
   formatMoneyTextField(TextEditingController ctrl) {
     try {
-      ctrl.text =
-          formatNumber(int.parse(ctrl.text.toString().replaceAll(',', '')));
+      ctrl.text = Utils().formatNumber(int.parse(ctrl.text.toString().replaceAll(',', '')));
     } catch (e) {}
   }
 }

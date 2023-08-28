@@ -86,31 +86,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     }
   }
 
-  String formatDate(String dateTimeString) {
-    final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
-    final outputFormat = DateFormat('dd-MM-yyyy');
-
-    final dateTime = inputFormat.parse(dateTimeString);
-    final formattedDate = outputFormat.format(dateTime);
-
-    return formattedDate;
-  }
-
-  bool isDateNotToday(String dateTimeString) {
-    final inputFormat = DateFormat('dd-MM-yyyy');
-    final dateTime = inputFormat.parse(dateTimeString);
-
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    return dateTime.isBefore(today);
-  }
-
-  String formatNumber(int number) {
-    final NumberFormat numberFormat = NumberFormat('#,##0');
-    return numberFormat.format(number);
-  }
-
   getBox() async {
     try {
       vendorBox = await Hive.openBox('vendorBox');
@@ -164,8 +139,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     await getBox();
 
     //get salesid and custid data
-    String salesid = await getParameterData("sales");
-    String custid = await getParameterData("cust");
+    String salesid = await Utils().getParameterData("sales");
+    String custid = await Utils().getParameterData("cust");
     
     //get customer data
     if(!customerBox.isOpen) await getBox();
@@ -204,7 +179,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         for (var i = 0; i < itemvendorhive.length; i++) {
           listProduct.add(itemvendorhive[i]);
         }
-        if(isDateNotToday(formatDate(listProduct[0].timestamp))){
+        if(Utils().isDateNotToday(Utils().formatDate(listProduct[0].timestamp))){
           listProduct.clear();
           await getproduct(type: 'hivefilled');
         }
@@ -470,8 +445,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   checkout() async {
     await getBox();
-    String salesid = await getParameterData("sales");
-    String cust = await getParameterData("cust");
+    String salesid = await Utils().getParameterData("sales");
+    String cust = await Utils().getParameterData("cust");
     // if(cust != "01B05070012"){
     //   cust = "01B05070012";
     // }
@@ -615,23 +590,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
           await closebox();
           controllerLaporan.getReportList();
       }
-  }
-
-  getParameterData(String type) async {
-    //SalesID;CustID;LocCheckIn
-    String parameter = await Utils().readParameter();
-    if (parameter != "") {
-      var arrParameter = parameter.split(';');
-      for (int i = 0; i < arrParameter.length; i++) {
-        if (i == 0 && type == "sales") {
-          return arrParameter[i];
-        } else if (i == 1 && type == "cust") {
-          return arrParameter[i];
-        } else if (type == "") {
-          return arrParameter[i];
-        }
-      }
-    }
   }
 
 }

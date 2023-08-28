@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import '../models/reportpembayaranmodel.dart';
@@ -21,26 +22,6 @@ class LaporanController extends GetxController {
   var idvendor = -1;
   String activevendor= "";
 
-  String formatDate(String dateTimeString) {
-    final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
-    final outputFormat = DateFormat('dd-MM-yyyy');
-
-    final dateTime = inputFormat.parse(dateTimeString);
-    final formattedDate = outputFormat.format(dateTime);
-
-    return formattedDate;
-  }
-
-  bool isDateNotToday(String dateTimeString) {
-    final inputFormat = DateFormat('dd-MM-yyyy');
-    final dateTime = inputFormat.parse(dateTimeString);
-
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    return dateTime.isBefore(today);
-  }
-
   getBox() async {
     try {
       boxreportpenjualan = await Hive.openBox('penjualanReport');
@@ -60,28 +41,10 @@ class LaporanController extends GetxController {
     }
   }
 
-  getParameterData(String type) async {
-    //SalesID;CustID;LocCheckIn
-    String parameter = await Utils().readParameter();
-    if (parameter != "") {
-      var arrParameter = parameter.split(';');
-      print(parameter);
-      for (int i = 0; i < arrParameter.length; i++) {
-        if (i == 0 && type == "sales") {
-          return arrParameter[0];
-        } else if (i == 1 && type == "cust") {
-          return arrParameter[i];
-        } else if (type == "") {
-          return arrParameter[i];
-        }
-      }
-    }
-  }
-
   getReportList() async {
     await getBox();
-    String salesid = await getParameterData("sales");
-    String cust = await getParameterData("cust");
+    String salesid = await Utils().getParameterData("sales");
+    String cust = await Utils().getParameterData("cust");
     // if(cust != "01B05070012"){
     //   cust = "01B05070012";
     // }
@@ -99,7 +62,7 @@ class LaporanController extends GetxController {
       var listdelindex = [];
       for (var i = 0; i < dataPenjualanbox.length; i++) {
         listReportPenjualan.add(dataPenjualanbox[i]);
-        if(isDateNotToday(formatDate(listReportPenjualan[i].tanggal))){
+        if(Utils().isDateNotToday(Utils().formatDate(listReportPenjualan[i].tanggal))){
           listdelindex.add(i == 0 ? i : (i-1));
         }
       }
@@ -234,20 +197,6 @@ class LaporanController extends GetxController {
     }
     listReportPenjualanShow.refresh();
     listReportPembayaranshow.refresh();
-  }
-
-  callcontroller(String controllername){
-     if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()){
-      final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
-      if(!isControllerRegistered){
-          final SplashscreenController controller =  Get.put(SplashscreenController());
-          return controller;
-      } else {
-          final SplashscreenController controller = Get.find();
-          return controller;
-      }    
-    }
-    
   }
 
 }

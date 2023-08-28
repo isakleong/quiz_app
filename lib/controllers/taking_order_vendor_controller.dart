@@ -110,10 +110,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     return _penjualanController.countPriceTotal();
   }
 
-  String formatNumber(int number) {
-    return _penjualanController.formatNumber(number);
-  }
-
   previewCheckOut() {
     _penjualanController.previewCheckOut();
   }
