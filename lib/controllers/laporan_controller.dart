@@ -20,6 +20,7 @@ class LaporanController extends GetxController {
   late Box vendorBox; 
   List<Vendor> vendorlist = <Vendor>[];
   var idvendor = -1;
+  String activevendor= "";
 
   String formatDate(String dateTimeString) {
     final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
@@ -91,8 +92,7 @@ class LaporanController extends GetxController {
     for (var i = 0; i < datavendor.length; i++) {
         vendorlist.add(datavendor[i]);
     }
-    SplashscreenController _splashscreenController = callcontroller("splashscreencontroller");
-    idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == _splashscreenController.selectedVendor.value.toLowerCase());
+    idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
     var gkey = "$salesid|$cust|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
     var dataPenjualanbox = boxreportpenjualan.get(gkey);
     if(dataPenjualanbox != null){

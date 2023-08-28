@@ -52,6 +52,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   var idvendor = -1;
   var globalkeybox = "";
   RxBool needtorefresh = false.obs;
+  String activevendor = "";
 
   savePenjualanState(dynamic data) async {
     if(!Hive.isBoxOpen('statepenjualan')) statePenjualanbox = await Hive.openBox('statepenjualan');
@@ -192,8 +193,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     for (var i = 0; i < datavendor.length; i++) {
       vendorlist.add(datavendor[i]);
     }
-    SplashscreenController _splashscreenController = callcontroller("splashscreencontroller");
-    idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == _splashscreenController.selectedVendor.value.toLowerCase());
+    idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
     globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
     
     //get list product vendor

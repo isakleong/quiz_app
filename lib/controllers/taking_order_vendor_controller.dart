@@ -6,6 +6,7 @@ import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/pembayaran_controller.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/controllers/retur_controller.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/models/productdata.dart';
@@ -26,15 +27,38 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   late Animation<Offset> slideAnimation;
   final keyconfirm = GlobalKey();
   final PersistentTabController controllerBar = PersistentTabController(initialIndex: 0);
+  String activevendor = "";
 
   @override
   void onInit() {
     super.onInit();
+    setactivendor();
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..forward();
     slideAnimation = Tween<Offset>(begin: const Offset(0, -0.2),end: const Offset(0, 0),).animate(CurvedAnimation(parent: animationController,curve: Curves.easeInOut,));
     _pembayaranController.controller = TabController(vsync: this, length: 3, initialIndex: 0);
-    _penjualanController.getListItem();
-    _laporanController.getReportList();
+  }
+
+  callcontroller(String controllername){
+     if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()){
+      final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
+      if(!isControllerRegistered){
+          final SplashscreenController _controller =  Get.put(SplashscreenController());
+          return _controller;
+      } else {
+          final SplashscreenController _controller = Get.find();
+          return _controller;
+      }    
+    }
+    
+  }
+
+  setactivendor(){
+      SplashscreenController _splashscreenController = callcontroller("splashscreencontroller");
+      _penjualanController.activevendor = _splashscreenController.selectedVendor.value.toLowerCase();
+      _laporanController.activevendor = _splashscreenController.selectedVendor.value.toLowerCase();
+      activevendor = _splashscreenController.selectedVendor.value.toLowerCase();
+      _penjualanController.getListItem();
+      _laporanController.getReportList();
   }
 
   handleAddMinusBtn(TextEditingController ctrl, var action) {
