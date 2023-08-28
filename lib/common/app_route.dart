@@ -57,7 +57,7 @@ class AppRoute {
     GetPage(
       name: RouteName.takingOrderVendor,
       page: () => BottomBartransaction(),
-      transition: Transition.fadeIn,
+      transition: Transition.circularReveal,
     ),
   ];
 }

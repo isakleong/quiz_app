@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/itemlistpenjualan.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
@@ -10,6 +11,17 @@ class ItemReportPenjualan extends StatelessWidget {
   String idx;
   ReportPenjualanModel data;
   ItemReportPenjualan({super.key, required this.idx, required this.data});
+
+  
+  String formatDate(String dateTimeString) {
+    final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
+    final outputFormat = DateFormat('dd-MM-yyyy');
+
+    final dateTime = inputFormat.parse(dateTimeString);
+    final formattedDate = outputFormat.format(dateTime);
+
+    return formattedDate;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +101,7 @@ class ItemReportPenjualan extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       TextView(
-                        text: data.tanggal,
+                        text: formatDate(data.tanggal),
                         fontSize: 14,
                       ),
                       TextView(

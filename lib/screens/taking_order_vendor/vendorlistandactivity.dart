@@ -17,8 +17,8 @@ class _VendorListAndActivityState extends State<VendorListAndActivity> with Sing
   List<bool> selectedsegment = [true, false];
   int indexSegment = 0;
   List pages = [
-    VendorlistPage(),
-    ActivityPage(),
+    const VendorlistPage(),
+    const ActivityPage(),
   ];
   @override
   void initState() {

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:encrypt/encrypt.dart';
+import 'package:intl/intl.dart';
 import 'package:sfa_tools/common/app_config.dart';
 
 class Utils {
@@ -63,4 +64,48 @@ class Utils {
     final encrypted = encrypter.encrypt(params, iv: initVector);
     return encrypted.base64;
   }
+
+  //created for vendor
+  String formatNumber(int number) {
+    final NumberFormat numberFormat = NumberFormat('#,##0');
+    return numberFormat.format(number);
+  }
+
+  String formatDate(String dateTimeString) {
+    final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
+    final outputFormat = DateFormat('dd-MM-yyyy');
+
+    final dateTime = inputFormat.parse(dateTimeString);
+    final formattedDate = outputFormat.format(dateTime);
+
+    return formattedDate;
+  }
+
+  bool isDateNotToday(String dateTimeString) {
+    final inputFormat = DateFormat('dd-MM-yyyy');
+    final dateTime = inputFormat.parse(dateTimeString);
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    return dateTime.isBefore(today);
+  }
+  
+  getParameterData(String type) async {
+    //SalesID;CustID;LocCheckIn
+    String parameter = await readParameter();
+    if (parameter != "") {
+      var arrParameter = parameter.split(';');
+      for (int i = 0; i < arrParameter.length; i++) {
+        if (i == 0 && type == "sales") {
+          return arrParameter[i];
+        } else if (i == 1 && type == "cust") {
+          return arrParameter[i];
+        } else if (type == "") {
+          return arrParameter[i];
+        }
+      }
+    }
+  }
+  //end created for vendor
 }

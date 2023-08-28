@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/reportheader.dart';
+import 'package:sfa_tools/tools/utils.dart';
 
 import '../../../controllers/taking_order_vendor_controller.dart';
 import 'itemreportpembayaran.dart';
@@ -42,7 +43,7 @@ class ReportPembayaran extends StatelessWidget {
                       data: _takingOrderVendorController
                           .listReportPembayaranshow.value[index],
                       total:
-                          "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                          "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
                     ),
                   ],
                 )
@@ -70,7 +71,7 @@ class ReportPembayaran extends StatelessWidget {
                           data: _takingOrderVendorController
                               .listReportPembayaranshow.value[index],
                           total:
-                              "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                              "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
                         ),
                         SizedBox(
                           height: 0.04 * Get.height,
@@ -99,7 +100,7 @@ class ReportPembayaran extends StatelessWidget {
                                 data: _takingOrderVendorController
                                     .listReportPembayaranshow.value[index],
                                 total:
-                                    "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                                    "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
                               ),
                             ),
                             SizedBox(
@@ -122,7 +123,7 @@ class ReportPembayaran extends StatelessWidget {
                             data: _takingOrderVendorController
                                 .listReportPembayaranshow.value[index],
                             total:
-                                "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                                "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
                           ),
                         ),
       ],

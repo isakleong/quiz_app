@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/checkoutlist.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
+import '../../../tools/utils.dart';
 
 class DialogCheckOut extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -268,7 +267,7 @@ class DialogCheckOut extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextView(
-                            text: _takingOrderVendorController.formatNumber(
+                            text: Utils().formatNumber(
                                 _takingOrderVendorController.countPriceTotal()),
                             headings: 'H2',
                             fontSize: 11.sp,
@@ -300,7 +299,7 @@ class DialogCheckOut extends StatelessWidget {
                         children: [
                           TextView(
                             text:
-                                _takingOrderVendorController.formatNumber(2500),
+                                Utils().formatNumber(2500),
                             headings: 'H2',
                             fontSize: 10.sp,
                             color: Colors.amber.shade900,

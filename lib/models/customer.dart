@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'customer.g.dart';
 
@@ -20,12 +21,16 @@ class Customer extends HiveObject {
   @HiveField(4)
   final String city;
 
+  @HiveField(5)
+  final String timestamp;
+
   Customer({
     required this.no,
     required this.name,
     required this.address,
     required this.county,
     required this.city,
+    required this.timestamp
   });
 
    factory Customer.fromJson(Map<String, dynamic> json) {
@@ -35,6 +40,7 @@ class Customer extends HiveObject {
       address: json['Address'],
       county: json['County'],
       city: json['City'],
+      timestamp: DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now())
     );
   }
 

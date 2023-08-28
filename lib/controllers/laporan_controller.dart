@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
+import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
-import '../models/customer.dart';
 import '../models/reportpembayaranmodel.dart';
 import '../models/reportpenjualanmodel.dart';
 import '../models/vendor.dart';
@@ -19,6 +20,7 @@ class LaporanController extends GetxController {
   late Box vendorBox; 
   List<Vendor> vendorlist = <Vendor>[];
   var idvendor = -1;
+  String activevendor= "";
 
   getBox() async {
     try {
@@ -39,52 +41,39 @@ class LaporanController extends GetxController {
     }
   }
 
-  getParameterData(String type) async {
-    //SalesID;CustID;LocCheckIn
-    String parameter = await Utils().readParameter();
-    if (parameter != "") {
-      var arrParameter = parameter.split(';');
-      print(parameter);
-      for (int i = 0; i < arrParameter.length; i++) {
-        if (i == 0 && type == "sales") {
-          return arrParameter[0];
-        } else if (i == 1 && type == "cust") {
-          return arrParameter[i];
-        } else if (type == "") {
-          return arrParameter[i];
-        }
-      }
-    }
-  }
-
   getReportList() async {
     await getBox();
-    String salesid = await getParameterData("sales");
-    String cust = await getParameterData("cust");
+    String salesid = await Utils().getParameterData("sales");
+    String cust = await Utils().getParameterData("cust");
     // if(cust != "01B05070012"){
     //   cust = "01B05070012";
     // }
-    print("$salesid|$cust");
+    // print("$salesid|$cust");
     var datavendor = vendorBox.get("$salesid|$cust");
     vendorlist.clear();
     for (var i = 0; i < datavendor.length; i++) {
         vendorlist.add(datavendor[i]);
     }
-    SplashscreenController _splashscreenController = callcontroller("splashscreencontroller");
-    idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == _splashscreenController.selectedVendor.value.toLowerCase());
-    var dataPenjualanbox = boxreportpenjualan.get("$salesid|$cust|${vendorlist[idvendor].prefix}");
+    idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
+    var gkey = "$salesid|$cust|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
+    var dataPenjualanbox = boxreportpenjualan.get(gkey);
     if(dataPenjualanbox != null){
       listReportPenjualan.clear();
+      var listdelindex = [];
       for (var i = 0; i < dataPenjualanbox.length; i++) {
         listReportPenjualan.add(dataPenjualanbox[i]);
+        if(Utils().isDateNotToday(Utils().formatDate(listReportPenjualan[i].tanggal))){
+          listdelindex.add(i == 0 ? i : (i-1));
+        }
       }
+      for (var i = 0; i < listdelindex.length; i++) {
+        listReportPenjualan.removeAt(listdelindex[i]);
+      }
+      await boxreportpenjualan.delete(gkey);
+      await boxreportpenjualan.put(gkey,listReportPenjualan);
     } else {
       listReportPenjualanShow.clear();
       listReportPenjualan.clear();
-    }
-
-    for (var i = 0; i < listReportPenjualan.length; i++) {
-      print(listReportPenjualan[i].id + " " + listReportPenjualan[i].condition);
     }
 
     // listReportPenjualan.add(data);
@@ -208,20 +197,6 @@ class LaporanController extends GetxController {
     }
     listReportPenjualanShow.refresh();
     listReportPembayaranshow.refresh();
-  }
-
-  callcontroller(String controllername){
-     if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()){
-      final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
-      if(!isControllerRegistered){
-          final SplashscreenController _controller =  Get.put(SplashscreenController());
-          return _controller;
-      } else {
-          final SplashscreenController _controller = Get.find();
-          return _controller;
-      }    
-    }
-    
   }
 
 }

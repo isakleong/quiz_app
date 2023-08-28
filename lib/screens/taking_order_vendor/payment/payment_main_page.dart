@@ -9,6 +9,8 @@ import 'package:sfa_tools/screens/taking_order_vendor/payment/paymenttab.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/piutangcard.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
 
+import '../../../tools/utils.dart';
+
 class PaymentMainPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
   PaymentMainPage({super.key});
@@ -126,7 +128,7 @@ class PaymentMainPage extends StatelessWidget {
                                               .listpaymentdata[index].jatuhtempo
                                           : "Jatuh Tempo : ${_takingOrderVendorController.listpaymentdata[index].jatuhtempo}",
                                       value:
-                                          "Rp ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.listpaymentdata[index].value.toInt())}",
+                                          "Rp ${Utils().formatNumber(_takingOrderVendorController.listpaymentdata[index].value.toInt())}",
                                       jenis: _takingOrderVendorController
                                           .listpaymentdata[index].jenis,
                                     ),

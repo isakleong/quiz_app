@@ -4,6 +4,7 @@ import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 
+import '../../../tools/utils.dart';
 import '../../../widgets/textview.dart';
 
 class ItemListPembayaran extends StatelessWidget {
@@ -73,7 +74,7 @@ class ItemListPembayaran extends StatelessWidget {
                                   children: [
                                     TextView(
                                       text:
-                                          "Rp ${_takingOrderVendorController.formatNumber(data.value.toInt())}",
+                                          "Rp ${Utils().formatNumber(data.value.toInt())}",
                                       fontSize: 13,
                                     ),
                                     SizedBox(

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 
 class ActivityPage extends StatelessWidget {
-  ActivityPage({super.key});
+  const ActivityPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +27,8 @@ class ActivityPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                    Text("Tangki Air Jerapah"),
-                    SizedBox(height: 20,),
+                    const Text("Tangki Air Jerapah"),
+                    const SizedBox(height: 20,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

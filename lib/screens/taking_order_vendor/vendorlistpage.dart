@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
 
@@ -8,7 +6,7 @@ import '../../common/route_config.dart';
 import '../../widgets/textview.dart';
 
 class VendorlistPage extends StatelessWidget {
-  VendorlistPage({super.key});
+  const VendorlistPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +14,7 @@ class VendorlistPage extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
           Center(
             child: Card(
               elevation: 10,
@@ -44,7 +42,7 @@ class VendorlistPage extends StatelessWidget {
                     onTap: () async {
                      Get.toNamed(RouteName.takingOrderVendor);
                     },
-                    child: Padding(
+                    child: const Padding(
                       padding:  EdgeInsets.only(top :20, bottom: 20 ,left: 40,right: 40),
                       child: TextView(
                           headings: "H2",

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/pembayaran_controller.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/controllers/retur_controller.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/models/productdata.dart';
@@ -26,15 +27,38 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   late Animation<Offset> slideAnimation;
   final keyconfirm = GlobalKey();
   final PersistentTabController controllerBar = PersistentTabController(initialIndex: 0);
+  String activevendor = "";
 
   @override
   void onInit() {
     super.onInit();
+    setactivendor();
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..forward();
     slideAnimation = Tween<Offset>(begin: const Offset(0, -0.2),end: const Offset(0, 0),).animate(CurvedAnimation(parent: animationController,curve: Curves.easeInOut,));
     _pembayaranController.controller = TabController(vsync: this, length: 3, initialIndex: 0);
-    _penjualanController.getListItem();
-    _laporanController.getReportList();
+  }
+
+  callcontroller(String controllername){
+     if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()){
+      final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
+      if(!isControllerRegistered){
+          final SplashscreenController controller =  Get.put(SplashscreenController());
+          return controller;
+      } else {
+          final SplashscreenController controller = Get.find();
+          return controller;
+      }    
+    }
+    
+  }
+
+  setactivendor(){
+      SplashscreenController splashscreenController = callcontroller("splashscreencontroller");
+      _penjualanController.activevendor = splashscreenController.selectedVendor.value.toLowerCase();
+      _laporanController.activevendor = splashscreenController.selectedVendor.value.toLowerCase();
+      activevendor = splashscreenController.selectedVendor.value.toLowerCase();
+      _penjualanController.getListItem();
+      _laporanController.getReportList();
   }
 
   handleAddMinusBtn(TextEditingController ctrl, var action) {
@@ -87,10 +111,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     return _penjualanController.countPriceTotal();
   }
 
-  String formatNumber(int number) {
-    return _penjualanController.formatNumber(number);
-  }
-
   previewCheckOut() {
     _penjualanController.previewCheckOut();
   }
@@ -140,6 +160,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       qty3.value.clear();
       listAnimation.clear();
       choosedAddress.value = "";
+      await _penjualanController.deletestate();
       try{
         Navigator.pop(keychecout.currentContext!);
         Navigator.pop(keyconfirm.currentContext!);
@@ -180,10 +201,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   Rx<TextEditingController> get nominaltunai => _pembayaranController.nominaltunai;
   get pembayaranListKey => _pembayaranController.pembayaranListKey;
   get showBanner => _pembayaranController.showBanner;
-
-  formatMoneyTextField(TextEditingController ctrl) {
-    _pembayaranController.formatMoneyTextField(ctrl);
-  }
 
   selectDate(BuildContext context) {
     _pembayaranController.selectDate(context);

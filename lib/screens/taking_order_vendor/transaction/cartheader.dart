@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
+import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -73,7 +74,7 @@ class CartHeader extends StatelessWidget {
                     ),
                     ChipsItem(
                       satuan:
-                          "Total : ${_takingOrderVendorController.formatNumber(_takingOrderVendorController.countPriceTotal())}",
+                          "Total : ${Utils().formatNumber(_takingOrderVendorController.countPriceTotal())}",
                       color: const Color(0xFF8B4513),
                       fontSize: 8.sp,
                     ),

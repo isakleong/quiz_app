@@ -22,13 +22,14 @@ class CustomerAdapter extends TypeAdapter<Customer> {
       address: fields[2] as String,
       county: fields[3] as String,
       city: fields[4] as String,
+      timestamp: fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Customer obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.no)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class CustomerAdapter extends TypeAdapter<Customer> {
       ..writeByte(3)
       ..write(obj.county)
       ..writeByte(4)
-      ..write(obj.city);
+      ..write(obj.city)
+      ..writeByte(5)
+      ..write(obj.timestamp);
   }
 
   @override
@@ -62,6 +65,7 @@ Customer _$CustomerFromJson(Map<String, dynamic> json) => Customer(
       address: json['address'] as String,
       county: json['county'] as String,
       city: json['city'] as String,
+      timestamp: json['timestamp'] as String,
     );
 
 Map<String, dynamic> _$CustomerToJson(Customer instance) => <String, dynamic>{
@@ -70,4 +74,5 @@ Map<String, dynamic> _$CustomerToJson(Customer instance) => <String, dynamic>{
       'address': instance.address,
       'county': instance.county,
       'city': instance.city,
+      'timestamp': instance.timestamp,
     };

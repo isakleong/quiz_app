@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
+import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
@@ -157,7 +157,7 @@ class CartList extends StatelessWidget {
                     children: [
                       if (width > 450)
                         ChipsItem(
-                          satuan: _takingOrderVendorController.formatNumber(
+                          satuan: Utils().formatNumber(
                               _takingOrderVendorController
                                   .countTotalDetail(data)),
                           color: const Color(0xFF8B4513),
@@ -165,7 +165,7 @@ class CartList extends StatelessWidget {
                         )
                       else
                         ChipsItem(
-                          satuan: _takingOrderVendorController.formatNumber(
+                          satuan: Utils().formatNumber(
                               _takingOrderVendorController
                                   .countTotalDetail(data)),
                           color: const Color(0xFF8B4513),

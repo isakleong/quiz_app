@@ -3,7 +3,6 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
@@ -137,7 +136,7 @@ class ProductSearch extends StatelessWidget {
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppConfig.mainCyan,
-                                    padding:  EdgeInsets.only(left: 10,right: 10,top: 5,bottom: 5),
+                                    padding:  const EdgeInsets.only(left: 10,right: 10,top: 5,bottom: 5),
                                     shape: const StadiumBorder(),
                                     elevation: 5,
                                   ),
@@ -145,7 +144,7 @@ class ProductSearch extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children:  [
                                       FaIcon(FontAwesomeIcons.arrowsRotate,size: 12.sp,),
-                                      SizedBox(width: 10),
+                                      const SizedBox(width: 10),
                                       TextView(
                                           headings: "H4",
                                           text: "Refresh",
