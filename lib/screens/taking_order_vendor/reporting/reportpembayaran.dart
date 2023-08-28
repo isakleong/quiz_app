@@ -14,16 +14,8 @@ class ReportPembayaran extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        for (int index = 0;
-            index <
-                _takingOrderVendorController
-                    .listReportPembayaranshow.value.length;
-            index++)
-          index == 0 &&
-                  index !=
-                      _takingOrderVendorController
-                              .listReportPembayaranshow.value.length -
-                          1
+        for (int index = 0;index < _takingOrderVendorController.listReportPembayaranshow.value.length;index++)
+          index == 0 && index != _takingOrderVendorController.listReportPembayaranshow.value.length - 1
               ? Column(
                   children: [
                     Padding(
@@ -47,12 +39,8 @@ class ReportPembayaran extends StatelessWidget {
                     ),
                   ],
                 )
-              : index == 0 &&
-                      index ==
-                          _takingOrderVendorController
-                                  .listReportPembayaranshow.value.length -
-                              1
-                  ? Column(
+              : index == 0 && index == _takingOrderVendorController.listReportPembayaranshow.value.length - 1 ? 
+              Column(
                       children: [
                         Padding(
                             padding: EdgeInsets.only(
@@ -83,11 +71,7 @@ class ReportPembayaran extends StatelessWidget {
                         )
                       ],
                     )
-                  : index != 0 &&
-                          index ==
-                              _takingOrderVendorController
-                                      .listReportPembayaranshow.value.length -
-                                  1
+                  : index != 0 && index == _takingOrderVendorController.listReportPembayaranshow.value.length - 1
                       ? Column(
                           children: [
                             Padding(
