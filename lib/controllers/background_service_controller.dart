@@ -373,13 +373,62 @@ class Backgroundservicecontroller {
     }
   }
 
+  accessBox(String type, String key ,String value, {String box='serviceBox'}) async {
+    try {
+      await hiveInitializer();
+    } catch (e) {
+      // return;
+    }
+    var mybox = await Hive.openBox<ServiceBox>(box);
+    if(type == "read"){
+      try {
+        var data = mybox.get(key);
+        mybox.close();
+
+        return data;
+      } catch (e) {
+        return "err";
+      }
+    } else if (type == "create") {
+      try {
+        mybox.put(key, ServiceBox(value: value));
+        mybox.close();
+
+        return "created";
+      } catch (e) {
+        return "err";
+      }
+    } else if (type == "update") {
+      try {
+        var boxtoupdate = mybox.get(key);
+        boxtoupdate!.value = value;
+        var newvalue = boxtoupdate.value;
+        mybox.close();
+
+        return newvalue;
+      } catch (e) {
+        return "err";
+      }
+    } else if (type == "delete") {
+      try {
+        mybox.delete(key);
+        mybox.close();
+
+        return "deleted";
+      } catch (e) {
+        return "err";
+      }
+    }
+    return "err";
+  }
+
+  //taking order vendor section
   getPendingData() async {
     print("trying to get pending data");
     await getBox();
     print("finish get box");
     List<dynamic> keys = await getListKey();
     print("finish get key");
-    print(keys);
     await closebox();
     if(keys.isNotEmpty){
     print("key not empty");
@@ -442,72 +491,6 @@ class Backgroundservicecontroller {
     } catch (e) {
       
     }
-  }
-
-  getParameterData(String type) async {
-    //SalesID;CustID;LocCheckIn
-    String parameter = await Utils().readParameter();
-    if (parameter != "") {
-      var arrParameter = parameter.split(';');
-      for (int i = 0; i < arrParameter.length; i++) {
-        if (i == 0 && type == "sales") {
-          return arrParameter[i];
-        } else if (i == 1 && type == "cust") {
-          return arrParameter[i];
-        } else {
-          return arrParameter[2];
-        }
-      }
-    }
-  }
-
-  accessBox(String type, String key ,String value, {String box='serviceBox'}) async {
-    try {
-      await hiveInitializer();
-    } catch (e) {
-      // return;
-    }
-    var mybox = await Hive.openBox<ServiceBox>(box);
-    if(type == "read"){
-      try {
-        var data = mybox.get(key);
-        mybox.close();
-
-        return data;
-      } catch (e) {
-        return "err";
-      }
-    } else if (type == "create") {
-      try {
-        mybox.put(key, ServiceBox(value: value));
-        mybox.close();
-
-        return "created";
-      } catch (e) {
-        return "err";
-      }
-    } else if (type == "update") {
-      try {
-        var boxtoupdate = mybox.get(key);
-        boxtoupdate!.value = value;
-        var newvalue = boxtoupdate.value;
-        mybox.close();
-
-        return newvalue;
-      } catch (e) {
-        return "err";
-      }
-    } else if (type == "delete") {
-      try {
-        mybox.delete(key);
-        mybox.close();
-
-        return "deleted";
-      } catch (e) {
-        return "err";
-      }
-    }
-    return "err";
   }
 
   Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,String key,String vendorurl) async {
@@ -597,4 +580,5 @@ class Backgroundservicecontroller {
       } 
       await closebox();
   }
+  //end taking order vendor section
 }
