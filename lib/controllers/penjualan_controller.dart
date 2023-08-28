@@ -437,20 +437,20 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     if(controllername.toLowerCase() == "LaporanController".toLowerCase()){
       final isControllerRegistered = GetInstance().isRegistered<LaporanController>();
       if(!isControllerRegistered){
-          final LaporanController _controller =  Get.put(LaporanController());
-          return _controller;
+          final LaporanController controller =  Get.put(LaporanController());
+          return controller;
       } else {
-          final LaporanController _controller = Get.find();
-          return _controller;
+          final LaporanController controller = Get.find();
+          return controller;
       }
     } else if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()){
       final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
       if(!isControllerRegistered){
-          final SplashscreenController _controller =  Get.put(SplashscreenController());
-          return _controller;
+          final SplashscreenController controller =  Get.put(SplashscreenController());
+          return controller;
       } else {
-          final SplashscreenController _controller = Get.find();
-          return _controller;
+          final SplashscreenController controller = Get.find();
+          return controller;
       }    
     }
     
@@ -475,11 +475,12 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     // if(cust != "01B05070012"){
     //   cust = "01B05070012";
     // }
-    var _datapenjualan = await boxreportpenjualan.get(globalkeybox);
+    var datapenjualan = await boxreportpenjualan.get(globalkeybox);
     String inc = "000";
     var idx = 0;
-    if(_datapenjualan != null)
-    idx =  _datapenjualan!.isEmpty ? 0 : _datapenjualan.length;
+    if(datapenjualan != null) {
+      idx =  datapenjualan!.isEmpty ? 0 : datapenjualan.length;
+    }
     idx = idx + 1;
     if (idx < 10){
       inc = "00$idx";
@@ -518,19 +519,19 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     await closebox();
   }
 
-  saveOrderToApi(String salesid,String custid, String notestext, String orderdate, String noorder, List<CartDetail> _listdetail, String choosedAddressdata) async {
+  saveOrderToApi(String salesid,String custid, String notestext, String orderdate, String noorder, List<CartDetail> listdetail, String choosedAddressdata) async {
       await getBox();
       var idx = listAddress.indexWhere((element) => element.address == choosedAddressdata);
-      List<Map<String, dynamic>> _data = [];
-      for (var i = 0; i < _listdetail.length; i++) {
-        _data.add(
+      List<Map<String, dynamic>> data = [];
+      for (var i = 0; i < listdetail.length; i++) {
+        data.add(
           {
             'extDocId' : noorder,
             'orderDate' : orderdate,
             'customerNo' : custid,
             'lineNo' : (i+1).toString(),
-            'itemNo' : _listdetail[i].kdProduct,
-            'qty' : _listdetail[i].itemOrder[0].Qty.toString(),
+            'itemNo' : listdetail[i].kdProduct,
+            'qty' : listdetail[i].itemOrder[0].Qty.toString(),
             'note' : notestext,
             'shipTo' : listAddress[idx].code,
             'salesPersonCode' : salesid
@@ -540,16 +541,16 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       var listpostbox = await boxpostpenjualan.get(globalkeybox);
       List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
       if (listpostbox == null){
-          listpost.add(PenjualanPostModel(_data));
+          listpost.add(PenjualanPostModel(data));
       } else {
         for (var i = 0; i < listpostbox.length; i++) {
           listpost.add(listpostbox[i]);
         }
-        listpost.add(PenjualanPostModel(_data));
+        listpost.add(PenjualanPostModel(data));
       }
       await boxpostpenjualan.put(globalkeybox,listpost);
       await closebox();
-      await postDataOrder(_data,salesid,custid,listpost);
+      await postDataOrder(data,salesid,custid,listpost);
   }
 
   Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,List<PenjualanPostModel> listpostdata) async {
@@ -557,8 +558,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     // print(data);
     String noorder = data[0]['extDocId'];
     LaporanController controllerLaporan = callcontroller("laporancontroller");
-    var _datareportpenjualan = await boxreportpenjualan.get(globalkeybox);
-    var idx = _datareportpenjualan!.indexWhere((element) => element.id == noorder);
+    var datareportpenjualan = await boxreportpenjualan.get(globalkeybox);
+    var idx = datareportpenjualan!.indexWhere((element) => element.id == noorder);
     var idxpost = -1;
     for (var i = 0; i < listpostdata.length; i++) {
       if(listpostdata[i].dataList[0]['extDocId'] == noorder){
@@ -584,31 +585,31 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         final responseString = await response.stream.bytesToString();
 
         if (response.statusCode == 200) {
-          _datareportpenjualan[idx].condition = "success";
+          datareportpenjualan[idx].condition = "success";
           listpostdata.removeAt(idxpost);
           await boxpostpenjualan.delete(globalkeybox);
           if(listpostdata.isNotEmpty) {
             await boxpostpenjualan.put(globalkeybox,listpostdata);
           }
           await boxreportpenjualan.delete(globalkeybox);
-          await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
+          await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
           // print(responseString);
 
         } else {
-          _datareportpenjualan[idx].condition = "gagal";
+          datareportpenjualan[idx].condition = "gagal";
           await boxreportpenjualan.delete(globalkeybox);
-          await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
+          await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
           // print(responseString);
         }
       } on SocketException {
-          _datareportpenjualan[idx].condition = "pending";
+          datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
-          await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
+          await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
           // print("socketexception");
       } catch (e) {
-          _datareportpenjualan[idx].condition = "pending";
+          datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
-          await boxreportpenjualan.put(globalkeybox,_datareportpenjualan);
+          await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
           // print(e.toString() + " abnormal ");
       }  finally{
           await closebox();

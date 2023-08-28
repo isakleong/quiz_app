@@ -411,7 +411,7 @@ class Backgroundservicecontroller {
   }
 
   getListKey() async {
-      List<dynamic> keys = await boxpostpenjualan.keys.toList();
+      List<dynamic> keys = boxpostpenjualan.keys.toList();
       return keys;
   }
 
@@ -593,7 +593,7 @@ class Backgroundservicecontroller {
           }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
-          print(e.toString() + " abnormal ");
+          print("$e abnormal ");
       } 
       await closebox();
   }

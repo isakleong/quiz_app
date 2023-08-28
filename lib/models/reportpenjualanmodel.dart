@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:sfa_tools/models/cartmodel.dart';
 
 import 'cartdetail.dart';
 

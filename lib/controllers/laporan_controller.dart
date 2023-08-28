@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
-import '../models/customer.dart';
 import '../models/reportpembayaranmodel.dart';
 import '../models/reportpenjualanmodel.dart';
 import '../models/vendor.dart';
@@ -241,11 +240,11 @@ class LaporanController extends GetxController {
      if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()){
       final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
       if(!isControllerRegistered){
-          final SplashscreenController _controller =  Get.put(SplashscreenController());
-          return _controller;
+          final SplashscreenController controller =  Get.put(SplashscreenController());
+          return controller;
       } else {
-          final SplashscreenController _controller = Get.find();
-          return _controller;
+          final SplashscreenController controller = Get.find();
+          return controller;
       }    
     }
     

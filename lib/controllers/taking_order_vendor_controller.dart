@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/pembayaran_controller.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
@@ -42,21 +41,21 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
      if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()){
       final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
       if(!isControllerRegistered){
-          final SplashscreenController _controller =  Get.put(SplashscreenController());
-          return _controller;
+          final SplashscreenController controller =  Get.put(SplashscreenController());
+          return controller;
       } else {
-          final SplashscreenController _controller = Get.find();
-          return _controller;
+          final SplashscreenController controller = Get.find();
+          return controller;
       }    
     }
     
   }
 
   setactivendor(){
-      SplashscreenController _splashscreenController = callcontroller("splashscreencontroller");
-      _penjualanController.activevendor = _splashscreenController.selectedVendor.value.toLowerCase();
-      _laporanController.activevendor = _splashscreenController.selectedVendor.value.toLowerCase();
-      activevendor = _splashscreenController.selectedVendor.value.toLowerCase();
+      SplashscreenController splashscreenController = callcontroller("splashscreencontroller");
+      _penjualanController.activevendor = splashscreenController.selectedVendor.value.toLowerCase();
+      _laporanController.activevendor = splashscreenController.selectedVendor.value.toLowerCase();
+      activevendor = splashscreenController.selectedVendor.value.toLowerCase();
       _penjualanController.getListItem();
       _laporanController.getReportList();
   }
