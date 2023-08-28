@@ -68,28 +68,20 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     statePenjualanbox.close();
     if(databox != null){
       var datadecoded = json.decode(databox);
-      var datacart = json.decode(datadecoded['cartlist']);
-      for (var i = 0; i < datacart.length; i++) {
-        CartModel datacartlist = CartModel.fromJson(datacart[i]);
+      for (var i = 0; i < datadecoded.length; i++) {
+        CartModel datacartlist = CartModel.fromJson(datadecoded[i]);
         var idx = listProduct.indexWhere((element) => element.kdProduct == datacartlist.kdProduct);
         if(idx > -1 &&
          listProduct[idx].nmProduct == datacartlist.nmProduct &&
          listProduct[idx].detailProduct.indexWhere((element) => element.satuan == datacartlist.Satuan) != -1 &&
          listProduct[idx].detailProduct.indexWhere((element) => element.hrg == datacartlist.hrgPerPieces) != -1 ){
-
           cartList.add(datacartlist);
-          listAnimation.add(Tween<Offset>(begin: Offset((-0.9 - (i * 0.06)), 0),end: const Offset(0, 0),
-          ).animate(CurvedAnimation(parent: AnimationController(vsync: this,duration: const Duration(milliseconds: 700),)..forward(),curve: Curves.easeInOut,)));
-
         } else {
+          cartList.clear();
           return;
         }
       }
-      var datacartdetail = json.decode(datadecoded['cartdetailist']);
-      for (var i = 0; i < datacartdetail.length; i++) {
-        CartDetail datacartdetaillist =  CartDetail.fromJson(datacartdetail[i]);
-        cartDetailList.add(datacartdetaillist);
-      }
+      fillCartDetail(type: 'loadstate');
     }
   }
 
@@ -154,7 +146,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       itemvendorbox.delete(globalkeybox);
       itemvendorbox.put(globalkeybox,listProduct);
     } catch (e) {
-      if(type == ""){
+      if(type == null){
         needtorefresh.value = true;
       } else {
         var itemvendorhive = itemvendorbox.get(globalkeybox);
@@ -276,7 +268,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     return total.toInt();
   }
 
-  fillCartDetail() async {
+  fillCartDetail({String? type}) async {
     cartDetailList.clear();
     listAnimation.clear();
     for (var i = 0; i < cartList.length; i++) {
@@ -316,17 +308,19 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         }
       }
     }
-    if(cartList.isNotEmpty){
-      convertalldatatojson();
-    } else {
-      if(!Hive.isBoxOpen('statepenjualan')) statePenjualanbox = await Hive.openBox('statepenjualan');
-      await statePenjualanbox.delete(globalkeybox);
-      await statePenjualanbox.close();
+    if(type == null){ 
+      print("here");
+      if(cartList.isNotEmpty){
+        convertalldatatojson();
+      } else {
+        if(!Hive.isBoxOpen('statepenjualan')) statePenjualanbox = await Hive.openBox('statepenjualan');
+        await statePenjualanbox.delete(globalkeybox);
+        await statePenjualanbox.close();
+      }
     }
   }
 
   convertalldatatojson(){
-   
     List<Map<String, dynamic>> cartListmap = cartList.map((clist) {
       return {
         'kdProduct': clist.kdProduct,
@@ -336,39 +330,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         'hrgPerPieces': clist.hrgPerPieces
       };
     }).toList();
-
     String jsonStrclist = jsonEncode(cartListmap);
-    print(jsonStrclist);
-
-    List<Map<String, dynamic>> cartdetailListmap = cartDetailList.map((cdetaillist) {
-      List _listitemorder = [];
-      for (var i = 0; i < cdetaillist.itemOrder.length; i++) {
-        _listitemorder.add({
-          'kdProduct' : cdetaillist.itemOrder[i].kdProduct,
-          'nmProduct' : cdetaillist.itemOrder[i].nmProduct,
-          'Qty' : cdetaillist.itemOrder[i].Qty,
-          'Satuan' : cdetaillist.itemOrder[i].Satuan,
-          'hrgPerPieces' : cdetaillist.itemOrder[i].hrgPerPieces
-        });
-      }
-      return {
-        'kdProduct': cdetaillist.kdProduct,
-        'nmProduct': cdetaillist.nmProduct,
-        'itemOrder': _listitemorder,
-      };
-    }).toList();
-    print(cartdetailListmap);
-
-    String jsonStrcdetaillist = jsonEncode(cartdetailListmap);
-    
-    var convjson = {
-      "cartlist" : jsonStrclist,
-      "cartdetailist" : jsonStrcdetaillist
-    };
-
-    String convjsondatastring = jsonEncode(convjson);
-    print(convjsondatastring);
-    savePenjualanState(convjsondatastring);
+    savePenjualanState(jsonStrclist);
   }
 
   countTotalDetail(CartDetail data) {
