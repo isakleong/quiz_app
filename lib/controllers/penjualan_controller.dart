@@ -61,6 +61,12 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     await statePenjualanbox.close();
   }
 
+  deletestate() async {
+    if(!Hive.isBoxOpen('statepenjualan')) statePenjualanbox = await Hive.openBox('statepenjualan');
+    await statePenjualanbox.delete(globalkeybox);
+    await statePenjualanbox.close();
+  }
+
   getpenjualanstate() async {
     if(!Hive.isBoxOpen('statepenjualan')){
       statePenjualanbox = await Hive.openBox('statepenjualan');
@@ -288,9 +294,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       if(cartList.isNotEmpty){
         convertalldatatojson();
       } else {
-        if(!Hive.isBoxOpen('statepenjualan')) statePenjualanbox = await Hive.openBox('statepenjualan');
-        await statePenjualanbox.delete(globalkeybox);
-        await statePenjualanbox.close();
+        deletestate();
       }
     }
   }
@@ -475,7 +479,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     await closebox();
     await saveOrderToReport(noorder, date, time,  notes.value.text, listcopy,salesid,cust);
     saveOrderToApi(salesid, cust, notes.value.text, date, noorder,listcopy,alm);
-    //return ReportPenjualanModel('pending',noorder,"penjualan" , date, time, listcopy, notes.value.text);
   }
 
   saveOrderToReport(String noorder,String date, String time, String notestext , List<CartDetail> dataList, String salesid, String cust) async {

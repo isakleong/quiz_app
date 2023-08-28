@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/pembayaran_controller.dart';
@@ -159,6 +160,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       qty3.value.clear();
       listAnimation.clear();
       choosedAddress.value = "";
+      await _penjualanController.deletestate();
       try{
         Navigator.pop(keychecout.currentContext!);
         Navigator.pop(keyconfirm.currentContext!);
@@ -199,10 +201,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   Rx<TextEditingController> get nominaltunai => _pembayaranController.nominaltunai;
   get pembayaranListKey => _pembayaranController.pembayaranListKey;
   get showBanner => _pembayaranController.showBanner;
-
-  formatMoneyTextField(TextEditingController ctrl) {
-    _pembayaranController.formatMoneyTextField(ctrl);
-  }
 
   selectDate(BuildContext context) {
     _pembayaranController.selectDate(context);
