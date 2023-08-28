@@ -705,13 +705,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
   getVendor() async { 
     await getBox();
-    // if(customerIdParams.value != "01B05070012"){
-    //   customerIdParams.value = "01B05070012";
-    // }
     try {
-      // print("getvendor");
       var result = await ApiClient().getData(AppConfig.baseUrlVendor,"/tangki-air-jerapah-dev/api/setting/customer/${customerIdParams.value}");
-      // print(result);
       var data = VendorInfo.fromJson(result);
       if(data.availVendors.isNotEmpty){
         int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
@@ -734,10 +729,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
         await shiptobox.put(data.customer.no,data.shipToAddresses);
       }
     } on SocketException{
-      // print("socket error getvendor");
       moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
     } catch (e) {
-      // print("catch error getvendor ${e.toString()}");
       moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
     }
     

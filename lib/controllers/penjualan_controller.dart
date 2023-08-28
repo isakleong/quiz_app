@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
@@ -46,10 +47,51 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   late Box boxpostpenjualan;
   late Box boxreportpenjualan;
   late Box itemvendorbox;
+  late Box statePenjualanbox;
   final keycheckout = GlobalKey();
   var idvendor = -1;
   var globalkeybox = "";
   RxBool needtorefresh = false.obs;
+
+  savePenjualanState(dynamic data) async {
+    if(!Hive.isBoxOpen('statepenjualan')) statePenjualanbox = await Hive.openBox('statepenjualan');
+    await statePenjualanbox.delete(globalkeybox);
+    await statePenjualanbox.put(globalkeybox, data);
+    await statePenjualanbox.close();
+  }
+
+  getpenjualanstate() async {
+    if(!Hive.isBoxOpen('statepenjualan')){
+      statePenjualanbox = await Hive.openBox('statepenjualan');
+    }
+    var databox = await statePenjualanbox.get(globalkeybox);
+    statePenjualanbox.close();
+    if(databox != null){
+      var datadecoded = json.decode(databox);
+      var datacart = json.decode(datadecoded['cartlist']);
+      for (var i = 0; i < datacart.length; i++) {
+        CartModel datacartlist = CartModel.fromJson(datacart[i]);
+        var idx = listProduct.indexWhere((element) => element.kdProduct == datacartlist.kdProduct);
+        if(idx > -1 &&
+         listProduct[idx].nmProduct == datacartlist.nmProduct &&
+         listProduct[idx].detailProduct.indexWhere((element) => element.satuan == datacartlist.Satuan) != -1 &&
+         listProduct[idx].detailProduct.indexWhere((element) => element.hrg == datacartlist.hrgPerPieces) != -1 ){
+
+          cartList.add(datacartlist);
+          listAnimation.add(Tween<Offset>(begin: Offset((-0.9 - (i * 0.06)), 0),end: const Offset(0, 0),
+          ).animate(CurvedAnimation(parent: AnimationController(vsync: this,duration: const Duration(milliseconds: 700),)..forward(),curve: Curves.easeInOut,)));
+
+        } else {
+          return;
+        }
+      }
+      var datacartdetail = json.decode(datadecoded['cartdetailist']);
+      for (var i = 0; i < datacartdetail.length; i++) {
+        CartDetail datacartdetaillist =  CartDetail.fromJson(datacartdetail[i]);
+        cartDetailList.add(datacartdetaillist);
+      }
+    }
+  }
 
   String formatDate(String dateTimeString) {
     final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
@@ -69,6 +111,11 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     final today = DateTime(now.year, now.month, now.day);
 
     return dateTime.isBefore(today);
+  }
+
+  String formatNumber(int number) {
+    final NumberFormat numberFormat = NumberFormat('#,##0');
+    return numberFormat.format(number);
   }
 
   getBox() async {
@@ -95,7 +142,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     }
   }
 
-  getproduct() async {
+  getproduct({String? type}) async {
     try {
       var getVendorItem = await ApiClient().getData(vendorlist[idvendor].baseApiUrl,"/setting/vendor/${vendorlist[idvendor].prefix}",timeouttime: 10);
       var data = MasterItemVendor.fromJson(getVendorItem);
@@ -107,7 +154,15 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       itemvendorbox.delete(globalkeybox);
       itemvendorbox.put(globalkeybox,listProduct);
     } catch (e) {
-      needtorefresh.value = true;
+      if(type == ""){
+        needtorefresh.value = true;
+      } else {
+        var itemvendorhive = itemvendorbox.get(globalkeybox);
+        listProduct.clear();
+        for (var i = 0; i < itemvendorhive.length; i++) {
+          listProduct.add(itemvendorhive[i]);
+        }
+      }
     }
   }
 
@@ -118,9 +173,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     //get salesid and custid data
     String salesid = await getParameterData("sales");
     String custid = await getParameterData("cust");
-    // if(custid != "01B05070012"){
-    //   custid = "01B05070012";
-    // }
     
     //get customer data
     if(!customerBox.isOpen) await getBox();
@@ -161,40 +213,16 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
           listProduct.add(itemvendorhive[i]);
         }
         if(isDateNotToday(formatDate(listProduct[0].timestamp))){
-          await getproduct();
+          listProduct.clear();
+          await getproduct(type: 'hivefilled');
         }
       } else {
         await getproduct();
       }
+      await getpenjualanstate();
     } catch (e) {
       needtorefresh.value = true;
     }
-
-    // vendorBox.get("")
-    // listProduct.clear();
-    // listProduct.add(ProductData('asc', _laporanController.dummyList[0],
-    //     [DetailProductData('dos', 15000)]));
-    // listProduct.add(ProductData('desc', _laporanController.dummyList[1], [
-    //   DetailProductData('kaleng', 10000),
-    //   DetailProductData('biji', 20000)
-    // ]));
-    // listProduct.add(ProductData('ccc', _laporanController.dummyList[2],
-    //     [DetailProductData('inner plas', 25000)]));
-    // listProduct.add(ProductData('acc', _laporanController.dummyList[3],
-    //     [DetailProductData('biji', 30000), DetailProductData('dos', 35000)]));
-    // listProduct.add(ProductData('cca', _laporanController.dummyList[4], [
-    //   DetailProductData('dos', 50000),
-    //   DetailProductData('inner plas', 100000),
-    //   DetailProductData('biji', 120000)
-    // ]));
-    // listProduct.add(ProductData('cac', _laporanController.dummyList[5],
-    //     [DetailProductData('dos', 200000)]));
-
-    // for (var i = 0; i < listProduct.length; i++) {
-    //   listDropDown.add(DropDownValueModel(
-    //       value: listProduct[i].kdProduct, name: listProduct[i].nmProduct));
-    // }
-
     await closebox();
   }
 
@@ -248,49 +276,15 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     return total.toInt();
   }
 
-  String formatNumber(int number) {
-    final NumberFormat numberFormat = NumberFormat('#,##0');
-    return numberFormat.format(number);
-  }
-
-  fillCartDetail() {
+  fillCartDetail() async {
     cartDetailList.clear();
     listAnimation.clear();
     for (var i = 0; i < cartList.length; i++) {
       if (cartDetailList.isEmpty) {
-        List<CartModel> data = [
-          CartModel(cartList[i].kdProduct, cartList[i].nmProduct,
-              cartList[i].Qty, cartList[i].Satuan, cartList[i].hrgPerPieces)
-        ];
-        // if (cartList.length - 1 == i) {
-        listAnimation.add(Tween<Offset>(
-          begin: Offset((-0.9 - (i * 0.06)), 0),
-          end: const Offset(0, 0),
-        ).animate(CurvedAnimation(
-          parent: AnimationController(
-            vsync: this,
-            duration: const Duration(milliseconds: 700),
-          )..forward(),
-          curve: Curves.easeInOut,
-        )));
-        // } else {
-        //   listAnimation.add(Tween<Offset>(
-        //     begin: Offset(0, 0),
-        //     end: Offset(0, 0),
-        //   ).animate(CurvedAnimation(
-        //     parent: AnimationController(
-        //       vsync: this,
-        //       duration: Duration(milliseconds: 500),
-        //     )..forward(),
-        //     curve: Curves.easeInOut,
-        //   )));
-        // }
-
-        cartDetailList.add(CartDetail(
-          cartList[i].kdProduct,
-          cartList[i].nmProduct,
-          data,
-        ));
+        List<CartModel> data = [CartModel(cartList[i].kdProduct, cartList[i].nmProduct,cartList[i].Qty, cartList[i].Satuan, cartList[i].hrgPerPieces)];
+        listAnimation.add(Tween<Offset>(begin: Offset((-0.9 - (i * 0.06)), 0),end: const Offset(0, 0),
+        ).animate(CurvedAnimation(parent: AnimationController(vsync: this,duration: const Duration(milliseconds: 700),)..forward(),curve: Curves.easeInOut,)));
+        cartDetailList.add(CartDetail(cartList[i].kdProduct,cartList[i].nmProduct,data));
       } else {
         for (var j = 0; j < cartDetailList.length; j++) {
           if (cartDetailList[j].kdProduct == cartList[i].kdProduct) {
@@ -302,12 +296,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
               }
             }
             if (counter == 0) {
-              cartDetailList[j].itemOrder.add(CartModel(
-                  cartList[i].kdProduct,
-                  cartList[i].nmProduct,
-                  cartList[i].Qty,
-                  cartList[i].Satuan,
-                  cartList[i].hrgPerPieces));
+              cartDetailList[j].itemOrder.add(CartModel(cartList[i].kdProduct,cartList[i].nmProduct,cartList[i].Qty,cartList[i].Satuan,cartList[i].hrgPerPieces));
             }
           } else if (cartDetailList[j].kdProduct != cartList[i].kdProduct) {
             var counter = 0;
@@ -318,31 +307,68 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
               }
             }
             if (counter == 0) {
-              List<CartModel> data = [
-                CartModel(
-                    cartList[i].kdProduct,
-                    cartList[i].nmProduct,
-                    cartList[i].Qty,
-                    cartList[i].Satuan,
-                    cartList[i].hrgPerPieces)
-              ];
-              listAnimation.add(Tween<Offset>(
-                begin: Offset((-0.9 - (i * 0.06)), 0),
-                end: const Offset(0, 0),
-              ).animate(CurvedAnimation(
-                parent: AnimationController(
-                  vsync: this,
-                  duration: const Duration(milliseconds: 700),
-                )..forward(),
-                curve: Curves.easeInOut,
-              )));
-              cartDetailList.add(CartDetail(
-                  cartList[i].kdProduct, cartList[i].nmProduct, data));
+              List<CartModel> data = [CartModel(cartList[i].kdProduct,cartList[i].nmProduct,cartList[i].Qty,cartList[i].Satuan,cartList[i].hrgPerPieces)];
+              listAnimation.add(Tween<Offset>(begin: Offset((-0.9 - (i * 0.06)), 0),end: const Offset(0, 0),
+              ).animate(CurvedAnimation(parent: AnimationController(vsync: this,duration: const Duration(milliseconds: 700),)..forward(),curve: Curves.easeInOut)));
+              cartDetailList.add(CartDetail(cartList[i].kdProduct, cartList[i].nmProduct, data));
             }
           }
         }
       }
     }
+    if(cartList.isNotEmpty){
+      convertalldatatojson();
+    } else {
+      if(!Hive.isBoxOpen('statepenjualan')) statePenjualanbox = await Hive.openBox('statepenjualan');
+      await statePenjualanbox.delete(globalkeybox);
+      await statePenjualanbox.close();
+    }
+  }
+
+  convertalldatatojson(){
+   
+    List<Map<String, dynamic>> cartListmap = cartList.map((clist) {
+      return {
+        'kdProduct': clist.kdProduct,
+        'nmProduct': clist.nmProduct,
+        'Qty': clist.Qty,
+        'Satuan': clist.Satuan,
+        'hrgPerPieces': clist.hrgPerPieces
+      };
+    }).toList();
+
+    String jsonStrclist = jsonEncode(cartListmap);
+    print(jsonStrclist);
+
+    List<Map<String, dynamic>> cartdetailListmap = cartDetailList.map((cdetaillist) {
+      List _listitemorder = [];
+      for (var i = 0; i < cdetaillist.itemOrder.length; i++) {
+        _listitemorder.add({
+          'kdProduct' : cdetaillist.itemOrder[i].kdProduct,
+          'nmProduct' : cdetaillist.itemOrder[i].nmProduct,
+          'Qty' : cdetaillist.itemOrder[i].Qty,
+          'Satuan' : cdetaillist.itemOrder[i].Satuan,
+          'hrgPerPieces' : cdetaillist.itemOrder[i].hrgPerPieces
+        });
+      }
+      return {
+        'kdProduct': cdetaillist.kdProduct,
+        'nmProduct': cdetaillist.nmProduct,
+        'itemOrder': _listitemorder,
+      };
+    }).toList();
+    print(cartdetailListmap);
+
+    String jsonStrcdetaillist = jsonEncode(cartdetailListmap);
+    
+    var convjson = {
+      "cartlist" : jsonStrclist,
+      "cartdetailist" : jsonStrcdetaillist
+    };
+
+    String convjsondatastring = jsonEncode(convjson);
+    print(convjsondatastring);
+    savePenjualanState(convjsondatastring);
   }
 
   countTotalDetail(CartDetail data) {
@@ -355,14 +381,12 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   getDetailProduct(String kdProduct) {
     List<ProductData> list = <ProductData>[];
-    // print(cnt.dropDownValue!.value);
     for (var i = 0; i < listProduct.length; i++) {
       if (listProduct[i].kdProduct == kdProduct) {
         list.add(listProduct[i]);
         selectedProduct.value = list;
       }
     }
-    // print(selectedProduct.value[0].detailProduct[0].satuan);
   }
 
   handleDeleteItem(CartDetail data) {
