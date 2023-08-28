@@ -226,7 +226,7 @@ class PembayaranController extends GetxController {
     }
   }
 
-  savepaymendata() async {
+  savepaymentdata() async {
     String salesid = await Utils().getParameterData("sales");
     String custid = await Utils().getParameterData("cust");
     if(!Hive.isBoxOpen('vendorBox')) vendorBox = await Hive.openBox('vendorBox');
