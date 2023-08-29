@@ -51,15 +51,15 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     
   }
 
-  setactivendor(){
+  setactivendor() async {
       SplashscreenController splashscreenController = callcontroller("splashscreencontroller");
       activevendor = splashscreenController.selectedVendor.value.toLowerCase();
       _penjualanController.activevendor = activevendor;
       _laporanController.activevendor = activevendor;
       _pembayaranController.activevendor = activevendor;
-      _penjualanController.getListItem();
-      _laporanController.getReportList();
-      _pembayaranController.loadpembayaranstate();
+      await _laporanController.getReportList();
+      await _pembayaranController.loadpembayaranstate();
+      await _penjualanController.getListItem();
   }
 
   handleAddMinusBtn(TextEditingController ctrl, var action) {
