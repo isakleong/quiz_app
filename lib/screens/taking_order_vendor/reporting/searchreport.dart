@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 import '../../../widgets/textview.dart';
 
@@ -23,7 +23,29 @@ class SearchReport extends StatelessWidget {
             padding: const EdgeInsets.only(left: 15, top: 15),
             child: Row(
               children: [
+                Get.width < 450 ?
                 Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 50.sp,
+                      height: 50.sp,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0XFF008996),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 18.0),
+                      child: Image.asset(
+                        'assets/images/custreport.png',
+                        width: 35.sp,
+                        height: 35.sp,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ) : Stack(
                   alignment: Alignment.center,
                   children: [
                     Container(
@@ -51,14 +73,32 @@ class SearchReport extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const TextView(
-                        headings: "H2", text: "Laporan", fontSize: 14),
+                     TextView(
+                        headings: "H2", text: "Laporan", fontSize: Get.width < 450 ? 10.sp : 14),
                     const SizedBox(
                       height: 5,
                     ),
                     Row(
                       children: [
+                        Get.width < 450 ?
                         Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 16.sp,
+                              height: 16.sp,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppConfig.mainCyan,
+                              ),
+                            ),
+                             Icon(
+                              Icons.home,
+                              color: Colors.white,
+                              size: 12.sp,
+                            )
+                          ],
+                        ) : Stack(
                           alignment: Alignment.center,
                           children: [
                             Container(
@@ -79,7 +119,7 @@ class SearchReport extends StatelessWidget {
                         const SizedBox(
                           width: 5,
                         ),
-                         Text(nmToko),
+                         Text(nmToko, style: TextStyle(fontSize: Get.width < 450 ? 10.sp :14)),
                       ],
                     ),
                   ],
@@ -133,7 +173,7 @@ class SearchReport extends StatelessWidget {
                             ),
                             Icon(
                               Icons.filter_alt_rounded,
-                              size: 18,
+                              size: Get.width < 450 ? 14.sp : 18,
                               color: Colors.grey.shade500,
                             ),
                             const SizedBox(
@@ -142,7 +182,7 @@ class SearchReport extends StatelessWidget {
                             TextView(
                               text: value,
                               textAlign: TextAlign.left,
-                              fontSize: 13,
+                              fontSize: Get.width < 450 ? 10.sp : 13,
                               headings: 'H4',
                             ),
                           ],

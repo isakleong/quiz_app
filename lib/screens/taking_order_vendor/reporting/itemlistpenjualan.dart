@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../models/cartdetail.dart';
 import '../../../widgets/textview.dart';
 import '../transaction/chipsitem.dart';
@@ -46,7 +46,7 @@ class ItemListPenjualan extends StatelessWidget {
                                 child: TextView(
                                   text: idx,
                                   headings: 'H3',
-                                  fontSize: 20,
+                                  fontSize: Get.width < 450 ? 12.sp : 20,
                                   color: Colors.white,
                                 ),
                               ),
@@ -59,7 +59,7 @@ class ItemListPenjualan extends StatelessWidget {
                               children: [
                                 TextView(
                                   headings: 'H4',
-                                  fontSize: 13,
+                                  fontSize: Get.width < 450 ? 10.sp : 13,
                                   text: data.nmProduct,
                                 ),
                                 Row(
@@ -73,7 +73,7 @@ class ItemListPenjualan extends StatelessWidget {
                                             child: ChipsItem(
                                               satuan:
                                                   "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
-                                              fontSize: 12,
+                                              fontSize: Get.width < 450 ? 8.sp : 12,
                                             ))
                                         : Container(),
                                     data.itemOrder.length > 1
@@ -83,7 +83,7 @@ class ItemListPenjualan extends StatelessWidget {
                                             child: ChipsItem(
                                               satuan:
                                                   "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
-                                              fontSize: 12,
+                                              fontSize: Get.width < 450 ? 8.sp : 12,
                                             ))
                                         : Container(),
                                     data.itemOrder.length > 2
@@ -93,7 +93,7 @@ class ItemListPenjualan extends StatelessWidget {
                                             child: ChipsItem(
                                               satuan:
                                                   "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
-                                              fontSize: 12,
+                                              fontSize: Get.width < 450 ? 8.sp : 12,
                                             ))
                                         : Container()
                                     // SizedBox(

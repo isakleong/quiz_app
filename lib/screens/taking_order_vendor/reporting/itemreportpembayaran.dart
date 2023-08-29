@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/itemlistpembayaran.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../tools/utils.dart';
 import '../../../widgets/textview.dart';
 import '../transaction/chipsitem.dart';
 
@@ -43,7 +44,7 @@ class ItemReportPembayaran extends StatelessWidget {
                           child: TextView(
                             text: idx,
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: Get.width < 450 ? 12.sp : 18,
                             headings: 'H2',
                           ),
                         ),
@@ -58,11 +59,11 @@ class ItemReportPembayaran extends StatelessWidget {
                         TextView(
                           text: data.id,
                           headings: 'H4',
-                          fontSize: 14,
+                          fontSize: Get.width < 450 ? 10.sp : 14,
                         ),
                         ChipsItem(
                           satuan: total,
-                          fontSize: 13,
+                          fontSize: Get.width < 450 ? 8.sp : 13,
                         )
                       ],
                     )
@@ -74,12 +75,12 @@ class ItemReportPembayaran extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       TextView(
-                        text: data.tanggal,
-                        fontSize: 14,
+                        text: Utils().formatDate(data.tanggal),
+                        fontSize: Get.width < 450 ? 9.sp : 14,
                       ),
                       TextView(
                         text: data.waktu,
-                        fontSize: 14,
+                        fontSize: Get.width < 450 ? 9.sp : 14,
                       )
                     ],
                   ),

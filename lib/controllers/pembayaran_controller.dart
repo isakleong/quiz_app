@@ -1,17 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:sfa_tools/controllers/penjualan_controller.dart';
-import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/paymentlist.dart';
 import 'package:sfa_tools/tools/utils.dart';
-
 import '../common/app_config.dart';
 import '../models/paymentdata.dart';
-import '../models/reportpembayaranmodel.dart';
 import '../models/vendor.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 
@@ -36,11 +31,74 @@ class PembayaranController extends GetxController {
   var tabvaluetransfer = 1;
   var tabvaluecek = 2;
   late Box boxPembayaranReport;
+  late Box boxPembayaranState;
   late Box vendorBox; 
   String globalkeybox = "";
   String activevendor = "";
   List<Vendor> vendorlist = <Vendor>[];
+
+  getbox() async {
+    try {
+      boxPembayaranState = await Hive.openBox('boxPembayaranState');
+      vendorBox = await Hive.openBox('vendorBox');
+      boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
+    } catch (e) {
+      
+    }
+  }
+
+  closebox(){
+    try {
+      boxPembayaranState.close();
+      boxPembayaranReport.close();
+      vendorBox.close();
+    } catch (e) {
+      
+    }
+  }
   
+  savepembayaranstate() async {
+    if(listpaymentdata.isEmpty) await deletepembayaranstate();
+    List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
+    return {
+        'jenis': datalist.jenis,
+        'nomor': datalist.nomor,
+        'value': datalist.value,
+        'jatuhtempo': datalist.jatuhtempo,
+        'tipe': datalist.tipe
+      };
+    }).toList();
+    String jsonpembayaran = jsonEncode(listpaymentdatamap);
+
+    if (!Hive.isBoxOpen("boxPembayaranState")) boxPembayaranState = await Hive.openBox('boxPembayaranState');
+    await boxPembayaranState.delete(globalkeybox);
+    await boxPembayaranState.put(globalkeybox, jsonpembayaran);
+    await boxPembayaranState.close();
+  }
+
+  deletepembayaranstate() async{
+    if (!Hive.isBoxOpen("boxPembayaranState")) boxPembayaranState = await Hive.openBox('boxPembayaranState');
+    await boxPembayaranState.delete(globalkeybox);
+    await boxPembayaranState.close();
+  }
+
+  loadpembayaranstate() async{
+      if(globalkeybox == "") await getGlobalKeyBox();
+      if (!Hive.isBoxOpen("boxPembayaranState")) boxPembayaranState = await Hive.openBox('boxPembayaranState');
+      var databox = boxPembayaranState.get(globalkeybox);
+      await boxPembayaranState.close();
+      if(databox != null){
+        var dataconvjson = jsonDecode(databox);
+        print(dataconvjson);
+        for (var i = 0; i < dataconvjson.length; i++) {
+          listpaymentdata.add(PaymentData(dataconvjson[i]['jenis'], dataconvjson[i]['nomor'], dataconvjson[i]['tipe'], dataconvjson[i]['jatuhtempo'], dataconvjson[i]['value']));
+        }
+        for (var i = 0; i < listpaymentdata.length; i++) {
+          await handleeditpayment(listpaymentdata[i].jenis);
+        }
+      }
+  }
+
   Future<void> selectDate(BuildContext context) async {
     DateTime currentDate = DateTime.now();
     DateTime next90Days = currentDate.add(const Duration(days: 90));
@@ -87,7 +145,7 @@ class PembayaranController extends GetxController {
             })));
   }
 
-  insertRecord(String type) {
+  insertRecord(String type) async {
     try {
       if (type == "Tunai") {
         if (listpaymentdata.any((data) => data.jenis == 'Tunai')) {
@@ -122,6 +180,8 @@ class PembayaranController extends GetxController {
           listpaymentdata.add(PaymentData("cek",nomorcek.value.text,nmbank.value.text,jatuhtempotgl.value.text,double.parse(nominalcek.value.text.toString().replaceAll(',', ''))));
         }
       }
+      if(globalkeybox == "") await getGlobalKeyBox();
+      savepembayaranstate();
     } catch (e) {
       print(e);
     }
@@ -189,12 +249,15 @@ class PembayaranController extends GetxController {
         nmbank.value.clear();
         jatuhtempotgl.value.clear();
       }
+
+      if(globalkeybox == "") await getGlobalKeyBox();
+      savepembayaranstate();
     } catch (e) {
       print(e);
     }
   }
 
-  handleeditpayment(String jenis) {
+  handleeditpayment(String jenis) async {
     try {
       var idx = 0;
       for (var i = 0; i < listpaymentdata.length; i++) {
@@ -221,29 +284,85 @@ class PembayaranController extends GetxController {
         nominalcek.value.text = Utils().formatNumber(listpaymentdata[idx].value.toInt());
         controller.index = tabvaluecek;
       }
+      if(globalkeybox == "") await getGlobalKeyBox();
+      savepembayaranstate();
     } catch (e) {
       print(e);
     }
   }
 
-  savepaymendata() async {
-    String salesid = await Utils().getParameterData("sales");
-    String custid = await Utils().getParameterData("cust");
-    if(!Hive.isBoxOpen('vendorBox')) vendorBox = await Hive.openBox('vendorBox');
-    var datavendor = vendorBox.get("$salesid|$custid");
-    vendorBox.close();
-    vendorlist.clear();
-    for (var i = 0; i < datavendor.length; i++) {
-      vendorlist.add(datavendor[i]);
+  getGlobalKeyBox() async {
+    try {
+      String salesid = await Utils().getParameterData("sales");
+      String custid = await Utils().getParameterData("cust");
+      if(!Hive.isBoxOpen('vendorBox')) vendorBox = await Hive.openBox('vendorBox');
+      var datavendor = vendorBox.get("$salesid|$custid");
+      vendorBox.close();
+      vendorlist.clear();
+      for (var i = 0; i < datavendor.length; i++) {
+        vendorlist.add(datavendor[i]);
+      }
+      var idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
+      globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
+    } catch (e) {
+      await closebox();
     }
-    var idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
-    globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
+  }
+
+  savepaymentdata() async {
+    String salesid = await Utils().getParameterData("sales");
+
+    if(globalkeybox == "") await getGlobalKeyBox();
+
     if(!Hive.isBoxOpen('BoxPembayaranReport')) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
     var datapembayaranreport = await boxPembayaranReport.get(globalkeybox);
-    boxPembayaranReport.close();
+
     if(datapembayaranreport != null){
-      List<ReportPembayaranModel> listReportPembayaran = <ReportPembayaranModel>[];
       var converteddatapembayaran = json.decode(datapembayaranreport);
+      List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
+      return {
+        'jenis': datalist.jenis,
+        'nomor': datalist.nomor,
+        'value': datalist.value,
+        'jatuhtempo': datalist.jatuhtempo,
+        'tipe': datalist.tipe
+      };
+    }).toList();
+      String jsonpembayaran = jsonEncode(listpaymentdatamap);
+      var totalpayment = 0.0;
+      for (var i = 0; i < listpaymentdata.length; i++) {
+        totalpayment = totalpayment + listpaymentdata[i].value;
+      }
+      var length = converteddatapembayaran['data'].length + 1;
+      var inc = "0";
+      if(length < 10){
+        inc = "00$length";
+      } else if (length < 100) {
+        inc = "0$length";
+      } else {
+        inc = length.toString();
+      }
+      DateTime now = DateTime.now();
+      String noorder = "GP-$salesid-${DateFormat('yyMMddHHmm').format(now)}-$inc";
+      String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(now);
+      String time = DateFormat('HH:mm').format(now);
+      var jsondata = {
+          'id': noorder,
+          'total' : totalpayment,
+          'tanggal' :date,
+          'waktu' : time,
+          'listpayment' :jsonpembayaran
+        };
+      var datapembayaranlist = [];
+      for (var i = 0; i < converteddatapembayaran['data'].length; i++) {
+        datapembayaranlist.add(converteddatapembayaran['data'][i]);
+      }
+      datapembayaranlist.add(jsondata);
+      var joinedjson = {
+         "data" : datapembayaranlist
+      };
+      boxPembayaranReport.delete(globalkeybox);
+      boxPembayaranReport.put(globalkeybox, jsonEncode(joinedjson));
     }else {
       List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
       return {
@@ -255,15 +374,43 @@ class PembayaranController extends GetxController {
       };
     }).toList();
       String jsonpembayaran = jsonEncode(listpaymentdatamap);
-      print(jsonpembayaran);
-      // for (var i = 0; i < listpaymentdata.length; i++) {
-        
-      // }
+      var totalpayment = 0.0;
+      for (var i = 0; i < listpaymentdata.length; i++) {
+        totalpayment = totalpayment + listpaymentdata[i].value;
+      }
+      DateTime now = DateTime.now();
+      String noorder = "GP-$salesid-${DateFormat('yyMMddHHmm').format(now)}-001";
+      String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(now);
+      String time = DateFormat('HH:mm').format(now);
+      var jsondata = {
+         "data" : [{
+          'id': noorder,
+          'total' : totalpayment,
+          'tanggal' :date,
+          'waktu' : time,
+          'listpayment' :jsonpembayaran
+        }]
+      };
+      boxPembayaranReport.delete(globalkeybox);
+      boxPembayaranReport.put(globalkeybox, jsonEncode(jsondata));
     }
+    boxPembayaranReport.close();
+    clearvariable();
+    deletepembayaranstate();
   }
 
-  savePaymenttoreport(){
-
+  clearvariable(){
+    choosedTransferMethod.value = "";
+    choosedTunaiMethod.value = "";
+    showBanner.value = 1;
+    listpaymentdata.clear();
+    nominaltunai.value.clear();
+    nominalCn.value.clear();
+    nominalcek.value.clear();
+    nominaltransfer.value.clear();
+    nomorcek.value.clear();
+    nmbank.value.clear();
+    jatuhtempotgl.value.clear();
   }
 
 }

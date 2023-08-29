@@ -167,6 +167,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       }
     }
 
+    try {
     //get vendor data
     if(!vendorBox.isOpen) await getBox();
     var datavendor = vendorBox.get("$salesid|$custid");
@@ -176,9 +177,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     }
     idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
     globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
-    
-    //get list product vendor
-    try {
       var itemvendorhive = itemvendorbox.get(globalkeybox);
       if(itemvendorhive != null){
         listProduct.clear();
