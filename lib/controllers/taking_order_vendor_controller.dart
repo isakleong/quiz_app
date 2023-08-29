@@ -60,6 +60,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       _pembayaranController.activevendor = activevendor;
       _penjualanController.getListItem();
       _laporanController.getReportList();
+      _pembayaranController.loadpembayaranstate();
   }
 
   handleAddMinusBtn(TextEditingController ctrl, var action) {

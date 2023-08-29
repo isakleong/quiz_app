@@ -51,6 +51,7 @@ class LaporanController extends GetxController {
     //getting key for box
     String salesid = await Utils().getParameterData("sales");
     String cust = await Utils().getParameterData("cust");
+    if(!Hive.isBoxOpen('vendorBox')) vendorBox = await Hive.openBox('vendorBox');
     var datavendor = vendorBox.get("$salesid|$cust");
     vendorlist.clear();
     for (var i = 0; i < datavendor.length; i++) {
