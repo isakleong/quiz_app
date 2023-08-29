@@ -1,17 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:sfa_tools/controllers/penjualan_controller.dart';
-import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/paymentlist.dart';
 import 'package:sfa_tools/tools/utils.dart';
-
 import '../common/app_config.dart';
 import '../models/paymentdata.dart';
-import '../models/reportpembayaranmodel.dart';
 import '../models/vendor.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 
