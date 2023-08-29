@@ -151,7 +151,7 @@ void onStart(ServiceInstance service) async {
 class Backgroundservicecontroller {
   late Box boxpostpenjualan;
   late Box boxreportpenjualan;
-  late Box vendorBox; 
+  late Box vendorBox;
   List<Vendor> vendorlist = [];
   
   Future hiveInitializer() async {
@@ -456,6 +456,7 @@ class Backgroundservicecontroller {
       for (var i = 0; i < listpost.length; i++) {
         await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorurl);
       }
+      // await postDataOrderAll(listpost, salesid, cust, keybox, vendorurl);
     }
   }
 
@@ -493,6 +494,92 @@ class Backgroundservicecontroller {
     }
   }
 
+  postDataOrderAll(List<PenjualanPostModel> data ,String salesid,String custid ,String key,String vendorurl) async {
+      await getBox();
+
+      var _datareportpenjualan = await boxreportpenjualan.get(key);
+      if(_datareportpenjualan != null){
+        List<ReportPenjualanModel> _listreportpenjualan = [];
+          for (var i = 0; i < _datareportpenjualan.length; i++) {
+            _listreportpenjualan.add(_datareportpenjualan[i]);
+          }
+      }
+
+      var inc = 0;
+      final url = Uri.parse('${vendorurl}sales-orders/store');
+      final request = http.MultipartRequest('POST', url);
+        for (var i = 0; i < data.length; i++) {
+          for (var j = 0; j < data[i].dataList.length; j++) {
+              request.fields['data[$inc][extDocId]'] = data[i].dataList[j]['extDocId'];
+              request.fields['data[$inc][orderDate]'] = data[i].dataList[j]['orderDate'];
+              request.fields['data[$inc][customerNo]'] = data[i].dataList[j]['customerNo'];
+              request.fields['data[$inc][lineNo]'] = data[i].dataList[j]['lineNo'];
+              request.fields['data[$inc][itemNo]'] = data[i].dataList[j]['itemNo'];
+              request.fields['data[$inc][qty]'] = data[i].dataList[j]['qty'];
+              request.fields['data[$inc][note]'] = data[i].dataList[j]['note'];
+              request.fields['data[$inc][shipTo]'] = data[i].dataList[j]['shipTo'];
+              request.fields['data[$inc][salesPersonCode]'] = data[i].dataList[j]['salesPersonCode'];
+              inc = inc + 1;
+          }
+        }
+        
+        try {
+          print(request.fields);
+          final response = await request.send();
+          final responseString = await response.stream.bytesToString();
+          print(responseString);
+
+          if (response.statusCode == 200) {
+            for (var i = 0; i < data.length; i++) {
+                for (var j = 0; j < data[i].dataList.length; j++) {
+                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
+                        _datareportpenjualan[i].condition = "success";
+                    }
+                }
+            }
+            await boxpostpenjualan.delete(key);
+            await boxreportpenjualan.delete(key);
+            await boxreportpenjualan.put(key,_datareportpenjualan);
+            print(responseString);
+
+          } else {
+            for (var i = 0; i < data.length; i++) {
+                for (var j = 0; j < data[i].dataList.length; j++) {
+                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
+                        _datareportpenjualan[i].condition = "error";
+                    }
+                }
+            }
+            await boxreportpenjualan.delete(key);
+            await boxreportpenjualan.put(key,_datareportpenjualan);
+            print(responseString);
+          }
+        } on SocketException {
+            for (var i = 0; i < data.length; i++) {
+                for (var j = 0; j < data[i].dataList.length; j++) {
+                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
+                        _datareportpenjualan[i].condition = "pending";
+                    }
+                }
+            }
+            await boxreportpenjualan.delete(key);
+            await boxreportpenjualan.put(key,_datareportpenjualan);
+            print("socketexception");
+        } catch (e) {
+            for (var i = 0; i < data.length; i++) {
+                for (var j = 0; j < data[i].dataList.length; j++) {
+                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
+                        _datareportpenjualan[i].condition = "pending";
+                    }
+                }
+            }
+            await boxreportpenjualan.delete(key);
+            await boxreportpenjualan.put(key,_datareportpenjualan);
+            print("$e abnormal ");
+        } 
+        await closebox();
+  }
+
   Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,String key,String vendorurl) async {
     print("send to api");
     await getBox();
@@ -522,23 +609,25 @@ class Backgroundservicecontroller {
           break;
       }
     }
+
     final url = Uri.parse('${vendorurl}sales-orders/store');
     final request = http.MultipartRequest('POST', url);
       for (var i = 0; i < data.length; i++) {
-        request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
-        request.fields['data[$i][orderDate]'] = data[i]['orderDate'];
-        request.fields['data[$i][customerNo]'] = data[i]['customerNo'];
-        request.fields['data[$i][lineNo]'] = data[i]['lineNo'];
-        request.fields['data[$i][itemNo]'] = data[i]['itemNo'];
-        request.fields['data[$i][qty]'] = data[i]['qty'];
-        request.fields['data[$i][note]'] = data[i]['note'];
-        request.fields['data[$i][shipTo]'] = data[i]['shipTo'];
-        request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
+            request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
+            request.fields['data[$i][orderDate]'] = data[i]['orderDate'];
+            request.fields['data[$i][customerNo]'] = data[i]['customerNo'];
+            request.fields['data[$i][lineNo]'] = data[i]['lineNo'];
+            request.fields['data[$i][itemNo]'] = data[i]['itemNo'];
+            request.fields['data[$i][qty]'] = data[i]['qty'];
+            request.fields['data[$i][note]'] = data[i]['note'];
+            request.fields['data[$i][shipTo]'] = data[i]['shipTo'];
+            request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
       }
       
       try {
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
+        print(responseString);
 
         if (response.statusCode == 200) {
           if(idx != -1){
