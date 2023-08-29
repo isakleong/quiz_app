@@ -59,7 +59,7 @@ class PaymentHeader extends StatelessWidget {
                     _takingOrderVendorController.handleSaveConfirm(
                         "Yakin untuk simpan pembayaran?",
                         "Konfirmasi Pembayaran",(){
-                          Get.back();
+                          _takingOrderVendorController.savepaymendata();
                         });
                   },
                   radius: 10,

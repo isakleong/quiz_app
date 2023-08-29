@@ -54,9 +54,10 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
   setactivendor(){
       SplashscreenController splashscreenController = callcontroller("splashscreencontroller");
-      _penjualanController.activevendor = splashscreenController.selectedVendor.value.toLowerCase();
-      _laporanController.activevendor = splashscreenController.selectedVendor.value.toLowerCase();
       activevendor = splashscreenController.selectedVendor.value.toLowerCase();
+      _penjualanController.activevendor = activevendor;
+      _laporanController.activevendor = activevendor;
+      _pembayaranController.activevendor = activevendor;
       _penjualanController.getListItem();
       _laporanController.getReportList();
   }
@@ -216,6 +217,10 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
   handleDeleteItemPayment(String metode, String jenis) {
     _pembayaranController.handleDeleteItemPayment(metode, jenis);
+  }
+
+  savepaymendata(){
+    _pembayaranController.savepaymendata();
   }
 
   //for retur page

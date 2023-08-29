@@ -45,10 +45,7 @@ class LaporanController extends GetxController {
     await getBox();
     String salesid = await Utils().getParameterData("sales");
     String cust = await Utils().getParameterData("cust");
-    // if(cust != "01B05070012"){
-    //   cust = "01B05070012";
-    // }
-    // print("$salesid|$cust");
+    
     var datavendor = vendorBox.get("$salesid|$cust");
     vendorlist.clear();
     for (var i = 0; i < datavendor.length; i++) {

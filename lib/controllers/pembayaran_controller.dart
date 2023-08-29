@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
@@ -8,6 +11,8 @@ import 'package:sfa_tools/tools/utils.dart';
 
 import '../common/app_config.dart';
 import '../models/paymentdata.dart';
+import '../models/reportpembayaranmodel.dart';
+import '../models/vendor.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 
 class PembayaranController extends GetxController {
@@ -30,7 +35,12 @@ class PembayaranController extends GetxController {
   var tabvaluetunai = 0;
   var tabvaluetransfer = 1;
   var tabvaluecek = 2;
-
+  late Box boxPembayaranReport;
+  late Box vendorBox; 
+  String globalkeybox = "";
+  String activevendor = "";
+  List<Vendor> vendorlist = <Vendor>[];
+  
   Future<void> selectDate(BuildContext context) async {
     DateTime currentDate = DateTime.now();
     DateTime next90Days = currentDate.add(const Duration(days: 90));
@@ -82,82 +92,34 @@ class PembayaranController extends GetxController {
       if (type == "Tunai") {
         if (listpaymentdata.any((data) => data.jenis == 'Tunai')) {
           listpaymentdata.removeWhere((element) => element.jenis == type);
-          listpaymentdata.add(PaymentData(
-              type,
-              "",
-              choosedTunaiMethod.value,
-              "",
-              double.parse(
-                  nominaltunai.value.text.toString().replaceAll(',', ''))));
+          listpaymentdata.add(PaymentData(type,"",choosedTunaiMethod.value,"",double.parse(nominaltunai.value.text.toString().replaceAll(',', ''))));
         } else {
           pembayaranListKey.currentState?.insertItem(listpaymentdata.length);
-          listpaymentdata.add(PaymentData(
-              type,
-              "",
-              choosedTunaiMethod.value,
-              "",
-              double.parse(
-                  nominaltunai.value.text.toString().replaceAll(',', ''))));
+          listpaymentdata.add(PaymentData(type,"",choosedTunaiMethod.value,"",double.parse(nominaltunai.value.text.toString().replaceAll(',', ''))));
         }
       } else if (type == "Transfer") {
         if (listpaymentdata.any((data) => data.jenis == 'Transfer')) {
           listpaymentdata.removeWhere((element) => element.jenis == type);
-          listpaymentdata.add(PaymentData(
-              type,
-              "",
-              choosedTransferMethod.value,
-              "",
-              double.parse(
-                  nominaltransfer.value.text.toString().replaceAll(',', ''))));
+          listpaymentdata.add(PaymentData(type,"",choosedTransferMethod.value,"",double.parse(nominaltransfer.value.text.toString().replaceAll(',', ''))));
         } else {
           pembayaranListKey.currentState?.insertItem(listpaymentdata.length);
-          listpaymentdata.add(PaymentData(
-              type,
-              "",
-              choosedTransferMethod.value,
-              "",
-              double.parse(
-                  nominaltransfer.value.text.toString().replaceAll(',', ''))));
+          listpaymentdata.add(PaymentData(type,"",choosedTransferMethod.value,"",double.parse(nominaltransfer.value.text.toString().replaceAll(',', ''))));
         }
       } else if (type == "cn") {
         if (listpaymentdata.any((data) => data.jenis == 'cn')) {
           listpaymentdata.removeWhere((element) => element.jenis == type);
-          listpaymentdata.add(PaymentData(
-              "cn",
-              "",
-              "",
-              "",
-              double.parse(
-                  nominalCn.value.text.toString().replaceAll(',', ''))));
+          listpaymentdata.add(PaymentData("cn","","","",double.parse(nominalCn.value.text.toString().replaceAll(',', ''))));
         } else {
           pembayaranListKey.currentState?.insertItem(listpaymentdata.length);
-          listpaymentdata.add(PaymentData(
-              "cn",
-              "",
-              "",
-              "",
-              double.parse(
-                  nominalCn.value.text.toString().replaceAll(',', ''))));
+          listpaymentdata.add(PaymentData("cn","","","",double.parse(nominalCn.value.text.toString().replaceAll(',', ''))));
         }
       } else {
         if (listpaymentdata.any((data) => data.jenis == 'cek')) {
           listpaymentdata.removeWhere((element) => element.jenis == type);
-          listpaymentdata.add(PaymentData(
-              "cek",
-              nomorcek.value.text,
-              nmbank.value.text,
-              jatuhtempotgl.value.text,
-              double.parse(
-                  nominalcek.value.text.toString().replaceAll(',', ''))));
+          listpaymentdata.add(PaymentData("cek",nomorcek.value.text,nmbank.value.text,jatuhtempotgl.value.text,double.parse(nominalcek.value.text.toString().replaceAll(',', ''))));
         } else {
           pembayaranListKey.currentState?.insertItem(listpaymentdata.length);
-          listpaymentdata.add(PaymentData(
-              "cek",
-              nomorcek.value.text,
-              nmbank.value.text,
-              jatuhtempotgl.value.text,
-              double.parse(
-                  nominalcek.value.text.toString().replaceAll(',', ''))));
+          listpaymentdata.add(PaymentData("cek",nomorcek.value.text,nmbank.value.text,jatuhtempotgl.value.text,double.parse(nominalcek.value.text.toString().replaceAll(',', ''))));
         }
       }
     } catch (e) {
@@ -264,9 +226,44 @@ class PembayaranController extends GetxController {
     }
   }
 
-  formatMoneyTextField(TextEditingController ctrl) {
-    try {
-      ctrl.text = Utils().formatNumber(int.parse(ctrl.text.toString().replaceAll(',', '')));
-    } catch (e) {}
+  savepaymendata() async {
+    String salesid = await Utils().getParameterData("sales");
+    String custid = await Utils().getParameterData("cust");
+    if(!Hive.isBoxOpen('vendorBox')) vendorBox = await Hive.openBox('vendorBox');
+    var datavendor = vendorBox.get("$salesid|$custid");
+    vendorBox.close();
+    vendorlist.clear();
+    for (var i = 0; i < datavendor.length; i++) {
+      vendorlist.add(datavendor[i]);
+    }
+    var idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
+    globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
+    if(!Hive.isBoxOpen('BoxPembayaranReport')) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
+    var datapembayaranreport = await boxPembayaranReport.get(globalkeybox);
+    boxPembayaranReport.close();
+    if(datapembayaranreport != null){
+      List<ReportPembayaranModel> listReportPembayaran = <ReportPembayaranModel>[];
+      var converteddatapembayaran = json.decode(datapembayaranreport);
+    }else {
+      List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
+      return {
+        'jenis': datalist.jenis,
+        'nomor': datalist.nomor,
+        'value': datalist.value,
+        'jatuhtempo': datalist.jatuhtempo,
+        'tipe': datalist.tipe
+      };
+    }).toList();
+      String jsonpembayaran = jsonEncode(listpaymentdatamap);
+      print(jsonpembayaran);
+      // for (var i = 0; i < listpaymentdata.length; i++) {
+        
+      // }
+    }
   }
+
+  savePaymenttoreport(){
+
+  }
+
 }
