@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../widgets/textview.dart';
 
 class ReportHeader extends StatelessWidget {
@@ -12,6 +13,27 @@ class ReportHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        if (Get.width < 450)
+         Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 40.sp,
+              height: 40.sp,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppConfig.mainCyan,
+              ),
+            ),
+            Image.asset(
+              img,
+              width: 30.sp,
+              height: 30.sp,
+              fit: BoxFit.cover,
+            ),
+          ],
+        )
+        else
         Stack(
           alignment: Alignment.center,
           children: [
@@ -31,10 +53,10 @@ class ReportHeader extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(
-          width: 20,
+        SizedBox(
+          width: Get.width < 450 ? 14.sp :  20,
         ),
-        TextView(headings: "H4", text: title, fontSize: 20)
+        TextView(headings: "H4", text: title, fontSize: Get.width < 450 ? 14.sp : 20)
       ],
     );
   }

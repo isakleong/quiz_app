@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../tools/utils.dart';
 import '../../../widgets/textview.dart';
 
@@ -47,9 +47,9 @@ class ItemListPembayaran extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(8)),
                               child: Center(
                                 child: TextView(
-                                  text: idx,
+                                  text:  idx,
                                   headings: 'H3',
-                                  fontSize: 20,
+                                  fontSize: Get.width < 450 ? 12.sp : 20,
                                   color: Colors.white,
                                 ),
                               ),
@@ -62,7 +62,7 @@ class ItemListPembayaran extends StatelessWidget {
                               children: [
                                 TextView(
                                   headings: 'H4',
-                                  fontSize: 13,
+                                  fontSize: Get.width < 450 ? 10.sp : 13,
                                   text: data.jenis == "cn"
                                       ? "Potongan CN"
                                       : data.jenis == "cek"
@@ -75,7 +75,7 @@ class ItemListPembayaran extends StatelessWidget {
                                     TextView(
                                       text:
                                           "Rp ${Utils().formatNumber(data.value.toInt())}",
-                                      fontSize: 13,
+                                      fontSize: Get.width < 450 ? 10.sp : 13,
                                     ),
                                     SizedBox(
                                       width: 0.01 * Get.width,
@@ -85,7 +85,7 @@ class ItemListPembayaran extends StatelessWidget {
                                         : ChipsItem(
                                             satuan:
                                                 "Jatuh Tempo : ${data.jatuhtempo}",
-                                            fontSize: 12,
+                                            fontSize: Get.width < 450 ? 8.sp : 12,
                                           )
                                   ],
                                 )

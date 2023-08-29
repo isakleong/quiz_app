@@ -5,23 +5,13 @@ import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/itemlistpenjualan.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sfa_tools/tools/utils.dart';
 import '../../../widgets/textview.dart';
 
 class ItemReportPenjualan extends StatelessWidget {
   String idx;
   ReportPenjualanModel data;
   ItemReportPenjualan({super.key, required this.idx, required this.data});
-
-  
-  String formatDate(String dateTimeString) {
-    final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
-    final outputFormat = DateFormat('dd-MM-yyyy');
-
-    final dateTime = inputFormat.parse(dateTimeString);
-    final formattedDate = outputFormat.format(dateTime);
-
-    return formattedDate;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +43,7 @@ class ItemReportPenjualan extends StatelessWidget {
                           child: TextView(
                             text: idx,
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: Get.width < 450 ? 12.sp : 18,
                             headings: 'H2',
                           ),
                         ),
@@ -70,7 +60,7 @@ class ItemReportPenjualan extends StatelessWidget {
                             TextView(
                               text: data.id,
                               headings: 'H4',
-                              fontSize: 14,
+                              fontSize: Get.width < 450 ? 8.sp : 14,
                             ),
                             if(data.condition != 'success')
                             SizedBox(width: 5.sp,),
@@ -78,7 +68,7 @@ class ItemReportPenjualan extends StatelessWidget {
                            ChipsItem(
                                 satuan: data.condition,
                                 color: data.condition == 'pending' ? Colors.amber : Colors.red,
-                                fontSize: 12,
+                                fontSize: Get.width < 450 ? 8.sp : 12,
                               )
                           ],
                         ),
@@ -89,7 +79,7 @@ class ItemReportPenjualan extends StatelessWidget {
                                     ? "${data.notes.substring(0, 30)}...      "
                                     : data.notes,
                                 color: const Color(0xFFf5511e),
-                                fontSize: 12,
+                                fontSize: Get.width < 450 ? 8.sp : 12,
                               )
                       ],
                     )
@@ -101,12 +91,12 @@ class ItemReportPenjualan extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       TextView(
-                        text: formatDate(data.tanggal),
-                        fontSize: 14,
+                        text:Utils().formatDate(data.tanggal),
+                        fontSize: Get.width < 450 ? 9.sp : 14,
                       ),
                       TextView(
                         text: data.waktu,
-                        fontSize: 14,
+                        fontSize: Get.width < 450 ? 9.sp : 14,
                       )
                     ],
                   ),
