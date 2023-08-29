@@ -55,6 +55,10 @@ class LaporanController extends GetxController {
         vendorlist.add(datavendor[i]);
     }
     idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
+    if(idvendor == -1){
+      await closebox();
+      return;
+    }
     var gkey = "$salesid|$cust|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
 
     //fill report penjualan

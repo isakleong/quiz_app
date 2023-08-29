@@ -36,6 +36,26 @@ class PembayaranController extends GetxController {
   String globalkeybox = "";
   String activevendor = "";
   List<Vendor> vendorlist = <Vendor>[];
+
+  getbox() async {
+    try {
+      boxPembayaranState = await Hive.openBox('boxPembayaranState');
+      vendorBox = await Hive.openBox('vendorBox');
+      boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
+    } catch (e) {
+      
+    }
+  }
+
+  closebox(){
+    try {
+      boxPembayaranState.close();
+      boxPembayaranReport.close();
+      vendorBox.close();
+    } catch (e) {
+      
+    }
+  }
   
   savepembayaranstate() async {
     if(listpaymentdata.isEmpty) await deletepembayaranstate();
@@ -272,17 +292,21 @@ class PembayaranController extends GetxController {
   }
 
   getGlobalKeyBox() async {
-    String salesid = await Utils().getParameterData("sales");
-    String custid = await Utils().getParameterData("cust");
-    if(!Hive.isBoxOpen('vendorBox')) vendorBox = await Hive.openBox('vendorBox');
-    var datavendor = vendorBox.get("$salesid|$custid");
-    vendorBox.close();
-    vendorlist.clear();
-    for (var i = 0; i < datavendor.length; i++) {
-      vendorlist.add(datavendor[i]);
+    try {
+      String salesid = await Utils().getParameterData("sales");
+      String custid = await Utils().getParameterData("cust");
+      if(!Hive.isBoxOpen('vendorBox')) vendorBox = await Hive.openBox('vendorBox');
+      var datavendor = vendorBox.get("$salesid|$custid");
+      vendorBox.close();
+      vendorlist.clear();
+      for (var i = 0; i < datavendor.length; i++) {
+        vendorlist.add(datavendor[i]);
+      }
+      var idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
+      globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
+    } catch (e) {
+      await closebox();
     }
-    var idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
-    globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
   }
 
   savepaymentdata() async {
