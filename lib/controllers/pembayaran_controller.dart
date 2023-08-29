@@ -295,7 +295,6 @@ class PembayaranController extends GetxController {
 
     if(datapembayaranreport != null){
       var converteddatapembayaran = json.decode(datapembayaranreport);
-      // print(converteddatapembayaran['data'].length);
       List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
       return {
         'jenis': datalist.jenis,
@@ -306,7 +305,6 @@ class PembayaranController extends GetxController {
       };
     }).toList();
       String jsonpembayaran = jsonEncode(listpaymentdatamap);
-      // print(jsonpembayaran);
       var totalpayment = 0.0;
       for (var i = 0; i < listpaymentdata.length; i++) {
         totalpayment = totalpayment + listpaymentdata[i].value;
@@ -339,12 +337,9 @@ class PembayaranController extends GetxController {
       var joinedjson = {
          "data" : datapembayaranlist
       };
-      // print(jsonEncode(joinedjson));
       boxPembayaranReport.delete(globalkeybox);
       boxPembayaranReport.put(globalkeybox, jsonEncode(joinedjson));
-      boxPembayaranReport.close();
     }else {
-      print("else");
       List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
       return {
         'jenis': datalist.jenis,
@@ -355,7 +350,6 @@ class PembayaranController extends GetxController {
       };
     }).toList();
       String jsonpembayaran = jsonEncode(listpaymentdatamap);
-      print(jsonpembayaran);
       var totalpayment = 0.0;
       for (var i = 0; i < listpaymentdata.length; i++) {
         totalpayment = totalpayment + listpaymentdata[i].value;
@@ -376,7 +370,6 @@ class PembayaranController extends GetxController {
       boxPembayaranReport.delete(globalkeybox);
       boxPembayaranReport.put(globalkeybox, jsonEncode(jsondata));
     }
-
     boxPembayaranReport.close();
     clearvariable();
     deletepembayaranstate();
