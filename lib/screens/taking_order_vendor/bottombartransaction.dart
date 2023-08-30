@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/information/informasi_main_page.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/returitem/retur_main_page.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/payment_main_page.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/report_main_page.dart';
@@ -18,7 +19,8 @@ final TakingOrderVendorController _takingOrderVendorController =
       TakingOrderVendorMainPage(),
       PaymentMainPage(),
       ReturMainPage(),
-      ReportMainPage()
+      ReportMainPage(),
+      InformasiMainPage()
     ];
   }
 
@@ -51,6 +53,13 @@ final TakingOrderVendorController _takingOrderVendorController =
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.book),
         title: ("Laporan"),
+        activeColorSecondary: AppConfig.mainCyan,
+        activeColorPrimary: AppConfig.mainCyan,
+        inactiveColorPrimary: const Color(0XFF3c3c3c),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.info),
+        title: ("Informasi"),
         activeColorSecondary: AppConfig.mainCyan,
         activeColorPrimary: AppConfig.mainCyan,
         inactiveColorPrimary: const Color(0XFF3c3c3c),

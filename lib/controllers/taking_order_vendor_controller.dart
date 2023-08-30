@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:list_treeview/list_treeview.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/pembayaran_controller.dart';
@@ -16,6 +20,7 @@ import 'package:sfa_tools/models/tukarwarnamodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
 import '../models/cartdetail.dart';
 import '../models/tarikbarangmodel.dart';
+import '../models/treenodedata.dart';
 
 class TakingOrderVendorController extends GetxController with GetTickerProviderStateMixin {
   final PembayaranController _pembayaranController = Get.put(PembayaranController());
@@ -32,6 +37,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   void onInit() {
     super.onInit();
     setactivendor();
+    prepareinfoproduk();
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..forward();
     slideAnimation = Tween<Offset>(begin: const Offset(0, -0.2),end: const Offset(0, 0),).animate(CurvedAnimation(parent: animationController,curve: Curves.easeInOut,));
     _pembayaranController.controller = TabController(vsync: this, length: 3, initialIndex: 0);
@@ -386,4 +392,79 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   showEditProdukPengganti(BuildContext context) {
     _returController.showEditProdukPengganti(context);
   }
+
+  // for informasi page
+  RxList<bool> selectedsegmentinformasi = [true, false].obs;
+  RxInt indexSegmentinformasi = 0.obs;
+  RxBool isSuccess = false.obs;
+  var listnode = <TreeNodeData>[];
+  TreeViewController? treecontroller;
+  RxInt datanodelength = 0.obs;
+
+  prepareinfoproduk() async {
+    await getfilelist();
+    if(listnode.isNotEmpty){
+      print("not empty");
+      treecontroller = TreeViewController();
+      treecontroller!.treeData(listnode);
+      datanodelength.value = listnode.length;
+    }
+  }
+
+  handleselectedindeinformasi(int index){
+    indexSegmentinformasi.value = index;
+    for (var i = 0; i < selectedsegmentinformasi.length; i++) {
+      selectedsegmentinformasi[i] = false;
+    }
+    selectedsegmentinformasi[index] = true;
+  }
+  
+  getfilelist() async {
+    if(await File('/storage/emulated/0/TKTW/infoproduk/sfafilelist.txt').exists()){
+      var res = await File('/storage/emulated/0/TKTW/infoproduk/sfafilelist.txt').readAsString();
+      var ls = const LineSplitter();
+      var tlist = ls.convert(res);
+      print(tlist);
+      await generateTreeinfoproduct(tlist);
+    } else {
+      listnode.clear();
+      isSuccess.value = true;
+      datanodelength.value = listnode.length;
+    }
+  }
+
+  generateTreeinfoproduct(List<String> tlist){
+    listnode.clear();
+    for (String temp in tlist) {
+      print(temp);
+      var tsplit = temp.split("/");
+      var head = TreeNodeData();
+      for (var i = 0; i < tsplit.length; i++) {
+        var str = tsplit[i];
+        var tnode = TreeNodeData();
+        if(head.name == ""){
+          tnode = listnode.firstWhere((element) => element.name == str, orElse: () => TreeNodeData());
+        } else {
+          tnode = head.children.firstWhere((p) => (p as TreeNodeData).name == str, orElse: ()=> TreeNodeData()) as TreeNodeData;
+        }
+
+        if(tnode.name == ""){
+          tnode.name = str;
+          if(i == tsplit.length - 1){
+            tnode.isFile = true;
+            tnode.fullname = temp;
+            tnode.extension = str.substring(str.lastIndexOf(".")+1,str.length);
+          }
+          if(head.name == "")
+            listnode.add(tnode);
+          else
+            head.addChild(tnode);
+        }
+        head = tnode;
+      }
+    }
+    isSuccess.value = true;
+  }
+
+
 }
