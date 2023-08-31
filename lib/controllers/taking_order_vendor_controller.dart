@@ -400,6 +400,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   var listnode = <TreeNodeData>[];
   TreeViewController? treecontroller;
   RxInt datanodelength = 0.obs;
+  String productdir = "/storage/emulated/0/Product Knowledge";
 
   prepareinfoproduk() async {
     await getfilelist();
