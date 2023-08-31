@@ -11,6 +11,7 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/models/cartdetail.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
@@ -423,15 +424,38 @@ class Backgroundservicecontroller {
   }
 
   //taking order vendor section
+  Future<void> createLogTes(String content) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/example.txt');
+
+    try {
+      if (!await file.exists()) {
+        await file.create();
+      }
+
+      await file.writeAsString(content, mode: FileMode.append);
+
+      print('File written successfully.');
+    } catch (e) {
+      print('Error writing to file: $e');
+    }
+  }
+
   getPendingData() async {
-    print("trying to get pending data");
+    DateTime currentDateTime = DateTime.now();
+    String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(currentDateTime);
+    print("trying to get pending data at $date");
+    await createLogTes("trying to get pending data at $date");
     await getBox();
     print("finish get box");
+    await createLogTes("finish get box");
     List<dynamic> keys = await getListKey();
     print("finish get key");
+    await createLogTes("finish get key");
     await closebox();
     if(keys.isNotEmpty){
     print("key not empty");
+    await createLogTes("key not empty");
       for (var m = 0; m < keys.length; m++) {
         await sendPendingData(keys[m]);
       }
@@ -440,6 +464,7 @@ class Backgroundservicecontroller {
 
   sendPendingData(String keybox) async {
     print("send pending data for key $keybox");
+    await createLogTes("send pending data for key $keybox");
     await getBox();
     List<String> parts = keybox.split('|');
     String salesid = parts[0].trim();
@@ -453,6 +478,7 @@ class Backgroundservicecontroller {
         listpost.add(listpostbox[i]);
       }
       await closebox();
+      await createLogTes("Listpost length ${listpost.length}");
       // for (var i = 0; i < listpost.length; i++) {
       //   await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorurl);
       // }
@@ -508,8 +534,8 @@ class Backgroundservicecontroller {
   }
 
   postDataOrderAll(List<PenjualanPostModel> data ,String salesid,String custid ,String key,String vendorurl) async {
+        await createLogTes("on post Data order All");
         await getBox();
-
         var _datareportpenjualan = await boxreportpenjualan.get(key);
         var inc = 0;
         final url = Uri.parse('${vendorurl}sales-orders/store');
@@ -542,6 +568,7 @@ class Backgroundservicecontroller {
           if (response.statusCode == 200) {
             var jsonResponse = jsonDecode(responseString);
             if(jsonResponse["success"] == true){
+              print("response true");
               var loopdatalength = jsonResponse['data'].length;
               for (var k = 0; k < loopdatalength; k++) {
                 for (var i = 0; i < _datareportpenjualan.length; i++) {
@@ -570,6 +597,13 @@ class Backgroundservicecontroller {
                 }
                 // print(data[i].dataList[0]['extDocId']);
               }
+              for (var i = 0; i < postadatanew.length; i++) {
+                for (var j = 0; j < postadatanew[i].dataList.length; j++) {
+                  print(postadatanew[i].dataList[j]);
+                  print(postadatanew[i].dataList[j]['extDocId']);
+                }
+              }
+              print("************");
               await boxpostpenjualan.delete(key);
               if(postadatanew.isNotEmpty){
                 await boxpostpenjualan.put(key,postadatanew);
@@ -577,6 +611,7 @@ class Backgroundservicecontroller {
               await boxreportpenjualan.delete(key);
               await boxreportpenjualan.put(key,_datareportpenjualan);
             } else {
+              print("response not true");
                 for (var i = 0; i < data.length; i++) {
                   for (var j = 0; j <= inc; j++) {
                       if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
