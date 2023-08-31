@@ -458,6 +458,14 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     var idx = 0;
     if(datapenjualan != null) {
       idx =  datapenjualan!.isEmpty ? 0 : datapenjualan.length;
+      if(idx > 0){
+        idx = 0;
+        for (var i = 0; i < datapenjualan.length; i++) {
+          if(!Utils().isDateNotToday(Utils().formatDate(datapenjualan[i].tanggal))){
+            idx = idx + 1;
+          }
+        }
+      }
     }
     idx = idx + 1;
     if (idx < 10){

@@ -534,7 +534,7 @@ class Backgroundservicecontroller {
         }
         
         try {
-          // print(request.fields['data[0][extDocId]']);
+          print(request.fields);
           final response = await request.send();
           final responseString = await response.stream.bytesToString();
           print(responseString);
