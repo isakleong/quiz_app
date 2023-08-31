@@ -467,5 +467,4 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     isSuccess.value = true;
   }
 
-
 }

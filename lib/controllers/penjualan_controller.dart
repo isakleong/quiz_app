@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/cartdetail.dart';
@@ -524,6 +525,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         }
         listpost.add(PenjualanPostModel(data));
       }
+      await boxpostpenjualan.delete(globalkeybox);
       await boxpostpenjualan.put(globalkeybox,listpost);
       await closebox();
       await postDataOrder(data,salesid,custid,listpost);
@@ -561,18 +563,49 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         final responseString = await response.stream.bytesToString();
 
         if (response.statusCode == 200) {
-          datareportpenjualan[idx].condition = "success";
-          listpostdata.removeAt(idxpost);
-          await boxpostpenjualan.delete(globalkeybox);
-          if(listpostdata.isNotEmpty) {
-            await boxpostpenjualan.put(globalkeybox,listpostdata);
+          var jsonResponse = jsonDecode(responseString);
+          print(responseString);
+          if(jsonResponse["success"] == true){
+            print("success 1");
+            if(jsonResponse["data"][0]["success"] == true){
+                print("success 2");
+                datareportpenjualan[idx].condition = "success";
+                listpostdata.removeAt(idxpost);
+                await boxpostpenjualan.delete(globalkeybox);
+                if(listpostdata.isNotEmpty) {
+                  await boxpostpenjualan.put(globalkeybox,listpostdata);
+                }
+                await boxreportpenjualan.delete(globalkeybox);
+                await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
+            } else {
+              var flag = 0;
+                for (var i = 0; i < jsonResponse["data"][0]["errors"].length; i++) {
+                  if(jsonResponse["data"][0]["errors"][i]['code'] == AppConfig().orderalreadyexistvendor){
+                      datareportpenjualan[idx].condition = "success";
+                      listpostdata.removeAt(idxpost);
+                      await boxpostpenjualan.delete(globalkeybox);
+                      if(listpostdata.isNotEmpty) {
+                        await boxpostpenjualan.put(globalkeybox,listpostdata);
+                      }
+                      await boxreportpenjualan.delete(globalkeybox);
+                      await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
+                      flag = 1;
+                  }
+                }
+                if(flag == 0){
+                  datareportpenjualan[idx].condition = "pending";
+                  await boxreportpenjualan.delete(globalkeybox);
+                  await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
+                }
+            }
+          } else {
+            datareportpenjualan[idx].condition = "pending";
+            await boxreportpenjualan.delete(globalkeybox);
+            await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
           }
-          await boxreportpenjualan.delete(globalkeybox);
-          await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
-          // print(responseString);
 
         } else {
-          datareportpenjualan[idx].condition = "gagal";
+          datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
           // print(responseString);

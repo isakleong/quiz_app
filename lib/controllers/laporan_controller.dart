@@ -70,7 +70,7 @@ class LaporanController extends GetxController {
       var listdelindex = [];
       for (var i = 0; i < dataPenjualanbox.length; i++) {
         listReportPenjualan.add(dataPenjualanbox[i]);
-        if(Utils().isDateNotToday(Utils().formatDate(listReportPenjualan[i].tanggal))){
+        if(Utils().isDateNotToday(Utils().formatDate(listReportPenjualan[i].tanggal)) && listReportPenjualan[i].condition == "success"){
           listdelindex.add(i == 0 ? i : (i-1));
         }
       }

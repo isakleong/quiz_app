@@ -114,7 +114,7 @@ void onStart(ServiceInstance service) async {
     );
   });
 
-  Timer.periodic(const Duration(minutes: 3), (timer) async {
+  Timer.periodic(const Duration(minutes: 1), (timer) async {
     await Backgroundservicecontroller().getPendingData();
 
     if (service is AndroidServiceInstance) {
@@ -453,10 +453,10 @@ class Backgroundservicecontroller {
         listpost.add(listpostbox[i]);
       }
       await closebox();
-      for (var i = 0; i < listpost.length; i++) {
-        await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorurl);
-      }
-      // await postDataOrderAll(listpost, salesid, cust, keybox, vendorurl);
+      // for (var i = 0; i < listpost.length; i++) {
+      //   await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorurl);
+      // }
+      await postDataOrderAll(listpost, salesid, cust, keybox, vendorurl);
     }
   }
 
@@ -494,59 +494,104 @@ class Backgroundservicecontroller {
     }
   }
 
+  bool checkTimeDifference(String times) {
+    DateTime currentDateTime = DateTime.now();
+    DateFormat format = DateFormat("dd-MM-yyyy HH:mm:ss");
+    DateTime givenDateTime = format.parse(times);
+    
+    Duration difference = currentDateTime.difference(givenDateTime);
+    
+    if (difference.inMinutes > 1) {
+      return true;
+    }
+    return false;
+  }
+
   postDataOrderAll(List<PenjualanPostModel> data ,String salesid,String custid ,String key,String vendorurl) async {
-      await getBox();
+        await getBox();
 
-      var _datareportpenjualan = await boxreportpenjualan.get(key);
-      if(_datareportpenjualan != null){
-        List<ReportPenjualanModel> _listreportpenjualan = [];
-          for (var i = 0; i < _datareportpenjualan.length; i++) {
-            _listreportpenjualan.add(_datareportpenjualan[i]);
-          }
-      }
-
-      var inc = 0;
-      final url = Uri.parse('${vendorurl}sales-orders/store');
-      final request = http.MultipartRequest('POST', url);
+        var _datareportpenjualan = await boxreportpenjualan.get(key);
+        var inc = 0;
+        final url = Uri.parse('${vendorurl}sales-orders/store');
+        final request = http.MultipartRequest('POST', url);
         for (var i = 0; i < data.length; i++) {
           for (var j = 0; j < data[i].dataList.length; j++) {
-              request.fields['data[$inc][extDocId]'] = data[i].dataList[j]['extDocId'];
-              request.fields['data[$inc][orderDate]'] = data[i].dataList[j]['orderDate'];
-              request.fields['data[$inc][customerNo]'] = data[i].dataList[j]['customerNo'];
-              request.fields['data[$inc][lineNo]'] = data[i].dataList[j]['lineNo'];
-              request.fields['data[$inc][itemNo]'] = data[i].dataList[j]['itemNo'];
-              request.fields['data[$inc][qty]'] = data[i].dataList[j]['qty'];
-              request.fields['data[$inc][note]'] = data[i].dataList[j]['note'];
-              request.fields['data[$inc][shipTo]'] = data[i].dataList[j]['shipTo'];
-              request.fields['data[$inc][salesPersonCode]'] = data[i].dataList[j]['salesPersonCode'];
-              inc = inc + 1;
+              if (checkTimeDifference(data[i].dataList[j]['orderDate'])){
+                    request.fields['data[$inc][extDocId]'] = data[i].dataList[j]['extDocId'];
+                    request.fields['data[$inc][orderDate]'] = data[i].dataList[j]['orderDate'];
+                    request.fields['data[$inc][customerNo]'] = data[i].dataList[j]['customerNo'];
+                    request.fields['data[$inc][lineNo]'] = data[i].dataList[j]['lineNo'];
+                    request.fields['data[$inc][itemNo]'] = data[i].dataList[j]['itemNo'];
+                    request.fields['data[$inc][qty]'] = data[i].dataList[j]['qty'];
+                    request.fields['data[$inc][note]'] = data[i].dataList[j]['note'];
+                    request.fields['data[$inc][shipTo]'] = data[i].dataList[j]['shipTo'];
+                    request.fields['data[$inc][salesPersonCode]'] = data[i].dataList[j]['salesPersonCode'];
+                    inc = inc + 1;
+              } else {
+                break;
+              }
           }
         }
         
         try {
-          print(request.fields);
+          // print(request.fields['data[0][extDocId]']);
           final response = await request.send();
           final responseString = await response.stream.bytesToString();
           print(responseString);
 
           if (response.statusCode == 200) {
-            for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < data[i].dataList.length; j++) {
-                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
-                        _datareportpenjualan[i].condition = "success";
+            var jsonResponse = jsonDecode(responseString);
+            if(jsonResponse["success"] == true){
+              var loopdatalength = jsonResponse['data'].length;
+              for (var k = 0; k < loopdatalength; k++) {
+                for (var i = 0; i < _datareportpenjualan.length; i++) {
+                    if ( _datareportpenjualan[i].id == jsonResponse['data'][k]['extDocId'] && jsonResponse['data'][k]['success'] == true){
+                      _datareportpenjualan[i].condition = "success";
+                    } else if (_datareportpenjualan[i].id == jsonResponse['data'][k]['extDocId'] && jsonResponse['data'][k]['success'] == false){
+                        var listerror = jsonResponse['data'][k]['errors'].length;
+                        for (var m = 0; m < listerror; m++) {
+                          if(jsonResponse['data'][i]['errors'][m]['code'] == AppConfig().orderalreadyexistvendor){
+                            _datareportpenjualan[i].condition = "success";
+                            break;
+                          } else {
+                            _datareportpenjualan[i].condition = "pending";
+                          }
+                        }
                     }
                 }
+              }
+              List<PenjualanPostModel> postadatanew = [];
+              for (var i = 0; i < data.length; i++) {
+                for (var k = 0; k < _datareportpenjualan.length; k++) {
+                  if(data[i].dataList[0]['extDocId'] == _datareportpenjualan[k].id && _datareportpenjualan[i].condition != "success"){
+                    postadatanew.add(data[i]);
+                    break;
+                  }
+                }
+                // print(data[i].dataList[0]['extDocId']);
+              }
+              await boxpostpenjualan.delete(key);
+              if(postadatanew.isNotEmpty){
+                await boxpostpenjualan.put(key,postadatanew);
+              }
+              await boxreportpenjualan.delete(key);
+              await boxreportpenjualan.put(key,_datareportpenjualan);
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                  for (var j = 0; j <= inc; j++) {
+                      if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
+                          _datareportpenjualan[i].condition = "pending";
+                      }
+                  }
+              }
+              await boxreportpenjualan.delete(key);
+              await boxreportpenjualan.put(key,_datareportpenjualan);
             }
-            await boxpostpenjualan.delete(key);
-            await boxreportpenjualan.delete(key);
-            await boxreportpenjualan.put(key,_datareportpenjualan);
-            print(responseString);
-
           } else {
-            for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < data[i].dataList.length; j++) {
-                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
-                        _datareportpenjualan[i].condition = "error";
+             for (var i = 0; i < data.length; i++) {
+                for (var j = 0; j <= inc; j++) {
+                    if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
+                        _datareportpenjualan[i].condition = "pending";
                     }
                 }
             }
@@ -555,9 +600,9 @@ class Backgroundservicecontroller {
             print(responseString);
           }
         } on SocketException {
-            for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < data[i].dataList.length; j++) {
-                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
+             for (var i = 0; i < data.length; i++) {
+                for (var j = 0; j <= inc; j++) {
+                    if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
                         _datareportpenjualan[i].condition = "pending";
                     }
                 }
@@ -566,9 +611,9 @@ class Backgroundservicecontroller {
             await boxreportpenjualan.put(key,_datareportpenjualan);
             print("socketexception");
         } catch (e) {
-            for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < data[i].dataList.length; j++) {
-                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
+             for (var i = 0; i < data.length; i++) {
+                for (var j = 0; j <= inc; j++) {
+                    if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
                         _datareportpenjualan[i].condition = "pending";
                     }
                 }
