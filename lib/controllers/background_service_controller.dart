@@ -115,7 +115,7 @@ void onStart(ServiceInstance service) async {
     );
   });
 
-  Timer.periodic(const Duration(minutes: 3), (timer) async {
+  Timer.periodic(const Duration(minutes: 1), (timer) async {
     await Backgroundservicecontroller().getPendingData();
 
     if (service is AndroidServiceInstance) {
@@ -425,19 +425,24 @@ class Backgroundservicecontroller {
 
   //taking order vendor section
   Future<void> createLogTes(String content) async {
+    bool allowritelog = false; //change to true , to see log
     final file = File('/storage/emulated/0/TKTW/SFAlog.txt');
 
-    try {
-      if (!await file.exists()) {
-        await file.create();
+    if(allowritelog){
+      try {
+        if (!await file.exists()) {
+          await file.create();
+        }
+
+        await file.writeAsString(content + "\n", mode: FileMode.append);
+
+        print('File written successfully.');
+      } catch (e) {
+        print('Error writing to file: $e');
       }
+    } 
 
-      await file.writeAsString(content + "\n", mode: FileMode.append);
-
-      print('File written successfully.');
-    } catch (e) {
-      print('Error writing to file: $e');
-    }
+    
   }
 
   getPendingData() async {
@@ -541,7 +546,9 @@ class Backgroundservicecontroller {
         final request = http.MultipartRequest('POST', url);
         for (var i = 0; i < data.length; i++) {
           for (var j = 0; j < data[i].dataList.length; j++) {
-              if (checkTimeDifference(data[i].dataList[j]['orderDate'])){
+            var ismorethan1minutes = checkTimeDifference(data[i].dataList[j]['orderDate']);
+            await createLogTes("list no on loop " + data[i].dataList[j]['extDocId'] + " " + ismorethan1minutes.toString() + " ${data[i].dataList[j]['orderDate']}");
+              if (ismorethan1minutes){
                     request.fields['data[$inc][extDocId]'] = data[i].dataList[j]['extDocId'];
                     request.fields['data[$inc][orderDate]'] = data[i].dataList[j]['orderDate'];
                     request.fields['data[$inc][customerNo]'] = data[i].dataList[j]['customerNo'];
@@ -588,10 +595,13 @@ class Backgroundservicecontroller {
                       }
                   }
                 }
+                for (var i = 0; i < _datareportpenjualan.length; i++) {
+                    await createLogTes("isi datareportpenjualan ${_datareportpenjualan[i].id}");
+                }
                 List<PenjualanPostModel> postadatanew = [];
                 for (var i = 0; i < data.length; i++) {
                   for (var k = 0; k < _datareportpenjualan.length; k++) {
-                    if(data[i].dataList[0]['extDocId'] == _datareportpenjualan[k].id && _datareportpenjualan[i].condition != "success"){
+                    if(data[i].dataList[0]['extDocId'] == _datareportpenjualan[k].id && _datareportpenjualan[k].condition != "success"){
                       postadatanew.add(data[i]);
                       break;
                     }
@@ -611,7 +621,7 @@ class Backgroundservicecontroller {
                 await boxreportpenjualan.delete(key);
                 await boxreportpenjualan.put(key,_datareportpenjualan);
             } else {
-                for (var i = 0; i < data.length; i++) {
+                for (var i = 0; i < _datareportpenjualan.length; i++) {
                   for (var j = 0; j <= inc; j++) {
                       if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
                           _datareportpenjualan[i].condition = "pending";
@@ -623,7 +633,7 @@ class Backgroundservicecontroller {
               await boxreportpenjualan.put(key,_datareportpenjualan);
             }
           } else {
-             for (var i = 0; i < data.length; i++) {
+             for (var i = 0; i < _datareportpenjualan.length; i++) {
                 for (var j = 0; j <= inc; j++) {
                     if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
                         _datareportpenjualan[i].condition = "pending";
@@ -637,7 +647,7 @@ class Backgroundservicecontroller {
           }
         } on SocketException {
             await createLogTes("socketexception");
-             for (var i = 0; i < data.length; i++) {
+             for (var i = 0; i < _datareportpenjualan.length; i++) {
                 for (var j = 0; j <= inc; j++) {
                     if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
                         _datareportpenjualan[i].condition = "pending";
@@ -649,7 +659,7 @@ class Backgroundservicecontroller {
             // print("socketexception");
         } catch (e) {
             await createLogTes("$e abnormal");
-             for (var i = 0; i < data.length; i++) {
+             for (var i = 0; i < _datareportpenjualan.length; i++) {
                 for (var j = 0; j <= inc; j++) {
                     if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
                         _datareportpenjualan[i].condition = "pending";
