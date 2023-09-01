@@ -5,5 +5,6 @@ class TarikBarangModel {
   String nmProduct;
   String alasan;
   List<CartModel> itemOrder;
-  TarikBarangModel(this.kdProduct, this.nmProduct, this.itemOrder, this.alasan);
+  String id;
+  TarikBarangModel(this.kdProduct, this.nmProduct, this.itemOrder, this.alasan,this.id);
 }

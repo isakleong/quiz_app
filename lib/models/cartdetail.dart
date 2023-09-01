@@ -14,7 +14,10 @@ class CartDetail {
   @HiveField(2)
   List<CartModel> itemOrder;
 
-  CartDetail(this.kdProduct, this.nmProduct, this.itemOrder);
+  @HiveField(3)
+  String id;
+
+  CartDetail(this.kdProduct, this.nmProduct, this.itemOrder, this.id);
 
   factory CartDetail.fromJson(Map<String, dynamic> json) {
     final List<dynamic> jsonItemList = json['itemOrder'];
@@ -24,6 +27,7 @@ class CartDetail {
       json['kdProduct'] as String,
       json['nmProduct'] as String,
       cartModels,
+      json['id'] as String
     );
   }
 }

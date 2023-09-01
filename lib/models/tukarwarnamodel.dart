@@ -7,6 +7,6 @@ class TukarWarnaModel {
   String nmProduct;
   List<CartModel> listqtyheader;
   List<CartDetail> listitemdetail;
-  TukarWarnaModel(
-      this.kdProduct, this.nmProduct, this.listqtyheader, this.listitemdetail);
+  String id;
+  TukarWarnaModel(this.kdProduct, this.nmProduct, this.listqtyheader, this.listitemdetail,this.id);
 }

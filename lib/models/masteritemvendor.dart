@@ -23,6 +23,7 @@ class MasterItemVendor {
 }
 
 class Item {
+  final String id;
   final String code;
   final String name;
   final String price;
@@ -30,6 +31,7 @@ class Item {
   final UnitOfMeasure uom;
 
   Item({
+    required this.id,
     required this.code,
     required this.name,
     required this.price,
@@ -39,9 +41,10 @@ class Item {
 
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
-      code: json['code'],
+      id: json['id'].toString(),
+      code: json['code'].toString(),
       name: json['name'],
-      price: json['price'],
+      price: json['price'].toString(),
       uomId: json['uom_id'],
       uom: UnitOfMeasure.fromJson(json['uom']),
     );
