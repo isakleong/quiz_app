@@ -77,8 +77,8 @@ class LaporanController extends GetxController {
       for (var i = 0; i < listdelindex.length; i++) {
         listReportPenjualan.removeAt(listdelindex[i]);
       }
-      await boxreportpenjualan.delete(gkey);
-      await boxreportpenjualan.put(gkey,listReportPenjualan);
+      // await boxreportpenjualan.delete(gkey);
+      // await boxreportpenjualan.put(gkey,listReportPenjualan);
     }
 
     //fill report pembayaran

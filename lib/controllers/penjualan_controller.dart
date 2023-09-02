@@ -457,6 +457,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     }
     if(listAddress.length == 1){
       isvalid = true;
+      choosedAddress.value = listAddress[0].address;
     }
     return isvalid;
   }
@@ -493,7 +494,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     String time = DateFormat('HH:mm').format(now);
     List<CartDetail> listcopy = [];
     listcopy.addAll(cartDetailList);
-    String alm = choosedAddress.value;;
+    String alm = choosedAddress.value;
     await closebox();
     await saveOrderToReport(noorder, date, time,  notes.value.text, listcopy,salesid,cust);
     saveOrderToApi(salesid, cust, notes.value.text, date, noorder,listcopy,alm);
@@ -518,6 +519,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   saveOrderToApi(String salesid,String custid, String notestext, String orderdate, String noorder, List<CartDetail> listdetail, String choosedAddressdata) async {
       await getBox();
       var idx = listAddress.indexWhere((element) => element.address == choosedAddressdata);
+      print("ini isi element ${listAddress[0].address} ini isi choosed $choosedAddressdata");
       List<Map<String, dynamic>> data = [];
       for (var i = 0; i < listdetail.length; i++) {
         data.add(

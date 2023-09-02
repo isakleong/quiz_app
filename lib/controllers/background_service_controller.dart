@@ -150,10 +150,6 @@ void onStart(ServiceInstance service) async {
 }
 
 class Backgroundservicecontroller {
-  late Box boxpostpenjualan;
-  late Box boxreportpenjualan;
-  late Box vendorBox;
-  List<Vendor> vendorlist = [];
   
   Future hiveInitializer() async {
     Directory directory =
@@ -193,12 +189,6 @@ class Backgroundservicecontroller {
     }
   }
 
-  Future writeText(String teks) async {
-    File(join(AppConfig.filequiz))
-      ..createSync(recursive: true)
-      ..writeAsString(teks);
-  }
-
   Future<void> initializeService() async {
     final service = FlutterBackgroundService();
     await service.configure(
@@ -217,7 +207,14 @@ class Backgroundservicecontroller {
 
     service.startService();
   }
+  
+  Future writeText(String teks) async {
+    File(join(AppConfig.filequiz))
+      ..createSync(recursive: true)
+      ..writeAsString(teks);
+  }
 
+  // quiz section
   Future<bool> isSameSalesid() async {
     try {
       String parameter = await Utils().readParameter();
@@ -422,8 +419,14 @@ class Backgroundservicecontroller {
     }
     return "err";
   }
+  //end quiz section
 
   //taking order vendor section
+  late Box boxpostpenjualan;
+  late Box boxreportpenjualan;
+  late Box vendorBox;
+  List<Vendor> vendorlist = [];
+
   Future<void> createLogTes(String content) async {
     bool allowritelog = false; //change to true , to see log
     final file = File('/storage/emulated/0/TKTW/SFAlog.txt');
@@ -446,28 +449,31 @@ class Backgroundservicecontroller {
   }
 
   getPendingData() async {
-    DateTime currentDateTime = DateTime.now();
-    String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(currentDateTime);
-    print("trying to get pending data at $date");
-    await createLogTes("trying to get pending data at $date");
-    await getBox();
-    print("finish get box");
-    await createLogTes("finish get box");
-    List<dynamic> keys = await getListKey();
-    print("finish get key");
-    await createLogTes("finish get key");
-    await closebox();
-    if(keys.isNotEmpty){
-    print("key not empty");
-    await createLogTes("key not empty");
-      for (var m = 0; m < keys.length; m++) {
-        await sendPendingData(keys[m]);
+      DateTime currentDateTime = DateTime.now();
+      String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(currentDateTime);
+      await createLogTes("trying to get pending data at $date");
+      await getBox();
+      await createLogTes("finish get box");
+      List<dynamic> keys = await getListKey();
+      await createLogTes("finish get key");
+      await closebox();
+      if(keys.isNotEmpty){
+        await createLogTes("key not empty");
+        for (var m = 0; m < keys.length; m++) {
+          await sendPendingData(keys[m]);
+        }
+      } 
+      await getBox();
+      List<dynamic> keysreport = await getListKeyReport();
+      await closebox();
+      if(keysreport.isNotEmpty){
+        for (var m = 0; m < keysreport.length; m++) {
+          await removeoldreport(keysreport[m]);
+         }
       }
-    }
   }
 
   sendPendingData(String keybox) async {
-    print("send pending data for key $keybox");
     await createLogTes("send pending data for key $keybox");
     await getBox();
     List<String> parts = keybox.split('|');
@@ -490,8 +496,32 @@ class Backgroundservicecontroller {
     }
   }
 
+  removeoldreport(String keybox) async {
+    await getBox();
+    var listdelindex = [];
+    List<ReportPenjualanModel> listReportPenjualan = <ReportPenjualanModel>[];
+    var datareportpenjualan = await boxreportpenjualan.get(keybox);
+      for (var i = 0; i < datareportpenjualan.length; i++) {
+        listReportPenjualan.add(datareportpenjualan[i]);
+        if(Utils().isDateNotToday(Utils().formatDate(listReportPenjualan[i].tanggal)) && listReportPenjualan[i].condition == "success"){
+          listdelindex.add(i == 0 ? i : (i-1));
+        }
+      }
+      for (var i = 0; i < listdelindex.length; i++) {
+        listReportPenjualan.removeAt(listdelindex[i]);
+      }
+      await boxreportpenjualan.delete(keybox);
+      await boxreportpenjualan.put(keybox,listReportPenjualan);
+      await closebox();
+  }
+
   getListKey() async {
       List<dynamic> keys = boxpostpenjualan.keys.toList();
+      return keys;
+  }
+
+  getListKeyReport() async {
+      List<dynamic> keys = boxreportpenjualan.keys.toList();
       return keys;
   }
 
@@ -595,9 +625,7 @@ class Backgroundservicecontroller {
                       }
                   }
                 }
-                for (var i = 0; i < _datareportpenjualan.length; i++) {
-                    await createLogTes("isi datareportpenjualan ${_datareportpenjualan[i].id}");
-                }
+                
                 List<PenjualanPostModel> postadatanew = [];
                 for (var i = 0; i < data.length; i++) {
                   for (var k = 0; k < _datareportpenjualan.length; k++) {
@@ -606,14 +634,8 @@ class Backgroundservicecontroller {
                       break;
                     }
                   }
-                  // print(data[i].dataList[0]['extDocId']);
                 }
-                for (var i = 0; i < postadatanew.length; i++) {
-                  for (var j = 0; j < postadatanew[i].dataList.length; j++) {
-                    await createLogTes("isi post data new ${postadatanew[i].dataList[j]['extDocId']}");
-                  }
-                }
-                // print("************");
+
                 await boxpostpenjualan.delete(key);
                 if(postadatanew.isNotEmpty){
                   await boxpostpenjualan.put(key,postadatanew);
@@ -669,12 +691,11 @@ class Backgroundservicecontroller {
             await boxreportpenjualan.delete(key);
             await boxreportpenjualan.put(key,_datareportpenjualan);
             // print("$e abnormal ");
-        } 
+        }
         await closebox();
   }
 
   Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,String key,String vendorurl) async {
-    print("send to api");
     await getBox();
 
     String noorder = data[0]['extDocId'];
@@ -720,7 +741,6 @@ class Backgroundservicecontroller {
       try {
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
-        print(responseString);
 
         if (response.statusCode == 200) {
           if(idx != -1){
@@ -729,13 +749,10 @@ class Backgroundservicecontroller {
           listpost.removeAt(idxpost);
           await boxpostpenjualan.delete(key);
           if(listpost.isNotEmpty) {
-            print("isi list post ulang");
             await boxpostpenjualan.put(key,listpost);
           }
           await boxreportpenjualan.delete(key);
-          print("isi ulang data report penjualan");
           await boxreportpenjualan.put(key,_datareportpenjualan);
-          print(responseString);
 
         } else {
           if(idx != -1){
@@ -743,7 +760,6 @@ class Backgroundservicecontroller {
           }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
-          print(responseString);
         }
       } on SocketException {
           if(idx != -1){
@@ -751,14 +767,12 @@ class Backgroundservicecontroller {
           }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
-          print("socketexception");
       } catch (e) {
           if(idx != -1){
             _datareportpenjualan[idx].condition = "pending";
           }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
-          print("$e abnormal ");
       } 
       await closebox();
   }

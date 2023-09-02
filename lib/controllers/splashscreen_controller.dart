@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -517,7 +518,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
               await closebox();
                 if(datacustomerbox!= null){
                   Customer custdata = datacustomerbox;
-                  if(!isDateNotToday(formatDate(custdata.timestamp))){
+                  if(!Utils().isDateNotToday(Utils().formatDate(custdata.timestamp))){
                     await checkofflinevendor();
                     await moduleBox.clear();
                     moduleBox.addAll(moduleList);
@@ -680,26 +681,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
       boxreportpenjualan.close();
     } catch (e) {
     }
-  }
-
-  String formatDate(String dateTimeString) {
-    final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
-    final outputFormat = DateFormat('dd-MM-yyyy');
-
-    final dateTime = inputFormat.parse(dateTimeString);
-    final formattedDate = outputFormat.format(dateTime);
-
-    return formattedDate;
-  }
-
-  bool isDateNotToday(String dateTimeString) {
-    final inputFormat = DateFormat('dd-MM-yyyy');
-    final dateTime = inputFormat.parse(dateTimeString);
-
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    return dateTime.isBefore(today);
   }
 
   getVendor() async { 
