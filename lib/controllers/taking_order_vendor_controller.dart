@@ -395,12 +395,15 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
   // for informasi page
   RxList<bool> selectedsegmentinformasi = [true, false].obs;
+  RxList<bool> selectedsegmentcategory = [true, false, false].obs;
+  RxInt indexselectedsegmentcategory = 0.obs;
   RxInt indexSegmentinformasi = 0.obs;
   RxBool isSuccess = false.obs;
   var listnode = <TreeNodeData>[];
   TreeViewController? treecontroller;
   RxInt datanodelength = 0.obs;
   String productdir = "/storage/emulated/0/Product Knowledge";
+  RxInt indicatorIndex = 0.obs;
 
   prepareinfoproduk() async {
     await getfilelist();
@@ -465,6 +468,14 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       }
     }
     isSuccess.value = true;
+  }
+
+  handleselectedsegmentcategory(int index){
+    indexselectedsegmentcategory.value = index;
+    for (var i = 0; i < selectedsegmentcategory.length; i++) {
+      selectedsegmentcategory[i] = false;
+    }
+    selectedsegmentcategory[index] = true;
   }
 
 }
