@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -105,6 +103,74 @@ List<String> imgpath  = [
           ),
         ),
         SizedBox(height: 5,),
+        Expanded(child: 
+        Padding(
+          padding: const EdgeInsets.only(left: 40,right: 40),
+          child: GridView.builder(
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.only(top: 15,bottom: 40),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 0.752,mainAxisSpacing: 20,crossAxisSpacing: 40), 
+          itemBuilder: (context, index) {
+            return Material(
+              elevation: 1.2,
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: Get.width,
+                    height: Get.width < 450 ? 105.sp : 170.sp,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(image: FileImage(File('${basepath}050_T_AAIP_23.jpg')),fit: BoxFit.fill)
+                        ,borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))
+                      ),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Container(
+                          width: Get.width,
+                          padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
+                          decoration: BoxDecoration(color: Colors.grey.shade900.withOpacity(0.7)),
+                          child: TextView(text: imgpath[0],color: Colors.white,fontSize: 11.sp,),
+                        )
+                      ),
+                    ),
+                  ),
+                Material(
+                   color: Colors.white,
+                   elevation: 0,
+                    borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(12),bottomRight: Radius.circular(12)),
+                    child: Column(children: [
+                      SizedBox(height: 12,),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12,right: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(FontAwesomeIcons.calendarDays, color: Colors.green.shade600,size: 14.sp,)
+                            ,SizedBox(width: 6.sp,),
+                            TextView(text: '16 Jul - 18 Agu',fontSize: 11.sp,)
+                        ],),
+                      ),
+                      SizedBox(height: 7.sp,),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, right: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(FontAwesomeIcons.clock, color: Colors.blue.shade600,size: 14.sp,),
+                            SizedBox(width: 6.sp,),
+                            TextView(text: "Sisa 14 Hari Lagi",fontSize: 10.sp,)
+                        ],),
+                      ),
+                      SizedBox(height: 12.sp,)
+                    ]),
+                  )
+              ]),
+            );
+          }),
+        ))
       ])) 
     );
   }

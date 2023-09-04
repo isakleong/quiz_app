@@ -45,14 +45,16 @@ class InformasiMainPage extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.white,
+                      color: Get.width < 450 ? Colors.transparent : Colors.white
                     ),
                     child: ToggleButtons(
                       isSelected: _takingOrderVendorController.selectedsegmentinformasi,
                       onPressed: (index) {
                         _takingOrderVendorController.handleselectedindeinformasi(index);
                       },
-                      constraints: BoxConstraints(minWidth: 0.25 * Get.width,minHeight: 0.05 * Get.height),
+                      constraints: 
+                      Get.width < 450 ? BoxConstraints(minWidth: 0.25 * Get.width,minHeight: 0.04 * Get.height) :
+                      BoxConstraints(minWidth: 0.25 * Get.width,minHeight: 0.05 * Get.height),
                       borderColor: Colors.grey,
                       selectedBorderColor: AppConfig.mainCyan,
                       borderRadius: BorderRadius.circular(20.0),
