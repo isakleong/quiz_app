@@ -11,7 +11,6 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/models/cartdetail.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
@@ -437,7 +436,7 @@ class Backgroundservicecontroller {
           await file.create();
         }
 
-        await file.writeAsString(content + "\n", mode: FileMode.append);
+        await file.writeAsString("$content\n", mode: FileMode.append);
 
         print('File written successfully.');
       } catch (e) {
@@ -577,7 +576,7 @@ class Backgroundservicecontroller {
         for (var i = 0; i < data.length; i++) {
           for (var j = 0; j < data[i].dataList.length; j++) {
             var ismorethan1minutes = checkTimeDifference(data[i].dataList[j]['orderDate']);
-            await createLogTes("list no on loop " + data[i].dataList[j]['extDocId'] + " " + ismorethan1minutes.toString() + " ${data[i].dataList[j]['orderDate']}");
+            await createLogTes("${"list no on loop " + data[i].dataList[j]['extDocId']} $ismorethan1minutes ${data[i].dataList[j]['orderDate']}");
               if (ismorethan1minutes){
                     request.fields['data[$inc][extDocId]'] = data[i].dataList[j]['extDocId'];
                     request.fields['data[$inc][orderDate]'] = data[i].dataList[j]['orderDate'];

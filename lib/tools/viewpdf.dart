@@ -46,12 +46,12 @@ class _ViewPDFScreenState extends State<ViewPDFScreen> {
             ),
             Container(
               height: 30,
-              decoration: BoxDecoration(color: Colors.white),
+              decoration: const BoxDecoration(color: Colors.white),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextView(text: pageindex.toString(), fontSize : 14),
-                  TextView(text: ' / ', fontSize : 14),
+                  const TextView(text: ' / ', fontSize : 14),
                   TextView(text: pagecount.toString(), fontSize : 14)
                 ],
               ),

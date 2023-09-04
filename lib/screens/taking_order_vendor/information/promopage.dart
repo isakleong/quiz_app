@@ -27,17 +27,17 @@ List<String> imgpath  = [
       backgroundColor: Colors.transparent,
       body: Obx(()=>Column(
         children: [
-        Container(
+        SizedBox(
           height: 0.2 * Get.height,
           width: Get.width,
           child: CarouselSlider(
             items: imgpath.map((imagePath) {
-              return Container(
+              return SizedBox(
                     width: 0.8 * MediaQuery.of(context).size.width, // 70% of screen width
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
                       child: Image.file(
-                        File('${basepath}${imagePath}'),
+                        File('$basepath$imagePath'),
                         fit: BoxFit.fill, // Adjust the fit as needed
                       ),
                     ),
@@ -52,7 +52,7 @@ List<String> imgpath  = [
             ),
           ),
         ),
-        SizedBox(height: 10,),
+        const SizedBox(height: 10,),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: imgpath.map((image) {
@@ -60,7 +60,7 @@ List<String> imgpath  = [
             return Container(
               width: 8.0,
               height: 8.0,
-              margin: EdgeInsets.symmetric(horizontal: 6.0),
+              margin: const EdgeInsets.symmetric(horizontal: 6.0),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: _takingOrderVendorController.indicatorIndex.value == index
@@ -70,7 +70,7 @@ List<String> imgpath  = [
             );
           }).toList(),
         ),
-        SizedBox(height: 10,),
+        const SizedBox(height: 10,),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -102,13 +102,13 @@ List<String> imgpath  = [
             .toList(),
           ),
         ),
-        SizedBox(height: 5,),
+        const SizedBox(height: 5,),
         Expanded(child: 
         Padding(
           padding: const EdgeInsets.only(left: 40,right: 40),
           child: GridView.builder(
-            physics: BouncingScrollPhysics(),
-            padding: EdgeInsets.only(top: 15,bottom: 40),
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.only(top: 15,bottom: 40),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 0.752,mainAxisSpacing: 20,crossAxisSpacing: 40), 
           itemBuilder: (context, index) {
             return Material(
@@ -142,7 +142,7 @@ List<String> imgpath  = [
                    elevation: 0,
                     borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(12),bottomRight: Radius.circular(12)),
                     child: Column(children: [
-                      SizedBox(height: 12,),
+                      const SizedBox(height: 12,),
                       Padding(
                         padding: const EdgeInsets.only(left: 12,right: 12),
                         child: Row(

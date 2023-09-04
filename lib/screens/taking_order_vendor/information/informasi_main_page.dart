@@ -72,7 +72,7 @@ class InformasiMainPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 Expanded(child: pages[_takingOrderVendorController.indexSegmentinformasi.value])
               ],
             ),

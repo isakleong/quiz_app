@@ -1,9 +1,5 @@
-import 'dart:math';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:list_treeview/list_treeview.dart';
 import 'package:sfa_tools/tools/viewpdf.dart';
@@ -28,7 +24,7 @@ class InfoProdukPage extends StatelessWidget {
   }
 
   Widget getProgressView() {
-    return Center(
+    return const Center(
       child: CircularProgressIndicator(),
     );
   }
@@ -36,24 +32,24 @@ class InfoProdukPage extends StatelessWidget {
   Widget getBody() {
     return ListTreeView(
       shrinkWrap: false,
-      padding: EdgeInsets.all(0),
+      padding: const EdgeInsets.all(0),
       itemBuilder: (BuildContext context, NodeData data) {
         TreeNodeData item = data as TreeNodeData;
         double offsetX = item.level * 30.0;
         return Padding(
-          padding:  EdgeInsets.only(left: 8.0),
+          padding:  const EdgeInsets.only(left: 8.0),
           child: InkWell(
             onTap: !item.isFile
                   ? null
                   : () async {
                       var tdir = item.fullname.substring(0, item.fullname.lastIndexOf("/")).replaceAll("%20", " ");
-                      if (await Directory(_takingOrderVendorController.productdir + "/" + tdir).exists() && await File(_takingOrderVendorController.productdir + "/" + item.fullname.replaceAll("%20", " ")).exists()) {
+                      if (await Directory("${_takingOrderVendorController.productdir}/$tdir").exists() && await File("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}").exists()) {
                         if (item.extension == "jpg" || item.extension == "jpeg") {
-                          Get.to(ViewImageScreen(_takingOrderVendorController.productdir + "/" + item.fullname.replaceAll("%20", " ")));
+                          Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}"));
                         } else if (item.extension == "pdf") {
-                          Get.to(ViewPDFScreen(_takingOrderVendorController.productdir + "/" + item.fullname.replaceAll("%20", " ")));
+                          Get.to(ViewPDFScreen("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}"));
                         } else if (item.extension == "mp4") {
-                          Get.to(ViewVideoScreen(_takingOrderVendorController.productdir + "/" + item.fullname.replaceAll("%20", " ")));
+                          Get.to(ViewVideoScreen("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}"));
                         }
                       } else {
                         Get.defaultDialog(
@@ -82,7 +78,7 @@ class InfoProdukPage extends StatelessWidget {
                     },
             child: Container(
               height: 54,
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -93,7 +89,7 @@ class InfoProdukPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.only(right: 5),
+                            padding: const EdgeInsets.only(right: 5),
                             child: !item.isFile ? (item.isExpand ? Image.asset("assets/images/folderopen.png",height: 25,) :  Image.asset("assets/images/folder.png",height: 25,)) :
                             item.extension == "jpg" ? Image.asset("assets/images/filejpg.png",height: 30) : 
                             item.extension == "jpeg" ? Image.asset("assets/images/filejpg.png",height: 30) : 
@@ -102,8 +98,8 @@ class InfoProdukPage extends StatelessWidget {
                             Image.asset("assets/images/filejpg.png"),
                           ),
                           Text(
-                            '${item.name.replaceAll("%20","")}',
-                            style: TextStyle(fontSize: 15,),
+                            item.name.replaceAll("%20",""),
+                            style: const TextStyle(fontSize: 15,),
                           ),
                         ],
                       ),

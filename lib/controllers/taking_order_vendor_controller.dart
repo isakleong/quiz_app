@@ -459,10 +459,11 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
             tnode.fullname = temp;
             tnode.extension = str.substring(str.lastIndexOf(".")+1,str.length);
           }
-          if(head.name == "")
+          if(head.name == "") {
             listnode.add(tnode);
-          else
+          } else {
             head.addChild(tnode);
+          }
         }
         head = tnode;
       }
