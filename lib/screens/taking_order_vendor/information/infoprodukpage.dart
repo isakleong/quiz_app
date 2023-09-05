@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:list_treeview/list_treeview.dart';
 import 'package:sfa_tools/tools/viewpdf.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../models/treenodedata.dart';
 import '../../../tools/viewimage.dart';
@@ -97,10 +98,13 @@ class InfoProdukPage extends StatelessWidget {
                             item.extension == "mp4" ? Image.asset("assets/images/filemp4.png",height: 30) :
                             Image.asset("assets/images/filejpg.png"),
                           ),
-                          Text(
+                          AutoSizeText(
                             item.name.replaceAll("%20",""),
-                            style: const TextStyle(fontSize: 15,),
-                          ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            minFontSize: 10,
+                            style: TextStyle(fontSize: Get.width < 450 ? 9.sp : 11.sp,fontWeight: FontWeight.normal),
+                          )
                         ],
                       ),
                     ),

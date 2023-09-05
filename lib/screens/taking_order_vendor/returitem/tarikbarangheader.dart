@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 import '../../../widgets/customelevatedbutton.dart';
 
@@ -27,12 +27,12 @@ class TarikBarangHeader extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
+                 SizedBox(
                   width: 0.05 * Get.width,
                 ),
                 Container(
-                  width: 45,
-                  height: 45,
+                  width: 32.sp,
+                  height: 32.sp,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: LinearGradient(
@@ -49,8 +49,8 @@ class TarikBarangHeader extends StatelessWidget {
                     children: [
                       Image.asset(
                         'assets/images/cart.png',
-                        width: 25,
-                        height: 25,
+                        width: 17.sp,
+                        height: 17.sp,
                         color: Colors.white,
                         fit: BoxFit.cover,
                       ),
@@ -60,33 +60,34 @@ class TarikBarangHeader extends StatelessWidget {
                 SizedBox(
                   width: 0.02 * Get.width,
                 ),
-                const TextView(
+                TextView(
                   text: "Keranjang",
                   headings: 'H3',
-                  fontSize: 18,
+                  fontSize: 12.sp,
                 ),
                 SizedBox(
                   width: 0.02 * Get.width,
                 ),
-                ChipsItem(
-                  satuan: jumlahproduk,
-                  fontSize: 14,
-                )
+               ChipsItem(
+                      satuan: jumlahproduk,
+                      fontSize: 8.sp,
+                    ),
               ],
             ),
             Padding(
-              padding: EdgeInsets.only(right: 0.05 * Get.width),
+              padding: EdgeInsets.only(right: 0.05 * width),
               child: CustomElevatedButton(
-                  text: "LANJUTKAN >>",
+                  text: "LANJUTKAN  >>",
                   onTap: onTap,
                   width: 0.25 * width,
                   height: 0.045 * height,
                   radius: 15,
                   backgroundColor: AppConfig.mainCyan,
                   textcolor: Colors.white,
-                  elevation: 2,
+                  elevation: 5,
+                  fonts: 10.sp,
                   bordercolor: AppConfig.mainCyan,
-                  headings: 'H2'),
+                  headings: 'H2')
             )
           ],
         ),

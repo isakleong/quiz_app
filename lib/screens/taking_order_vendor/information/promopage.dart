@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/common/app_config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
@@ -21,56 +20,44 @@ List<String> imgpath  = [
   '050_T_AA_23.jpg'
 ];
 
+List<String> imgpromo = [
+  '050_T_AAIP_23.jpg',
+  '064_T_AA_23.jpg',
+  '074A_T_AA_23.jpg',
+  '067_T_AA_23.jpg',
+  '080_R_AA_23.jpg',
+];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Obx(()=>Column(
+      body: Obx(()=> Column(
         children: [
-        SizedBox(
-          height: 0.2 * Get.height,
+        Container(
           width: Get.width,
-          child: CarouselSlider(
-            items: imgpath.map((imagePath) {
-              return SizedBox(
-                    width: 0.8 * MediaQuery.of(context).size.width, // 70% of screen width
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-                      child: Image.file(
-                        File('$basepath$imagePath'),
-                        fit: BoxFit.fill, // Adjust the fit as needed
-                      ),
-                    ),
-                  );
-            }).toList(),
-            options: CarouselOptions(
-              autoPlay: true,
-              enlargeCenterPage: true,
-              onPageChanged: (index, reason) {
-                _takingOrderVendorController.indicatorIndex.value = index;
-              },
+          height: Get.width < 450 ? 145 : 170,
+          margin: EdgeInsets.only(top: 10,bottom: 10),
+          child: Swiper(
+            autoplay: true,
+            autoplayDelay: 6000,
+            viewportFraction: Get.width < 450 ? 0.7 : 0.6,
+            scale: Get.width < 450 ? 0.7 : 0.65,
+            itemCount: imgpath.length,
+            pagination: const SwiperPagination(
+              margin: EdgeInsets.only(top: 20),
+              builder: DotSwiperPaginationBuilder(color: Colors.grey, size: 8, activeColor: Colors.teal, activeSize: 12)
             ),
-          ),
+            itemBuilder: (context, index) {
+              return InkWell(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Image.file(File('$basepath${imgpath[index]}'), fit: BoxFit.contain,),
+                ),
+              );
+            },
+            ),
         ),
-        const SizedBox(height: 10,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: imgpath.map((image) {
-            int index = imgpath.indexOf(image);
-            return Container(
-              width: 8.0,
-              height: 8.0,
-              margin: const EdgeInsets.symmetric(horizontal: 6.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _takingOrderVendorController.indicatorIndex.value == index
-                    ? AppConfig.mainCyan
-                    : Colors.grey,
-              ),
-            );
-          }).toList(),
-        ),
-        const SizedBox(height: 10,),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -102,18 +89,18 @@ List<String> imgpath  = [
             .toList(),
           ),
         ),
-        const SizedBox(height: 5,),
-        Expanded(child: 
-        Padding(
-          padding: const EdgeInsets.only(left: 40,right: 40),
+        const SizedBox(height: 5),
+        Expanded(
+          child: Padding(
+          padding: EdgeInsets.only(left: Get.width < 450 ? 40 : 60,right: Get.width < 450 ? 40 : 60),
           child: GridView.builder(
+            itemCount: 5,
             physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.only(top: 15,bottom: 40),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 0.752,mainAxisSpacing: 20,crossAxisSpacing: 40), 
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,mainAxisSpacing: 20,childAspectRatio: 0.75,crossAxisSpacing: 40), 
           itemBuilder: (context, index) {
             return Material(
               elevation: 1.2,
-              color: Colors.grey.shade300,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +110,7 @@ List<String> imgpath  = [
                     height: Get.width < 450 ? 105.sp : 170.sp,
                     child: Container(
                       decoration: BoxDecoration(
-                        image: DecorationImage(image: FileImage(File('${basepath}050_T_AAIP_23.jpg')),fit: BoxFit.fill)
+                        image: DecorationImage(image: FileImage(File('${basepath}${imgpromo[index]}')),fit: BoxFit.fill)
                         ,borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))
                       ),
                       child: Align(
@@ -132,41 +119,37 @@ List<String> imgpath  = [
                           width: Get.width,
                           padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
                           decoration: BoxDecoration(color: Colors.grey.shade900.withOpacity(0.7)),
-                          child: TextView(text: imgpath[0],color: Colors.white,fontSize: 11.sp,),
+                          child: TextView(text: imgpromo[index],color: Colors.white,fontSize: 11.sp,),
                         )
                       ),
                     ),
                   ),
-                Material(
-                   color: Colors.white,
-                   elevation: 0,
-                    borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(12),bottomRight: Radius.circular(12)),
-                    child: Column(children: [
-                      const SizedBox(height: 12,),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12,right: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(FontAwesomeIcons.calendarDays, color: Colors.green.shade600,size: 14.sp,)
-                            ,SizedBox(width: 6.sp,),
-                            TextView(text: '16 Jul - 18 Agu',fontSize: 11.sp,)
-                        ],),
-                      ),
-                      SizedBox(height: 7.sp,),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12, right: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(FontAwesomeIcons.clock, color: Colors.blue.shade600,size: 14.sp,),
-                            SizedBox(width: 6.sp,),
-                            TextView(text: "Sisa 14 Hari Lagi",fontSize: 10.sp,)
-                        ],),
-                      ),
-                      SizedBox(height: 12.sp,)
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12,right: 12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(FontAwesomeIcons.calendarDays, color: Colors.green.shade600,size: 14.sp,)
+                              ,SizedBox(width: 6.sp,),
+                              TextView(text: '16 Jul - 18 Agu',fontSize: 11.sp,)
+                          ],),
+                        ),Padding(
+                          padding: const EdgeInsets.only(left: 12, right: 12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(FontAwesomeIcons.clock, color: Colors.blue.shade600,size: 14.sp,),
+                              SizedBox(width: 6.sp,),
+                              TextView(text: "Sisa 14 Hari Lagi",fontSize: 10.sp,)
+                          ],),
+                        ),
                     ]),
-                  )
+                  ),
               ]),
             );
           }),
