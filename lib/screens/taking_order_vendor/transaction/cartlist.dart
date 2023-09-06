@@ -61,7 +61,6 @@ class CartList extends StatelessWidget {
                           if (width > 450)
                             SizedBox(
                               height: 14.sp,
-                              width: 0.55 * width,
                               child: TextView(
                                 headings: 'H4',
                                 maxLines: 1,
@@ -72,8 +71,7 @@ class CartList extends StatelessWidget {
                             )
                           else
                             SizedBox(
-                              height: 0.015 * height,
-                              width: 0.55 * width,
+                              height: 0.018 * height,
                               child: TextView(
                                 headings: 'H4',
                                 maxLines: 1,
