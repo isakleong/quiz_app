@@ -121,13 +121,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
     // ignore: prefer_typing_uninitialized_variables
     var status;
     if (type == 'STORAGE') {
-      if (sdkInt < 33) {
+      if (sdkInt! < 33) {
         status = await Permission.storage.status;
       } else {
         status = await Permission.photos.status;
       }
     } else if (type == 'EXTERNAL STORAGE') {
-      if (sdkInt >= 30) {
+      if (sdkInt! >= 30) {
         status = await Permission.manageExternalStorage.status;
       } else {
         return true;
@@ -142,7 +142,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
     if (type == 'STORAGE') {
       if (await checkAppsPermission('STORAGE')) {
-        if (sdkInt >= 30) {
+        if (sdkInt! >= 30) {
           var status = await Permission.manageExternalStorage.status;
           if (status != PermissionStatus.granted) {
             openPermissionRequestDialog('EXTERNAL STORAGE');
@@ -275,7 +275,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
                                             fontWeight: FontWeight.bold,
                                             fontFamily: "Poppins")),
                                   ])
-                            : sdkInt >= 33
+                            : sdkInt! >= 33
                                 ? const TextSpan(
                                     text: '1.  Tekan ',
                                     style: TextStyle(fontFamily: "Poppins"),
@@ -392,7 +392,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
             ),
           ),
           isAnimated: false,
-          iconAsset: sdkInt < 31
+          iconAsset: sdkInt! < 31
               ? 'assets/images/bg-permission-os11.jpg'
               : 'assets/images/bg-permission-os13.jpg',
           leftBtnMsg: "Ok",
@@ -410,7 +410,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     // ignore: prefer_typing_uninitialized_variables
     var status;
     if (type == 'STORAGE') {
-      if (sdkInt < 33) {
+      if (sdkInt! < 33) {
         if (cntStoragePermissionDeny.value > 0) {
           status = await Permission.storage.status;
         } else {
@@ -432,13 +432,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
       }
     } else if (type == 'INSTALLS PACKAGES') {
-      if (sdkInt >= 26) {
+      if (sdkInt! >= 26) {
         status = await Permission.requestInstallPackages.request();
       } else {
         return true;
       }
     } else if (type == 'EXTERNAL STORAGE') {
-      if (sdkInt >= 30) {
+      if (sdkInt! >= 30) {
         status = await Permission.manageExternalStorage.request();
       } else {
         return true;
@@ -517,7 +517,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
               await closebox();
                 if(datacustomerbox!= null){
                   Customer custdata = datacustomerbox;
-                  if(!isDateNotToday(formatDate(custdata.timestamp))){
+                  if(!Utils().isDateNotToday(Utils().formatDate(custdata.timestamp))){
                     await checkofflinevendor();
                     await moduleBox.clear();
                     moduleBox.addAll(moduleList);
@@ -680,26 +680,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
       boxreportpenjualan.close();
     } catch (e) {
     }
-  }
-
-  String formatDate(String dateTimeString) {
-    final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
-    final outputFormat = DateFormat('dd-MM-yyyy');
-
-    final dateTime = inputFormat.parse(dateTimeString);
-    final formattedDate = outputFormat.format(dateTime);
-
-    return formattedDate;
-  }
-
-  bool isDateNotToday(String dateTimeString) {
-    final inputFormat = DateFormat('dd-MM-yyyy');
-    final dateTime = inputFormat.parse(dateTimeString);
-
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    return dateTime.isBefore(today);
   }
 
   getVendor() async { 

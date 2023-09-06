@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 import '../../../widgets/textview.dart';
 
@@ -21,38 +21,82 @@ class ReturCard extends StatelessWidget {
             padding: const EdgeInsets.only(left: 15, top: 15),
             child: Row(
               children: [
-                Stack(
+                Get.width < 450 ?
+               Stack(
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      width: 60,
-                      height: 60,
+                      width: 50.sp,
+                      height: 50.sp,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color(0XFF008996),
                       ),
                     ),
-                    Image.asset(
-                      'assets/images/custretur.png',
-                      width: 45,
-                      height: 45,
-                      fit: BoxFit.cover,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 0.0),
+                      child: Image.asset(
+                        'assets/images/custretur.png',
+                        width: 35.sp,
+                        height: 35.sp,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ],
-                ),
+                ): Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0XFF008996),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 0.0),
+                        child: Image.asset(
+                          'assets/images/custretur.png',
+                          width: 45,
+                          height: 45,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ) ,
                 const SizedBox(
                   width: 20,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const TextView(headings: "H2", text: "Retur", fontSize: 14),
+                    TextView(
+                        headings: "H2", text: "Retur", fontSize: Get.width < 450 ? 10.sp : 14),
                     const SizedBox(
                       height: 5,
                     ),
                     Row(
                       children: [
+                        Get.width < 450 ?
                         Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 16.sp,
+                              height: 16.sp,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppConfig.mainCyan,
+                              ),
+                            ),
+                             Icon(
+                              Icons.home,
+                              color: Colors.white,
+                              size: 12.sp,
+                            )
+                          ],
+                        ) : Stack(
                           alignment: Alignment.center,
                           children: [
                             Container(
@@ -73,7 +117,7 @@ class ReturCard extends StatelessWidget {
                         const SizedBox(
                           width: 5,
                         ),
-                         Text(nmToko),
+                         Text(nmToko, style: TextStyle(fontSize: Get.width < 450 ? 10.sp :14)),
                       ],
                     ),
                   ],

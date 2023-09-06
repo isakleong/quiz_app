@@ -15,7 +15,11 @@ class AppConfig {
   static const String tesPublicUrl = "https://link.tirtakencana.com/SFATools/public/test";
 
   static const String baseUrlVendor = "https://mitra.tirtakencana.com";
-  static const String apiurlvendorpath = "/tangki-air-jerapah-dev";
+  static const String apiurlvendorpath = "/tangki-air-jerapah-dev2";
+  String unknowerrorvendor = "100";
+  String itemcodenotfoundvendor = "101";
+  String dateinvalidvendor = "102";
+  String orderalreadyexistvendor = "103";
 
   // static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
   // static const String initUrl = "https://link.tirtakencana.com/SFATools";

@@ -114,7 +114,7 @@ void onStart(ServiceInstance service) async {
     );
   });
 
-  Timer.periodic(const Duration(minutes: 3), (timer) async {
+  Timer.periodic(const Duration(minutes: 1), (timer) async {
     await Backgroundservicecontroller().getPendingData();
 
     if (service is AndroidServiceInstance) {
@@ -149,10 +149,6 @@ void onStart(ServiceInstance service) async {
 }
 
 class Backgroundservicecontroller {
-  late Box boxpostpenjualan;
-  late Box boxreportpenjualan;
-  late Box vendorBox;
-  List<Vendor> vendorlist = [];
   
   Future hiveInitializer() async {
     Directory directory =
@@ -192,12 +188,6 @@ class Backgroundservicecontroller {
     }
   }
 
-  Future writeText(String teks) async {
-    File(join(AppConfig.filequiz))
-      ..createSync(recursive: true)
-      ..writeAsString(teks);
-  }
-
   Future<void> initializeService() async {
     final service = FlutterBackgroundService();
     await service.configure(
@@ -216,7 +206,14 @@ class Backgroundservicecontroller {
 
     service.startService();
   }
+  
+  Future writeText(String teks) async {
+    File(join(AppConfig.filequiz))
+      ..createSync(recursive: true)
+      ..writeAsString(teks);
+  }
 
+  // quiz section
   Future<bool> isSameSalesid() async {
     try {
       String parameter = await Utils().readParameter();
@@ -421,25 +418,62 @@ class Backgroundservicecontroller {
     }
     return "err";
   }
+  //end quiz section
 
   //taking order vendor section
-  getPendingData() async {
-    print("trying to get pending data");
-    await getBox();
-    print("finish get box");
-    List<dynamic> keys = await getListKey();
-    print("finish get key");
-    await closebox();
-    if(keys.isNotEmpty){
-    print("key not empty");
-      for (var m = 0; m < keys.length; m++) {
-        await sendPendingData(keys[m]);
+  late Box boxpostpenjualan;
+  late Box boxreportpenjualan;
+  late Box vendorBox;
+  List<Vendor> vendorlist = [];
+
+  Future<void> createLogTes(String content) async {
+    bool allowritelog = false; //change to true , to see log
+    final file = File('/storage/emulated/0/TKTW/SFAlog.txt');
+
+    if(allowritelog){
+      try {
+        if (!await file.exists()) {
+          await file.create();
+        }
+
+        await file.writeAsString("$content\n", mode: FileMode.append);
+
+        print('File written successfully.');
+      } catch (e) {
+        print('Error writing to file: $e');
       }
-    }
+    } 
+
+    
+  }
+
+  getPendingData() async {
+      DateTime currentDateTime = DateTime.now();
+      String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(currentDateTime);
+      await createLogTes("trying to get pending data at $date");
+      await getBox();
+      await createLogTes("finish get box");
+      List<dynamic> keys = await getListKey();
+      await createLogTes("finish get key");
+      await closebox();
+      if(keys.isNotEmpty){
+        await createLogTes("key not empty");
+        for (var m = 0; m < keys.length; m++) {
+          await sendPendingData(keys[m]);
+        }
+      } 
+      await getBox();
+      List<dynamic> keysreport = await getListKeyReport();
+      await closebox();
+      if(keysreport.isNotEmpty){
+        for (var m = 0; m < keysreport.length; m++) {
+          await removeoldreport(keysreport[m]);
+         }
+      }
   }
 
   sendPendingData(String keybox) async {
-    print("send pending data for key $keybox");
+    await createLogTes("send pending data for key $keybox");
     await getBox();
     List<String> parts = keybox.split('|');
     String salesid = parts[0].trim();
@@ -453,15 +487,40 @@ class Backgroundservicecontroller {
         listpost.add(listpostbox[i]);
       }
       await closebox();
-      for (var i = 0; i < listpost.length; i++) {
-        await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorurl);
-      }
-      // await postDataOrderAll(listpost, salesid, cust, keybox, vendorurl);
+      await createLogTes("Listpost length ${listpost.length}");
+      // for (var i = 0; i < listpost.length; i++) {
+      //   await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorurl);
+      // }
+      await postDataOrderAll(listpost, salesid, cust, keybox, vendorurl);
     }
+  }
+
+  removeoldreport(String keybox) async {
+    await getBox();
+    var listdelindex = [];
+    List<ReportPenjualanModel> listReportPenjualan = <ReportPenjualanModel>[];
+    var datareportpenjualan = await boxreportpenjualan.get(keybox);
+      for (var i = 0; i < datareportpenjualan.length; i++) {
+        listReportPenjualan.add(datareportpenjualan[i]);
+        if(Utils().isDateNotToday(Utils().formatDate(listReportPenjualan[i].tanggal)) && listReportPenjualan[i].condition == "success"){
+          listdelindex.add(i == 0 ? i : (i-1));
+        }
+      }
+      for (var i = 0; i < listdelindex.length; i++) {
+        listReportPenjualan.removeAt(listdelindex[i]);
+      }
+      await boxreportpenjualan.delete(keybox);
+      await boxreportpenjualan.put(keybox,listReportPenjualan);
+      await closebox();
   }
 
   getListKey() async {
       List<dynamic> keys = boxpostpenjualan.keys.toList();
+      return keys;
+  }
+
+  getListKeyReport() async {
+      List<dynamic> keys = boxreportpenjualan.keys.toList();
       return keys;
   }
 
@@ -494,94 +553,148 @@ class Backgroundservicecontroller {
     }
   }
 
+  bool checkTimeDifference(String times) {
+    DateTime currentDateTime = DateTime.now();
+    DateFormat format = DateFormat("dd-MM-yyyy HH:mm:ss");
+    DateTime givenDateTime = format.parse(times);
+    
+    Duration difference = currentDateTime.difference(givenDateTime);
+    
+    if (difference.inMinutes > 1) {
+      return true;
+    }
+    return false;
+  }
+
   postDataOrderAll(List<PenjualanPostModel> data ,String salesid,String custid ,String key,String vendorurl) async {
-      await getBox();
-
-      var _datareportpenjualan = await boxreportpenjualan.get(key);
-      if(_datareportpenjualan != null){
-        List<ReportPenjualanModel> _listreportpenjualan = [];
-          for (var i = 0; i < _datareportpenjualan.length; i++) {
-            _listreportpenjualan.add(_datareportpenjualan[i]);
-          }
-      }
-
-      var inc = 0;
-      final url = Uri.parse('${vendorurl}sales-orders/store');
-      final request = http.MultipartRequest('POST', url);
+        await createLogTes("on post Data order All");
+        await getBox();
+        var _datareportpenjualan = await boxreportpenjualan.get(key);
+        var inc = 0;
+        final url = Uri.parse('${vendorurl}sales-orders/store');
+        final request = http.MultipartRequest('POST', url);
         for (var i = 0; i < data.length; i++) {
           for (var j = 0; j < data[i].dataList.length; j++) {
-              request.fields['data[$inc][extDocId]'] = data[i].dataList[j]['extDocId'];
-              request.fields['data[$inc][orderDate]'] = data[i].dataList[j]['orderDate'];
-              request.fields['data[$inc][customerNo]'] = data[i].dataList[j]['customerNo'];
-              request.fields['data[$inc][lineNo]'] = data[i].dataList[j]['lineNo'];
-              request.fields['data[$inc][itemNo]'] = data[i].dataList[j]['itemNo'];
-              request.fields['data[$inc][qty]'] = data[i].dataList[j]['qty'];
-              request.fields['data[$inc][note]'] = data[i].dataList[j]['note'];
-              request.fields['data[$inc][shipTo]'] = data[i].dataList[j]['shipTo'];
-              request.fields['data[$inc][salesPersonCode]'] = data[i].dataList[j]['salesPersonCode'];
-              inc = inc + 1;
+            var ismorethan1minutes = checkTimeDifference(data[i].dataList[j]['orderDate']);
+            await createLogTes("${"list no on loop " + data[i].dataList[j]['extDocId']} $ismorethan1minutes ${data[i].dataList[j]['orderDate']}");
+              if (ismorethan1minutes){
+                    request.fields['data[$inc][extDocId]'] = data[i].dataList[j]['extDocId'];
+                    request.fields['data[$inc][orderDate]'] = data[i].dataList[j]['orderDate'];
+                    request.fields['data[$inc][customerNo]'] = data[i].dataList[j]['customerNo'];
+                    request.fields['data[$inc][lineNo]'] = data[i].dataList[j]['lineNo'];
+                    request.fields['data[$inc][itemId]'] = data[i].dataList[j]['itemId'];
+                    request.fields['data[$inc][qty]'] = data[i].dataList[j]['qty'];
+                    request.fields['data[$inc][note]'] = data[i].dataList[j]['note'];
+                    request.fields['data[$inc][shipTo]'] = data[i].dataList[j]['shipTo'];
+                    request.fields['data[$inc][salesPersonCode]'] = data[i].dataList[j]['salesPersonCode'];
+                    inc = inc + 1;
+              } else {
+                break;
+              }
           }
         }
         
         try {
-          print(request.fields);
+          await createLogTes(request.fields.toString());
+          // print(request.fields);
           final response = await request.send();
           final responseString = await response.stream.bytesToString();
-          print(responseString);
+          // print(responseString);
+          await createLogTes(responseString);
 
           if (response.statusCode == 200) {
-            for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < data[i].dataList.length; j++) {
-                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
+            var jsonResponse = jsonDecode(responseString);
+            if(jsonResponse["success"] == true){
+                // print("response true");
+                var loopdatalength = jsonResponse['data'].length;
+                for (var k = 0; k < loopdatalength; k++) {
+                  for (var i = 0; i < _datareportpenjualan.length; i++) {
+                      if ( _datareportpenjualan[i].id == jsonResponse['data'][k]['extDocId'] && jsonResponse['data'][k]['success'] == true){
                         _datareportpenjualan[i].condition = "success";
-                    }
+                      } else if (_datareportpenjualan[i].id == jsonResponse['data'][k]['extDocId'] && jsonResponse['data'][k]['success'] == false){
+                          var listerror = jsonResponse['data'][k]['errors'].length;
+                          for (var m = 0; m < listerror; m++) {
+                            if(jsonResponse['data'][i]['errors'][m]['code'] == AppConfig().orderalreadyexistvendor){
+                              _datareportpenjualan[i].condition = "success";
+                              break;
+                            } else {
+                              _datareportpenjualan[i].condition = "pending";
+                            }
+                          }
+                      }
+                  }
                 }
-            }
-            await boxpostpenjualan.delete(key);
-            await boxreportpenjualan.delete(key);
-            await boxreportpenjualan.put(key,_datareportpenjualan);
-            print(responseString);
+                
+                List<PenjualanPostModel> postadatanew = [];
+                for (var i = 0; i < data.length; i++) {
+                  for (var k = 0; k < _datareportpenjualan.length; k++) {
+                    if(data[i].dataList[0]['extDocId'] == _datareportpenjualan[k].id && _datareportpenjualan[k].condition != "success"){
+                      postadatanew.add(data[i]);
+                      break;
+                    }
+                  }
+                }
 
+                await boxpostpenjualan.delete(key);
+                if(postadatanew.isNotEmpty){
+                  await boxpostpenjualan.put(key,postadatanew);
+                }
+                await boxreportpenjualan.delete(key);
+                await boxreportpenjualan.put(key,_datareportpenjualan);
+            } else {
+                for (var i = 0; i < _datareportpenjualan.length; i++) {
+                  for (var j = 0; j <= inc; j++) {
+                      if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
+                          _datareportpenjualan[i].condition = "pending";
+                      }
+                  }
+              }
+              await createLogTes("response not true");
+              await boxreportpenjualan.delete(key);
+              await boxreportpenjualan.put(key,_datareportpenjualan);
+            }
           } else {
-            for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < data[i].dataList.length; j++) {
-                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
-                        _datareportpenjualan[i].condition = "error";
+             for (var i = 0; i < _datareportpenjualan.length; i++) {
+                for (var j = 0; j <= inc; j++) {
+                    if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
+                        _datareportpenjualan[i].condition = "pending";
                     }
                 }
             }
+            await createLogTes("response not 200");
             await boxreportpenjualan.delete(key);
             await boxreportpenjualan.put(key,_datareportpenjualan);
-            print(responseString);
+            // print(responseString);
           }
         } on SocketException {
-            for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < data[i].dataList.length; j++) {
-                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
+            await createLogTes("socketexception");
+             for (var i = 0; i < _datareportpenjualan.length; i++) {
+                for (var j = 0; j <= inc; j++) {
+                    if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
                         _datareportpenjualan[i].condition = "pending";
                     }
                 }
             }
             await boxreportpenjualan.delete(key);
             await boxreportpenjualan.put(key,_datareportpenjualan);
-            print("socketexception");
+            // print("socketexception");
         } catch (e) {
-            for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < data[i].dataList.length; j++) {
-                    if ( _datareportpenjualan[i].id == data[i].dataList[j]['extDocId']){
+            await createLogTes("$e abnormal");
+             for (var i = 0; i < _datareportpenjualan.length; i++) {
+                for (var j = 0; j <= inc; j++) {
+                    if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
                         _datareportpenjualan[i].condition = "pending";
                     }
                 }
             }
             await boxreportpenjualan.delete(key);
             await boxreportpenjualan.put(key,_datareportpenjualan);
-            print("$e abnormal ");
-        } 
+            // print("$e abnormal ");
+        }
         await closebox();
   }
 
   Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,String key,String vendorurl) async {
-    print("send to api");
     await getBox();
 
     String noorder = data[0]['extDocId'];
@@ -627,7 +740,6 @@ class Backgroundservicecontroller {
       try {
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
-        print(responseString);
 
         if (response.statusCode == 200) {
           if(idx != -1){
@@ -636,13 +748,10 @@ class Backgroundservicecontroller {
           listpost.removeAt(idxpost);
           await boxpostpenjualan.delete(key);
           if(listpost.isNotEmpty) {
-            print("isi list post ulang");
             await boxpostpenjualan.put(key,listpost);
           }
           await boxreportpenjualan.delete(key);
-          print("isi ulang data report penjualan");
           await boxreportpenjualan.put(key,_datareportpenjualan);
-          print(responseString);
 
         } else {
           if(idx != -1){
@@ -650,7 +759,6 @@ class Backgroundservicecontroller {
           }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
-          print(responseString);
         }
       } on SocketException {
           if(idx != -1){
@@ -658,14 +766,12 @@ class Backgroundservicecontroller {
           }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
-          print("socketexception");
       } catch (e) {
           if(idx != -1){
             _datareportpenjualan[idx].condition = "pending";
           }
           await boxreportpenjualan.delete(key);
           await boxreportpenjualan.put(key,_datareportpenjualan);
-          print("$e abnormal ");
       } 
       await closebox();
   }

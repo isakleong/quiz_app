@@ -20,19 +20,22 @@ class CartDetailAdapter extends TypeAdapter<CartDetail> {
       fields[0] as String,
       fields[1] as String,
       (fields[2] as List).cast<CartModel>(),
+      fields[3] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, CartDetail obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.kdProduct)
       ..writeByte(1)
       ..write(obj.nmProduct)
       ..writeByte(2)
-      ..write(obj.itemOrder);
+      ..write(obj.itemOrder)
+      ..writeByte(3)
+      ..write(obj.id);
   }
 
   @override

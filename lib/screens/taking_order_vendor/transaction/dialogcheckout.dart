@@ -131,7 +131,9 @@ class DialogCheckOut extends StatelessWidget {
                   width: 0.45 * Get.width,
                   height: 0.1 * Get.height,
                   child: TextFormField(
-                    // controller: _textEditingController,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s()!?&%#@/<>,.\-=+_]+')), // Custom character set
+                    ],
                     decoration: InputDecoration(
                       labelText: 'Catatan / Keterangan',
                       icon: Image.asset(
@@ -141,7 +143,8 @@ class DialogCheckOut extends StatelessWidget {
                         fit: BoxFit.fill,
                       ),
                     ),
-                    maxLength: 150,controller: _takingOrderVendorController.notes.value,
+                    maxLength: 150,
+                    controller: _takingOrderVendorController.notes.value,
                     maxLines: null,
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     keyboardType: TextInputType.multiline,

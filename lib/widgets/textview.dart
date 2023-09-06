@@ -10,15 +10,16 @@ class TextView extends StatelessWidget {
   final double? fontSize;
   final bool? isCapslock;
   final bool? isAutoSize;
+  final int? maxLines;
 
-  const TextView({super.key, this.headings, this.text, this.color = Colors.black, this.textAlign, this.fontSize, this.isCapslock = false, this.isAutoSize = false});
+  const TextView({super.key, this.headings, this.text, this.color = Colors.black, this.textAlign, this.fontSize, this.isCapslock = false, this.isAutoSize = false, this.maxLines});
 
   @override
   Widget build(BuildContext context) {
     return isAutoSize! ?
     AutoSizeText(
       isCapslock! ? text!.toUpperCase() : text!,
-      maxLines: 5,
+      maxLines: maxLines ?? 5,
       style: TextStyle(
         color: color,
         fontWeight: headings == "H1" ?

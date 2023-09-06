@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/itemlistpenjualan.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';

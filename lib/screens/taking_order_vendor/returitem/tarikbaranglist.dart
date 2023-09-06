@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/models/tarikbarangmodel.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../transaction/chipsitem.dart';
 
 class TarikBarangList extends StatelessWidget {
@@ -56,7 +56,7 @@ class TarikBarangList extends StatelessWidget {
                           child: TextView(
                             text: idx,
                             headings: 'H2',
-                            fontSize: 20,
+                            fontSize: 14.sp,
                             color: Colors.white,
                           ),
                         ),
@@ -69,7 +69,7 @@ class TarikBarangList extends StatelessWidget {
                         children: [
                           TextView(
                             headings: 'H4',
-                            fontSize: 14,
+                            fontSize: 10.sp,
                             text: data.nmProduct,
                           ),
                           Row(
@@ -79,7 +79,7 @@ class TarikBarangList extends StatelessWidget {
                                   ? ChipsItem(
                                       satuan:
                                           "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
-                                      fontSize: 12,
+                                      fontSize: 8.sp,
                                       color: unit ?? const Color(0XFF0098a6),
                                     )
                                   : Container(),
@@ -89,7 +89,7 @@ class TarikBarangList extends StatelessWidget {
                                       child: ChipsItem(
                                         satuan:
                                             "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
-                                        fontSize: 12,
+                                        fontSize: 8.sp,
                                         color: unit ?? const Color(0XFF0098a6),
                                       ))
                                   : Container(),
@@ -99,7 +99,7 @@ class TarikBarangList extends StatelessWidget {
                                       child: ChipsItem(
                                         satuan:
                                             "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
-                                        fontSize: 12,
+                                        fontSize: 8.sp,
                                         color: unit ?? const Color(0XFF0098a6),
                                       ))
                                   : Container()
@@ -120,20 +120,43 @@ class TarikBarangList extends StatelessWidget {
                             const SizedBox(
                               width: 10,
                             ),
+                           if (Get.width > 450)
                             InkWell(
                               onTap: onTapEdit,
                               child: Container(
-                                width: 40,
-                                height: 40,
+                                width: 28.sp,
+                                height: 28.sp,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.green.shade700),
                                 child: Stack(
                                   alignment: Alignment.center,
-                                  children: const [
+                                  children: [
                                     Icon(
                                       Icons.edit,
                                       color: Colors.white,
+                                      size: 14.sp,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          else
+                            InkWell(
+                              onTap: onTapEdit,
+                              child: Container(
+                                width: 25.sp,
+                                height: 25.sp,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.green.shade700),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                      size: 12.sp,
                                     )
                                   ],
                                 ),
@@ -142,25 +165,48 @@ class TarikBarangList extends StatelessWidget {
                             const SizedBox(
                               width: 10,
                             ),
-                            InkWell(
-                              onTap: onTapDelete,
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: btndelete ?? Colors.red.shade700),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.delete_forever,
-                                      color: Colors.white,
-                                    )
-                                  ],
+                            if (Get.width > 450)
+                              InkWell(
+                                onTap: onTapDelete,
+                                child: Container(
+                                  width: 28.sp,
+                                  height: 28.sp,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.red.shade700),
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.delete_forever,
+                                        color: Colors.white,
+                                        size: 14.sp,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            else
+                              InkWell(
+                                onTap: onTapDelete,
+                                child: Container(
+                                  width: 25.sp,
+                                  height: 25.sp,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.red.shade700),
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.delete_forever,
+                                        color: Colors.white,
+                                        size: 12.sp,
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
                             const SizedBox(
                               width: 10,
                             ),
@@ -199,7 +245,7 @@ class TarikBarangList extends StatelessWidget {
                       ),
                       TextView(
                         text: "Alasan : ${data.alasan}",
-                        fontSize: 14,
+                        fontSize: Get.width < 450 ? 10.sp : 14,
                       )
                     ],
                   ),
