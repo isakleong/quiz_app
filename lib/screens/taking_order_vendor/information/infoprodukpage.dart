@@ -102,7 +102,6 @@ class InfoProdukPage extends StatelessWidget {
                             item.name.replaceAll("%20",""),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
-                            minFontSize: 10,
                             style: TextStyle(fontSize: Get.width < 450 ? 9.sp : 11.sp,fontWeight: FontWeight.normal),
                           )
                         ],

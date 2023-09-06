@@ -41,11 +41,20 @@ class Shoppingcart extends StatelessWidget {
                     const SizedBox(
                       width: 10,
                     ),
-                    TextView(
-                      headings: 'H4',
-                      fontSize: 10.sp,
-                      text: _takingOrderVendorController
-                          .selectedProduct[0].nmProduct,
+                    SizedBox(
+                      width: 0.6 * width,
+                      height: 15.sp,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextView(
+                          headings: 'H4',
+                          maxLines: 1,
+                          fontSize: 10.sp,
+                          textAlign: TextAlign.left,
+                          text: _takingOrderVendorController
+                              .selectedProduct[0].nmProduct,
+                        ),
+                      ),
                     )
                   ],
                 ),

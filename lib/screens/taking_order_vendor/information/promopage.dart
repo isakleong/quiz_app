@@ -8,25 +8,8 @@ import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
 
 class PromoPage extends StatelessWidget {
-   PromoPage({super.key});
+  PromoPage({super.key});
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
-
-String basepath = '/storage/emulated/0/SFAPromo/';
-
-List<String> imgpath  = [
-  '001A_T_AA_23.jpg',
-  '04_TRO-1B_Retailer_BBS_23.jpg',
-  '04_TRO-2_Retailer_BBS_23.jpg',
-  '050_T_AA_23.jpg'
-];
-
-List<String> imgpromo = [
-  '050_T_AAIP_23.jpg',
-  '064_T_AA_23.jpg',
-  '074A_T_AA_23.jpg',
-  '067_T_AA_23.jpg',
-  '080_R_AA_23.jpg',
-];
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +20,13 @@ List<String> imgpromo = [
         Container(
           width: Get.width,
           height: Get.width < 450 ? 145 : 170,
-          margin: EdgeInsets.only(top: 10,bottom: 10),
+          margin: const EdgeInsets.only(top: 10,bottom: 10),
           child: Swiper(
             autoplay: true,
             autoplayDelay: 6000,
             viewportFraction: Get.width < 450 ? 0.7 : 0.6,
             scale: Get.width < 450 ? 0.7 : 0.65,
-            itemCount: imgpath.length,
+            itemCount: _takingOrderVendorController.imgpath.length,
             pagination: const SwiperPagination(
               margin: EdgeInsets.only(top: 20),
               builder: DotSwiperPaginationBuilder(color: Colors.grey, size: 8, activeColor: Colors.teal, activeSize: 12)
@@ -52,7 +35,7 @@ List<String> imgpromo = [
               return InkWell(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: Image.file(File('$basepath${imgpath[index]}'), fit: BoxFit.contain,),
+                  child: Image.file(File('${_takingOrderVendorController.basepath}${_takingOrderVendorController.imgpath[index]}'), fit: BoxFit.contain,),
                 ),
               );
             },
@@ -110,7 +93,7 @@ List<String> imgpromo = [
                     height: Get.width < 450 ? 105.sp : 170.sp,
                     child: Container(
                       decoration: BoxDecoration(
-                        image: DecorationImage(image: FileImage(File('${basepath}${imgpromo[index]}')),fit: BoxFit.fill)
+                        image: DecorationImage(image: FileImage(File('${_takingOrderVendorController.basepath}${_takingOrderVendorController.imgpromo[index]}')),fit: BoxFit.fill)
                         ,borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))
                       ),
                       child: Align(
@@ -119,7 +102,7 @@ List<String> imgpromo = [
                           width: Get.width,
                           padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
                           decoration: BoxDecoration(color: Colors.grey.shade900.withOpacity(0.7)),
-                          child: TextView(text: imgpromo[index],color: Colors.white,fontSize: 11.sp,),
+                          child: TextView(text: _takingOrderVendorController.imgpromo[index],color: Colors.white,fontSize: 11.sp,),
                         )
                       ),
                     ),

@@ -59,20 +59,27 @@ class CartList extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (width > 450)
-                            TextView(
-                              headings: 'H4',
-                              text: data.nmProduct,
-                              fontSize: 9.5.sp,
+                            SizedBox(
+                              height: 14.sp,
+                              width: 0.55 * width,
+                              child: TextView(
+                                headings: 'H4',
+                                maxLines: 1,
+                                textAlign: TextAlign.left,
+                                text: data.nmProduct,
+                                fontSize: 9.5.sp,
+                              ),
                             )
                           else
                             SizedBox(
                               height: 0.015 * height,
-                              child: FittedBox(
-                                child: TextView(
-                                  headings: 'H4',
-                                  text: data.nmProduct,
-                                  fontSize: 9.sp,
-                                ),
+                              width: 0.55 * width,
+                              child: TextView(
+                                headings: 'H4',
+                                maxLines: 1,
+                                textAlign: TextAlign.left,
+                                text: data.nmProduct,
+                                fontSize: 9.5.sp,
                               ),
                             ),
                           if (width > 450)

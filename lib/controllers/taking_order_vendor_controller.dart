@@ -471,6 +471,24 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     isSuccess.value = true;
   }
 
+  //for promopage
+  String basepath = '/storage/emulated/0/SFAPromo/';
+
+  List<String> imgpath  = [
+  '001A_T_AA_23.jpg',
+  '04_TRO-1B_Retailer_BBS_23.jpg',
+  '04_TRO-2_Retailer_BBS_23.jpg',
+  '050_T_AA_23.jpg'
+  ];
+
+  List<String> imgpromo = [
+  '050_T_AAIP_23.jpg',
+  '064_T_AA_23.jpg',
+  '074A_T_AA_23.jpg',
+  '067_T_AA_23.jpg',
+  '080_R_AA_23.jpg',
+  ];
+
   handleselectedsegmentcategory(int index){
     indexselectedsegmentcategory.value = index;
     for (var i = 0; i < selectedsegmentcategory.length; i++) {
