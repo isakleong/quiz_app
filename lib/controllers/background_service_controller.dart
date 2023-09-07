@@ -114,7 +114,7 @@ void onStart(ServiceInstance service) async {
     );
   });
 
-  Timer.periodic(const Duration(minutes: 1), (timer) async {
+  Timer.periodic(const Duration(minutes: 3), (timer) async {
     await Backgroundservicecontroller().getPendingData();
 
     if (service is AndroidServiceInstance) {
@@ -427,7 +427,7 @@ class Backgroundservicecontroller {
   List<Vendor> vendorlist = [];
 
   Future<void> createLogTes(String content) async {
-    bool allowritelog = true; //change to true , to see log
+    bool allowritelog = false; //change to true , to see log
     final file = File('/storage/emulated/0/TKTW/SFAlog.txt');
 
     if(allowritelog){
