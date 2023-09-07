@@ -123,7 +123,7 @@ class Shoppingcart extends StatelessWidget {
             for(var i = 0 ; i < _takingOrderVendorController.selectedProduct[0].detailProduct.length; i++)
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 15,right: 15),
+                  padding: Get.width < 450 ? const EdgeInsets.only(left: 5,right: 5) : const EdgeInsets.only(left: 10,right: 10),
                   child: Column(
                     children: [
                     const SizedBox(height: 6,),
@@ -133,7 +133,7 @@ class Shoppingcart extends StatelessWidget {
                       height: 40,
                       child: SpinBox(
                         min: 0,
-                        max: 9999,
+                        max: 9999,textStyle: TextStyle(fontSize: 10.sp),
                         value: double.parse(_takingOrderVendorController.listQty[i].toString()),
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
