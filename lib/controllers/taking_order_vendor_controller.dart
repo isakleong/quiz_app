@@ -254,24 +254,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxList get listSisa => _returController.listSisa;
   RxInt get indexSegment => _returController.indexSegment;
   RxList<bool> get selectedsegment => _returController.selectedsegment;
-  Rx<TextEditingController> get qty1tb => _returController.qty1tb;
-  Rx<TextEditingController> get qty2tb => _returController.qty2tb;
-  Rx<TextEditingController> get qty3tb => _returController.qty3tb;
-  Rx<TextEditingController> get qty1gk => _returController.qty1gk;
-  Rx<TextEditingController> get qty2gk => _returController.qty2gk;
-  Rx<TextEditingController> get qty3gk => _returController.qty3gk;
-  Rx<TextEditingController> get qty1sm => _returController.qty1sm;
-  Rx<TextEditingController> get qty2sm => _returController.qty2sm;
-  Rx<TextEditingController> get qty3sm => _returController.qty3sm;
-  Rx<TextEditingController> get qty1gb => _returController.qty1gb;
-  Rx<TextEditingController> get qty2gb => _returController.qty2gb;
-  Rx<TextEditingController> get qty3gb => _returController.qty3gb;
-  Rx<TextEditingController> get qty1tw => _returController.qty1tw;
-  Rx<TextEditingController> get qty2tw => _returController.qty2tw;
-  Rx<TextEditingController> get qty3tw => _returController.qty3tw;
-  Rx<TextEditingController> get qty1pp => _returController.qty1pp;
-  Rx<TextEditingController> get qty2pp => _returController.qty2pp;
-  Rx<TextEditingController> get qty3pp => _returController.qty3pp;
   RxBool get tukarwarnahorizontal => _returController.tukarwarnahorizontal;
   RxBool get tarikbaranghorizontal => _returController.tarikbaranghorizontal;
   RxBool get gantikemasanhorizontal => _returController.gantikemasanhorizontal;
@@ -286,6 +268,13 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxString get selectedAlasantb => _returController.selectedAlasantb;
   RxString get selectedAlasangk => _returController.selectedAlasangk;
   RxBool get isOverfow => _returController.isOverfow;
+  RxList get listQtytb => _returController.listQtytb;
+  RxList get listQtygk => _returController.listQtygk;
+  RxList get listQtysm => _returController.listQtysm;
+  RxList get listQtygb => _returController.listQtygb;
+  RxList get listQtytw => _returController.listQtytw;
+  RxList get listQtypp => _returController.listQtypp;
+
 
   handleProductSearchGb(String val) async {
     await _returController.handleProductSearchGb(val);

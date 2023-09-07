@@ -139,10 +139,13 @@ class Shoppingcart extends StatelessWidget {
                           border: OutlineInputBorder(),
                           contentPadding: EdgeInsets.zero
                         ),onChanged: (value) => _takingOrderVendorController.listQty[i] = value.toInt(),
-                      ),)
+                    ),)
                   ],),
-                ))
-          ],)),),
+                  )
+                )
+              ],)
+            ),
+          ),
           const SizedBox(
             height: 10,
           ),

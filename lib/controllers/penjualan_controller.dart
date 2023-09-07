@@ -356,6 +356,10 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   handleEditItem(CartDetail data) {
     selectedValue.value = data.kdProduct.toString();
+    listQty.clear();
+    for (var i = 0; i < 10; i++) {
+      listQty.add(0);
+    }
     for (var k = 0; k < listProduct.length; k++) {
       if (listProduct[k].kdProduct == data.kdProduct) {
         for (var i = 0; i < data.itemOrder.length; i++) {
@@ -372,8 +376,9 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   handleProductSearchButton(String val) async {
     selectedValue.value = val;
-    for (var i = 0; i < listQty.length; i++) {
-      listQty[i] = 0;
+    listQty.clear();
+    for (var k = 0; k < 10; k++) {
+      listQty.add(0);
     }
     if (cartList.isNotEmpty && cartList.any((data) => data.kdProduct == val)) {
       for (var i = 0; i < cartDetailList.length; i++) {
