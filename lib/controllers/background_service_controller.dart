@@ -427,7 +427,7 @@ class Backgroundservicecontroller {
   List<Vendor> vendorlist = [];
 
   Future<void> createLogTes(String content) async {
-    bool allowritelog = false; //change to true , to see log
+    bool allowritelog = true; //change to true , to see log
     final file = File('/storage/emulated/0/TKTW/SFAlog.txt');
 
     if(allowritelog){
@@ -582,6 +582,7 @@ class Backgroundservicecontroller {
                     request.fields['data[$inc][orderDate]'] = data[i].dataList[j]['orderDate'];
                     request.fields['data[$inc][customerNo]'] = data[i].dataList[j]['customerNo'];
                     request.fields['data[$inc][lineNo]'] = data[i].dataList[j]['lineNo'];
+                    request.fields['data[$inc][uomId]'] = data[i].dataList[j]['uomId'];
                     request.fields['data[$inc][itemId]'] = data[i].dataList[j]['itemId'];
                     request.fields['data[$inc][qty]'] = data[i].dataList[j]['qty'];
                     request.fields['data[$inc][note]'] = data[i].dataList[j]['note'];

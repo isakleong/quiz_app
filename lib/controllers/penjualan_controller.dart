@@ -33,9 +33,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   RxList<CartModel> cartList = <CartModel>[].obs;
   RxList<CartDetail> cartDetailList = <CartDetail>[].obs;
   Rx<TextEditingController> cnt = TextEditingController().obs;
-  Rx<TextEditingController> qty1 = TextEditingController().obs;
-  Rx<TextEditingController> qty2 = TextEditingController().obs;
-  Rx<TextEditingController> qty3 = TextEditingController().obs;
+  RxList<int> listQty = [0,0,0,0,0,0,0,0].obs;
   RxString choosedAddress = "".obs;
   List<Animation<Offset>> listAnimation = <Animation<Offset>>[];
   List<Vendor> vendorlist = <Vendor>[];
@@ -120,26 +118,32 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   getproduct({String? type, String? custid}) async {
     try {
+      bool isdev = false;
       var params =  {
-        'customerNo': custid,
+        'customerNo': isdev ? "10A01010007" : custid,
       };
-      var getVendorItem = await ApiClient().postData(vendorlist[idvendor].baseApiUrl,"/setting/vendor-info",jsonEncode(params), Options(
+      print(params);
+      var getVendorItem = await ApiClient().postData(vendorlist[idvendor].baseApiUrl,"setting/vendor-info",jsonEncode(params), Options(
             headers: {
               HttpHeaders.contentTypeHeader: "application/json"
             }
           ));
+      // print(vendorlist[idvendor].baseApiUrl + "/setting/vendor-info");
       print(getVendorItem);
-      print("---------------------");
       var data = MasterItemVendor.fromJson(getVendorItem);
-      print(data);
       listProduct.clear();
-      for (var i = 0; i < data.items.length; i++) {
-        listProduct.add(ProductData(data.items[i].code, data.items[i].name, [DetailProductData(data.items[i].uom.name, double.parse(data.items[i].price), data.items[i].uomId)],DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now()),data.items[i].id));
+      print(data);
+      for (var i = 0; i < data.items!.length; i++) {
+        // print(data.items![i].price!);
+        List<DetailProductData> listdetail = [];
+        for (var j = 0; j < data.items![i].uoms!.length; j++) {
+          listdetail.add(DetailProductData(data.items![i].uoms![j].name!, double.parse(data.items![i].price!), data.items![i].uoms![j].id!));
+        }
+        listProduct.add(ProductData(data.items![i].code!, data.items![i].name!, listdetail,DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now()),data.items![i].id!));
       }
       itemvendorbox.delete(globalkeybox);
       itemvendorbox.put(globalkeybox,listProduct);
     } catch (e) {
-      print(e);
       if(type == null){
         needtorefresh.value = true;
       } else {
@@ -209,41 +213,28 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     await closebox();
   }
 
-  addToCart() {
+  addToCart(){
+    print(selectedProduct.value[0].detailProduct[0].hrg);
     for (var i = 0; i < selectedProduct.value[0].detailProduct.length; i++) {
-      if (i == 0 && qty1.value.text != "" && int.parse(qty1.value.text) != 0) {
+      if (listQty[i] != 0) {
         cartList.add(CartModel(
-            selectedProduct.value[0].kdProduct,
-            selectedProduct.value[0].nmProduct,
-            int.parse(qty1.value.text),
-            selectedProduct.value[0].detailProduct[i].satuan,
-            selectedProduct.value[0].detailProduct[i].hrg,
-            selectedProduct.value[0].id));
-      } else if (i == 1 &&
-          qty2.value.text != "" &&
-          int.parse(qty2.value.text) != 0) {
-        cartList.add(CartModel(
-            selectedProduct.value[0].kdProduct,
-            selectedProduct.value[0].nmProduct,
-            int.parse(qty2.value.text),
-            selectedProduct.value[0].detailProduct[i].satuan,
-            selectedProduct.value[0].detailProduct[i].hrg,
-            selectedProduct.value[0].id));
-      } else if (i == 2 &&
-          qty3.value.text != "" &&
-          int.parse(qty3.value.text) != 0) {
-        cartList.add(CartModel(
-            selectedProduct.value[0].kdProduct,
-            selectedProduct.value[0].nmProduct,
-            int.parse(qty3.value.text),
-            selectedProduct.value[0].detailProduct[i].satuan,
-            selectedProduct.value[0].detailProduct[i].hrg,
-            selectedProduct.value[0].id));
+            selectedProduct[0].kdProduct,
+            selectedProduct[0].nmProduct,
+            listQty[i],
+            selectedProduct[0].detailProduct[i].satuan,
+            selectedProduct[0].detailProduct[i].hrg,
+            selectedProduct[0].detailProduct[i].id,
+            selectedProduct[0].id
+            ));
       }
+    }
+    for (var i = 0; i < listQty.length; i++) {
+      listQty[i] = 0;
     }
     selectedValue.value = "";
     selectedProduct.clear();
     cnt.value.clear();
+    print(cartList.length);
     fillCartDetail();
   }
 
@@ -266,9 +257,10 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     listAnimation.clear();
     for (var i = 0; i < cartList.length; i++) {
       if (cartDetailList.isEmpty) {
-        List<CartModel> data = [CartModel(cartList[i].kdProduct, cartList[i].nmProduct,cartList[i].Qty, cartList[i].Satuan, cartList[i].hrgPerPieces, cartList[i].id)];
+        List<CartModel> data = [CartModel(cartList[i].kdProduct, cartList[i].nmProduct,cartList[i].Qty, cartList[i].Satuan, cartList[i].hrgPerPieces, cartList[i].iduom,cartList[i].iditem)];
         listAnimation.add(Tween<Offset>(begin: Offset((-0.9 - (i * 0.06)), 0),end: const Offset(0, 0)).animate(CurvedAnimation(parent: AnimationController(vsync: this,duration: const Duration(milliseconds: 700))..forward(),curve: Curves.easeInOut)));
-        cartDetailList.add(CartDetail(cartList[i].kdProduct,cartList[i].nmProduct,data,cartList[i].id));
+        print("ini item id yang dimasukkan ${cartList[i].iditem}");
+        cartDetailList.add(CartDetail(cartList[i].kdProduct,cartList[i].nmProduct,data,cartList[i].iditem));
       } else {
         for (var j = 0; j < cartDetailList.length; j++) {
           if (cartDetailList[j].kdProduct == cartList[i].kdProduct) {
@@ -280,7 +272,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
               }
             }
             if (counter == 0) {
-              cartDetailList[j].itemOrder.add(CartModel(cartList[i].kdProduct,cartList[i].nmProduct,cartList[i].Qty,cartList[i].Satuan,cartList[i].hrgPerPieces, cartList[i].id));
+              cartDetailList[j].itemOrder.add(CartModel(cartList[i].kdProduct,cartList[i].nmProduct,cartList[i].Qty,cartList[i].Satuan,cartList[i].hrgPerPieces, cartList[i].iduom,cartList[i].iditem));
             }
           } else if (cartDetailList[j].kdProduct != cartList[i].kdProduct) {
             var counter = 0;
@@ -291,9 +283,10 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
               }
             }
             if (counter == 0) {
-              List<CartModel> data = [CartModel(cartList[i].kdProduct,cartList[i].nmProduct,cartList[i].Qty,cartList[i].Satuan,cartList[i].hrgPerPieces, cartList[i].id)];
+              List<CartModel> data = [CartModel(cartList[i].kdProduct,cartList[i].nmProduct,cartList[i].Qty,cartList[i].Satuan,cartList[i].hrgPerPieces, cartList[i].iduom,cartList[i].iditem)];
               listAnimation.add(Tween<Offset>(begin: Offset((-0.9 - (i * 0.06)), 0),end: const Offset(0, 0)).animate(CurvedAnimation(parent: AnimationController(vsync: this,duration: const Duration(milliseconds: 700))..forward(),curve: Curves.easeInOut)));
-              cartDetailList.add(CartDetail(cartList[i].kdProduct, cartList[i].nmProduct, data, cartList[i].id));
+              cartDetailList.add(CartDetail(cartList[i].kdProduct, cartList[i].nmProduct, data, cartList[i].iditem));
+              print("ini item id yang dimasukkan ${cartList[i].iditem}");
             }
           }
         }
@@ -317,7 +310,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         'Qty': clist.Qty,
         'Satuan': clist.Satuan,
         'hrgPerPieces': clist.hrgPerPieces,
-        'id' : clist.id
+        'iduom' : clist.iduom,
+        'iditem' : clist.iditem
       };
     }).toList();
     String jsonStrclist = jsonEncode(cartListmap);
@@ -362,25 +356,12 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   handleEditItem(CartDetail data) {
     selectedValue.value = data.kdProduct.toString();
-    qty1.value.text = '0';
-    qty2.value.text = '0';
-    qty3.value.text = '0';
     for (var k = 0; k < listProduct.length; k++) {
       if (listProduct[k].kdProduct == data.kdProduct) {
         for (var i = 0; i < data.itemOrder.length; i++) {
           for (var j = 0; j < listProduct[k].detailProduct.length; j++) {
-            if (j == 0 &&
-                listProduct[k].detailProduct[j].satuan ==
-                    data.itemOrder[i].Satuan) {
-              qty1.value.text = data.itemOrder[i].Qty.toString();
-            } else if (j == 1 &&
-                listProduct[k].detailProduct[j].satuan ==
-                    data.itemOrder[i].Satuan) {
-              qty2.value.text = data.itemOrder[i].Qty.toString();
-            } else if (j == 2 &&
-                listProduct[k].detailProduct[j].satuan ==
-                    data.itemOrder[i].Satuan) {
-              qty3.value.text = data.itemOrder[i].Qty.toString();
+            if (listProduct[k].detailProduct[j].satuan == data.itemOrder[i].Satuan) {
+              listQty[j] = data.itemOrder[i].Qty;
             }
           }
         }
@@ -391,9 +372,9 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   handleProductSearchButton(String val) async {
     selectedValue.value = val;
-    qty1.value.text = "0";
-    qty2.value.text = "0";
-    qty3.value.text = "0";
+    for (var i = 0; i < listQty.length; i++) {
+      listQty[i] = 0;
+    }
     if (cartList.isNotEmpty && cartList.any((data) => data.kdProduct == val)) {
       for (var i = 0; i < cartDetailList.length; i++) {
         if (cartDetailList[i].kdProduct == val) {
@@ -521,20 +502,25 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       var idx = listAddress.indexWhere((element) => element.address == choosedAddressdata);
       print("ini isi element ${listAddress[0].address} ini isi choosed $choosedAddressdata");
       List<Map<String, dynamic>> data = [];
+      var inc = 1;
       for (var i = 0; i < listdetail.length; i++) {
-        data.add(
-          {
-            'extDocId' : noorder,
-            'orderDate' : orderdate,
-            'customerNo' : custid,
-            'lineNo' : (i+1).toString(),
-            'itemId' : listdetail[i].id,
-            'qty' : listdetail[i].itemOrder[0].Qty.toString(),
-            'note' : notestext,
-            'shipTo' : listAddress[idx].code,
-            'salesPersonCode' : salesid
-          }
-        );
+        for (var k = 0; k < listdetail[i].itemOrder.length; k++) {
+          data.add(
+            {
+              'extDocId' : noorder,
+              'orderDate' : orderdate,
+              'customerNo' : custid,
+              'lineNo' : inc.toString(),
+              'itemId' : listdetail[i].id,
+              'uomId' : listdetail[i].itemOrder[k].iduom,
+              'qty' : listdetail[i].itemOrder[k].Qty.toString(),
+              'note' : notestext,
+              'shipTo' : listAddress[idx].code,
+              'salesPersonCode' : salesid
+            }
+          );
+          inc++;
+        }
       }
       var listpostbox = await boxpostpenjualan.get(globalkeybox);
       List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
@@ -569,17 +555,18 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}sales-orders/store');
     final request = http.MultipartRequest('POST', url);
       for (var i = 0; i < data.length; i++) {
-        // print(data[i]['orderDate'].toString());
         request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
         request.fields['data[$i][orderDate]'] = data[i]['orderDate'];
         request.fields['data[$i][customerNo]'] = data[i]['customerNo'];
         request.fields['data[$i][lineNo]'] = data[i]['lineNo'];
         request.fields['data[$i][itemId]'] = data[i]['itemId'];
+        request.fields['data[$i][uomId]'] = data[i]['uomId'];
         request.fields['data[$i][qty]'] = data[i]['qty'];
         request.fields['data[$i][note]'] = data[i]['note'];
         request.fields['data[$i][shipTo]'] = data[i]['shipTo'];
         request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
       }try {
+        print(request.fields);
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
 
@@ -629,18 +616,18 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
           datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
-          // print(responseString);
+          print(responseString);
         }
       } on SocketException {
           datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
-          // print("socketexception");
+          print("socketexception");
       } catch (e) {
           datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
-          // print(e.toString() + " abnormal ");
+          print(e.toString() + " abnormal ");
       }  finally{
           await closebox();
           controllerLaporan.getReportList();

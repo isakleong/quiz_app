@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:list_treeview/list_treeview.dart';
@@ -98,9 +97,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxString get selectedValue => _penjualanController.selectedValue;
   RxList<ProductData> get selectedProduct => _penjualanController.selectedProduct;
   Rx<TextEditingController> get cnt => _penjualanController.cnt;
-  Rx<TextEditingController> get qty1 => _penjualanController.qty1;
-  Rx<TextEditingController> get qty2 => _penjualanController.qty2;
-  Rx<TextEditingController> get qty3 => _penjualanController.qty3;
+  RxList<int> get listQty => _penjualanController.listQty;
   Rx<TextEditingController> get notes => _penjualanController.notes;
   RxString get choosedAddress => _penjualanController.choosedAddress;
   RxInt animated = 0.obs;
@@ -162,9 +159,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       cartList.clear();
       selectedProduct.clear();
       cnt.value.clear(); 
-      qty1.value.clear();
-      qty2.value.clear();
-      qty3.value.clear();
       listAnimation.clear();
       choosedAddress.value = "";
       await _penjualanController.deletestate();

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/doubleunit.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/singleunit.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/tripleunit.dart';
@@ -55,12 +57,8 @@ class Shoppingcart extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 15),
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_takingOrderVendorController
-                          .cartDetailList.isNotEmpty) {
-                        if (_takingOrderVendorController.cartList.any((data) =>
-                            data.kdProduct ==
-                            _takingOrderVendorController
-                                .selectedProduct[0].kdProduct)) {
+                      if (_takingOrderVendorController.cartDetailList.isNotEmpty) {
+                        if (_takingOrderVendorController.cartList.any((data) => data.kdProduct == _takingOrderVendorController.selectedProduct[0].kdProduct)) {
                           _takingOrderVendorController.updateCart();
                         } else {
                           _takingOrderVendorController.addToCart();
@@ -122,10 +120,37 @@ class Shoppingcart extends StatelessWidget {
               color: Colors.grey.shade300,
             ),
           ),
+          Obx(()=>SizedBox(
+            height: 80,
+            child: Row(children: [
+            for(var i = 0 ; i < _takingOrderVendorController.selectedProduct[0].detailProduct.length; i++)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15,right: 15),
+                  child: Column(
+                    children: [
+                    const SizedBox(height: 6,),
+                    ChipsItem(satuan:_takingOrderVendorController.selectedProduct[0].detailProduct[i].satuan,fontSize: 8.sp,),
+                    const SizedBox(height:6),
+                    SizedBox(
+                      height: 40,
+                      child: SpinBox(
+                        min: 0,
+                        max: 9999,
+                        value: double.parse(_takingOrderVendorController.listQty[i].toString()),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.zero
+                        ),onChanged: (value) => _takingOrderVendorController.listQty[i] = value.toInt(),
+                      ),)
+                  ],),
+                ))
+          ],)),),
           const SizedBox(
-            height: 8,
+            height: 10,
           ),
-          Obx(() => _takingOrderVendorController
+         /* old method uom
+         Obx(() => _takingOrderVendorController
                       .selectedProduct.value[0].detailProduct.length ==
                   1
               ? Row(
@@ -255,10 +280,76 @@ class Shoppingcart extends StatelessWidget {
                                             '+');
                                   })
                             ])
-                      : Container()),
-          const SizedBox(
-            height: 15,
-          )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                              TripleUnit(
+                                  satuan: _takingOrderVendorController
+                                      .selectedProduct
+                                      .value[0]
+                                      .detailProduct[0]
+                                      .satuan,
+                                  ctrl: _takingOrderVendorController.qty1.value,
+                                  onTapMinus: () {
+                                    _takingOrderVendorController
+                                        .handleAddMinusBtn(
+                                            _takingOrderVendorController
+                                                .qty1.value,
+                                            '-');
+                                  },
+                                  onTapPlus: () {
+                                    _takingOrderVendorController
+                                        .handleAddMinusBtn(
+                                            _takingOrderVendorController
+                                                .qty1.value,
+                                            '+');
+                                  }),
+                              TripleUnit(
+                                  satuan: _takingOrderVendorController
+                                      .selectedProduct
+                                      .value[0]
+                                      .detailProduct[1]
+                                      .satuan,
+                                  ctrl: _takingOrderVendorController.qty2.value,
+                                  onTapMinus: () {
+                                    _takingOrderVendorController
+                                        .handleAddMinusBtn(
+                                            _takingOrderVendorController
+                                                .qty2.value,
+                                            '-');
+                                  },
+                                  onTapPlus: () {
+                                    _takingOrderVendorController
+                                        .handleAddMinusBtn(
+                                            _takingOrderVendorController
+                                                .qty2.value,
+                                            '+');
+                                  }),
+                              TripleUnit(
+                                  satuan: _takingOrderVendorController
+                                      .selectedProduct
+                                      .value[0]
+                                      .detailProduct[2]
+                                      .satuan,
+                                  ctrl: _takingOrderVendorController.qty3.value,
+                                  onTapMinus: () {
+                                    _takingOrderVendorController
+                                        .handleAddMinusBtn(
+                                            _takingOrderVendorController
+                                                .qty3.value,
+                                            '-');
+                                  },
+                                  onTapPlus: () {
+                                    _takingOrderVendorController
+                                        .handleAddMinusBtn(
+                                            _takingOrderVendorController
+                                                .qty3.value,
+                                            '+');
+                                  })
+                            ])),
+           const SizedBox(
+              height: 15,
+           )*/
         ]),
       ),
     );

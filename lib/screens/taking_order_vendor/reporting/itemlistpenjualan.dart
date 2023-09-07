@@ -66,39 +66,13 @@ class ItemListPenjualan extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    data.itemOrder.isNotEmpty
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 0.0),
-                                            child: ChipsItem(
-                                              satuan:
-                                                  "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
-                                              fontSize: Get.width < 450 ? 8.sp : 12,
-                                            ))
-                                        : Container(),
-                                    data.itemOrder.length > 1
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 5.0),
-                                            child: ChipsItem(
-                                              satuan:
-                                                  "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
-                                              fontSize: Get.width < 450 ? 8.sp : 12,
-                                            ))
-                                        : Container(),
-                                    data.itemOrder.length > 2
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 5.0),
-                                            child: ChipsItem(
-                                              satuan:
-                                                  "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
-                                              fontSize: Get.width < 450 ? 8.sp : 12,
-                                            ))
-                                        : Container()
-                                    // SizedBox(
-                                    //   width: 0.1 * width,
-                                    // ),
+                                    for(var j = 0 ; j < data.itemOrder.length; j++)
+                                    Padding(
+                                      padding: EdgeInsets.only(left: j == 0 ? 0.0 : 5),
+                                        child: ChipsItem(
+                                          satuan: "${data.itemOrder[j].Qty} ${data.itemOrder[j].Satuan}",
+                                            fontSize: Get.width < 450 ? 8.sp : 12,
+                                    )),
                                   ],
                                 )
                               ],

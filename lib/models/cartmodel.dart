@@ -20,9 +20,12 @@ class CartModel extends HiveObject {
   double hrgPerPieces;
 
   @HiveField(5)
-  String id;
+  String iduom;
 
-  CartModel(this.kdProduct, this.nmProduct, this.Qty, this.Satuan, this.hrgPerPieces, this.id);
+  @HiveField(6)
+  String iditem;
+
+  CartModel(this.kdProduct, this.nmProduct, this.Qty, this.Satuan, this.hrgPerPieces, this.iduom, this.iditem);
 
   factory CartModel.fromJson(Map<String, dynamic> json) {
     return CartModel(
@@ -31,7 +34,8 @@ class CartModel extends HiveObject {
       json['Qty'] as int,
       json['Satuan'] as String,
       json['hrgPerPieces'] as double,
-      json['id'] as String,
+      json['iduom'] as String,
+      json['iditem'] as String,
     );
   }
 }

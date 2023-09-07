@@ -20,8 +20,7 @@ class ItemReportPenjualan extends StatelessWidget {
         color: Colors.white,
         child: SizedBox(
           width: 0.9 * Get.width,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

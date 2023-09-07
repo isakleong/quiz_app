@@ -1,72 +1,88 @@
 class MasterItemVendor {
-  final String prefix;
-  final String name;
-  final List<Item> items;
+  String? prefix;
+  String? name;
+  List<Items>? items;
 
-  MasterItemVendor({
-    required this.prefix,
-    required this.name,
-    required this.items,
-  });
+  MasterItemVendor({this.prefix, this.name, this.items});
 
-  factory MasterItemVendor.fromJson(Map<String, dynamic> json) {
-    List<Item> itemsList = (json['items'] as List)
-        .map((itemJson) => Item.fromJson(itemJson))
-        .toList();
+  MasterItemVendor.fromJson(Map<String, dynamic> json) {
+    prefix = json['prefix'];
+    name = json['name'];
+    if (json['items'] != null) {
+      items = <Items>[];
+      json['items'].forEach((v) {
+        items!.add(new Items.fromJson(v));
+      });
+    }
+  }
 
-    return MasterItemVendor(
-      prefix: json['prefix'],
-      name: json['name'],
-      items: itemsList,
-    );
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['prefix'] = this.prefix;
+    data['name'] = this.name;
+    if (this.items != null) {
+      data['items'] = this.items!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }
 
-class Item {
-  final String id;
-  final String code;
-  final String name;
-  final String price;
-  final String uomId;
-  final UnitOfMeasure uom;
+class Items {
+  String? id;
+  String? code;
+  String? name;
+  String? uomId;
+  String? price;
+  List<Uoms>? uoms;
 
-  Item({
-    required this.id,
-    required this.code,
-    required this.name,
-    required this.price,
-    required this.uomId,
-    required this.uom,
-  });
+  Items({this.id, this.code, this.name, this.uomId, this.price, this.uoms});
 
-  factory Item.fromJson(Map<String, dynamic> json) {
-    return Item(
-      id: json['id'].toString(),
-      code: json['code'].toString(),
-      name: json['name'],
-      price: json['price'].toString(),
-      uomId: json['uom_id'],
-      uom: UnitOfMeasure.fromJson(json['uom']),
-    );
+  Items.fromJson(Map<String, dynamic> json) {
+    id = json['id'].toString();
+    code = json['code'];
+    name = json['name'];
+    uomId = json['uom_id'].toString();
+    price = json['price'].toString();
+    if (json['uoms'] != null) {
+      uoms = <Uoms>[];
+      json['uoms'].forEach((v) {
+        uoms!.add(new Uoms.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['code'] = this.code;
+    data['name'] = this.name;
+    data['uom_id'] = this.uomId;
+    data['price'] = this.price;
+    if (this.uoms != null) {
+      data['uoms'] = this.uoms!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }
 
-class UnitOfMeasure {
-  final int id;
-  final String code;
-  final String name;
+class Uoms {
+  String? id;
+  String? code;
+  String? name;
 
-  UnitOfMeasure({
-    required this.id,
-    required this.code,
-    required this.name,
-  });
+  Uoms({this.id, this.code, this.name});
 
-  factory UnitOfMeasure.fromJson(Map<String, dynamic> json) {
-    return UnitOfMeasure(
-      id: json['id'],
-      code: json['code'],
-      name: json['name'],
-    );
+  Uoms.fromJson(Map<String, dynamic> json) {
+    id = json['id'].toString();
+    code = json['code'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['code'] = this.code;
+    data['name'] = this.name;
+    return data;
   }
 }
