@@ -11,17 +11,17 @@ class MasterItemVendor {
     if (json['items'] != null) {
       items = <Items>[];
       json['items'].forEach((v) {
-        items!.add(new Items.fromJson(v));
+        items!.add(Items.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['prefix'] = this.prefix;
-    data['name'] = this.name;
-    if (this.items != null) {
-      data['items'] = this.items!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['prefix'] = prefix;
+    data['name'] = name;
+    if (items != null) {
+      data['items'] = items!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -46,20 +46,20 @@ class Items {
     if (json['uoms'] != null) {
       uoms = <Uoms>[];
       json['uoms'].forEach((v) {
-        uoms!.add(new Uoms.fromJson(v));
+        uoms!.add(Uoms.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['code'] = this.code;
-    data['name'] = this.name;
-    data['uom_id'] = this.uomId;
-    data['price'] = this.price;
-    if (this.uoms != null) {
-      data['uoms'] = this.uoms!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['code'] = code;
+    data['name'] = name;
+    data['uom_id'] = uomId;
+    data['price'] = price;
+    if (uoms != null) {
+      data['uoms'] = uoms!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -79,10 +79,10 @@ class Uoms {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['code'] = this.code;
-    data['name'] = this.name;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['code'] = code;
+    data['name'] = name;
     return data;
   }
 }

@@ -627,7 +627,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
           datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
-          print(e.toString() + " abnormal ");
+          print("$e abnormal ");
       }  finally{
           await closebox();
           controllerLaporan.getReportList();
