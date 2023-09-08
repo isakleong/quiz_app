@@ -67,20 +67,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       await _penjualanController.getListItem();
   }
 
-  handleAddMinusBtn(TextEditingController ctrl, var action) {
-    if (action == '+') {
-      if (ctrl.text != "") {
-        var newqty = int.parse(ctrl.text) + 1;
-        ctrl.text = newqty.toString();
-      }
-    } else {
-      if (ctrl.text != "" && ctrl.text != "0") {
-        var newqty = int.parse(ctrl.text) - 1;
-        ctrl.text = newqty.toString();
-      }
-    }
-  }
-
   handleSaveConfirm(String msg, String title, var ontap) {
     Get.dialog(Dialog(
       key: keyconfirm,
@@ -391,7 +377,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   prepareinfoproduk() async {
     await getfilelist();
     if(listnode.isNotEmpty){
-      print("not empty");
+      // print("not empty");
       treecontroller = TreeViewController();
       treecontroller!.treeData(listnode);
       datanodelength.value = listnode.length;
@@ -411,7 +397,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       var res = await File('/storage/emulated/0/TKTW/infoproduk/sfafilelist.txt').readAsString();
       var ls = const LineSplitter();
       var tlist = ls.convert(res);
-      print(tlist);
+      // print(tlist);
       await generateTreeinfoproduct(tlist);
     } else {
       listnode.clear();
@@ -423,7 +409,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   generateTreeinfoproduct(List<String> tlist){
     listnode.clear();
     for (String temp in tlist) {
-      print(temp);
+      // print(temp);
       var tsplit = temp.split("/");
       var head = TreeNodeData();
       for (var i = 0; i < tsplit.length; i++) {
