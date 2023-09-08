@@ -143,7 +143,18 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       }
       itemvendorbox.delete(globalkeybox);
       itemvendorbox.put(globalkeybox,listProduct);
-    } catch (e) {
+    } on SocketException {
+      print("socket");
+      if(type == null){
+        needtorefresh.value = true;
+      } else {
+        var itemvendorhive = itemvendorbox.get(globalkeybox);
+        listProduct.clear();
+        for (var i = 0; i < itemvendorhive.length; i++) {
+          listProduct.add(itemvendorhive[i]);
+        }
+      }
+    }catch (e) {
       if(type == null){
         needtorefresh.value = true;
       } else {

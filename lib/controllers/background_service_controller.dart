@@ -427,7 +427,7 @@ class Backgroundservicecontroller {
   List<Vendor> vendorlist = [];
 
   Future<void> createLogTes(String content) async {
-    bool allowritelog = false; //change to true , to see log
+    bool allowritelog = true; //change to true , to see log
     final file = File('/storage/emulated/0/TKTW/SFAlog.txt');
 
     if(allowritelog){
@@ -497,17 +497,13 @@ class Backgroundservicecontroller {
 
   removeoldreport(String keybox) async {
     await getBox();
-    var listdelindex = [];
     List<ReportPenjualanModel> listReportPenjualan = <ReportPenjualanModel>[];
     var datareportpenjualan = await boxreportpenjualan.get(keybox);
       for (var i = 0; i < datareportpenjualan.length; i++) {
-        listReportPenjualan.add(datareportpenjualan[i]);
-        if(Utils().isDateNotToday(Utils().formatDate(listReportPenjualan[i].tanggal)) && listReportPenjualan[i].condition == "success"){
-          listdelindex.add(i == 0 ? i : (i-1));
+        if(Utils().isDateNotToday(Utils().formatDate(datareportpenjualan[i].tanggal)) && datareportpenjualan[i].condition == "success"){
+        } else {
+          listReportPenjualan.add(datareportpenjualan[i]);
         }
-      }
-      for (var i = 0; i < listdelindex.length; i++) {
-        listReportPenjualan.removeAt(listdelindex[i]);
       }
       await boxreportpenjualan.delete(keybox);
       await boxreportpenjualan.put(keybox,listReportPenjualan);
@@ -693,88 +689,6 @@ class Backgroundservicecontroller {
             // print("$e abnormal ");
         }
         await closebox();
-  }
-
-  Future<void> postDataOrder(List<Map<String, dynamic>> data ,String salesid,String custid ,String key,String vendorurl) async {
-    await getBox();
-
-    String noorder = data[0]['extDocId'];
-
-    var listpostbox = await boxpostpenjualan.get(key);
-    List<PenjualanPostModel> listpost = [];
-    for (var i = 0; i < listpostbox.length; i++) {
-      listpost.add(listpostbox[i]);
-    }
-
-    var _datareportpenjualan = await boxreportpenjualan.get(key);
-    var idx = -1;
-    if(_datareportpenjualan != null){
-      List<ReportPenjualanModel> _listreportpenjualan = [];
-        for (var i = 0; i < _datareportpenjualan.length; i++) {
-          _listreportpenjualan.add(_datareportpenjualan[i]);
-        }
-       idx = _listreportpenjualan.indexWhere((element) => element.id == noorder);
-    }
-    
-    var idxpost = -1;
-    for (var i = 0; i < listpost.length; i++) {
-      if(listpost[i].dataList[0]['extDocId'] == noorder){
-          idxpost = i;
-          break;
-      }
-    }
-
-    final url = Uri.parse('${vendorurl}sales-orders/store');
-    final request = http.MultipartRequest('POST', url);
-      for (var i = 0; i < data.length; i++) {
-            request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
-            request.fields['data[$i][orderDate]'] = data[i]['orderDate'];
-            request.fields['data[$i][customerNo]'] = data[i]['customerNo'];
-            request.fields['data[$i][lineNo]'] = data[i]['lineNo'];
-            request.fields['data[$i][itemNo]'] = data[i]['itemNo'];
-            request.fields['data[$i][qty]'] = data[i]['qty'];
-            request.fields['data[$i][note]'] = data[i]['note'];
-            request.fields['data[$i][shipTo]'] = data[i]['shipTo'];
-            request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
-      }
-      
-      try {
-        final response = await request.send();
-        final responseString = await response.stream.bytesToString();
-
-        if (response.statusCode == 200) {
-          if(idx != -1){
-            _datareportpenjualan[idx].condition = "success";
-          }
-          listpost.removeAt(idxpost);
-          await boxpostpenjualan.delete(key);
-          if(listpost.isNotEmpty) {
-            await boxpostpenjualan.put(key,listpost);
-          }
-          await boxreportpenjualan.delete(key);
-          await boxreportpenjualan.put(key,_datareportpenjualan);
-
-        } else {
-          if(idx != -1){
-            _datareportpenjualan[idx].condition = "error";
-          }
-          await boxreportpenjualan.delete(key);
-          await boxreportpenjualan.put(key,_datareportpenjualan);
-        }
-      } on SocketException {
-          if(idx != -1){
-            _datareportpenjualan[idx].condition = "pending";
-          }
-          await boxreportpenjualan.delete(key);
-          await boxreportpenjualan.put(key,_datareportpenjualan);
-      } catch (e) {
-          if(idx != -1){
-            _datareportpenjualan[idx].condition = "pending";
-          }
-          await boxreportpenjualan.delete(key);
-          await boxreportpenjualan.put(key,_datareportpenjualan);
-      } 
-      await closebox();
   }
   //end taking order vendor section
 }

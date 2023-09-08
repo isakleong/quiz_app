@@ -67,15 +67,12 @@ class LaporanController extends GetxController {
     var dataPenjualanbox = boxreportpenjualan.get(gkey);
     if(dataPenjualanbox != null){
       listReportPenjualan.clear();
-      var listdelindex = [];
       for (var i = 0; i < dataPenjualanbox.length; i++) {
-        listReportPenjualan.add(dataPenjualanbox[i]);
-        if(Utils().isDateNotToday(Utils().formatDate(listReportPenjualan[i].tanggal)) && listReportPenjualan[i].condition == "success"){
-          listdelindex.add(i == 0 ? i : (i-1));
+        if(Utils().isDateNotToday(Utils().formatDate(dataPenjualanbox[i].tanggal)) && dataPenjualanbox[i].condition == "success"){
+          // listdelindex.add(i);
+        } else {
+          listReportPenjualan.add(dataPenjualanbox[i]);
         }
-      }
-      for (var i = 0; i < listdelindex.length; i++) {
-        listReportPenjualan.removeAt(listdelindex[i]);
       }
       // await boxreportpenjualan.delete(gkey);
       // await boxreportpenjualan.put(gkey,listReportPenjualan);
