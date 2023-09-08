@@ -426,26 +426,48 @@ class Backgroundservicecontroller {
   late Box vendorBox;
   List<Vendor> vendorlist = [];
 
-  Future<void> createLogTes(String content) async {
-    bool allowritelog = true; //change to true , to see log
-    final file = File('/storage/emulated/0/TKTW/SFAlog.txt');
+Future<void> createLogTes(String content) async {
+  bool allowWriteLog = true; // Change to true to enable log writing
+  final directoryPath = '/storage/emulated/0/TKTW/sfalog';
+  final currentDate = DateTime.now();
+  final formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+  final filePath = '$directoryPath/$formattedDate.txt';
 
-    if(allowritelog){
-      try {
-        if (!await file.exists()) {
-          await file.create();
-        }
+  if (allowWriteLog) {
+    try {
+      final directory = Directory(directoryPath);
 
-        await file.writeAsString("$content\n", mode: FileMode.append);
-
-        print('File written successfully.');
-      } catch (e) {
-        print('Error writing to file: $e');
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
       }
-    } 
 
-    
+      // Delete log files older than 7 days
+      final sevenDaysAgo = currentDate.subtract(Duration(days: 7));
+      await for (var entity in directory.list()) {
+        if (entity is File) {
+          final fileDateStr = DateFormat('yyyy-MM-dd').format(entity.lastModifiedSync());
+          final fileDate = DateTime.parse(fileDateStr);
+          if (fileDate.isBefore(sevenDaysAgo) || fileDate.isAtSameMomentAs(sevenDaysAgo)) {
+            await entity.delete();
+            print('Deleted old log file: ${entity.path}');
+          }
+        }
+      }
+
+      final file = File(filePath);
+
+      if (!await file.exists()) {
+        await file.create();
+      }
+
+      await file.writeAsString("$content\n", mode: FileMode.append);
+
+      print('File written successfully.');
+    } catch (e) {
+      print('Error writing to file: $e');
+    }
   }
+}
 
   getPendingData() async {
       DateTime currentDateTime = DateTime.now();
