@@ -14,13 +14,15 @@ class DialogCheckoutSm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return SizedBox(
-      width: Get.width * 0.9,
-      height: 0.85 * Get.height,
+      width: width * 0.9,
+      height: 0.85 * height,
       child: Stack(
         children: [
           Padding(
-            padding: EdgeInsets.only(bottom: 0.02 * Get.height),
+            padding: EdgeInsets.only(bottom: 0.02 * height),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Row(
@@ -36,8 +38,8 @@ class DialogCheckoutSm extends StatelessWidget {
                       onTap: () {
                         Get.back();
                       },
-                      width: 0.18 * Get.width,
-                      height: 0.04 * Get.height,
+                      width: 0.18 * width,
+                      height: 0.04 * height,
                       radius: 4,
                       space: 5,
                       backgroundColor: Colors.white,
@@ -54,8 +56,8 @@ class DialogCheckoutSm extends StatelessWidget {
                       onTap: () async {
                         Get.back();
                       },
-                      width: 0.18 * Get.width,
-                      height: 0.04 * Get.height,
+                      width: 0.18 * width,
+                      height: 0.04 * height,
                       radius: 4,
                       space: 5,
                       backgroundColor: AppConfig.mainCyan,
@@ -69,7 +71,7 @@ class DialogCheckoutSm extends StatelessWidget {
           ),
           Column(children: [
             SizedBox(
-              height: 0.02 * Get.height,
+              height: 0.02 * height,
             ),
             const TextView(
               text: "Servis Mebel - Aceh Indah",
@@ -77,19 +79,19 @@ class DialogCheckoutSm extends StatelessWidget {
               fontSize: 16,
             ),
             SizedBox(
-              height: 0.01 * Get.height,
+              height: 0.01 * height,
             ),
             Container(
-              width: Get.width,
+              width: width,
               height: 10,
               color: Colors.grey.shade300,
             ),
             SizedBox(
-              height: 0.01 * Get.height,
+              height: 0.01 * height,
             ),
             Padding(
               padding: EdgeInsets.only(
-                  left: 0.05 * Get.width, right: 0.05 * Get.width),
+                  left: 0.05 * width, right: 0.05 * width),
               child: TextFormField(
                 // controller: _textEditingController,
                 decoration: InputDecoration(
@@ -113,12 +115,12 @@ class DialogCheckoutSm extends StatelessWidget {
             ),
             Expanded(
                 child: Padding(
-                    padding: EdgeInsets.only(bottom: 0.08 * Get.height),
+                    padding: EdgeInsets.only(bottom: 0.08 * height),
                     child: ListView.builder(
                       itemBuilder: (c, i) {
                         return Padding(
                           padding: EdgeInsets.only(
-                              left: 0.05 * Get.width, right: 0.05 * Get.width),
+                              left: 0.05 * width, right: 0.05 * width),
                           child: CheckoutListGb(
                             data:
                                 _takingOrderVendorController.listServisMebel[i],

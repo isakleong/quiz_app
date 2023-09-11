@@ -28,7 +28,7 @@ class TarikBarangHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                  SizedBox(
-                  width: 0.05 * Get.width,
+                  width: 0.05 * width,
                 ),
                 Container(
                   width: 32.sp,
@@ -58,7 +58,7 @@ class TarikBarangHeader extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: 0.02 * Get.width,
+                  width: 0.02 * width,
                 ),
                 TextView(
                   text: "Keranjang",
@@ -66,7 +66,7 @@ class TarikBarangHeader extends StatelessWidget {
                   fontSize: 12.sp,
                 ),
                 SizedBox(
-                  width: 0.02 * Get.width,
+                  width: 0.02 * width,
                 ),
                ChipsItem(
                       satuan: jumlahproduk,

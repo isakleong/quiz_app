@@ -15,15 +15,17 @@ class TukarWarnaPage extends StatelessWidget {
   TukarWarnaPage({super.key});
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Expanded(
         child: Obx(() => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: EdgeInsets.only(
-                      top: 0.02 * Get.height, left: 0.05 * Get.width),
+                      top: 0.02 * height, left: 0.05 * width),
                   child: SizedBox(
-                    width: 0.9 * Get.width,
+                    width: 0.9 * width,
                     child: TypeAheadField(
                       textFieldConfiguration: TextFieldConfiguration(
                         controller:
@@ -48,12 +50,12 @@ class TukarWarnaPage extends StatelessWidget {
                       itemBuilder: (context, suggestion) {
                         return Padding(
                           padding: EdgeInsets.only(
-                              top: 0.01 * Get.height,
-                              bottom: 0.01 * Get.height),
+                              top: 0.01 * height,
+                              bottom: 0.01 * height),
                           child: Row(
                             children: [
                               SizedBox(
-                                width: 0.02 * Get.width,
+                                width: 0.02 * width,
                               ),
                               Icon(
                                 FontAwesomeIcons.solidCircle,
@@ -61,7 +63,7 @@ class TukarWarnaPage extends StatelessWidget {
                                 size: 14,
                               ),
                               SizedBox(
-                                width: 0.02 * Get.width,
+                                width: 0.02 * width,
                               ),
                               TextView(
                                 text: suggestion.nmProduct,
@@ -88,12 +90,12 @@ class TukarWarnaPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: 0.01 * Get.height,
+                  height: 0.01 * height,
                 ),
                 _takingOrderVendorController.selectedProductTukarWarna.isEmpty
                     ? Container()
                     : Padding(
-                        padding: EdgeInsets.only(left: 0.05 * Get.width),
+                        padding: EdgeInsets.only(left: 0.05 * width),
                         child: ShopCartTukarWarna(),
                       ),
                 _takingOrderVendorController.listTukarWarna.isEmpty
@@ -117,9 +119,9 @@ class TukarWarnaPage extends StatelessWidget {
                                 itemBuilder: (context, index) {
                                   return Padding(
                                       padding: EdgeInsets.only(
-                                          left: 0.05 * Get.width,
+                                          left: 0.05 * width,
                                           top: 5,
-                                          right: 0.05 * Get.width),
+                                          right: 0.05 * width),
                                       child: TukarWarnaList(
                                         idx: (index + 1).toString(),
                                         data: _takingOrderVendorController
@@ -148,7 +150,7 @@ class TukarWarnaPage extends StatelessWidget {
                 _takingOrderVendorController.listTukarWarna.isEmpty
                     ? Padding(
                         padding: EdgeInsets.only(
-                          top: 0.02 * Get.height,
+                          top: 0.02 * height,
                         ),
                         child: NoInputRetur(
                             image: 'assets/images/returtukarwarna.png',

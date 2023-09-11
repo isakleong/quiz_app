@@ -13,6 +13,8 @@ class ProdukPenggantiHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: Row(
@@ -22,7 +24,7 @@ class ProdukPenggantiHeader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(
-                width: 0.05 * Get.width,
+                width: 0.05 * width,
               ),
               Container(
                   width: 45,
@@ -36,7 +38,7 @@ class ProdukPenggantiHeader extends StatelessWidget {
                     color: Colors.white,
                   )),
               SizedBox(
-                width: 0.02 * Get.width,
+                width: 0.02 * width,
               ),
               const TextView(
                 text: "Barang Pengganti",
@@ -46,7 +48,7 @@ class ProdukPenggantiHeader extends StatelessWidget {
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(right: 0.05 * Get.width),
+            padding: EdgeInsets.only(right: 0.05 * width),
             child: list.isEmpty
                 ? ElevatedButton(
                     onPressed: ontap,

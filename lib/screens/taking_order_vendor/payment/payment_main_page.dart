@@ -17,6 +17,8 @@ class PaymentMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Colors.white,
         body: Obx(() => SafeArea(
@@ -34,14 +36,14 @@ class PaymentMainPage extends StatelessWidget {
                         child: BackButtonAction()),
                     Padding(
                         padding: EdgeInsets.only(
-                            left: 0.05 * Get.width, top: 0.01 * Get.height),
+                            left: 0.05 * width, top: 0.01 * height),
                         child: PiutangCard(nmtoko : _takingOrderVendorController.nmtoko.value)),
                     const SizedBox(
                       height: 15,
                     ),
                     PaymentTab(),
                     Container(
-                      width: Get.width,
+                      width: width,
                       height: 10,
                       color: Colors.grey.shade200,
                     ),
@@ -68,9 +70,9 @@ class PaymentMainPage extends StatelessWidget {
                                   )),
                                   child: Padding(
                                     padding: EdgeInsets.only(
-                                        left: 0.05 * Get.width,
+                                        left: 0.05 * width,
                                         top: 5,
-                                        right: 0.05 * Get.width),
+                                        right: 0.05 * width),
                                     child: PaymentList(
                                       idx: (index + 1).toString(),
                                       metode: _takingOrderVendorController

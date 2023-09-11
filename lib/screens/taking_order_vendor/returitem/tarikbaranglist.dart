@@ -26,12 +26,14 @@ class TarikBarangList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Card(
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
       child: SizedBox(
-        width: 0.9 * Get.width,
+        width: 0.9 * width,
         child: Column(
           children: [
             const SizedBox(
@@ -44,11 +46,11 @@ class TarikBarangList extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(
-                        width: 0.025 * Get.width,
+                        width: 0.025 * width,
                       ),
                       Container(
-                        width: 0.0725 * Get.width,
-                        height: 0.0725 * Get.width,
+                        width: 0.0725 * width,
+                        height: 0.0725 * width,
                         decoration: BoxDecoration(
                             color: Colors.blueGrey,
                             borderRadius: BorderRadius.circular(10)),
@@ -62,7 +64,7 @@ class TarikBarangList extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 0.025 * Get.width,
+                        width: 0.025 * width,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +122,7 @@ class TarikBarangList extends StatelessWidget {
                             const SizedBox(
                               width: 10,
                             ),
-                           if (Get.width > 450)
+                           if (width > 450)
                             InkWell(
                               onTap: onTapEdit,
                               child: Container(
@@ -165,7 +167,7 @@ class TarikBarangList extends StatelessWidget {
                             const SizedBox(
                               width: 10,
                             ),
-                            if (Get.width > 450)
+                            if (width > 450)
                               InkWell(
                                 onTap: onTapDelete,
                                 child: Container(
@@ -219,7 +221,7 @@ class TarikBarangList extends StatelessWidget {
             data.alasan == ""
                 ? Container()
                 : Container(
-                    width: 0.85 * Get.width,
+                    width: 0.85 * width,
                     height: 1,
                     color: Colors.grey.shade500,
                   ),
@@ -233,7 +235,7 @@ class TarikBarangList extends StatelessWidget {
                 : Row(
                     children: [
                       SizedBox(
-                        width: 0.025 * Get.width,
+                        width: 0.025 * width,
                       ),
                       const Icon(
                         FontAwesomeIcons.circleChevronRight,
@@ -245,7 +247,7 @@ class TarikBarangList extends StatelessWidget {
                       ),
                       TextView(
                         text: "Alasan : ${data.alasan}",
-                        fontSize: Get.width < 450 ? 10.sp : 14,
+                        fontSize: width < 450 ? 10.sp : 14,
                       )
                     ],
                   ),

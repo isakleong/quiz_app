@@ -27,6 +27,8 @@ class ReturMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -44,11 +46,11 @@ class ReturMainPage extends StatelessWidget {
                     child: BackButtonAction()),
                 Padding(
                     padding: EdgeInsets.only(
-                        left: 0.05 * Get.width, top: 0.01 * Get.height),
+                        left: 0.05 * width, top: 0.01 * height),
                     child:  ReturCard(nmToko: _takingOrderVendorController.nmtoko.value,)),
                 // Padding(
                 //     padding: EdgeInsets.only(
-                //         left: 0.05 * Get.width, top: 0.02 * Get.height),
+                //         left: 0.05 * width, top: 0.02 * height),
                 //     child: SegmentButton()),
                 Obx(() =>
                     pages[_takingOrderVendorController.indexSegment.value])

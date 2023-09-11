@@ -15,15 +15,17 @@ class DialogCheckOut extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return SizedBox(
-      width: Get.width * 0.9,
-      height: 0.85 * Get.height,
+      width: width * 0.9,
+      height: 0.85 * height,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              height: Get.height * 0.03,
+              height: height * 0.03,
             ),
             TextView(
               text: "Penjualan - ${_takingOrderVendorController.nmtoko.value}",
@@ -31,7 +33,7 @@ class DialogCheckOut extends StatelessWidget {
               fontSize: 13.sp,
             ),
             SizedBox(
-              height: Get.height * 0.01,
+              height: height * 0.01,
             ),
             TextView(
               text: "Alamat Pengiriman",
@@ -39,14 +41,14 @@ class DialogCheckOut extends StatelessWidget {
               fontSize: 10.5.sp,
             ),
             SizedBox(
-              height: Get.height * 0.01,
+              height: height * 0.01,
             ),
             Padding(
               padding: EdgeInsets.only(
-                  left: 0.02 * Get.width, right: 0.01 * Get.width),
+                  left: 0.02 * width, right: 0.01 * width),
               child: Container(
-                width: 0.8 * Get.width,
-                height: 0.05 * Get.height,
+                width: 0.8 * width,
+                height: 0.05 * height,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey.shade500),
                   borderRadius: BorderRadius.circular(8),
@@ -113,23 +115,23 @@ class DialogCheckOut extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: Get.height * 0.01,
+              height: height * 0.01,
             ),
             Container(
-              width: 0.9 * Get.width,
+              width: 0.9 * width,
               height: 10,
               color: Colors.grey.shade200,
             ),
             SizedBox(
-              height: Get.height * 0.02,
+              height: height * 0.02,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 0.45 * Get.width,
-                  height: 0.1 * Get.height,
+                  width: 0.45 * width,
+                  height: 0.1 * height,
                   child: TextFormField(
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s()!?&%#@/<>,.\-=+_]+')), // Custom character set
@@ -176,7 +178,7 @@ class DialogCheckOut extends StatelessWidget {
                             fontSize: 10.sp,
                           ),
                           SizedBox(
-                            width: 0.01 * Get.width,
+                            width: 0.01 * width,
                           ),
                           Container(
                             width: 25.sp,
@@ -201,16 +203,16 @@ class DialogCheckOut extends StatelessWidget {
               ],
             ),
             SizedBox(
-              width: 0.85 * Get.width,
-              height: Get.height * 0.4,
+              width: 0.85 * width,
+              height: height * 0.4,
               child: ListView.builder(
                 itemCount: _takingOrderVendorController.cartDetailList.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: EdgeInsets.only(
-                        left: 0.05 * Get.width,
+                        left: 0.05 * width,
                         top: 5,
-                        right: 0.05 * Get.width),
+                        right: 0.05 * width),
                     child: CheckoutList(
                         idx: (index + 1).toString(),
                         data:
@@ -224,8 +226,8 @@ class DialogCheckOut extends StatelessWidget {
               height: 10,
             ),
             Container(
-              width: 0.75 * Get.width,
-              // height: 0.06 * Get.height,
+              width: 0.75 * width,
+              // height: 0.06 * height,
               decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.all(color: Colors.grey.shade300, width: 1.5),
@@ -255,7 +257,7 @@ class DialogCheckOut extends StatelessWidget {
                     ),
                     Container(
                       width: 1.5,
-                      height: 0.06 * Get.height,
+                      height: 0.06 * height,
                       color: Colors.grey.shade400,
                     ),
                     Image.asset(
@@ -286,7 +288,7 @@ class DialogCheckOut extends StatelessWidget {
                     ),
                     Container(
                       width: 1.5,
-                      height: 0.06 * Get.height,
+                      height: 0.06 * height,
                       color: Colors.grey.shade400,
                     ),
                     Image.asset(
@@ -318,7 +320,7 @@ class DialogCheckOut extends StatelessWidget {
                   ]),
             ),
             SizedBox(
-              height: 0.02 * Get.height,
+              height: 0.02 * height,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

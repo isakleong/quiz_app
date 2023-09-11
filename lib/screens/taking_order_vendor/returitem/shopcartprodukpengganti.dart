@@ -13,8 +13,8 @@ class ShopCartProdukPenganti extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = Get.width;
-    double height = Get.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Obx(() => Card(
           elevation: 10,
           shape:
@@ -137,7 +137,7 @@ class ShopCartProdukPenganti extends StatelessWidget {
                               for(var i = 0 ; i <  _takingOrderVendorController.selectedProductProdukPengganti[0].detailProduct.length; i++)
                                 Expanded(
                                   child: Padding(
-                                    padding: Get.width < 450 ? const EdgeInsets.only(left: 5,right: 5) : const EdgeInsets.only(left: 10,right: 10),
+                                    padding: width < 450 ? const EdgeInsets.only(left: 5,right: 5) : const EdgeInsets.only(left: 10,right: 10),
                                     child: Column(
                                       children: [
                                       const SizedBox(height: 6,),

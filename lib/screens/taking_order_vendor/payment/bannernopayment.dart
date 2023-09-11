@@ -8,6 +8,7 @@ class BannerNoPayment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Container(
       child: Column(
         children: [
@@ -16,9 +17,9 @@ class BannerNoPayment extends StatelessWidget {
           ),
           Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             Image.asset('assets/images/custpaymentempty.png',
-                width: 0.45 * Get.width, fit: BoxFit.cover),
+                width: 0.45 * width, fit: BoxFit.cover),
             SizedBox(
-              width: 0.45 * Get.width,
+              width: 0.45 * width,
               child: Column(
                 children: [
                   TextView(

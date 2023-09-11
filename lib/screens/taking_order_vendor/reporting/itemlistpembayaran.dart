@@ -15,17 +15,19 @@ class ItemListPembayaran extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Padding(
-      padding: EdgeInsets.only(left: 0.05 * Get.width),
+      padding: EdgeInsets.only(left: 0.05 * width),
       child: Row(
         children: [
           Container(
             width: 5,
-            height: 0.04 * Get.height,
+            height: 0.04 * height,
             decoration: const BoxDecoration(color: Color(0xFF4fc2f8)),
           ),
           SizedBox(
-            width: 0.7 * Get.width,
+            width: 0.7 * width,
             child: Padding(
               padding: const EdgeInsets.only(top: 7, bottom: 7),
               child: Column(
@@ -37,11 +39,11 @@ class ItemListPembayaran extends StatelessWidget {
                         Row(
                           children: [
                             SizedBox(
-                              width: 0.025 * Get.width,
+                              width: 0.025 * width,
                             ),
                             Container(
-                              width: 0.07 * Get.width,
-                              height: 0.04 * Get.height,
+                              width: 0.07 * width,
+                              height: 0.04 * height,
                               decoration: BoxDecoration(
                                   color: Colors.blueGrey,
                                   borderRadius: BorderRadius.circular(8)),
@@ -49,20 +51,20 @@ class ItemListPembayaran extends StatelessWidget {
                                 child: TextView(
                                   text:  idx,
                                   headings: 'H3',
-                                  fontSize: Get.width < 450 ? 12.sp : 20,
+                                  fontSize: width < 450 ? 12.sp : 20,
                                   color: Colors.white,
                                 ),
                               ),
                             ),
                             SizedBox(
-                              width: 0.025 * Get.width,
+                              width: 0.025 * width,
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 TextView(
                                   headings: 'H4',
-                                  fontSize: Get.width < 450 ? 10.sp : 13,
+                                  fontSize: width < 450 ? 10.sp : 13,
                                   text: data.jenis == "cn"
                                       ? "Potongan CN"
                                       : data.jenis == "cek"
@@ -75,17 +77,17 @@ class ItemListPembayaran extends StatelessWidget {
                                     TextView(
                                       text:
                                           "Rp ${Utils().formatNumber(data.value.toInt())}",
-                                      fontSize: Get.width < 450 ? 10.sp : 13,
+                                      fontSize: width < 450 ? 10.sp : 13,
                                     ),
                                     SizedBox(
-                                      width: 0.01 * Get.width,
+                                      width: 0.01 * width,
                                     ),
                                     data.jatuhtempo == ""
                                         ? Container()
                                         : ChipsItem(
                                             satuan:
                                                 "Jatuh Tempo : ${data.jatuhtempo}",
-                                            fontSize: Get.width < 450 ? 8.sp : 12,
+                                            fontSize: width < 450 ? 8.sp : 12,
                                           )
                                   ],
                                 )

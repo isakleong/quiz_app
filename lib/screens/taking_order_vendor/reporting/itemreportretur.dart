@@ -10,12 +10,14 @@ class ItemReportRetur extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Card(
         elevation: 10,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         color: Colors.white,
         child: SizedBox(
-          width: 0.9 * Get.width,
+          width: 0.9 * width,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
@@ -30,10 +32,10 @@ class ItemReportRetur extends StatelessWidget {
                     children: [
                       Padding(
                         padding:
-                            EdgeInsets.only(left: 0.02 * Get.width, top: 2),
+                            EdgeInsets.only(left: 0.02 * width, top: 2),
                         child: Container(
-                          width: 0.075 * Get.width,
-                          height: 0.075 * Get.width,
+                          width: 0.075 * width,
+                          height: 0.075 * width,
                           decoration: const BoxDecoration(
                             color: Color(0xFF512da7),
                             shape: BoxShape.circle,
@@ -96,7 +98,7 @@ class ItemReportRetur extends StatelessWidget {
             ),
             Center(
               child: Container(
-                width: 0.85 * Get.width,
+                width: 0.85 * width,
                 color: Colors.grey.shade400,
                 height: 3,
               ),
@@ -105,7 +107,7 @@ class ItemReportRetur extends StatelessWidget {
               height: 2,
             ),
             Padding(
-              padding: EdgeInsets.only(left: 0.05 * Get.width),
+              padding: EdgeInsets.only(left: 0.05 * width),
               child: IntrinsicHeight(
                 child: Row(
                   children: [
@@ -118,7 +120,7 @@ class ItemReportRetur extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: 0.8 * Get.width,
+                      width: 0.8 * width,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 7, bottom: 7),
                         child: Column(
@@ -131,11 +133,11 @@ class ItemReportRetur extends StatelessWidget {
                                   Row(
                                     children: [
                                       SizedBox(
-                                        width: 0.025 * Get.width,
+                                        width: 0.025 * width,
                                       ),
                                       Container(
-                                        width: 0.07 * Get.width,
-                                        height: 0.045 * Get.height,
+                                        width: 0.07 * width,
+                                        height: 0.045 * height,
                                         decoration: BoxDecoration(
                                             color: Colors.blueGrey,
                                             borderRadius:
@@ -150,7 +152,7 @@ class ItemReportRetur extends StatelessWidget {
                                         ),
                                       ),
                                       SizedBox(
-                                        width: 0.025 * Get.width,
+                                        width: 0.025 * width,
                                       ),
                                       Column(
                                         crossAxisAlignment:
@@ -202,11 +204,11 @@ class ItemReportRetur extends StatelessWidget {
                                 ]),
                             Padding(
                               padding: EdgeInsets.only(
-                                left: 0.02 * Get.width,
+                                left: 0.02 * width,
                                 top: 10,
                               ),
                               child: Container(
-                                width: 0.85 * Get.width,
+                                width: 0.85 * width,
                                 height: 2,
                                 color: Colors.grey.shade400,
                               ),
@@ -221,7 +223,7 @@ class ItemReportRetur extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                        width: 0.025 * Get.width,
+                                        width: 0.025 * width,
                                       ),
                                       const Icon(
                                         FontAwesomeIcons.circleChevronRight,

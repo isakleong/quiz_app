@@ -13,6 +13,8 @@ class PaymentHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Column(
       children: [
         const SizedBox(
@@ -25,12 +27,12 @@ class PaymentHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 0.05 * Get.width,
+                  width: 0.05 * width,
                 ),
                 Image.asset('assets/images/paymentlist.png',
-                    width: 0.07 * Get.width, fit: BoxFit.cover),
+                    width: 0.07 * width, fit: BoxFit.cover),
                 SizedBox(
-                  width: 0.02 * Get.width,
+                  width: 0.02 * width,
                 ),
                 TextView(
                   text: "Daftar Pembayaran",
@@ -38,7 +40,7 @@ class PaymentHeader extends StatelessWidget {
                   fontSize: 12.sp,
                 ),
                 SizedBox(
-                  width: 0.02 * Get.width,
+                  width: 0.02 * width,
                 ),
                 Obx(() => ChipsItem(
                       satuan:
@@ -48,7 +50,7 @@ class PaymentHeader extends StatelessWidget {
               ],
             ),
             Padding(
-              padding: EdgeInsets.only(right: 0.05 * Get.width),
+              padding: EdgeInsets.only(right: 0.05 * width),
               child: CustomElevatedButton(
                   icon: Icon(
                     Icons.check_circle_outline_rounded,

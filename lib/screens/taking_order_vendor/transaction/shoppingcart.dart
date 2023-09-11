@@ -123,7 +123,7 @@ class Shoppingcart extends StatelessWidget {
             for(var i = 0 ; i < _takingOrderVendorController.selectedProduct[0].detailProduct.length; i++)
               Expanded(
                 child: Padding(
-                  padding: Get.width < 450 ? const EdgeInsets.only(left: 5,right: 5) : const EdgeInsets.only(left: 10,right: 10),
+                  padding: width < 450 ? const EdgeInsets.only(left: 5,right: 5) : const EdgeInsets.only(left: 10,right: 10),
                   child: Column(
                     children: [
                     const SizedBox(height: 6,),

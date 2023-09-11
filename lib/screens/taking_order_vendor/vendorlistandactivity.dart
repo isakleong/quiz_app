@@ -27,6 +27,8 @@ class _VendorListAndActivityState extends State<VendorListAndActivity> with Sing
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
        body:  SafeArea(
@@ -41,8 +43,8 @@ class _VendorListAndActivityState extends State<VendorListAndActivity> with Sing
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                        left: 0.05 * Get.width,
-                        top: 0.01 * Get.height,
+                        left: 0.05 * width,
+                        top: 0.01 * height,
                       ),
                       child: const BackButtonAction(),
                     ),
@@ -58,7 +60,7 @@ class _VendorListAndActivityState extends State<VendorListAndActivity> with Sing
                             selectedsegment[index] = true;
                           });
                         },
-                        constraints: BoxConstraints(minWidth: 0.25 * Get.width,minHeight: 0.05 * Get.height),
+                        constraints: BoxConstraints(minWidth: 0.25 * width,minHeight: 0.05 * height),
                         borderColor: Colors.grey,
                         selectedBorderColor: AppConfig.mainCyan,
                         borderRadius: BorderRadius.circular(20.0),
@@ -75,7 +77,7 @@ class _VendorListAndActivityState extends State<VendorListAndActivity> with Sing
                         .toList(),
                       ),
                     ),
-                    SizedBox(height: 0.02 * Get.height,),
+                    SizedBox(height: 0.02 * height,),
                     Expanded(child: pages[indexSegment])
                   ],
                 ),

@@ -7,18 +7,20 @@ class ActivityPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
-          SizedBox(height: 0.02 * Get.height,),
+          SizedBox(height: 0.02 * height,),
           Center(child: Card(
               elevation: 5,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
                child: Container(
-                width: 0.8 *Get.width,height: 0.1 * Get.height,
+                width: 0.8 *width,height: 0.1 * height,
                  decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                 ),

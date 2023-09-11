@@ -26,12 +26,14 @@ class TukarWarnaList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Card(
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
       child: SizedBox(
-        width: 0.9 * Get.width,
+        width: 0.9 * width,
         child: Column(
           children: [
             const SizedBox(
@@ -44,11 +46,11 @@ class TukarWarnaList extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(
-                        width: 0.025 * Get.width,
+                        width: 0.025 * width,
                       ),
                       Container(
-                        width: 0.0725 * Get.width,
-                        height: 0.0725 * Get.width,
+                        width: 0.0725 * width,
+                        height: 0.0725 * width,
                         decoration: BoxDecoration(
                             color: Colors.blueGrey,
                             borderRadius: BorderRadius.circular(10)),
@@ -62,7 +64,7 @@ class TukarWarnaList extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 0.025 * Get.width,
+                        width: 0.025 * width,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,7 +158,7 @@ class TukarWarnaList extends StatelessWidget {
               height: 10,
             ),
             Container(
-              width: 0.85 * Get.width,
+              width: 0.85 * width,
               height: 1,
               color: Colors.grey.shade500,
             ),
@@ -164,7 +166,7 @@ class TukarWarnaList extends StatelessWidget {
               height: 10,
             ),
             SizedBox(
-              width: 0.9 * Get.width,
+              width: 0.9 * width,
               child: ListView.builder(
                   itemCount: data.listitemdetail.length,
                   shrinkWrap: true,
@@ -179,7 +181,7 @@ class TukarWarnaList extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
-                                width: 0.025 * Get.width,
+                                width: 0.025 * width,
                               ),
                               const Icon(
                                 FontAwesomeIcons.circleChevronRight,

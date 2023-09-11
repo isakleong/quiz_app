@@ -16,18 +16,20 @@ class NoInputRetur extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return isHorizontal == true
         ? Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Image.asset(
                 image,
-                width: 0.25 * Get.width,
-                height: 0.2 * Get.width,
+                width: 0.25 * width,
+                height: 0.2 * width,
                 fit: BoxFit.scaleDown,
               ),
               SizedBox(
-                width: 0.6 * Get.width,
+                width: 0.6 * width,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -49,16 +51,16 @@ class NoInputRetur extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                height: 0.04 * Get.height,
+                height: 0.04 * height,
               ),
               Image.asset(
                 image,
-                width: 0.6 * Get.width,
-                height: 0.35 * Get.width,
+                width: 0.6 * width,
+                height: 0.35 * width,
                 fit: BoxFit.scaleDown,
               ),
               SizedBox(
-                height: 0.02 * Get.height,
+                height: 0.02 * height,
               ),
               TextView(
                 text: title,

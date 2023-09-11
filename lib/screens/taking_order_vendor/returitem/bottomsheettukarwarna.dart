@@ -18,6 +18,8 @@ class BottomSheetTukarWarna extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return FractionallySizedBox(
       heightFactor: 0.68,
       child: Container(
@@ -104,9 +106,9 @@ class BottomSheetTukarWarna extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 0.02 * Get.height),
+                    padding: EdgeInsets.only(top: 0.02 * height),
                     child: SizedBox(
-                      width: 0.9 * Get.width,
+                      width: 0.9 * width,
                       child: TypeAheadField(
                         textFieldConfiguration: TextFieldConfiguration(
                           controller: _takingOrderVendorController
@@ -131,12 +133,12 @@ class BottomSheetTukarWarna extends StatelessWidget {
                         itemBuilder: (context, suggestion) {
                           return Padding(
                             padding: EdgeInsets.only(
-                                top: 0.01 * Get.height,
-                                bottom: 0.01 * Get.height),
+                                top: 0.01 * height,
+                                bottom: 0.01 * height),
                             child: Row(
                               children: [
                                 SizedBox(
-                                  width: 0.02 * Get.width,
+                                  width: 0.02 * width,
                                 ),
                                 Icon(
                                   FontAwesomeIcons.solidCircle,
@@ -144,7 +146,7 @@ class BottomSheetTukarWarna extends StatelessWidget {
                                   size: 14,
                                 ),
                                 SizedBox(
-                                  width: 0.02 * Get.width,
+                                  width: 0.02 * width,
                                 ),
                                 TextView(
                                   text: suggestion.nmProduct,
@@ -169,7 +171,7 @@ class BottomSheetTukarWarna extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 0.01 * Get.height,
+                    height: 0.01 * height,
                   ),
                   _takingOrderVendorController
                           .selectedProductProdukPengganti.isEmpty
@@ -192,9 +194,9 @@ class BottomSheetTukarWarna extends StatelessWidget {
                             itemBuilder: (context, index) {
                               return Padding(
                                   padding: EdgeInsets.only(
-                                      left: 0.05 * Get.width,
+                                      left: 0.05 * width,
                                       top: 5,
-                                      right: 0.05 * Get.width),
+                                      right: 0.05 * width),
                                   child: TarikBarangList(
                                     btndelete: const Color(0xFFe43936),
                                     unit: const Color(0xFFe43936),

@@ -70,13 +70,15 @@ final TakingOrderVendorController _takingOrderVendorController =
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return ScreenUtilInit(
         designSize: const Size(360, 690),
         minTextAdapt: true,
         builder: (context, child) {
           return PersistentTabView(
             context,
-            navBarHeight: 0.08 * Get.height,
+            navBarHeight: 0.08 * height,
             controller: _takingOrderVendorController.controllerBar,
             screens: _buildScreens(),
             items: _navBarsItems(),

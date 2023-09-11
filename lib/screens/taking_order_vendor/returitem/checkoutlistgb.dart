@@ -14,12 +14,14 @@ class CheckoutListGb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Card(
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       color: Colors.white,
       child: SizedBox(
-        width: 0.9 * Get.width,
+        width: 0.9 * width,
         child: Padding(
           padding: const EdgeInsets.only(top: 7, bottom: 7),
           child: Column(
@@ -31,11 +33,11 @@ class CheckoutListGb extends StatelessWidget {
                     Row(
                       children: [
                         SizedBox(
-                          width: 0.025 * Get.width,
+                          width: 0.025 * width,
                         ),
                         Container(
-                          width: 0.07 * Get.width,
-                          height: 0.07 * Get.width,
+                          width: 0.07 * width,
+                          height: 0.07 * width,
                           decoration: BoxDecoration(
                               color: Colors.blueGrey,
                               borderRadius: BorderRadius.circular(8)),
@@ -49,7 +51,7 @@ class CheckoutListGb extends StatelessWidget {
                           ),
                         ),
                         SizedBox(
-                          width: 0.025 * Get.width,
+                          width: 0.025 * width,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

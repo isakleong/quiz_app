@@ -14,12 +14,14 @@ class ItemReportPenjualan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Card(
         elevation: 10,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         color: Colors.white,
         child: SizedBox(
-          width: 0.9 * Get.width,
+          width: 0.9 * width,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -29,10 +31,10 @@ class ItemReportPenjualan extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                          top: 10, bottom: 10, left: 0.02 * Get.width),
+                          top: 10, bottom: 10, left: 0.02 * width),
                       child: Container(
-                        width: 0.07 * Get.width,
-                        height: 0.07 * Get.width,
+                        width: 0.07 * width,
+                        height: 0.07 * width,
                         decoration: const BoxDecoration(
                           color: Color(0xFFf5511e),
                           shape: BoxShape.circle,
@@ -41,7 +43,7 @@ class ItemReportPenjualan extends StatelessWidget {
                           child: TextView(
                             text: idx,
                             color: Colors.white,
-                            fontSize: Get.width < 450 ? 12.sp : 18,
+                            fontSize: width < 450 ? 12.sp : 18,
                             headings: 'H2',
                           ),
                         ),
@@ -58,7 +60,7 @@ class ItemReportPenjualan extends StatelessWidget {
                             TextView(
                               text: data.id,
                               headings: 'H4',
-                              fontSize: Get.width < 450 ? 8.sp : 14,
+                              fontSize: width < 450 ? 8.sp : 14,
                             ),
                             if(data.condition != 'success')
                             SizedBox(width: 5.sp,),
@@ -66,7 +68,7 @@ class ItemReportPenjualan extends StatelessWidget {
                            ChipsItem(
                                 satuan: data.condition,
                                 color: data.condition == 'pending' ? Colors.amber : Colors.red,
-                                fontSize: Get.width < 450 ? 8.sp : 12,
+                                fontSize: width < 450 ? 8.sp : 12,
                               )
                           ],
                         ),
@@ -77,7 +79,7 @@ class ItemReportPenjualan extends StatelessWidget {
                                     ? "${data.notes.substring(0, 30)}...      "
                                     : data.notes,
                                 color: const Color(0xFFf5511e),
-                                fontSize: Get.width < 450 ? 8.sp : 12,
+                                fontSize: width < 450 ? 8.sp : 12,
                               )
                       ],
                     )
@@ -90,11 +92,11 @@ class ItemReportPenjualan extends StatelessWidget {
                     children: [
                       TextView(
                         text:Utils().formatDate(data.tanggal),
-                        fontSize: Get.width < 450 ? 9.sp : 14,
+                        fontSize: width < 450 ? 9.sp : 14,
                       ),
                       TextView(
                         text: data.waktu,
-                        fontSize: Get.width < 450 ? 9.sp : 14,
+                        fontSize: width < 450 ? 9.sp : 14,
                       )
                     ],
                   ),
@@ -103,7 +105,7 @@ class ItemReportPenjualan extends StatelessWidget {
             ),
             Center(
               child: Container(
-                width: 0.85 * Get.width,
+                width: 0.85 * width,
                 color: Colors.grey.shade400,
                 height: 3,
               ),

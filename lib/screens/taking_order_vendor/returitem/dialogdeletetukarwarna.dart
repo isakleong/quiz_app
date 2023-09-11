@@ -13,9 +13,11 @@ class DialogDeleteTukarWarna extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return SizedBox(
-      width: Get.width * 0.8,
-      height: 0.45 * Get.height,
+      width: width * 0.8,
+      height: 0.45 * height,
       child: Stack(
         children: [
           Center(
@@ -23,7 +25,7 @@ class DialogDeleteTukarWarna extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: Get.height * 0.03,
+                  height: height * 0.03,
                 ),
                 const TextView(
                   text: "Hapus Daftar Barang Pengganti",
@@ -31,15 +33,15 @@ class DialogDeleteTukarWarna extends StatelessWidget {
                   fontSize: 17,
                 ),
                 SizedBox(
-                  height: Get.height * 0.01,
+                  height: height * 0.01,
                 ),
                 Lottie.asset('assets/lottie/delete.json',
-                    width: Get.width * 0.25),
+                    width: width * 0.25),
                 SizedBox(
-                  height: Get.height * 0.02,
+                  height: height * 0.02,
                 ),
                 SizedBox(
-                  width: Get.width * 0.7,
+                  width: width * 0.7,
                   child: const TextView(
                     text:
                         "Jumlah kuantiti lebih kecil dari sebelumnya, barang pengganti sebelumnya akan terhapus semua, lanjutkan?",
@@ -52,7 +54,7 @@ class DialogDeleteTukarWarna extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 0.02 * Get.height),
+            padding: EdgeInsets.only(bottom: 0.02 * height),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Row(
@@ -68,8 +70,8 @@ class DialogDeleteTukarWarna extends StatelessWidget {
                           side:
                               BorderSide(color: AppConfig.mainCyan, width: 1)),
                       padding: EdgeInsets.only(
-                          left: 0.06 * Get.width,
-                          right: 0.06 * Get.width,
+                          left: 0.06 * width,
+                          right: 0.06 * width,
                           top: 2,
                           bottom: 2),
                     ),

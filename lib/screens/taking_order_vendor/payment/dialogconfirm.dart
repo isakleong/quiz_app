@@ -14,9 +14,11 @@ class DialogConfirm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return SizedBox(
-      width: Get.width * 0.5,
-      height: 0.4 * Get.height,
+      width: width * 0.5,
+      height: 0.4 * height,
       child: Stack(
         children: [
           Center(
@@ -24,7 +26,7 @@ class DialogConfirm extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: Get.height * 0.03,
+                  height: height * 0.03,
                 ),
                 TextView(
                   text: title,
@@ -32,15 +34,15 @@ class DialogConfirm extends StatelessWidget {
                   fontSize: 17,
                 ),
                 SizedBox(
-                  height: Get.height * 0.01,
+                  height: height * 0.01,
                 ),
                 Lottie.asset('assets/lottie/confirmquestion.json',
-                    width: Get.width * 0.25),
+                    width: width * 0.25),
                 SizedBox(
-                  height: Get.height * 0.02,
+                  height: height * 0.02,
                 ),
                 SizedBox(
-                  width: Get.width * 0.4,
+                  width: width * 0.4,
                   child: TextView(
                     text: message,
                     headings: 'H4',
@@ -52,7 +54,7 @@ class DialogConfirm extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 0.02 * Get.height),
+            padding: EdgeInsets.only(bottom: 0.02 * height),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Row(
@@ -63,8 +65,8 @@ class DialogConfirm extends StatelessWidget {
                       onTap: () {
                         Get.back();
                       },
-                      width: 0.18 * Get.width,
-                      height: 0.045 * Get.height,
+                      width: 0.18 * width,
+                      height: 0.045 * height,
                       radius: 8,
                       backgroundColor: Colors.white,
                       textcolor: AppConfig.mainCyan,
@@ -74,8 +76,8 @@ class DialogConfirm extends StatelessWidget {
                   CustomElevatedButton(
                       text: "YA, SIMPAN",
                       onTap: onTap,
-                      width: 0.18 * Get.width,
-                      height: 0.045 * Get.height,
+                      width: 0.18 * width,
+                      height: 0.045 * height,
                       radius: 8,
                       backgroundColor: AppConfig.mainCyan,
                       textcolor: Colors.white,

@@ -14,6 +14,8 @@ class ReportMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -29,7 +31,7 @@ class ReportMainPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Lottie.asset('assets/lottie/notfound.json',
-                        width: Get.width * 0.35),
+                        width: width * 0.35),
                     const TextView(
                       text: "Tidak Ada Laporan",
                       headings: 'H4',
@@ -46,7 +48,7 @@ class ReportMainPage extends StatelessWidget {
                   child: BackButtonAction()),
               Padding(
                   padding: EdgeInsets.only(
-                      left: 0.05 * Get.width, top: 0.01 * Get.height),
+                      left: 0.05 * width, top: 0.01 * height),
                   child: SearchReport(
                     nmToko: "${_takingOrderVendorController.nmtoko.value}",
                     value:

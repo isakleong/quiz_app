@@ -38,8 +38,8 @@ class CartList extends StatelessWidget {
                         width: 0.025 * width,
                       ),
                       Container(
-                        width: 0.0725 * Get.width,
-                        height: 0.0725 * Get.width,
+                        width: 0.0725 * width,
+                        height: 0.0725 * width,
                         decoration: BoxDecoration(
                             color: Colors.blueGrey,
                             borderRadius: BorderRadius.circular(10)),

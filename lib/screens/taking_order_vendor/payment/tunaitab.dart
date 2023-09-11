@@ -13,11 +13,13 @@ class TunaiTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Obx((() => Stack(
           children: [
             Container(
-              width: Get.width,
-              height: 0.01 * Get.height,
+              width: width,
+              height: 0.01 * height,
               color: Colors.grey.shade200,
             ),
             Padding(
@@ -29,7 +31,7 @@ class TunaiTab extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Container(
-                        width: 0.45 * Get.width,
+                        width: 0.45 * width,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: Colors.grey, width: 1),
@@ -83,7 +85,7 @@ class TunaiTab extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        width: 0.45 * Get.width,
+                        width: 0.45 * width,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                         ),

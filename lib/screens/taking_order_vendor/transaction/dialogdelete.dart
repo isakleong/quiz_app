@@ -13,9 +13,11 @@ class DialogDelete extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return SizedBox(
-      width: Get.width * 0.5,
-      height: 0.4 * Get.height,
+      width: width * 0.5,
+      height: 0.4 * height,
       child: Stack(
         children: [
           Center(
@@ -23,7 +25,7 @@ class DialogDelete extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: Get.height * 0.03,
+                  height: height * 0.03,
                 ),
                 const TextView(
                   text: "Konfirmasi Hapus",
@@ -31,15 +33,15 @@ class DialogDelete extends StatelessWidget {
                   fontSize: 17,
                 ),
                 SizedBox(
-                  height: Get.height * 0.01,
+                  height: height * 0.01,
                 ),
                 Lottie.asset('assets/lottie/delete.json',
-                    width: Get.width * 0.25),
+                    width: width * 0.25),
                 SizedBox(
-                  height: Get.height * 0.02,
+                  height: height * 0.02,
                 ),
                 SizedBox(
-                  width: Get.width * 0.4,
+                  width: width * 0.4,
                   child: TextView(
                     text: "Yakin ingin menghapus $nmProduct?",
                     headings: 'H4',
@@ -51,7 +53,7 @@ class DialogDelete extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 0.02 * Get.height),
+            padding: EdgeInsets.only(bottom: 0.02 * height),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Row(
@@ -62,8 +64,8 @@ class DialogDelete extends StatelessWidget {
                       onTap: () {
                         Get.back();
                       },
-                      width: 0.18 * Get.width,
-                      height: 0.045 * Get.height,
+                      width: 0.18 * width,
+                      height: 0.045 * height,
                       radius: 8,
                       backgroundColor: Colors.white,
                       textcolor: AppConfig.mainCyan,
@@ -73,8 +75,8 @@ class DialogDelete extends StatelessWidget {
                   CustomElevatedButton(
                       text: "YA, HAPUS",
                       onTap: ontap,
-                      width: 0.18 * Get.width,
-                      height: 0.045 * Get.height,
+                      width: 0.18 * width,
+                      height: 0.045 * height,
                       radius: 8,
                       backgroundColor: AppConfig.mainCyan,
                       textcolor: Colors.white,
