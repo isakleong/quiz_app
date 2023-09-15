@@ -725,14 +725,15 @@ class SplashscreenController extends GetxController with StateMixin implements W
     print("post");
     var trackVersionBox = await Hive.openBox('trackVersionBox');
     var trackVersion = trackVersionBox.get('trackVersion');
+    var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
 
-    if (trackVersion != null && trackVersion != "") {
+    if ((trackVersion != null && trackVersion != "") && (lastUpdated != null && lastUpdated != "")) {
       var now = DateTime.now();
-      var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
-      var formatter = DateFormat('yyyy-MM-dd');
 
+      var formatter = DateFormat('yyyy-MM-dd');
       String strLastUpdated = formatter.format(lastUpdated);
       String strCurrentDate = formatter.format(now);
+
       int mLastUpdated = int.parse(strLastUpdated.substring(5, 7));
       int yLastUpdated = int.parse(strLastUpdated.substring(0, 4));
       int mCurrentDate = int.parse(strCurrentDate.substring(5, 7));
@@ -747,9 +748,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
       var salesIdVersion = trackVersionBox.get('salesIdVersion');
 
-      if (submitVersion ||
-          salesIdParams.value != salesIdVersion ||
-          trackVersion != appVersion.value) {
+      if (submitVersion || salesIdParams.value != salesIdVersion || trackVersion != appVersion.value) {
         var connTest = await ApiClient().checkConnection();
         var arrConnTest = connTest.split("|");
         bool isConnected = arrConnTest[0] == 'true';
