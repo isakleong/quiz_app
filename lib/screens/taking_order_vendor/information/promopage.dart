@@ -13,19 +13,21 @@ class PromoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Obx(()=> Column(
         children: [
         Container(
-          width: Get.width,
-          height: Get.width < 450 ? 145 : 170,
+          width: width,
+          height: width < 450 ? 145 : 170,
           margin: const EdgeInsets.only(top: 10,bottom: 10),
           child: Swiper(
             autoplay: true,
             autoplayDelay: 6000,
-            viewportFraction: Get.width < 450 ? 0.7 : 0.6,
-            scale: Get.width < 450 ? 0.7 : 0.65,
+            viewportFraction: width < 450 ? 0.7 : 0.6,
+            scale: width < 450 ? 0.7 : 0.65,
             itemCount: _takingOrderVendorController.imgpath.length,
             pagination: const SwiperPagination(
               margin: EdgeInsets.only(top: 20),
@@ -51,7 +53,7 @@ class PromoPage extends StatelessWidget {
               onPressed: (index) {
                 _takingOrderVendorController.handleselectedsegmentcategory(index);
               },
-              constraints: BoxConstraints(minWidth: 0.25 * Get.width,minHeight: 0.03 * Get.height),
+              constraints: BoxConstraints(minWidth: 0.25 * width,minHeight: 0.03 * height),
               borderColor: Colors.grey,
               selectedBorderColor: Colors.grey.shade700,
               borderRadius: BorderRadius.circular(10.0),
@@ -75,7 +77,7 @@ class PromoPage extends StatelessWidget {
         const SizedBox(height: 5),
         Expanded(
           child: Padding(
-          padding: EdgeInsets.only(left: Get.width < 450 ? 40 : 60,right: Get.width < 450 ? 40 : 60),
+          padding: EdgeInsets.only(left: width < 450 ? 40 : 60,right: width < 450 ? 40 : 60),
           child: GridView.builder(
             itemCount: 5,
             physics: const BouncingScrollPhysics(),
@@ -89,8 +91,8 @@ class PromoPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: Get.width,
-                    height: Get.width < 450 ? 105.sp : 170.sp,
+                    width: width,
+                    height: width < 450 ? 105.sp : 170.sp,
                     child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(image: FileImage(File('${_takingOrderVendorController.basepath}${_takingOrderVendorController.imgpromo[index]}')),fit: BoxFit.fill)
@@ -99,7 +101,7 @@ class PromoPage extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.bottomLeft,
                         child: Container(
-                          width: Get.width,
+                          width: width,
                           padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
                           decoration: BoxDecoration(color: Colors.grey.shade900.withOpacity(0.7)),
                           child: TextView(text: _takingOrderVendorController.imgpromo[index],color: Colors.white,fontSize: 11.sp,),

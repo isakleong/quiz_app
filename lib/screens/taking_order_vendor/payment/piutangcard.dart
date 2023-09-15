@@ -10,12 +10,14 @@ class PiutangCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Card(
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
       child: SizedBox(
-        width: 0.9 * Get.width,
+        width: 0.9 * width,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
             padding: const EdgeInsets.only(left: 15, top: 15),
@@ -89,9 +91,9 @@ class PiutangCard extends StatelessWidget {
             height: 5,
           ),
           Padding(
-            padding: EdgeInsets.only(left: 0.02 * Get.width),
+            padding: EdgeInsets.only(left: 0.02 * width),
             child: Container(
-              width: 0.86 * Get.width,
+              width: 0.86 * width,
               height: 2,
               color: Colors.grey.shade300,
             ),
@@ -101,7 +103,7 @@ class PiutangCard extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.only(
-                left: 0.05 * Get.width, right: 0.05 * Get.width),
+                left: 0.05 * width, right: 0.05 * width),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -128,7 +130,7 @@ class PiutangCard extends StatelessWidget {
                 ),
                 Container(
                   width: 1,
-                  height: 0.04 * Get.height,
+                  height: 0.04 * height,
                   color: Colors.grey.shade400,
                 ),
                 Image.asset(

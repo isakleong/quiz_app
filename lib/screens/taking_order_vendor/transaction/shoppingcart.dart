@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:get/get.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/transaction/doubleunit.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/transaction/singleunit.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/transaction/tripleunit.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
@@ -41,20 +40,13 @@ class Shoppingcart extends StatelessWidget {
                     const SizedBox(
                       width: 10,
                     ),
-                    SizedBox(
-                      width: 0.6 * width,
-                      height: 15.sp,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextView(
-                          headings: 'H4',
-                          maxLines: 1,
-                          fontSize: 10.sp,
-                          textAlign: TextAlign.left,
-                          text: _takingOrderVendorController
-                              .selectedProduct[0].nmProduct,
-                        ),
-                      ),
+                    TextView(
+                      headings: 'H4',
+                      maxLines: 1,
+                      fontSize: 10.sp,
+                      textAlign: TextAlign.left,
+                      text: _takingOrderVendorController
+                          .selectedProduct[0].nmProduct,
                     )
                   ],
                 ),
@@ -62,12 +54,8 @@ class Shoppingcart extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 15),
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_takingOrderVendorController
-                          .cartDetailList.isNotEmpty) {
-                        if (_takingOrderVendorController.cartList.any((data) =>
-                            data.kdProduct ==
-                            _takingOrderVendorController
-                                .selectedProduct[0].kdProduct)) {
+                      if (_takingOrderVendorController.cartDetailList.isNotEmpty) {
+                        if (_takingOrderVendorController.cartList.any((data) => data.kdProduct == _takingOrderVendorController.selectedProduct[0].kdProduct)) {
                           _takingOrderVendorController.updateCart();
                         } else {
                           _takingOrderVendorController.addToCart();
@@ -129,144 +117,39 @@ class Shoppingcart extends StatelessWidget {
               color: Colors.grey.shade300,
             ),
           ),
-          const SizedBox(
-            height: 8,
+          Obx(()=>SizedBox(
+            height: 80,
+            child: Row(children: [
+            for(var i = 0 ; i < _takingOrderVendorController.selectedProduct[0].detailProduct.length; i++)
+              Expanded(
+                child: Padding(
+                  padding: width < 450 ? const EdgeInsets.only(left: 5,right: 5) : const EdgeInsets.only(left: 10,right: 10),
+                  child: Column(
+                    children: [
+                    const SizedBox(height: 6,),
+                    ChipsItem(satuan:_takingOrderVendorController.selectedProduct[0].detailProduct[i].satuan,fontSize: 8.sp,),
+                    const SizedBox(height:6),
+                    SizedBox(
+                      height: 40,
+                      child: SpinBox(
+                        min: 0,
+                        max: 9999,textStyle: TextStyle(fontSize: 10.sp),
+                        value: double.parse(_takingOrderVendorController.listQty[i].toString()),
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.zero
+                        ),onChanged: (value) => _takingOrderVendorController.listQty[i] = value.toInt(),
+                    ),)
+                  ],),
+                  )
+                )
+              ],)
+            ),
           ),
-          Obx(() => _takingOrderVendorController
-                      .selectedProduct.value[0].detailProduct.length ==
-                  1
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                      SingleUnit(
-                          satuan: _takingOrderVendorController
-                              .selectedProduct.value[0].detailProduct[0].satuan,
-                          ctrl: _takingOrderVendorController.qty1.value,
-                          onTapMinus: () {
-                            _takingOrderVendorController.handleAddMinusBtn(
-                                _takingOrderVendorController.qty1.value, '-');
-                          },
-                          onTapPlus: () {
-                            _takingOrderVendorController.handleAddMinusBtn(
-                                _takingOrderVendorController.qty1.value, '+');
-                          })
-                    ])
-              : _takingOrderVendorController
-                          .selectedProduct.value[0].detailProduct.length ==
-                      2
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                          DoubleUnit(
-                              satuan: _takingOrderVendorController
-                                  .selectedProduct
-                                  .value[0]
-                                  .detailProduct[0]
-                                  .satuan,
-                              ctrl: _takingOrderVendorController.qty1.value,
-                              onTapMinus: () {
-                                _takingOrderVendorController.handleAddMinusBtn(
-                                    _takingOrderVendorController.qty1.value,
-                                    '-');
-                              },
-                              onTapPlus: () {
-                                _takingOrderVendorController.handleAddMinusBtn(
-                                    _takingOrderVendorController.qty1.value,
-                                    '+');
-                              }),
-                          DoubleUnit(
-                              satuan: _takingOrderVendorController
-                                  .selectedProduct
-                                  .value[0]
-                                  .detailProduct[1]
-                                  .satuan,
-                              ctrl: _takingOrderVendorController.qty2.value,
-                              onTapMinus: () {
-                                _takingOrderVendorController.handleAddMinusBtn(
-                                    _takingOrderVendorController.qty2.value,
-                                    '-');
-                              },
-                              onTapPlus: () {
-                                _takingOrderVendorController.handleAddMinusBtn(
-                                    _takingOrderVendorController.qty2.value,
-                                    '+');
-                              }),
-                        ])
-                  : _takingOrderVendorController
-                              .selectedProduct.value[0].detailProduct.length ==
-                          3
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                              TripleUnit(
-                                  satuan: _takingOrderVendorController
-                                      .selectedProduct
-                                      .value[0]
-                                      .detailProduct[0]
-                                      .satuan,
-                                  ctrl: _takingOrderVendorController.qty1.value,
-                                  onTapMinus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty1.value,
-                                            '-');
-                                  },
-                                  onTapPlus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty1.value,
-                                            '+');
-                                  }),
-                              TripleUnit(
-                                  satuan: _takingOrderVendorController
-                                      .selectedProduct
-                                      .value[0]
-                                      .detailProduct[1]
-                                      .satuan,
-                                  ctrl: _takingOrderVendorController.qty2.value,
-                                  onTapMinus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty2.value,
-                                            '-');
-                                  },
-                                  onTapPlus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty2.value,
-                                            '+');
-                                  }),
-                              TripleUnit(
-                                  satuan: _takingOrderVendorController
-                                      .selectedProduct
-                                      .value[0]
-                                      .detailProduct[2]
-                                      .satuan,
-                                  ctrl: _takingOrderVendorController.qty3.value,
-                                  onTapMinus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty3.value,
-                                            '-');
-                                  },
-                                  onTapPlus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty3.value,
-                                            '+');
-                                  })
-                            ])
-                      : Container()),
           const SizedBox(
-            height: 15,
-          )
-        ]),
+            height: 10,
+          ),
+          ]),
       ),
     );
   }

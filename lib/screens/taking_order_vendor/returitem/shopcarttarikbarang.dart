@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
-import '../transaction/doubleunit.dart';
-import '../transaction/singleunit.dart';
-import '../transaction/tripleunit.dart';
 
 class ShopCartTarikBarang extends StatelessWidget {
   ShopCartTarikBarang({super.key});
@@ -15,8 +14,8 @@ class ShopCartTarikBarang extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = Get.width;
-    double height = Get.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Obx(() => Card(
           elevation: 10,
           shape:
@@ -109,164 +108,46 @@ class ShopCartTarikBarang extends StatelessWidget {
               ),
               const SizedBox(
                 height: 8,
-              ),
-              _takingOrderVendorController.selectedProducttarikbarang.value[0]
-                          .detailProduct.length ==
-                      1
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                          SingleUnit(
-                              satuan: _takingOrderVendorController
-                                  .selectedProducttarikbarang
-                                  .value[0]
-                                  .detailProduct[0]
-                                  .satuan,
-                              ctrl: _takingOrderVendorController.qty1tb.value,
-                              onTapMinus: () {
-                                _takingOrderVendorController.handleAddMinusBtn(
-                                    _takingOrderVendorController.qty1tb.value,
-                                    '-');
-                              },
-                              onTapPlus: () {
-                                _takingOrderVendorController.handleAddMinusBtn(
-                                    _takingOrderVendorController.qty1tb.value,
-                                    '+');
-                              })
-                        ])
-                  : _takingOrderVendorController.selectedProducttarikbarang
-                              .value[0].detailProduct.length ==
-                          2
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                              DoubleUnit(
-                                  satuan: _takingOrderVendorController
-                                      .selectedProducttarikbarang
-                                      .value[0]
-                                      .detailProduct[0]
-                                      .satuan,
-                                  ctrl:
-                                      _takingOrderVendorController.qty1tb.value,
-                                  onTapMinus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty1tb.value,
-                                            '-');
-                                  },
-                                  onTapPlus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty1tb.value,
-                                            '+');
-                                  }),
-                              DoubleUnit(
-                                  satuan: _takingOrderVendorController
-                                      .selectedProducttarikbarang
-                                      .value[0]
-                                      .detailProduct[1]
-                                      .satuan,
-                                  ctrl:
-                                      _takingOrderVendorController.qty2tb.value,
-                                  onTapMinus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty2tb.value,
-                                            '-');
-                                  },
-                                  onTapPlus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty2tb.value,
-                                            '+');
-                                  }),
-                            ])
-                      : _takingOrderVendorController.selectedProducttarikbarang
-                                  .value[0].detailProduct.length ==
-                              3
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                  TripleUnit(
-                                      satuan: _takingOrderVendorController
-                                          .selectedProducttarikbarang
-                                          .value[0]
-                                          .detailProduct[0]
-                                          .satuan,
-                                      ctrl: _takingOrderVendorController
-                                          .qty1tb.value,
-                                      onTapMinus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty1tb.value,
-                                                '-');
-                                      },
-                                      onTapPlus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty1tb.value,
-                                                '+');
-                                      }),
-                                  TripleUnit(
-                                      satuan: _takingOrderVendorController
-                                          .selectedProducttarikbarang
-                                          .value[0]
-                                          .detailProduct[1]
-                                          .satuan,
-                                      ctrl: _takingOrderVendorController
-                                          .qty2tb.value,
-                                      onTapMinus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty2tb.value,
-                                                '-');
-                                      },
-                                      onTapPlus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty2tb.value,
-                                                '+');
-                                      }),
-                                  TripleUnit(
-                                      satuan: _takingOrderVendorController
-                                          .selectedProducttarikbarang
-                                          .value[0]
-                                          .detailProduct[2]
-                                          .satuan,
-                                      ctrl: _takingOrderVendorController
-                                          .qty3tb.value,
-                                      onTapMinus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty3tb.value,
-                                                '-');
-                                      },
-                                      onTapPlus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty3tb.value,
-                                                '+');
-                                      })
-                                ])
-                          : Container(),
+              ),Obx(()=>  SizedBox(
+                        height: 80,
+                        child: Row(children: [
+                            for(var i = 0 ; i <  _takingOrderVendorController.selectedProducttarikbarang[0].detailProduct.length; i++)
+                              Expanded(
+                                child: Padding(
+                                  padding: width < 450 ? const EdgeInsets.only(left: 5,right: 5) : const EdgeInsets.only(left: 10,right: 10),
+                                  child: Column(
+                                    children: [
+                                    const SizedBox(height: 6,),
+                                    ChipsItem(satuan:_takingOrderVendorController.selectedProducttarikbarang[0].detailProduct[i].satuan,fontSize: 8.sp,),
+                                    const SizedBox(height:6),
+                                    SizedBox(
+                                      height: 40,
+                                      child: SpinBox(
+                                        min: 0,
+                                        max: 9999,textStyle: TextStyle(fontSize: 10.sp),
+                                        value: double.parse(_takingOrderVendorController.listQtytb[i].toString()),
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          contentPadding: EdgeInsets.zero
+                                        ),onChanged: (value) => _takingOrderVendorController.listQtytb[i] = value.toInt(),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            )
+                          ],
+                        )
+                      ),
+                    ),
               const SizedBox(
                 height: 15,
               ),
               Padding(
                 padding: EdgeInsets.only(
-                    left: ((0.9 - 0.8) / 3) * Get.width,
-                    right: ((0.9 - 0.8) / 3) * Get.width,
-                    bottom: 0.01 * Get.height),
+                    left: 10,
+                    right: 10,
+                    bottom: 0.01 * height),
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),

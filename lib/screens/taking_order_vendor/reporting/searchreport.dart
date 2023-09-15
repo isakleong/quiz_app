@@ -12,18 +12,20 @@ class SearchReport extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Card(
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
       child: SizedBox(
-        width: 0.9 * Get.width,
+        width: 0.9 * width,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
             padding: const EdgeInsets.only(left: 15, top: 15),
             child: Row(
               children: [
-                Get.width < 450 ?
+                width < 450 ?
                 Stack(
                   alignment: Alignment.center,
                   children: [
@@ -74,13 +76,13 @@ class SearchReport extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                      TextView(
-                        headings: "H2", text: "Laporan", fontSize: Get.width < 450 ? 10.sp : 14),
+                        headings: "H2", text: "Laporan", fontSize: width < 450 ? 10.sp : 14),
                     const SizedBox(
                       height: 5,
                     ),
                     Row(
                       children: [
-                        Get.width < 450 ?
+                        width < 450 ?
                         Stack(
                           alignment: Alignment.center,
                           children: [
@@ -119,7 +121,7 @@ class SearchReport extends StatelessWidget {
                         const SizedBox(
                           width: 5,
                         ),
-                         Text(nmToko, style: TextStyle(fontSize: Get.width < 450 ? 10.sp :14)),
+                         Text(nmToko, style: TextStyle(fontSize: width < 450 ? 10.sp :14)),
                       ],
                     ),
                   ],
@@ -131,19 +133,19 @@ class SearchReport extends StatelessWidget {
             height: 5,
           ),
           Padding(
-            padding: EdgeInsets.only(left: 0.02 * Get.width),
+            padding: EdgeInsets.only(left: 0.02 * width),
             child: Container(
-              width: 0.86 * Get.width,
+              width: 0.86 * width,
               height: 2,
               color: Colors.grey.shade300,
             ),
           ),
           Padding(
             padding: EdgeInsets.only(
-                left: 0.05 * Get.width,
-                right: 0.05 * Get.width,
-                top: 0.01 * Get.height,
-                bottom: 0.01 * Get.height),
+                left: 0.05 * width,
+                right: 0.05 * width,
+                top: 0.01 * height,
+                bottom: 0.01 * height),
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
@@ -159,7 +161,7 @@ class SearchReport extends StatelessWidget {
                       'Semua Transaksi',
                       'Transaksi Penjualan',
                       'Transaksi Pembayaran',
-                      'Transaksi Retur',
+                      // 'Transaksi Retur',
                       // 'Transaksi TTH',
                       // 'Transaksi Survey',
                       // 'Transaksi Keluhan'
@@ -173,7 +175,7 @@ class SearchReport extends StatelessWidget {
                             ),
                             Icon(
                               Icons.filter_alt_rounded,
-                              size: Get.width < 450 ? 14.sp : 18,
+                              size: width < 450 ? 14.sp : 18,
                               color: Colors.grey.shade500,
                             ),
                             const SizedBox(
@@ -182,7 +184,7 @@ class SearchReport extends StatelessWidget {
                             TextView(
                               text: value,
                               textAlign: TextAlign.left,
-                              fontSize: Get.width < 450 ? 10.sp : 13,
+                              fontSize: width < 450 ? 10.sp : 13,
                               headings: 'H4',
                             ),
                           ],

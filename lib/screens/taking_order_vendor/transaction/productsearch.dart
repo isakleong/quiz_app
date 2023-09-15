@@ -185,12 +185,12 @@ class ProductSearch extends StatelessWidget {
                         itemBuilder: (context, suggestion) {
                           return Padding(
                             padding: EdgeInsets.only(
-                                top: 0.01 * Get.height,
-                                bottom: 0.01 * Get.height),
+                                top: 0.01 * height,
+                                bottom: 0.01 * height),
                             child: Row(
                               children: [
                                 SizedBox(
-                                  width: 0.02 * Get.width,
+                                  width: 0.02 * width,
                                 ),
                                 Icon(
                                   FontAwesomeIcons.solidCircle,
@@ -198,7 +198,7 @@ class ProductSearch extends StatelessWidget {
                                   size: 10.sp,
                                 ),
                                 SizedBox(
-                                  width: 0.02 * Get.width,
+                                  width: 0.02 * width,
                                 ),
                                 TextView(
                                   text: suggestion.nmProduct,

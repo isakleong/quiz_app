@@ -481,7 +481,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
         try {
           final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
-          final result = await ApiClient().getData(urlAPI, "/data?sales_id=$encryptedParam");
+          final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
+          print(result.toString());
           var data = jsonDecode(result.toString());
           data["AppModule"].map((item) {
             moduleList.add(Module.from(item));
@@ -494,6 +495,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           await checkVersion(data["AppVersion"]);
 
           if (isNeedUpdate.value) {
+            print("hereeee");
             change(null, status: RxStatus.success());
             appsDialog(
                 type: "app_info",
@@ -510,8 +512,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
                   SystemNavigator.pop();
                 });
           } else {
+            print("else");
             var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
             if(idx != -1){
+            print("-1 <>");
               await getBox();
               var datacustomerbox = await customerBox.get(customerIdParams.value);
               await closebox();
@@ -531,6 +535,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
             await postTrackingVersion();
           }
         } catch (e) {
+            print("ctc");
 
           errorMessage(e.toString());
           openErrorDialog();
@@ -717,6 +722,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   }
 
   postTrackingVersion() async {
+    print("post");
     var trackVersionBox = await Hive.openBox('trackVersionBox');
     var trackVersion = trackVersionBox.get('trackVersion');
 

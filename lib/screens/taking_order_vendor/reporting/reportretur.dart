@@ -11,6 +11,8 @@ class ReportRetur extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Column(
       children: [
         _takingOrderVendorController.choosedReport.value == "" ||
@@ -22,9 +24,9 @@ class ReportRetur extends StatelessWidget {
                 children: [
                   Padding(
                       padding: EdgeInsets.only(
-                          left: 0.05 * Get.width,
+                          left: 0.05 * width,
                           top: 15,
-                          right: 0.05 * Get.width),
+                          right: 0.05 * width),
                       child: ReportHeader(
                         img: "assets/images/custretur.png",
                         title: "Retur",
@@ -34,10 +36,10 @@ class ReportRetur extends StatelessWidget {
                   ),
                   const ItemReportRetur(),
                   SizedBox(
-                    height: 0.04 * Get.height,
+                    height: 0.04 * height,
                   ),
                   Container(
-                    width: Get.width,
+                    width: width,
                     color: Colors.grey.shade300,
                     height: 10,
                   )

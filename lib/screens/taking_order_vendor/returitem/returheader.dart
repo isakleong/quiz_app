@@ -27,7 +27,7 @@ class ReturHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 0.05 * Get.width,
+                  width: 0.05 * width,
                 ),
                 Container(
                   width: 45,
@@ -57,7 +57,7 @@ class ReturHeader extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: 0.02 * Get.width,
+                  width: 0.02 * width,
                 ),
                 const TextView(
                   text: "Keranjang",
@@ -65,7 +65,7 @@ class ReturHeader extends StatelessWidget {
                   fontSize: 18,
                 ),
                 SizedBox(
-                  width: 0.02 * Get.width,
+                  width: 0.02 * width,
                 ),
                 ChipsItem(
                   satuan: jumlahproduk,
@@ -74,7 +74,7 @@ class ReturHeader extends StatelessWidget {
               ],
             ),
             Padding(
-              padding: EdgeInsets.only(right: 0.05 * Get.width),
+              padding: EdgeInsets.only(right: 0.05 * width),
               child: ElevatedButton(
                 onPressed: onTap,
                 style: ElevatedButton.styleFrom(

@@ -11,9 +11,11 @@ class ReportHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Row(
       children: [
-        if (Get.width < 450)
+        if (width < 450)
          Stack(
           alignment: Alignment.center,
           children: [
@@ -54,9 +56,9 @@ class ReportHeader extends StatelessWidget {
           ],
         ),
         SizedBox(
-          width: Get.width < 450 ? 14.sp :  20,
+          width: width < 450 ? 14.sp :  20,
         ),
-        TextView(headings: "H4", text: title, fontSize: Get.width < 450 ? 14.sp : 20)
+        TextView(headings: "H4", text: title, fontSize: width < 450 ? 14.sp : 20)
       ],
     );
   }

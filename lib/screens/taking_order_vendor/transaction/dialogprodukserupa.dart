@@ -12,23 +12,25 @@ class DialogProdukSerupa extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return SizedBox(
-      width: Get.width * 0.8,
-      height: 0.7 * Get.height,
+      width: width * 0.8,
+      height: 0.7 * height,
       child: Column(
         children: [
-          if (Get.width > 450)
+          if (width > 450)
             Padding(
               padding: EdgeInsets.only(
                 top: 5,
-                right: 0.025 * Get.width,
+                right: 0.025 * width,
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(right: 0.2 * Get.width),
+                    padding: EdgeInsets.only(right: 0.2 * width),
                     child: TextView(
                       text: "Produk Serupa",
                       headings: 'H3',
@@ -55,14 +57,14 @@ class DialogProdukSerupa extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(
                 top: 5,
-                right: 0.025 * Get.width,
+                right: 0.025 * width,
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(right: 0.125 * Get.width),
+                    padding: EdgeInsets.only(right: 0.125 * width),
                     child: TextView(
                       text: "Produk Serupa",
                       headings: 'H3',
@@ -88,8 +90,8 @@ class DialogProdukSerupa extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(
               top: 8,
-              left: 0.05 * Get.width,
-              right: 0.05 * Get.width,
+              left: 0.05 * width,
+              right: 0.05 * width,
             ),
             child: Container(
               height: 1.5,
@@ -99,8 +101,8 @@ class DialogProdukSerupa extends StatelessWidget {
           Expanded(
               child: Padding(
                   padding: EdgeInsets.only(
-                      left: 0.05 * Get.width,
-                      right: 0.05 * Get.width,
+                      left: 0.05 * width,
+                      right: 0.05 * width,
                       bottom: 15),
                   child: ListView.builder(
                       itemCount:
@@ -118,14 +120,14 @@ class DialogProdukSerupa extends StatelessWidget {
                             Get.back();
                           },
                           child: Container(
-                            width: 0.7 * Get.width,
+                            width: 0.7 * width,
                             color:
                                 i % 2 == 0 ? Colors.white : const Color(0XFFe0f2f2),
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8, bottom: 8),
                               child: Row(children: [
                                 SizedBox(
-                                  width: 0.01 * Get.width,
+                                  width: 0.01 * width,
                                 ),
                                 Icon(
                                   FontAwesomeIcons.circleChevronRight,
@@ -133,9 +135,9 @@ class DialogProdukSerupa extends StatelessWidget {
                                   color: AppConfig.mainCyan,
                                 ),
                                 SizedBox(
-                                  width: 0.02 * Get.width,
+                                  width: 0.02 * width,
                                 ),
-                                if (Get.width > 450)
+                                if (width > 450)
                                   TextView(
                                     text: _takingOrderVendorController
                                         .listProduct[i].nmProduct,
@@ -143,7 +145,7 @@ class DialogProdukSerupa extends StatelessWidget {
                                   )
                                 else
                                   SizedBox(
-                                    height: 0.02 * Get.height,
+                                    height: 0.02 * height,
                                     child: FittedBox(
                                       child: TextView(
                                         text: _takingOrderVendorController

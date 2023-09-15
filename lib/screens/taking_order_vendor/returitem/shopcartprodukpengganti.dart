@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/transaction/doubleunit.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/transaction/singleunit.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/transaction/tripleunit.dart';
 import 'package:sfa_tools/widgets/textview.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../transaction/chipsitem.dart';
 
 class ShopCartProdukPenganti extends StatelessWidget {
   ShopCartProdukPenganti({super.key});
@@ -13,8 +13,8 @@ class ShopCartProdukPenganti extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = Get.width;
-    double height = Get.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Obx(() => Card(
           elevation: 10,
           shape:
@@ -130,164 +130,39 @@ class ShopCartProdukPenganti extends StatelessWidget {
                       ),
                     )
                   : Container(),
-              _takingOrderVendorController.selectedProductProdukPengganti
-                          .value[0].detailProduct.length ==
-                      1
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                          SingleUnit(
-                              satuan: _takingOrderVendorController
-                                  .selectedProductProdukPengganti
-                                  .value[0]
-                                  .detailProduct[0]
-                                  .satuan,
-                              ctrl: _takingOrderVendorController.qty1pp.value,
-                              colorChips: const Color(0xFFe64a19),
-                              onTapMinus: () {
-                                _takingOrderVendorController.handleAddMinusBtn(
-                                    _takingOrderVendorController.qty1pp.value,
-                                    '-');
-                              },
-                              onTapPlus: () {
-                                _takingOrderVendorController.handleAddMinusBtn(
-                                    _takingOrderVendorController.qty1pp.value,
-                                    '+');
-                              })
-                        ])
-                  : _takingOrderVendorController.selectedProductProdukPengganti
-                              .value[0].detailProduct.length ==
-                          2
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                              DoubleUnit(
-                                  satuan: _takingOrderVendorController
-                                      .selectedProductProdukPengganti
-                                      .value[0]
-                                      .detailProduct[0]
-                                      .satuan,
-                                  ctrl:
-                                      _takingOrderVendorController.qty1pp.value,
-                                  colorChips: const Color(0xFFe64a19),
-                                  onTapMinus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty1pp.value,
-                                            '-');
-                                  },
-                                  onTapPlus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty1pp.value,
-                                            '+');
-                                  }),
-                              DoubleUnit(
-                                  satuan: _takingOrderVendorController
-                                      .selectedProductProdukPengganti
-                                      .value[0]
-                                      .detailProduct[1]
-                                      .satuan,
-                                  ctrl:
-                                      _takingOrderVendorController.qty2pp.value,
-                                  colorChips: const Color(0xFFe64a19),
-                                  onTapMinus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty2pp.value,
-                                            '-');
-                                  },
-                                  onTapPlus: () {
-                                    _takingOrderVendorController
-                                        .handleAddMinusBtn(
-                                            _takingOrderVendorController
-                                                .qty2pp.value,
-                                            '+');
-                                  }),
-                            ])
-                      : _takingOrderVendorController
-                                  .selectedProductProdukPengganti
-                                  .value[0]
-                                  .detailProduct
-                                  .length ==
-                              3
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                  TripleUnit(
-                                      satuan: _takingOrderVendorController
-                                          .selectedProductProdukPengganti
-                                          .value[0]
-                                          .detailProduct[0]
-                                          .satuan,
-                                      ctrl: _takingOrderVendorController
-                                          .qty1pp.value,
-                                      colorChips: const Color(0xFFe64a19),
-                                      onTapMinus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty1pp.value,
-                                                '-');
-                                      },
-                                      onTapPlus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty1pp.value,
-                                                '+');
-                                      }),
-                                  TripleUnit(
-                                      satuan: _takingOrderVendorController
-                                          .selectedProductProdukPengganti
-                                          .value[0]
-                                          .detailProduct[1]
-                                          .satuan,
-                                      ctrl: _takingOrderVendorController
-                                          .qty2pp.value,
-                                      colorChips: const Color(0xFFe64a19),
-                                      onTapMinus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty2pp.value,
-                                                '-');
-                                      },
-                                      onTapPlus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty2pp.value,
-                                                '+');
-                                      }),
-                                  TripleUnit(
-                                      satuan: _takingOrderVendorController
-                                          .selectedProductProdukPengganti
-                                          .value[0]
-                                          .detailProduct[2]
-                                          .satuan,
-                                      ctrl: _takingOrderVendorController
-                                          .qty3pp.value,
-                                      colorChips: const Color(0xFFe64a19),
-                                      onTapMinus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty3pp.value,
-                                                '-');
-                                      },
-                                      onTapPlus: () {
-                                        _takingOrderVendorController
-                                            .handleAddMinusBtn(
-                                                _takingOrderVendorController
-                                                    .qty3pp.value,
-                                                '+');
-                                      })
-                                ])
-                          : Container(),
+                  Obx(()=>  
+                    SizedBox(
+                          height: 80,
+                          child: Row(children: [
+                              for(var i = 0 ; i <  _takingOrderVendorController.selectedProductProdukPengganti[0].detailProduct.length; i++)
+                                Expanded(
+                                  child: Padding(
+                                    padding: width < 450 ? const EdgeInsets.only(left: 5,right: 5) : const EdgeInsets.only(left: 10,right: 10),
+                                    child: Column(
+                                      children: [
+                                      const SizedBox(height: 6,),
+                                      ChipsItem(satuan:_takingOrderVendorController.selectedProductProdukPengganti[0].detailProduct[i].satuan,fontSize: 8.sp,),
+                                      const SizedBox(height:6),
+                                      SizedBox(
+                                        height: 40,
+                                        child: SpinBox(
+                                          min: 0,
+                                          max: 9999,textStyle: TextStyle(fontSize: 10.sp),
+                                          value: double.parse(_takingOrderVendorController.listQtypp[i].toString()),
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            contentPadding: EdgeInsets.zero
+                                          ),onChanged: (value) => _takingOrderVendorController.listQtypp[i] = value.toInt(),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              )
+                            ],
+                          )
+                        ),
+                      ),
               const SizedBox(
                 height: 15,
               ),

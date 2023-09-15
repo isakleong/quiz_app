@@ -10,6 +10,8 @@ class SegmentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Obx(() => ToggleButtons(
           isSelected: _takingOrderVendorController.selectedsegment.value,
           onPressed: (index) {
@@ -22,7 +24,7 @@ class SegmentButton extends StatelessWidget {
                   buttonIndex == index;
             }
           },
-          constraints: BoxConstraints(minWidth: 0.18 * Get.width),
+          constraints: BoxConstraints(minWidth: 0.18 * width),
           borderColor: Colors.grey,
           selectedBorderColor: AppConfig.mainCyan,
           borderRadius: BorderRadius.circular(20.0),

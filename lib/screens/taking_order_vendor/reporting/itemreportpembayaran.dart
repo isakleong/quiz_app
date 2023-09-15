@@ -16,12 +16,14 @@ class ItemReportPembayaran extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Card(
         elevation: 10,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         color: Colors.white,
         child: SizedBox(
-          width: 0.9 * Get.width,
+          width: 0.9 * width,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
@@ -32,10 +34,10 @@ class ItemReportPembayaran extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                          top: 10, bottom: 10, left: 0.02 * Get.width),
+                          top: 10, bottom: 10, left: 0.02 * width),
                       child: Container(
-                        width: 0.07 * Get.width,
-                        height: 0.07 * Get.width,
+                        width: 0.07 * width,
+                        height: 0.07 * width,
                         decoration: const BoxDecoration(
                           color: Color(0xFF0288d1),
                           shape: BoxShape.circle,
@@ -44,7 +46,7 @@ class ItemReportPembayaran extends StatelessWidget {
                           child: TextView(
                             text: idx,
                             color: Colors.white,
-                            fontSize: Get.width < 450 ? 12.sp : 18,
+                            fontSize: width < 450 ? 12.sp : 18,
                             headings: 'H2',
                           ),
                         ),
@@ -59,11 +61,11 @@ class ItemReportPembayaran extends StatelessWidget {
                         TextView(
                           text: data.id,
                           headings: 'H4',
-                          fontSize: Get.width < 450 ? 10.sp : 14,
+                          fontSize: width < 450 ? 10.sp : 14,
                         ),
                         ChipsItem(
                           satuan: total,
-                          fontSize: Get.width < 450 ? 8.sp : 13,
+                          fontSize: width < 450 ? 8.sp : 13,
                         )
                       ],
                     )
@@ -76,11 +78,11 @@ class ItemReportPembayaran extends StatelessWidget {
                     children: [
                       TextView(
                         text: Utils().formatDate(data.tanggal),
-                        fontSize: Get.width < 450 ? 9.sp : 14,
+                        fontSize: width < 450 ? 9.sp : 14,
                       ),
                       TextView(
                         text: data.waktu,
-                        fontSize: Get.width < 450 ? 9.sp : 14,
+                        fontSize: width < 450 ? 9.sp : 14,
                       )
                     ],
                   ),
@@ -89,7 +91,7 @@ class ItemReportPembayaran extends StatelessWidget {
             ),
             Center(
               child: Container(
-                width: 0.85 * Get.width,
+                width: 0.85 * width,
                 color: Colors.grey.shade400,
                 height: 3,
               ),

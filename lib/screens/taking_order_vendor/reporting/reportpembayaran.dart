@@ -11,6 +11,8 @@ class ReportPembayaran extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Column(
       children: [
         for (int index = 0;index < _takingOrderVendorController.listReportPembayaranshow.value.length;index++)
@@ -19,9 +21,9 @@ class ReportPembayaran extends StatelessWidget {
                   children: [
                     Padding(
                         padding: EdgeInsets.only(
-                            left: 0.05 * Get.width,
+                            left: 0.05 * width,
                             top: 15,
-                            right: 0.05 * Get.width),
+                            right: 0.05 * width),
                         child: ReportHeader(
                           img: 'assets/images/custpayment.png',
                           title: "Pembayaran",
@@ -43,9 +45,9 @@ class ReportPembayaran extends StatelessWidget {
                       children: [
                         Padding(
                             padding: EdgeInsets.only(
-                                left: 0.05 * Get.width,
+                                left: 0.05 * width,
                                 top: 15,
-                                right: 0.05 * Get.width),
+                                right: 0.05 * width),
                             child: ReportHeader(
                               img: 'assets/images/custpayment.png',
                               title: "Pembayaran",
@@ -61,10 +63,10 @@ class ReportPembayaran extends StatelessWidget {
                               "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
                         ),
                         SizedBox(
-                          height: 0.04 * Get.height,
+                          height: 0.04 * height,
                         ),
                         Container(
-                          width: Get.width,
+                          width: width,
                           color: Colors.grey.shade300,
                           height: 10,
                         )
@@ -75,9 +77,9 @@ class ReportPembayaran extends StatelessWidget {
                           children: [
                             Padding(
                               padding: EdgeInsets.only(
-                                  left: 0.05 * Get.width,
+                                  left: 0.05 * width,
                                   top: 15,
-                                  right: 0.05 * Get.width),
+                                  right: 0.05 * width),
                               child: ItemReportPembayaran(
                                 idx: (index + 1).toString(),
                                 data: _takingOrderVendorController
@@ -87,10 +89,10 @@ class ReportPembayaran extends StatelessWidget {
                               ),
                             ),
                             SizedBox(
-                              height: 0.04 * Get.height,
+                              height: 0.04 * height,
                             ),
                             Container(
-                              width: Get.width,
+                              width: width,
                               color: Colors.grey.shade300,
                               height: 10,
                             )
@@ -98,9 +100,9 @@ class ReportPembayaran extends StatelessWidget {
                         )
                       : Padding(
                           padding: EdgeInsets.only(
-                              left: 0.05 * Get.width,
+                              left: 0.05 * width,
                               top: 15,
-                              right: 0.05 * Get.width),
+                              right: 0.05 * width),
                           child: ItemReportPembayaran(
                             idx: (index + 1).toString(),
                             data: _takingOrderVendorController

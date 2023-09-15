@@ -158,10 +158,12 @@ class PembayaranController extends GetxController {
       } else if (type == "Transfer") {
         if (listpaymentdata.any((data) => data.jenis == 'Transfer')) {
           listpaymentdata.removeWhere((element) => element.jenis == type);
-          listpaymentdata.add(PaymentData(type,"",choosedTransferMethod.value,"",double.parse(nominaltransfer.value.text.toString().replaceAll(',', ''))));
+          // choosedTransferMethod.value
+          listpaymentdata.add(PaymentData(type,"", "" ,"",double.parse(nominaltransfer.value.text.toString().replaceAll(',', ''))));
         } else {
+          // choosedTransferMethod.value
           pembayaranListKey.currentState?.insertItem(listpaymentdata.length);
-          listpaymentdata.add(PaymentData(type,"",choosedTransferMethod.value,"",double.parse(nominaltransfer.value.text.toString().replaceAll(',', ''))));
+          listpaymentdata.add(PaymentData(type,"","","",double.parse(nominaltransfer.value.text.toString().replaceAll(',', ''))));
         }
       } else if (type == "cn") {
         if (listpaymentdata.any((data) => data.jenis == 'cn')) {

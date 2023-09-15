@@ -13,10 +13,12 @@ class TransferTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Obx(() => Stack(
           children: [
             Container(
-              width: Get.width,
+              width: width,
               height: 10,
               color: Colors.grey.shade200,
             ),
@@ -28,8 +30,9 @@ class TransferTab extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
+                      /* pilih bank
                       Container(
-                        width: 0.45 * Get.width,
+                        width: 0.45 * width,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             border: Border.all(color: Colors.grey, width: 1)),
@@ -80,9 +83,9 @@ class TransferTab extends StatelessWidget {
                             }).toList(),
                           ),
                         ),
-                      ),
+                      ),*/
                       Container(
-                        width: 0.45 * Get.width,
+                        width: 0.8 * width,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -119,6 +122,7 @@ class TransferTab extends StatelessWidget {
                     children: [
                       ButtonPayment(
                         ontap: () {
+                           _takingOrderVendorController.choosedTransferMethod.value = 'MANDIRI';
                           if (_takingOrderVendorController
                                       .choosedTransferMethod.value ==
                                   "Pilih Bank" ||

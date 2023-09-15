@@ -20,8 +20,8 @@ class InformasiMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = Get.width;
-    double height = Get.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -45,7 +45,7 @@ class InformasiMainPage extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Get.width < 450 ? Colors.transparent : Colors.white
+                      color: width < 450 ? Colors.transparent : Colors.white
                     ),
                     child: ToggleButtons(
                       isSelected: _takingOrderVendorController.selectedsegmentinformasi,
@@ -53,8 +53,8 @@ class InformasiMainPage extends StatelessWidget {
                         _takingOrderVendorController.handleselectedindeinformasi(index);
                       },
                       constraints: 
-                      Get.width < 450 ? BoxConstraints(minWidth: 0.25 * Get.width,minHeight: 0.04 * Get.height) :
-                      BoxConstraints(minWidth: 0.25 * Get.width,minHeight: 0.05 * Get.height),
+                      width < 450 ? BoxConstraints(minWidth: 0.25 * width,minHeight: 0.04 * height) :
+                      BoxConstraints(minWidth: 0.25 * width,minHeight: 0.05 * height),
                       borderColor: Colors.grey,
                       selectedBorderColor: AppConfig.mainCyan,
                       borderRadius: BorderRadius.circular(20.0),

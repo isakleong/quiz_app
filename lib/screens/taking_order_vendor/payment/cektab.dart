@@ -12,10 +12,11 @@ class CekTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Obx(() => Stack(
           children: [
             Container(
-              width: Get.width,
+              width: width,
               height: 10,
               color: Colors.grey.shade200,
             ),
@@ -26,10 +27,10 @@ class CekTab extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 0.04 * Get.width,
+                      width: 0.04 * width,
                     ),
                     Container(
-                      width: 0.6 * Get.width,
+                      width: 0.6 * width,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                       ),
@@ -51,10 +52,10 @@ class CekTab extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: 0.02 * Get.width,
+                      width: 0.02 * width,
                     ),
                     Container(
-                      width: 0.3 * Get.width,
+                      width: 0.3 * width,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                       ),
@@ -90,10 +91,10 @@ class CekTab extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 0.04 * Get.width,
+                      width: 0.04 * width,
                     ),
                     Container(
-                      width: 0.292 * Get.width,
+                      width: 0.292 * width,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                       ),
@@ -115,10 +116,10 @@ class CekTab extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: 0.015 * Get.width,
+                      width: 0.015 * width,
                     ),
                     Container(
-                      width: 0.292 * Get.width,
+                      width: 0.292 * width,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                       ),
@@ -147,7 +148,7 @@ class CekTab extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: 0.05 * Get.width,
+                      width: 0.05 * width,
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -181,7 +182,7 @@ class CekTab extends StatelessWidget {
                             0), // Set padding to zero to let the child determine the button's size
                       ),
                       child: SizedBox(
-                        width: 0.275 * Get.width,
+                        width: 0.275 * width,
                         child: Padding(
                           padding: EdgeInsets.only(top: 5.sp, bottom: 5.sp),
                           child: Row(
@@ -189,7 +190,7 @@ class CekTab extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               SizedBox(
-                                width: 0.01 * Get.width,
+                                width: 0.01 * width,
                               ),
                               Icon(
                                 _takingOrderVendorController.listpaymentdata
@@ -199,10 +200,10 @@ class CekTab extends StatelessWidget {
                                 size: 14.sp,
                               ),
                               SizedBox(
-                                width: 0.01 * Get.width,
+                                width: 0.01 * width,
                               ),
                               SizedBox(
-                                width: 0.18 * Get.width,
+                                width: 0.18 * width,
                                 child: Text(
                                   _takingOrderVendorController.listpaymentdata
                                           .any((data) => data.jenis == 'cek')

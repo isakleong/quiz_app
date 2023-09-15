@@ -10,18 +10,20 @@ class ReturCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Card(
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
       child: SizedBox(
-        width: 0.9 * Get.width,
+        width: 0.9 * width,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
             padding: const EdgeInsets.only(left: 15, top: 15),
             child: Row(
               children: [
-                Get.width < 450 ?
+                width < 450 ?
                Stack(
                   alignment: Alignment.center,
                   children: [
@@ -72,13 +74,13 @@ class ReturCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextView(
-                        headings: "H2", text: "Retur", fontSize: Get.width < 450 ? 10.sp : 14),
+                        headings: "H2", text: "Retur", fontSize: width < 450 ? 10.sp : 14),
                     const SizedBox(
                       height: 5,
                     ),
                     Row(
                       children: [
-                        Get.width < 450 ?
+                        width < 450 ?
                         Stack(
                           alignment: Alignment.center,
                           children: [
@@ -117,7 +119,7 @@ class ReturCard extends StatelessWidget {
                         const SizedBox(
                           width: 5,
                         ),
-                         Text(nmToko, style: TextStyle(fontSize: Get.width < 450 ? 10.sp :14)),
+                         Text(nmToko, style: TextStyle(fontSize: width < 450 ? 10.sp :14)),
                       ],
                     ),
                   ],

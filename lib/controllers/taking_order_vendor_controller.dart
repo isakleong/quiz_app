@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:list_treeview/list_treeview.dart';
@@ -68,20 +67,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       await _penjualanController.getListItem();
   }
 
-  handleAddMinusBtn(TextEditingController ctrl, var action) {
-    if (action == '+') {
-      if (ctrl.text != "") {
-        var newqty = int.parse(ctrl.text) + 1;
-        ctrl.text = newqty.toString();
-      }
-    } else {
-      if (ctrl.text != "" && ctrl.text != "0") {
-        var newqty = int.parse(ctrl.text) - 1;
-        ctrl.text = newqty.toString();
-      }
-    }
-  }
-
   handleSaveConfirm(String msg, String title, var ontap) {
     Get.dialog(Dialog(
       key: keyconfirm,
@@ -98,9 +83,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxString get selectedValue => _penjualanController.selectedValue;
   RxList<ProductData> get selectedProduct => _penjualanController.selectedProduct;
   Rx<TextEditingController> get cnt => _penjualanController.cnt;
-  Rx<TextEditingController> get qty1 => _penjualanController.qty1;
-  Rx<TextEditingController> get qty2 => _penjualanController.qty2;
-  Rx<TextEditingController> get qty3 => _penjualanController.qty3;
+  RxList<int> get listQty => _penjualanController.listQty;
   Rx<TextEditingController> get notes => _penjualanController.notes;
   RxString get choosedAddress => _penjualanController.choosedAddress;
   RxInt animated = 0.obs;
@@ -162,9 +145,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       cartList.clear();
       selectedProduct.clear();
       cnt.value.clear(); 
-      qty1.value.clear();
-      qty2.value.clear();
-      qty3.value.clear();
       listAnimation.clear();
       choosedAddress.value = "";
       await _penjualanController.deletestate();
@@ -175,7 +155,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       }catch(e){
 
       }
-      controllerBar.jumpToTab(3);
+      controllerBar.jumpToTab(2);
     } else {
       Navigator.pop(keyconfirm.currentContext!);
       Get.snackbar("error", "silahkan pilih alamat pengiriman terlebih dahulu",backgroundColor: Colors.white,colorText: Colors.red);
@@ -190,8 +170,12 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxList<ReportPenjualanModel> get listReportPenjualanShow => _laporanController.listReportPenjualanShow;
   RxInt get allReportlength => _laporanController.allReportlength;
 
-  filteReport() {
-    _laporanController.filteReport();
+  filteReport() async {
+    await _laporanController.filteReport();
+  }
+
+  getreportlist() async {
+    await _laporanController.getReportList();
   }
 
   //for payment page
@@ -234,7 +218,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     } catch (e) {
       
     }
-    controllerBar.jumpToTab(3);
+    controllerBar.jumpToTab(2);
   }
 
   //for retur page
@@ -260,24 +244,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxList get listSisa => _returController.listSisa;
   RxInt get indexSegment => _returController.indexSegment;
   RxList<bool> get selectedsegment => _returController.selectedsegment;
-  Rx<TextEditingController> get qty1tb => _returController.qty1tb;
-  Rx<TextEditingController> get qty2tb => _returController.qty2tb;
-  Rx<TextEditingController> get qty3tb => _returController.qty3tb;
-  Rx<TextEditingController> get qty1gk => _returController.qty1gk;
-  Rx<TextEditingController> get qty2gk => _returController.qty2gk;
-  Rx<TextEditingController> get qty3gk => _returController.qty3gk;
-  Rx<TextEditingController> get qty1sm => _returController.qty1sm;
-  Rx<TextEditingController> get qty2sm => _returController.qty2sm;
-  Rx<TextEditingController> get qty3sm => _returController.qty3sm;
-  Rx<TextEditingController> get qty1gb => _returController.qty1gb;
-  Rx<TextEditingController> get qty2gb => _returController.qty2gb;
-  Rx<TextEditingController> get qty3gb => _returController.qty3gb;
-  Rx<TextEditingController> get qty1tw => _returController.qty1tw;
-  Rx<TextEditingController> get qty2tw => _returController.qty2tw;
-  Rx<TextEditingController> get qty3tw => _returController.qty3tw;
-  Rx<TextEditingController> get qty1pp => _returController.qty1pp;
-  Rx<TextEditingController> get qty2pp => _returController.qty2pp;
-  Rx<TextEditingController> get qty3pp => _returController.qty3pp;
   RxBool get tukarwarnahorizontal => _returController.tukarwarnahorizontal;
   RxBool get tarikbaranghorizontal => _returController.tarikbaranghorizontal;
   RxBool get gantikemasanhorizontal => _returController.gantikemasanhorizontal;
@@ -292,6 +258,13 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxString get selectedAlasantb => _returController.selectedAlasantb;
   RxString get selectedAlasangk => _returController.selectedAlasangk;
   RxBool get isOverfow => _returController.isOverfow;
+  RxList get listQtytb => _returController.listQtytb;
+  RxList get listQtygk => _returController.listQtygk;
+  RxList get listQtysm => _returController.listQtysm;
+  RxList get listQtygb => _returController.listQtygb;
+  RxList get listQtytw => _returController.listQtytw;
+  RxList get listQtypp => _returController.listQtypp;
+
 
   handleProductSearchGb(String val) async {
     await _returController.handleProductSearchGb(val);
@@ -408,7 +381,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   prepareinfoproduk() async {
     await getfilelist();
     if(listnode.isNotEmpty){
-      print("not empty");
+      // print("not empty");
       treecontroller = TreeViewController();
       treecontroller!.treeData(listnode);
       datanodelength.value = listnode.length;
@@ -428,7 +401,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       var res = await File('/storage/emulated/0/TKTW/infoproduk/sfafilelist.txt').readAsString();
       var ls = const LineSplitter();
       var tlist = ls.convert(res);
-      print(tlist);
+      // print(tlist);
       await generateTreeinfoproduct(tlist);
     } else {
       listnode.clear();
@@ -440,7 +413,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   generateTreeinfoproduct(List<String> tlist){
     listnode.clear();
     for (String temp in tlist) {
-      print(temp);
+      // print(temp);
       var tsplit = temp.split("/");
       var head = TreeNodeData();
       for (var i = 0; i < tsplit.length; i++) {
