@@ -161,7 +161,7 @@ class SearchReport extends StatelessWidget {
                       'Semua Transaksi',
                       'Transaksi Penjualan',
                       'Transaksi Pembayaran',
-                      'Transaksi Retur',
+                      // 'Transaksi Retur',
                       // 'Transaksi TTH',
                       // 'Transaksi Survey',
                       // 'Transaksi Keluhan'

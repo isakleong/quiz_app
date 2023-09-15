@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: "Poppins",
-      ),
+      ),debugShowCheckedModeBanner: false,
       initialRoute: "/",
       getPages: AppRoute.pages,
     );

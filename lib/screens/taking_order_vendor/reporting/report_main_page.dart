@@ -58,6 +58,7 @@ class ReportMainPage extends StatelessWidget {
                     onChanged: (String? newValue) async {
                       _takingOrderVendorController.choosedReport.value =
                           newValue!;
+                      print(_takingOrderVendorController.choosedReport.value + " ini isi");
                       await _takingOrderVendorController.filteReport();
                     },
                   )),

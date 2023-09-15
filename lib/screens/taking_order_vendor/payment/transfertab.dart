@@ -30,6 +30,7 @@ class TransferTab extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
+                      /* pilih bank
                       Container(
                         width: 0.45 * width,
                         decoration: BoxDecoration(
@@ -82,9 +83,9 @@ class TransferTab extends StatelessWidget {
                             }).toList(),
                           ),
                         ),
-                      ),
+                      ),*/
                       Container(
-                        width: 0.45 * width,
+                        width: 0.8 * width,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -121,6 +122,7 @@ class TransferTab extends StatelessWidget {
                     children: [
                       ButtonPayment(
                         ontap: () {
+                           _takingOrderVendorController.choosedTransferMethod.value = 'MANDIRI';
                           if (_takingOrderVendorController
                                       .choosedTransferMethod.value ==
                                   "Pilih Bank" ||

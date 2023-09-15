@@ -45,6 +45,7 @@ class LaporanController extends GetxController {
 
   getReportList() async {
     await getBox();
+    print("get report list");
     //getting key for box
     String salesid = await Utils().getParameterData("sales");
     String cust = await Utils().getParameterData("cust");
@@ -66,7 +67,6 @@ class LaporanController extends GetxController {
     listReportPenjualan.clear();
     var dataPenjualanbox = boxreportpenjualan.get(gkey);
     if(dataPenjualanbox != null){
-      listReportPenjualan.clear();
       for (var i = 0; i < dataPenjualanbox.length; i++) {
         if(Utils().isDateNotToday(Utils().formatDate(dataPenjualanbox[i].tanggal)) && dataPenjualanbox[i].condition == "success"){
           // listdelindex.add(i);
@@ -83,6 +83,7 @@ class LaporanController extends GetxController {
     listReportPembayaranshow.clear();
     var datapembayaranreport = boxPembayaranReport.get(gkey);
     if(datapembayaranreport != null){
+      print("pembayaran not null");
       var converteddatapembayaran = json.decode(datapembayaranreport);
       for (var i = 0; i < converteddatapembayaran['data'].length; i++) {
         List<PaymentData> listPayment = [];
@@ -98,36 +99,47 @@ class LaporanController extends GetxController {
     //read filter condition
     if (choosedReport.value.contains("Semua") || choosedReport.value == "") {
       print("semua");
+      //
       listReportPenjualanShow.value.clear();
       listReportPenjualanShow.value.addAll(listReportPenjualan);
+      //
       listReportPembayaranshow.clear();
       listReportPembayaranshow.value.addAll(listReportPembayaran);
+      //
       allReportlength.value = listReportPenjualanShow.length + listReportPembayaranshow.length;
     } 
     else if (choosedReport.value == "Transaksi Penjualan") {
+      print("Penjualan");
+      listReportPembayaranshow.value.clear();
+      //
       listReportPenjualanShow.value.clear();
-      listReportPembayaranshow.clear();
       listReportPenjualanShow.value.addAll(listReportPenjualan);
+      //
       allReportlength.value = listReportPenjualanShow.length ;
     } 
     else if (choosedReport.value == "Transaksi Pembayaran") {
+      print("Pembayaran");
+      //
       listReportPenjualanShow.value.clear();
+      //
       listReportPembayaranshow.clear();
       listReportPembayaranshow.value.addAll(listReportPembayaran);
+      //
       allReportlength.value = listReportPembayaranshow.length;
     } 
     else if (choosedReport.value == "Transaksi Retur") {
+      print("Retur");
       listReportPenjualanShow.clear();
       listReportPembayaranshow.clear();
       allReportlength.value = 0;
     }
     await closebox();
-    listReportPenjualanShow.refresh();
-    listReportPembayaranshow.refresh();
+    // print("ini length pembayaran ${listReportPembayaranshow.value.length} ini penjualan ${listReportPenjualanShow.value.length}");
+    // listReportPenjualanShow.refresh();
+    // listReportPembayaranshow.refresh();
   }
 
   filteReport() async {
-    await getReportList();
     if (choosedReport.value.contains("Semua") || choosedReport.value == "") {
       listReportPenjualanShow.value.clear();
       listReportPenjualanShow.value.addAll(listReportPenjualan);
@@ -137,10 +149,9 @@ class LaporanController extends GetxController {
         listReportPenjualanShow.length + listReportPembayaranshow.length;
     } else if (choosedReport.value == "Transaksi Penjualan") {
       listReportPenjualanShow.value.clear();
-      listReportPembayaranshow.clear();
       listReportPenjualanShow.value.addAll(listReportPenjualan);
-      allReportlength.value =
-        listReportPenjualanShow.length ;
+      listReportPembayaranshow.clear();
+      allReportlength.value = listReportPenjualanShow.length ;
     } else if (choosedReport.value == "Transaksi Pembayaran") {
       listReportPenjualanShow.value.clear();
       listReportPembayaranshow.clear();
@@ -154,6 +165,7 @@ class LaporanController extends GetxController {
     }
     listReportPenjualanShow.refresh();
     listReportPembayaranshow.refresh();
+    getReportList();
   }
 
 }

@@ -74,7 +74,7 @@ class PaymentList extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TextView(
-                                text: value,
+                                text:  value,
                                 fontSize: 10.sp,
                               ),
                               SizedBox(

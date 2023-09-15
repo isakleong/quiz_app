@@ -155,7 +155,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       }catch(e){
 
       }
-      controllerBar.jumpToTab(3);
+      controllerBar.jumpToTab(2);
     } else {
       Navigator.pop(keyconfirm.currentContext!);
       Get.snackbar("error", "silahkan pilih alamat pengiriman terlebih dahulu",backgroundColor: Colors.white,colorText: Colors.red);
@@ -170,8 +170,12 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxList<ReportPenjualanModel> get listReportPenjualanShow => _laporanController.listReportPenjualanShow;
   RxInt get allReportlength => _laporanController.allReportlength;
 
-  filteReport() {
-    _laporanController.filteReport();
+  filteReport() async {
+    await _laporanController.filteReport();
+  }
+
+  getreportlist() async {
+    await _laporanController.getReportList();
   }
 
   //for payment page
@@ -214,7 +218,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     } catch (e) {
       
     }
-    controllerBar.jumpToTab(3);
+    controllerBar.jumpToTab(2);
   }
 
   //for retur page

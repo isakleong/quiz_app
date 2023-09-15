@@ -18,7 +18,7 @@ final TakingOrderVendorController _takingOrderVendorController =
     return [
       TakingOrderVendorMainPage(),
       PaymentMainPage(),
-      ReturMainPage(),
+      // ReturMainPage(),
       ReportMainPage(),
       InformasiMainPage()
     ];
@@ -42,14 +42,14 @@ final TakingOrderVendorController _takingOrderVendorController =
         activeColorSecondary: AppConfig.mainCyan,
         inactiveColorPrimary: const Color(0XFF3c3c3c),
       ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(Icons.change_circle),
-        title: ("Retur"),
-        // textStyle: TextStyle(color: Colors.white),
-        activeColorPrimary: AppConfig.mainCyan,
-        activeColorSecondary: AppConfig.mainCyan,
-        inactiveColorPrimary: const Color(0XFF3c3c3c),
-      ),
+      // PersistentBottomNavBarItem(
+      //   icon: const Icon(Icons.change_circle),
+      //   title: ("Retur"),
+      //   // textStyle: TextStyle(color: Colors.white),
+      //   activeColorPrimary: AppConfig.mainCyan,
+      //   activeColorSecondary: AppConfig.mainCyan,
+      //   inactiveColorPrimary: const Color(0XFF3c3c3c),
+      // ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.book),
         title: ("Laporan"),

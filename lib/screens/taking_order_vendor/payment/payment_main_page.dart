@@ -85,7 +85,7 @@ class PaymentMainPage extends StatelessWidget {
                                                       .jenis ==
                                                   "cek"
                                               ? "Cek / Giro / Slip - ${_takingOrderVendorController.listpaymentdata[index].tipe} [${_takingOrderVendorController.listpaymentdata[index].nomor}]"
-                                              : "${_takingOrderVendorController.listpaymentdata[index].jenis} - ${_takingOrderVendorController.listpaymentdata[index].tipe}",
+                                              : "${_takingOrderVendorController.listpaymentdata[index].jenis}"  + (_takingOrderVendorController.listpaymentdata[index].jenis == "Transfer" ? "" : " - ${_takingOrderVendorController.listpaymentdata[index].tipe}"),
                                       jatuhtempo: _takingOrderVendorController
                                                   .listpaymentdata[index]
                                                   .jatuhtempo ==

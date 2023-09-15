@@ -125,82 +125,84 @@ class DialogCheckOut extends StatelessWidget {
             SizedBox(
               height: height * 0.02,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 0.45 * width,
-                  height: 0.1 * height,
-                  child: TextFormField(
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s()!?&%#@/<>,.\-=+_]+')), // Custom character set
-                    ],
-                    decoration: InputDecoration(
-                      labelText: 'Catatan / Keterangan',
-                      icon: Image.asset(
-                        'assets/images/notes.png',
-                        width: 35.sp,
-                        height: 35.sp,
-                        fit: BoxFit.fill,
+            Padding(
+              padding: EdgeInsets.only(left: 0.05 * width,right: 0.05 * width),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s()!?&%#@/<>,.\-=+_]+')), // Custom character set
+                      ],
+                      decoration: InputDecoration(
+                        labelText: 'Catatan / Keterangan',
+                        icon: Image.asset(
+                          'assets/images/notes.png',
+                          width: 35.sp,
+                          height: 35.sp,
+                          fit: BoxFit.fill,
+                        ),
                       ),
+                      maxLength: 150,
+                      controller: _takingOrderVendorController.notes.value,
+                      maxLines: null,
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(fontSize: 10.sp),
+                      onChanged: (text) {
+                        // Handle text changes here
+                      },
                     ),
-                    maxLength: 150,
-                    controller: _takingOrderVendorController.notes.value,
-                    maxLines: null,
-                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                    keyboardType: TextInputType.multiline,
-                    style: TextStyle(fontSize: 10.sp),
-                    onChanged: (text) {
-                      // Handle text changes here
-                    },
                   ),
-                ),
-                ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      side: BorderSide(color: Colors.grey.shade500, width: 1),
-                      backgroundColor: Colors.white,
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.all(10),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(3.0.sp),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          TextView(
-                            text: 'Ganti Barang',
-                            color: Colors.black,
-                            headings: 'H4',
-                            fontSize: 10.sp,
-                          ),
-                          SizedBox(
-                            width: 0.01 * width,
-                          ),
-                          Container(
-                            width: 25.sp,
-                            height: 25.sp,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.green.shade700),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Icon(
-                                  Icons.manage_search,
-                                  color: Colors.white,
-                                  size: 14.sp,
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
+                  /* ganti barang button
+                  ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        side: BorderSide(color: Colors.grey.shade500, width: 1),
+                        backgroundColor: Colors.white,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(10),
                       ),
-                    ))
-              ],
+                      child: Padding(
+                        padding: EdgeInsets.all(3.0.sp),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            TextView(
+                              text: 'Ganti Barang',
+                              color: Colors.black,
+                              headings: 'H4',
+                              fontSize: 10.sp,
+                            ),
+                            SizedBox(
+                              width: 0.01 * width,
+                            ),
+                            Container(
+                              width: 25.sp,
+                              height: 25.sp,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.green.shade700),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.manage_search,
+                                    color: Colors.white,
+                                    size: 14.sp,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                  )) */
+                ],
+              ),
             ),
             SizedBox(
               width: 0.85 * width,
@@ -286,6 +288,7 @@ class DialogCheckOut extends StatelessWidget {
                         ],
                       ),
                     ),
+                    /*komisi
                     Container(
                       width: 1.5,
                       height: 0.06 * height,
@@ -316,7 +319,7 @@ class DialogCheckOut extends StatelessWidget {
                           )
                         ],
                       ),
-                    ),
+                     ), */
                   ]),
             ),
             SizedBox(
