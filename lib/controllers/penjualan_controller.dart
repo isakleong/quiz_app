@@ -139,7 +139,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         for (var j = 0; j < data.items![i].uoms!.length; j++) {
           listdetail.add(DetailProductData(data.items![i].uoms![j].name!, double.parse(data.items![i].price!), data.items![i].uoms![j].id!));
         }
-        listProduct.add(ProductData(data.items![i].code!, data.items![i].name!, listdetail,DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now()),data.items![i].id!));
+        listProduct.add(ProductData(data.items![i].code!, "${data.items![i].merk!} ${data.items![i].volume!} ${data.items![i].color!} ${data.items![i].desc!}", listdetail,DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now()),data.items![i].id!));
       }
       itemvendorbox.delete(globalkeybox);
       itemvendorbox.put(globalkeybox,listProduct);

@@ -31,16 +31,24 @@ class Items {
   String? id;
   String? code;
   String? name;
+  String? merk;
+  String? volume;
+  String? color;
+  String? desc;
   String? uomId;
   String? price;
   List<Uoms>? uoms;
 
-  Items({this.id, this.code, this.name, this.uomId, this.price, this.uoms});
+  Items({this.id, this.code, this.name, this.merk, this.volume, this.color, this.desc, this.uomId, this.price, this.uoms});
 
   Items.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     code = json['code'];
     name = json['name'];
+    merk = json['merk'];
+    volume = json['volume'];
+    color = json['color'];
+    desc = json['desc'];
     uomId = json['uom_id'].toString();
     price = json['price'].toString();
     if (json['uoms'] != null) {
@@ -56,6 +64,10 @@ class Items {
     data['id'] = id;
     data['code'] = code;
     data['name'] = name;
+    data['merk'] = merk;
+    data['volume'] = volume;
+    data['color'] = color;
+    data['desc'] = desc;
     data['uom_id'] = uomId;
     data['price'] = price;
     if (uoms != null) {
