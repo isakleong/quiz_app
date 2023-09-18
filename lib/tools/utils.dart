@@ -66,7 +66,7 @@ class Utils {
   }
 
   //created for vendor
-  String formatNumber(int number) {
+  String formatNumber(var number) {
     final NumberFormat numberFormat = NumberFormat('#,##0');
     return numberFormat.format(number);
   }

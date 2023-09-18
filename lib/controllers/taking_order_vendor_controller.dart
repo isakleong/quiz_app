@@ -62,7 +62,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       _penjualanController.activevendor = activevendor;
       _laporanController.activevendor = activevendor;
       _pembayaranController.activevendor = activevendor;
-      await _laporanController.getReportList();
+      await _laporanController.getReportList(true);
       await _pembayaranController.loadpembayaranstate();
       await _penjualanController.getListItem();
   }
@@ -92,6 +92,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   GlobalKey get keychecout => _penjualanController.keycheckout;
   RxList<ShipToAddress> get listaddress => _penjualanController.listAddress;
   RxBool get needtorefresh => _penjualanController.needtorefresh;
+  get komisi => _penjualanController.komisi;
 
   getListItem(){
      _penjualanController.getListItem();
@@ -138,7 +139,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   checkout() async {
     if(await _penjualanController.cekvalidcheckout()){
        await _penjualanController.checkout();
-      _laporanController.getReportList();
+      _laporanController.getReportList(false);
       selectedValue.value = "";
       notes.value.clear();
       cartDetailList.clear();
@@ -175,7 +176,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   }
 
   getreportlist() async {
-    await _laporanController.getReportList();
+    await _laporanController.getReportList(true);
   }
 
   //for payment page
@@ -192,6 +193,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   Rx<TextEditingController> get nominaltunai => _pembayaranController.nominaltunai;
   get pembayaranListKey => _pembayaranController.pembayaranListKey;
   get showBanner => _pembayaranController.showBanner;
+  get totalpiutang => _penjualanController.totalpiutang;
+  get totaljatuhtempo => _penjualanController.totaljatuhtempo;
 
   selectDate(BuildContext context) {
     _pembayaranController.selectDate(context);
@@ -211,7 +214,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
   savepaymentdata() async {
     await _pembayaranController.savepaymentdata();
-    await _laporanController.getReportList();
+    await _laporanController.getReportList(false);
     try {
       Navigator.pop(keyconfirm.currentContext!);
     // ignore: empty_catches

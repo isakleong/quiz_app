@@ -78,10 +78,10 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                                   print(_takingOrderVendorController
                                       .cartDetailList[index].nmProduct
                                       .toString());
-                                  _takingOrderVendorController.showProdukSerupa(
-                                    _takingOrderVendorController
-                                        .cartDetailList[index],
-                                  );
+                                  // _takingOrderVendorController.showProdukSerupa(
+                                  //   _takingOrderVendorController
+                                  //       .cartDetailList[index],
+                                  // );
                                 },
                                 child: SlideTransition(
                                   position: _takingOrderVendorController

@@ -6,7 +6,9 @@ import '../../../widgets/textview.dart';
 
 class PiutangCard extends StatelessWidget {
   String nmtoko;
-  PiutangCard({super.key,required this.nmtoko});
+  String totalpiutang;
+  String totaljatuhtempo;
+  PiutangCard({super.key,required this.nmtoko, required this.totalpiutang, required this.totaljatuhtempo});
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +118,7 @@ class PiutangCard extends StatelessWidget {
                 Column(
                   children: [
                     TextView(
-                      text: "20,752,392",
+                      text: totalpiutang,
                       headings: 'H3',
                       fontSize: 11.sp,
                       color: const Color(0xFFf5511e),
@@ -142,7 +144,7 @@ class PiutangCard extends StatelessWidget {
                 Column(
                   children: [
                     TextView(
-                      text: "20,752,392",
+                      text: totaljatuhtempo,
                       color: const Color(0xFFf5511e),
                       headings: 'H3',
                       fontSize: 11.sp,

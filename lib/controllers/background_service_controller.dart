@@ -424,58 +424,62 @@ class Backgroundservicecontroller {
   late Box boxpostpenjualan;
   late Box boxreportpenjualan;
   late Box vendorBox;
+  late Box postpembayaranbox;
+  late Box boxPembayaranReport;
   List<Vendor> vendorlist = [];
 
-Future<void> createLogTes(String content) async {
-  bool allowWriteLog = true; // Change to true to enable log writing
-  final directoryPath = '/storage/emulated/0/TKTW/sfalog';
-  final currentDate = DateTime.now();
-  final formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
-  final filePath = '$directoryPath/$formattedDate.txt';
+  Future<void> createLogTes(String content) async {
+    bool allowWriteLog = true; // Change to true to enable log writing
+    final directoryPath = '/storage/emulated/0/TKTW/sfalog';
+    final currentDate = DateTime.now();
+    final formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    final filePath = '$directoryPath/$formattedDate.txt';
 
-  if (allowWriteLog) {
-    try {
-      final directory = Directory(directoryPath);
+    if (allowWriteLog) {
+      try {
+        final directory = Directory(directoryPath);
 
-      if (!await directory.exists()) {
-        await directory.create(recursive: true);
-      }
+        if (!await directory.exists()) {
+          await directory.create(recursive: true);
+        }
 
-      // Delete log files older than 7 days
-      final sevenDaysAgo = currentDate.subtract(Duration(days: 7));
-      await for (var entity in directory.list()) {
-        if (entity is File) {
-          final fileDateStr = DateFormat('yyyy-MM-dd').format(entity.lastModifiedSync());
-          final fileDate = DateTime.parse(fileDateStr);
-          if (fileDate.isBefore(sevenDaysAgo) || fileDate.isAtSameMomentAs(sevenDaysAgo)) {
-            await entity.delete();
-            print('Deleted old log file: ${entity.path}');
+        // Delete log files older than 7 days
+        final sevenDaysAgo = currentDate.subtract(Duration(days: 7));
+        await for (var entity in directory.list()) {
+          if (entity is File) {
+            final fileDateStr = DateFormat('yyyy-MM-dd').format(entity.lastModifiedSync());
+            final fileDate = DateTime.parse(fileDateStr);
+            if (fileDate.isBefore(sevenDaysAgo) || fileDate.isAtSameMomentAs(sevenDaysAgo)) {
+              await entity.delete();
+              print('Deleted old log file: ${entity.path}');
+            }
           }
         }
+
+        final file = File(filePath);
+
+        if (!await file.exists()) {
+          await file.create();
+        }
+
+        await file.writeAsString("$content\n", mode: FileMode.append);
+
+        print('File written successfully.');
+      } catch (e) {
+        print('Error writing to file: $e');
       }
-
-      final file = File(filePath);
-
-      if (!await file.exists()) {
-        await file.create();
-      }
-
-      await file.writeAsString("$content\n", mode: FileMode.append);
-
-      print('File written successfully.');
-    } catch (e) {
-      print('Error writing to file: $e');
     }
   }
-}
 
   getPendingData() async {
       DateTime currentDateTime = DateTime.now();
       String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(currentDateTime);
+
+      //pending penjualan
       await createLogTes("trying to get pending data at $date");
       await getBox();
       await createLogTes("finish get box");
-      List<dynamic> keys = await getListKey();
+      List<dynamic> keys = await getListKey('penjualan');
       await createLogTes("finish get key");
       await closebox();
       if(keys.isNotEmpty){
@@ -483,7 +487,20 @@ Future<void> createLogTes(String content) async {
         for (var m = 0; m < keys.length; m++) {
           await sendPendingData(keys[m]);
         }
-      } 
+      }
+      //pending pembayaran
+      await getBox();
+      print("get list key pembayran");
+      List<dynamic> keyspembayaran = await getListKey('pembayaran');
+      await closebox();
+      if(keyspembayaran.isNotEmpty){
+      print("keyspembayaran is not empty");
+        for (var m = 0; m < keyspembayaran.length; m++) {
+          await sendPendingDatapembayaran(keyspembayaran[m]);
+        }
+      }
+
+      //clear report
       await getBox();
       List<dynamic> keysreport = await getListKeyReport();
       await closebox();
@@ -492,6 +509,29 @@ Future<void> createLogTes(String content) async {
           await removeoldreport(keysreport[m]);
          }
       }
+  }
+
+  sendPendingDatapembayaran(String keybox) async {
+    await createLogTes("send pending data for key $keybox");
+    await getBox();
+    List<String> parts = keybox.split('|');
+    String salesid = parts[0].trim();
+    String cust = parts[1].trim();
+    String vendorurl = parts[3].trim();
+    var listpostbox = await postpembayaranbox.get(keybox);
+    List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
+    if (listpostbox != null){
+      listpost.clear();
+      for (var i = 0; i < listpostbox.length; i++) {
+        listpost.add(listpostbox[i]);
+      }
+      await closebox();
+      // await createLogTes("Listpost length ${listpost.length}");
+      // for (var i = 0; i < listpost.length; i++) {
+      //   await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorurl);
+      // }
+      await postDataPembayaranAll(listpost, salesid, cust, keybox, vendorurl);
+    }
   }
 
   sendPendingData(String keybox) async {
@@ -532,9 +572,14 @@ Future<void> createLogTes(String content) async {
       await closebox();
   }
 
-  getListKey() async {
+  getListKey(String jenis) async {
+    if(jenis == 'penjualan'){
       List<dynamic> keys = boxpostpenjualan.keys.toList();
       return keys;
+    } else if (jenis == 'pembayaran') {
+      List<dynamic> keys = postpembayaranbox.keys.toList();
+      return keys;
+    }
   }
 
   getListKeyReport() async {
@@ -549,6 +594,8 @@ Future<void> createLogTes(String content) async {
         vendorBox = await Hive.openBox('vendorBox');
         boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
         boxreportpenjualan = await Hive.openBox('penjualanReport');
+        postpembayaranbox = await Hive.openBox("postpembayaranbox");
+        boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
       } catch (e) {
       }
     } catch (e) {
@@ -556,6 +603,8 @@ Future<void> createLogTes(String content) async {
         vendorBox = await Hive.openBox('vendorBox');
         boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
         boxreportpenjualan = await Hive.openBox('penjualanReport');
+        postpembayaranbox = await Hive.openBox("postpembayaranbox");
+        boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
       } catch (err) {
       }
     }
@@ -566,6 +615,8 @@ Future<void> createLogTes(String content) async {
         vendorBox.close();
         boxpostpenjualan.close();
         boxreportpenjualan.close();
+        postpembayaranbox.close();
+        boxPembayaranReport.close();
     } catch (e) {
       
     }
@@ -606,6 +657,7 @@ Future<void> createLogTes(String content) async {
                     request.fields['data[$inc][note]'] = data[i].dataList[j]['note'];
                     request.fields['data[$inc][shipTo]'] = data[i].dataList[j]['shipTo'];
                     request.fields['data[$inc][salesPersonCode]'] = data[i].dataList[j]['salesPersonCode'];
+                    request.fields['data[$inc][komisi]'] = data[i].dataList[j]['komisi'];
                     inc = inc + 1;
               } else {
                 break;
@@ -712,5 +764,17 @@ Future<void> createLogTes(String content) async {
         }
         await closebox();
   }
+  
+  postDataPembayaranAll(List<PenjualanPostModel> data ,String salesid,String custid ,String key,String vendorurl) async {
+        await createLogTes("on postDataPembayaranAll");
+        await getBox();
+        var _datareportpembayaran = await boxPembayaranReport.get(key);
+        print(_datareportpembayaran);
+        var inc = 0;
+        final url = Uri.parse('${vendorurl}payments/store');
+        final request = http.MultipartRequest('POST', url);
+        await closebox();
+  }
+  
   //end taking order vendor section
 }

@@ -43,7 +43,7 @@ class LaporanController extends GetxController {
     }
   }
 
-  getReportList() async {
+  getReportList(bool isclosebox) async {
     await getBox();
     print("get report list");
     //getting key for box
@@ -57,7 +57,9 @@ class LaporanController extends GetxController {
     }
     idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
     if(idvendor == -1){
-      await closebox();
+      if(isclosebox){
+        await closebox();
+      }
       return;
     }
     var gkey = "$salesid|$cust|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
@@ -84,14 +86,16 @@ class LaporanController extends GetxController {
     var datapembayaranreport = boxPembayaranReport.get(gkey);
     if(datapembayaranreport != null){
       print("pembayaran not null");
+      // print(datapembayaranreport);
       var converteddatapembayaran = json.decode(datapembayaranreport);
       for (var i = 0; i < converteddatapembayaran['data'].length; i++) {
         List<PaymentData> listPayment = [];
-        var datalistpayment = json.decode(converteddatapembayaran['data'][i]['listpayment']);
+        // print(converteddatapembayaran['data'][i]);
+        var datalistpayment = converteddatapembayaran['data'][i]['listpayment'];
         for (var j = 0; j < datalistpayment.length; j++) {
           listPayment.add(PaymentData(datalistpayment[j]['jenis'], datalistpayment[j]['nomor'], datalistpayment[j]['tipe'], datalistpayment[j]['jatuhtempo'],  datalistpayment[j]['value']));
         }
-        listReportPembayaran.add(ReportPembayaranModel(converteddatapembayaran['data'][i]['id'], converteddatapembayaran['data'][i]['total'], converteddatapembayaran['data'][i]['tanggal'], converteddatapembayaran['data'][i]['waktu'],
+        listReportPembayaran.add(ReportPembayaranModel(converteddatapembayaran['data'][i]['condition'],converteddatapembayaran['data'][i]['id'], converteddatapembayaran['data'][i]['total'], converteddatapembayaran['data'][i]['tanggal'], converteddatapembayaran['data'][i]['waktu'],
          listPayment));
       }
     }
@@ -133,7 +137,9 @@ class LaporanController extends GetxController {
       listReportPembayaranshow.clear();
       allReportlength.value = 0;
     }
-    await closebox();
+    if(isclosebox){
+      await closebox();
+    }
     // print("ini length pembayaran ${listReportPembayaranshow.value.length} ini penjualan ${listReportPenjualanShow.value.length}");
     // listReportPenjualanShow.refresh();
     // listReportPembayaranshow.refresh();
@@ -165,7 +171,7 @@ class LaporanController extends GetxController {
     }
     listReportPenjualanShow.refresh();
     listReportPembayaranshow.refresh();
-    getReportList();
+    getReportList(true);
   }
 
 }
