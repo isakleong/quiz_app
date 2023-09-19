@@ -20,6 +20,7 @@ import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukse
 import 'package:http/http.dart' as http;
 import '../models/cartmodel.dart';
 import '../models/detailproductdata.dart';
+import '../models/loginmodel.dart';
 import '../models/productdata.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 import '../tools/service.dart';
@@ -51,6 +52,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   late Box itemvendorbox;
   late Box statePenjualanbox;
   late Box masteritemvendorbox;
+  late Box tokenbox;
   final keycheckout = GlobalKey();
   var idvendor = -1;
   var globalkeybox = "";
@@ -117,6 +119,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       boxreportpenjualan = await Hive.openBox('penjualanReport');
       itemvendorbox = await Hive.openBox("itemVendorBox");
       masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
+      tokenbox = await Hive.openBox('tokenbox');
     } catch (e) {
     }
   }
@@ -130,21 +133,32 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       boxreportpenjualan.close();
       itemvendorbox.close();
       masteritemvendorbox.close();
+      tokenbox.close();
     } catch (e) {
     }
   }
 
+  gettoken() async {
+      String salesId = await Utils().getParameterData('sales');
+      var tokenboxdata = await tokenbox.get(salesId);
+      var dectoken = Utils().decrypt(tokenboxdata);
+      return dectoken;
+  }
+  
   getproduct({String? type, String? custid}) async {
     try {
+      print("heree");
       bool isdev = false;
       var params =  {
         'customerNo': isdev ? "10A01010007" : custid,
       };
+      var dectoken = await gettoken();
       var getVendorItem = await ApiClient().postData(vendorlist[idvendor].baseApiUrl,"setting/vendor-info",jsonEncode(params), Options(
             headers: {
-              HttpHeaders.contentTypeHeader: "application/json"
+              HttpHeaders.contentTypeHeader: "application/json",'Authorization': 'Bearer ${dectoken}','Accept': 'application/json'
             }
           ));
+      print(getVendorItem);
       masteritemvendorbox.delete(globalkeybox);
       masteritemvendorbox.put(globalkeybox, getVendorItem);
       var data = MasterItemVendor.fromJson(getVendorItem);
@@ -171,6 +185,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         }
       }
     }catch (e) {
+      print(e.toString());
       if(type == null){
         needtorefresh.value = true;
       } else {
@@ -180,6 +195,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
           listProduct.add(itemvendorhive[i]);
         }
       }
+      loginapivendor();
     }
   }
 
@@ -209,7 +225,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         listAddress.add(addressdata[i]);
       }
     }
-
+    print("***********");
     try {
     //get vendor data
       if(!vendorBox.isOpen) await getBox();
@@ -218,14 +234,19 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       for (var i = 0; i < datavendor.length; i++) {
         vendorlist.add(datavendor[i]);
       }
+    print("*******2****$activevendor");
       idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
+    print("*******2.1****$idvendor");
       globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
+    print("*******2.2****");
       var databox = masteritemvendorbox.get(globalkeybox);
+    print("*******2.3****");
       if (databox != null){
         var dataconv = MasterItemVendor.fromJson(databox);
         totalpiutang.value = dataconv.receivables!;
         totaljatuhtempo.value = dataconv.overdue_invoices!;
       }
+    print("*******3****");
       var itemvendorhive = itemvendorbox.get(globalkeybox);
       if(itemvendorhive != null){
         listProduct.clear();
@@ -242,6 +263,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         await getproduct(custid: custid);
       }
     await getpenjualanstate();
+    print("***********");
     } catch (e) {
       print(e.toString());
       needtorefresh.value = true;
@@ -597,8 +619,14 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
           break;
       }
     }
+    var dectoken = await gettoken();
     final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}sales-orders/store');
+      print(vendorlist[idvendor].baseApiUrl);
     final request = http.MultipartRequest('POST', url);
+    request.headers.addAll({
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${dectoken}',
+    });
       for (var i = 0; i < data.length; i++) {
         request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
         request.fields['data[$i][orderDate]'] = data[i]['orderDate'];
@@ -653,16 +681,27 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
                 }
             }
           } else {
+            print("on else");
             datareportpenjualan[idx].condition = "pending";
             await boxreportpenjualan.delete(globalkeybox);
             await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
           }
 
         } else {
-          datareportpenjualan[idx].condition = "pending";
-          await boxreportpenjualan.delete(globalkeybox);
-          await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
-          print(responseString);
+          print("on else not 200");
+          var jsonResponse = jsonDecode(responseString);
+          try {
+            if (jsonResponse["code"] == "300"){
+              await loginapivendor();
+            }
+          } catch (e) {
+            
+          } finally{
+            datareportpenjualan[idx].condition = "pending";
+            await boxreportpenjualan.delete(globalkeybox);
+            await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
+            print(responseString);
+          }
         }
       } on SocketException {
           datareportpenjualan[idx].condition = "pending";
@@ -678,6 +717,31 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
           await closebox();
           controllerLaporan.getReportList(true);
       }
+  }
+
+  loginapivendor() async {
+    try {
+      String salesiddata = await Utils().getParameterData("sales");
+      String encparam = await Utils().encryptsalescodeforvendor(salesiddata);
+      var params = {
+        "username" : encparam
+      };
+      print(params);
+      var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
+            params,
+            Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+      var dataresp = LoginResponse.fromJson(result);
+      print(dataresp.data!.token);
+      print(await Utils().decrypt(dataresp.data!.token.toString()));
+      if(!tokenbox.isOpen){
+        tokenbox = await Hive.openBox('tokenbox');
+      }
+      print("already in");
+      tokenbox.delete(salesiddata);
+      tokenbox.put(salesiddata, dataresp.data!.token);
+    } catch (e) {
+      
+    }
   }
 
 }

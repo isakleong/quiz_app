@@ -8,7 +8,7 @@ import 'package:sfa_tools/tools/logging.dart';
 // show Client, Request;
 
 class ApiClient {
-  Future getData(String url, String path, {int? timeouttime}) async {
+  Future getData(String url, String path, {int? timeouttime, var options}) async {
     try {
       print(url);
       final dio = Dio(  
@@ -34,11 +34,19 @@ class ApiClient {
       // };
 
       dio.interceptors.add(Logging());
+      if(options == null){
+        final response = await dio.get(path);
+        return response.data;
+      }
+      else{
+        print("heree");
+        final response = await dio.get(path,options: options);
+        print(response);
+        return response.data;
+      }
 
-      final response = await dio.get(path);
-
-      return response.data;
     } catch (e) {
+      print(e.toString());
       if(url == "") {
         throw Exception(Message.errorConnection);
       } else {

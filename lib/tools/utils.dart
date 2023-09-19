@@ -71,6 +71,18 @@ class Utils {
     return numberFormat.format(number);
   }
 
+  String encryptsalescodeforvendor(String toencrypt){
+    // print("string to encrypt $toencrypt");
+    // String salter = (Random().nextInt(900) + 100).toString();
+    final key = Key.fromUtf8("fVkhoDWRAd4Rgj6l");  
+    final iv = IV.fromUtf8("tGYINBYOtJ2tZoZJ");  
+
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+    final encrypted = encrypter.encrypt(toencrypt, iv: iv);
+
+    return encrypted.base64;
+  }
+
   String formatDate(String dateTimeString) {
     final inputFormat = DateFormat('dd-MM-yyyy HH:mm:ss');
     final outputFormat = DateFormat('dd-MM-yyyy');
@@ -107,5 +119,15 @@ class Utils {
       }
     }
   }
+  
+  String decrypt(String encrypted) {
+  final key = Key.fromUtf8("fVkhoDWRAd4Rgj6l"); //hardcode combination of 16 character
+  final iv = IV.fromUtf8("tGYINBYOtJ2tZoZJ"); //hardcode combination of 16 character
+
+  final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+  Encrypted enBase64 = Encrypted.from64(encrypted);
+  final decrypted = encrypter.decrypt(enBase64, iv: iv);
+  return decrypted;
+}
   //end created for vendor
 }

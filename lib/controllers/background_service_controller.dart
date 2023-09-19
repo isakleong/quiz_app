@@ -23,6 +23,7 @@ import 'package:sfa_tools/models/vendor.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import '../models/detailproductdata.dart';
+import '../models/loginmodel.dart';
 import '../models/module.dart';
 import '../models/paymentdata.dart';
 import '../models/penjualanpostmodel.dart';
@@ -116,7 +117,7 @@ void onStart(ServiceInstance service) async {
     );
   });
 
-  Timer.periodic(const Duration(minutes: 3), (timer) async {
+  Timer.periodic(const Duration(minutes: 1), (timer) async {
     await Backgroundservicecontroller().getPendingData();
 
     if (service is AndroidServiceInstance) {
@@ -428,10 +429,11 @@ class Backgroundservicecontroller {
   late Box vendorBox;
   late Box postpembayaranbox;
   late Box boxPembayaranReport;
+  late Box tokenbox;
   List<Vendor> vendorlist = [];
 
   Future<void> createLogTes(String content) async {
-    bool allowWriteLog = true; // Change to true to enable log writing
+    bool allowWriteLog = false; // Change to true to enable log writing
     final directoryPath = '/storage/emulated/0/TKTW/sfalog';
     final currentDate = DateTime.now();
     final formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
@@ -473,6 +475,13 @@ class Backgroundservicecontroller {
     }
   }
 
+  gettoken() async {
+      String salesId = await Utils().getParameterData('sales');
+      var tokenboxdata = await tokenbox.get(salesId);
+      var dectoken = Utils().decrypt(tokenboxdata);
+      return dectoken;
+  }
+
   getPendingData() async {
       DateTime currentDateTime = DateTime.now();
       String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(currentDateTime);
@@ -492,16 +501,16 @@ class Backgroundservicecontroller {
       }
 
       //pending pembayaran **api not ready**
-      // await getBox();
-      // print("get list key pembayran");
-      // List<dynamic> keyspembayaran = await getListKey('pembayaran');
-      // await closebox();
-      // if(keyspembayaran.isNotEmpty){
-      // print("keyspembayaran is not empty");
-      //   for (var m = 0; m < keyspembayaran.length; m++) {
-      //     await sendPendingDatapembayaran(keyspembayaran[m]);
-      //   }
-      // }
+      await getBox();
+      print("get list key pembayran");
+      List<dynamic> keyspembayaran = await getListKey('pembayaran');
+      await closebox();
+      if(keyspembayaran.isNotEmpty){
+      print("keyspembayaran is not empty");
+        for (var m = 0; m < keyspembayaran.length; m++) {
+          await sendPendingDatapembayaran(keyspembayaran[m]);
+        }
+      }
 
       //clear report penjualan
       await getBox();
@@ -630,6 +639,7 @@ class Backgroundservicecontroller {
         boxreportpenjualan = await Hive.openBox('penjualanReport');
         postpembayaranbox = await Hive.openBox("postpembayaranbox");
         boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
+        tokenbox = await Hive.openBox('tokenbox');
       } catch (e) {
       }
     } catch (e) {
@@ -639,6 +649,7 @@ class Backgroundservicecontroller {
         boxreportpenjualan = await Hive.openBox('penjualanReport');
         postpembayaranbox = await Hive.openBox("postpembayaranbox");
         boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
+        tokenbox = await Hive.openBox('tokenbox');
       } catch (err) {
       }
     }
@@ -651,6 +662,7 @@ class Backgroundservicecontroller {
         boxreportpenjualan.close();
         postpembayaranbox.close();
         boxPembayaranReport.close();
+        tokenbox.close();
     } catch (e) {
       
     }
@@ -672,6 +684,7 @@ class Backgroundservicecontroller {
   postDataOrderAll(List<PenjualanPostModel> data ,String salesid,String custid ,String key,String vendorurl) async {
         await createLogTes("on post Data order All");
         await getBox();
+        var dectoken = await gettoken();
         var _datareportpenjualan = await boxreportpenjualan.get(key);
         var inc = 0;
         final url = Uri.parse('${vendorurl}sales-orders/store');
@@ -698,6 +711,10 @@ class Backgroundservicecontroller {
               }
           }
         }
+        request.headers.addAll({
+          'Authorization': 'Bearer ${dectoken}',
+          'Accept': 'application/json',
+        });
         
         try {
           await createLogTes(request.fields.toString());
@@ -759,6 +776,14 @@ class Backgroundservicecontroller {
               await boxreportpenjualan.put(key,_datareportpenjualan);
             }
           } else {
+            var jsonResponse = jsonDecode(responseString);
+            try {
+              if (jsonResponse["code"] == "300"){
+                loginapivendor();
+              }
+            } catch (e) {
+              
+            } finally{
              for (var i = 0; i < _datareportpenjualan.length; i++) {
                 for (var j = 0; j <= inc; j++) {
                     if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
@@ -769,6 +794,7 @@ class Backgroundservicecontroller {
             await createLogTes("response not 200");
             await boxreportpenjualan.delete(key);
             await boxreportpenjualan.put(key,_datareportpenjualan);
+            }
             // print(responseString);
           }
         } on SocketException {
@@ -798,11 +824,45 @@ class Backgroundservicecontroller {
         }
         await closebox();
   }
+
+  loginapivendor() async {
+    try {
+      String salesiddata = await Utils().getParameterData("sales");
+      String encparam = await Utils().encryptsalescodeforvendor(salesiddata);
+      var params = {
+        "username" : encparam
+      };
+      print(params);
+      var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
+            params,
+            Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+      var dataresp = LoginResponse.fromJson(result);
+      print(dataresp.data!.token);
+      print(await Utils().decrypt(dataresp.data!.token.toString()));
+      if(!tokenbox.isOpen){
+        tokenbox = await Hive.openBox('tokenbox');
+      }
+      tokenbox.delete(salesiddata);
+      tokenbox.put(salesiddata, dataresp.data!.token);
+    } catch (e) {
+      
+    }
+  }
   
   postDataPembayaranAll(List<PenjualanPostModel> data ,String salesid,String custid ,String key,String vendorurl) async {
         await createLogTes("on postDataPembayaranAll");
         await getBox();
-        var _datareportpembayaran = await boxPembayaranReport.get(key);
+        var dectoken = await gettoken();
+        var _datareportpembayaran = json.decode(await boxPembayaranReport.get(key));
+         List<ReportPembayaranModel> dataconvert = [];
+        for (var i = 0; i < _datareportpembayaran['data'].length; i++) {
+          List<PaymentData> _data = <PaymentData>[];
+          var detail = _datareportpembayaran['data'][i]['listpayment'];
+          for (var k = 0; k < detail.length; k++) {
+            _data.add(PaymentData(detail[k]['jenis'], detail[k]['nomor'], detail[k]['tipe'], detail[k]['jatuhtempo'], detail[k]['value']));
+          }
+          dataconvert.add(ReportPembayaranModel(_datareportpembayaran['data'][i]['condition'], _datareportpembayaran['data'][i]['id'], _datareportpembayaran['data'][i]['total'], _datareportpembayaran['data'][i]['tanggal'], _datareportpembayaran['data'][i]['waktu'], _data));
+        }
 
         //create post data
         var inc = 0;
@@ -816,27 +876,33 @@ class Backgroundservicecontroller {
         for (var i = 0; i < _postdata.length; i++) {
           // print("ini post data " + _postdata[i].toString());
           for (var j = 0; j < _postdata[i].dataList.length; j++) {
-            // print("ini isi detail ${_postdata[i].dataList[j]['extDocId']}");
-            request.fields['data[$inc][extDocId]'] = _postdata[i].dataList[j]['extDocId'];
-            request.fields['data[$inc][customerNo]'] = _postdata[i].dataList[j]['customerNo'];
-            request.fields['data[$inc][amount]'] = _postdata[i].dataList[j]['amount'].toString();
-            request.fields['data[$inc][salespersonCode]'] = _postdata[i].dataList[j]['salespersonCode'];
-            request.fields['data[$inc][entryDate]'] = _postdata[i].dataList[j]['entryDate'];
-            request.fields['data[$inc][bankId]'] = _postdata[i].dataList[j]['bankId'].toString();
-            request.fields['data[$inc][paymentMethodId]'] = _postdata[i].dataList[j]['paymentMethodId'].toString();
-            request.fields['data[$inc][bankName]'] = _postdata[i].dataList[j]['bankName'];
-            request.fields['data[$inc][dueDate]'] = _postdata[i].dataList[j]['dueDate'];
-            request.fields['data[$inc][serialNum]'] = _postdata[i].dataList[j]['serialNum'];
-            inc = inc + 1;
+            var ismorethan1minutes = checkTimeDifference(data[i].dataList[j]['entryDate']);
+            if(ismorethan1minutes){
+              request.fields['data[$inc][extDocId]'] = _postdata[i].dataList[j]['extDocId'];
+              request.fields['data[$inc][customerNo]'] = _postdata[i].dataList[j]['customerNo'];
+              request.fields['data[$inc][amount]'] = _postdata[i].dataList[j]['amount'].toString();
+              request.fields['data[$inc][salespersonCode]'] = _postdata[i].dataList[j]['salespersonCode'];
+              request.fields['data[$inc][entryDate]'] = _postdata[i].dataList[j]['entryDate'];
+              request.fields['data[$inc][bankId]'] = _postdata[i].dataList[j]['bankId'].toString();
+              request.fields['data[$inc][paymentMethodId]'] = _postdata[i].dataList[j]['paymentMethodId'].toString();
+              request.fields['data[$inc][bankName]'] = _postdata[i].dataList[j]['bankName'];
+              request.fields['data[$inc][dueDate]'] = _postdata[i].dataList[j]['dueDate'];
+              request.fields['data[$inc][serialNum]'] = _postdata[i].dataList[j]['serialNum'];
+              inc = inc + 1;
+            } else {
+              break;
+            }
           }
         }
+        request.headers.addAll({
+          'Authorization': 'Bearer ${dectoken}',
+          'Accept': 'application/json',
+        });
         print(request.fields.toString());
         try {
           await createLogTes(request.fields.toString());
-          // print(request.fields);
           final response = await request.send();
           final responseString = await response.stream.bytesToString();
-          // print(responseString);
           await createLogTes(responseString);
 
           if (response.statusCode == 200) {
@@ -845,92 +911,119 @@ class Backgroundservicecontroller {
             if(jsonResponse["success"] == true){
                 // print("response true");
                 var loopdatalength = jsonResponse['data'].length;
-                // for (var k = 0; k < loopdatalength; k++) {
-                //   for (var i = 0; i < _datareportpenjualan.length; i++) {
-                //       if ( _datareportpenjualan[i].id == jsonResponse['data'][k]['extDocId'] && jsonResponse['data'][k]['success'] == true){
-                //         _datareportpenjualan[i].condition = "success";
-                //       } else if (_datareportpenjualan[i].id == jsonResponse['data'][k]['extDocId'] && jsonResponse['data'][k]['success'] == false){
-                //           var listerror = jsonResponse['data'][k]['errors'].length;
-                //           for (var m = 0; m < listerror; m++) {
-                //             if(jsonResponse['data'][i]['errors'][m]['code'] == AppConfig().orderalreadyexistvendor){
-                //               _datareportpenjualan[i].condition = "success";
-                //               break;
-                //             } else {
-                //               _datareportpenjualan[i].condition = "pending";
-                //             }
-                //           }
-                //       }
-                //   }
-                // }
+                for (var k = 0; k < loopdatalength; k++) {
+                  for (var i = 0; i < dataconvert.length; i++) {
+                      if ( dataconvert[i].id == jsonResponse['data'][k]['extDocId'] && jsonResponse['data'][k]['success'] == true){
+                        dataconvert[i].condition = "success";
+                      } else if (dataconvert[i].id == jsonResponse['data'][k]['extDocId'] && jsonResponse['data'][k]['success'] == false){
+                        dataconvert[i].condition = "pending";
+                      }
+                  }
+                }
                 
-                // List<PenjualanPostModel> postadatanew = [];
-                // for (var i = 0; i < data.length; i++) {
-                //   for (var k = 0; k < _datareportpenjualan.length; k++) {
-                //     if(data[i].dataList[0]['extDocId'] == _datareportpenjualan[k].id && _datareportpenjualan[k].condition != "success"){
-                //       postadatanew.add(data[i]);
-                //       break;
-                //     }
-                //   }
-                // }
+                List<PenjualanPostModel> postadatanew = [];
+                for (var i = 0; i < data.length; i++) {
+                  for (var k = 0; k < dataconvert.length; k++) {
+                    if(data[i].dataList[0]['extDocId'] == dataconvert[k].id && dataconvert[k].condition != "success"){
+                      postadatanew.add(data[i]);
+                      break;
+                    }
+                  }
+                }
 
-                // await boxpostpenjualan.delete(key);
-                // if(postadatanew.isNotEmpty){
-                //   await boxpostpenjualan.put(key,postadatanew);
-                // }
-                // await boxreportpenjualan.delete(key);
-                // await boxreportpenjualan.put(key,_datareportpenjualan);
+                await postpembayaranbox.delete(key);
+                if(postadatanew.isNotEmpty){
+                  await postpembayaranbox.put(key,postadatanew);
+                }
+                await boxPembayaranReport.delete(key);
+                await boxPembayaranReport.put(key,tojsondata(dataconvert));
             } else {
-              //   for (var i = 0; i < _datareportpenjualan.length; i++) {
-              //     for (var j = 0; j <= inc; j++) {
-              //         if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
-              //             _datareportpenjualan[i].condition = "pending";
-              //         }
-              //     }
-              // }
-              // await createLogTes("response not true");
-              // await boxreportpenjualan.delete(key);
-              // await boxreportpenjualan.put(key,_datareportpenjualan);
+              print("response not true");
+              for (var i = 0; i < dataconvert.length; i++) {
+                  for (var j = 0; j <= inc; j++) {
+                      if ( dataconvert[i].id == request.fields['data[$j][extDocId]']){
+                          dataconvert[i].condition = "pending";
+                      }
+                  }
+              }
+              await boxPembayaranReport.delete(key);
+              await boxPembayaranReport.put(key,await tojsondata(dataconvert));
             }
           } else {
-            //  for (var i = 0; i < _datareportpenjualan.length; i++) {
-            //     for (var j = 0; j <= inc; j++) {
-            //         if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
-            //             _datareportpenjualan[i].condition = "pending";
-            //         }
-            //     }
-            // }
-            // await createLogTes("response not 200");
-            // await boxreportpenjualan.delete(key);
-            // await boxreportpenjualan.put(key,_datareportpenjualan);
-            // print(responseString);
+            //response not 200
+            var jsonResponse = jsonDecode(responseString);
+            try {
+              if (jsonResponse["code"] == "300"){
+                loginapivendor();
+              }
+            } catch (e) {
+              
+            } finally{
+              for (var i = 0; i < dataconvert.length; i++) {
+                  for (var j = 0; j <= inc; j++) {
+                      if ( dataconvert[i].id == request.fields['data[$j][extDocId]']){
+                          dataconvert[i].condition = "pending";
+                      }
+                  }
+              }
+              await boxPembayaranReport.delete(key);
+              await boxPembayaranReport.put(key,await tojsondata(dataconvert));
+            }
           }
         } on SocketException {
             // await createLogTes("socketexception");
-            //  for (var i = 0; i < _datareportpenjualan.length; i++) {
-            //     for (var j = 0; j <= inc; j++) {
-            //         if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
-            //             _datareportpenjualan[i].condition = "pending";
-            //         }
-            //     }
-            // }
-            // await boxreportpenjualan.delete(key);
-            // await boxreportpenjualan.put(key,_datareportpenjualan);
-            // print("socketexception");
+             for (var i = 0; i < dataconvert.length; i++) {
+                for (var j = 0; j <= inc; j++) {
+                    if ( dataconvert[i].id == request.fields['data[$j][extDocId]']){
+                        dataconvert[i].condition = "pending";
+                    }
+                }
+            }
+            await boxPembayaranReport.delete(key);
+            await boxPembayaranReport.put(key,await tojsondata(dataconvert));
+            print("socketexception");
         } catch (e) {
             // await createLogTes("$e abnormal");
-            //  for (var i = 0; i < _datareportpenjualan.length; i++) {
-            //     for (var j = 0; j <= inc; j++) {
-            //         if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
-            //             _datareportpenjualan[i].condition = "pending";
-            //         }
-            //     }
-            // }
-            // await boxreportpenjualan.delete(key);
-            // await boxreportpenjualan.put(key,_datareportpenjualan);
-            // print("$e abnormal ");
+             for (var i = 0; i < dataconvert.length; i++) {
+                for (var j = 0; j <= inc; j++) {
+                    if ( dataconvert[i].id == request.fields['data[$j][extDocId]']){
+                        dataconvert[i].condition = "pending";
+                    }
+                }
+            }
+            await boxPembayaranReport.delete(key);
+            await boxPembayaranReport.put(key,await tojsondata(dataconvert));
+            print("$e abnormal ");
         }
 
         await closebox();
+  }
+
+  tojsondata(List<ReportPembayaranModel> listreport){
+    List<Map<String, dynamic>> listreportmap = listreport.map((clist) {
+      var _pdata = [];
+      for (var i = 0; i < clist.paymentList.length; i++) {
+        _pdata.add({
+          'jenis' : clist.paymentList[i].jenis,
+          'nomor' : clist.paymentList[i].nomor,
+          'tipe' : clist.paymentList[i].tipe,
+          'jatuhtempo' : clist.paymentList[i].jatuhtempo,
+          'value' : clist.paymentList[i].value
+        });
+      }
+      return {
+          'condition' : clist.condition,
+          'id': clist.id,
+          'total' : clist.total,
+          'tanggal' :clist.tanggal,
+          'waktu' : clist.waktu,
+          'listpayment' : _pdata
+      };
+    }).toList();
+    var datamerge = {
+         "data" : listreportmap
+    };
+    return jsonEncode(datamerge);
   }
   
   //end taking order vendor section

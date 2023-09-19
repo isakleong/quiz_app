@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -9,6 +10,7 @@ import 'package:sfa_tools/models/reportpembayaranmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/paymentlist.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import '../common/app_config.dart';
+import '../models/loginmodel.dart';
 import '../models/masteritemvendor.dart';
 import '../models/paymentdata.dart';
 import '../models/penjualanpostmodel.dart';
@@ -16,6 +18,7 @@ import '../models/vendor.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
 import 'package:http/http.dart' as http;
 
+import '../tools/service.dart';
 import 'laporan_controller.dart';
 
 class PembayaranController extends GetxController {
@@ -44,6 +47,7 @@ class PembayaranController extends GetxController {
   late Box vendorBox; 
   late Box masteritemvendorbox;
   late Box postpembayaranbox;
+  late Box tokenbox;
   String globalkeybox = "";
   String activevendor = "";
   List<Vendor> vendorlist = <Vendor>[];
@@ -82,6 +86,7 @@ class PembayaranController extends GetxController {
       boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
       masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
       postpembayaranbox = await Hive.openBox("postpembayaranbox");
+      tokenbox = await Hive.openBox('tokenbox');
     } catch (e) {
       
     }
@@ -94,6 +99,7 @@ class PembayaranController extends GetxController {
       vendorBox.close();
       masteritemvendorbox.close();
       postpembayaranbox.close();
+      tokenbox.close();
     } catch (e) {
       
     }
@@ -520,12 +526,20 @@ class PembayaranController extends GetxController {
 
   }
 
+  gettoken() async {
+      String salesId = await Utils().getParameterData('sales');
+      var tokenboxdata = await tokenbox.get(salesId);
+      var dectoken = Utils().decrypt(tokenboxdata);
+      return dectoken;
+  }
+
   sendPaymentToApi(List<Map<String, dynamic>> data,List<PenjualanPostModel> listpostdata) async {
     // print(data);
     String noorder = data[0]['extDocId'];
     LaporanController controllerLaporan = callcontroller("laporancontroller");
     await getbox();
 
+    var dectoken = await gettoken();
     var datareportpembayaran = json.decode(await boxPembayaranReport.get(globalkeybox));
     List<ReportPembayaranModel> dataconvert = [];
 
@@ -561,6 +575,10 @@ class PembayaranController extends GetxController {
         request.fields['data[$i][dueDate]'] = data[i]['dueDate'];
         request.fields['data[$i][serialNum]'] = data[i]['serialNum'];
       }
+        request.headers.addAll({
+          'Authorization': 'Bearer $dectoken',
+          'Accept': 'application/json',
+        });
       
       try {
         print(request.fields);
@@ -612,10 +630,19 @@ class PembayaranController extends GetxController {
           }
         } else {
           print("else 3");
-          dataconvert[idx].condition = "pending";
-          await boxPembayaranReport.delete(globalkeybox);
-          await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
-          print(responseString);
+          var jsonResponse = jsonDecode(responseString);
+          try {
+            if (jsonResponse["code"] == "300"){
+              await loginapivendor();
+            }
+          } catch (e) {
+            
+          } finally{
+            dataconvert[idx].condition = "pending";
+            await boxPembayaranReport.delete(globalkeybox);
+            await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
+            print(responseString);
+          }
         }
       } on SocketException {
           dataconvert[idx].condition = "pending";
@@ -633,6 +660,30 @@ class PembayaranController extends GetxController {
       }
   }
   
+  loginapivendor() async {
+    try {
+      String salesiddata = await Utils().getParameterData("sales");
+      String encparam = await Utils().encryptsalescodeforvendor(salesiddata);
+      var params = {
+        "username" : encparam
+      };
+      print(params);
+      var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
+            params,
+            Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+      var dataresp = LoginResponse.fromJson(result);
+      print(dataresp.data!.token);
+      print(await Utils().decrypt(dataresp.data!.token.toString()));
+      if(!tokenbox.isOpen){
+        tokenbox = await Hive.openBox('tokenbox');
+      }
+      tokenbox.delete(salesiddata);
+      tokenbox.put(salesiddata, dataresp.data!.token);
+    } catch (e) {
+      
+    }
+  }
+
   callcontroller(String controllername){
     if(controllername.toLowerCase() == "LaporanController".toLowerCase()){
       final isControllerRegistered = GetInstance().isRegistered<LaporanController>();

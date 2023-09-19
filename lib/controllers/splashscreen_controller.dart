@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:encrypt/encrypt.dart' as enc;
@@ -16,6 +18,7 @@ import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/controllers/background_service_controller.dart';
 import 'package:sfa_tools/models/customer.dart';
+import 'package:sfa_tools/models/loginmodel.dart';
 import 'package:sfa_tools/models/module.dart';
 import 'package:sfa_tools/models/servicebox.dart';
 import 'package:sfa_tools/models/vendor.dart';
@@ -51,6 +54,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   late Box boxpostpenjualan;
   late Box boxreportpenjualan;
   late Box shiptobox;
+  late Box tokenbox;
 
   @override
   void onInit() {
@@ -519,10 +523,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
             print("-1 <>");
               await getBox();
               var datacustomerbox = await customerBox.get(customerIdParams.value);
+              var datatoken = await tokenbox.get(salesIdParams.value);
+              if(datatoken == null){
+                await loginapivendor();
+              }
               await closebox();
                 if(datacustomerbox!= null){
                   Customer custdata = datacustomerbox;
-                  print(await encryptsalescodeforvendor(salesIdParams.value));
                   if(!Utils().isDateNotToday(Utils().formatDate(custdata.timestamp))){
                     await checkofflinevendor();
                     await moduleBox.clear();
@@ -674,6 +681,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       customerBox = await Hive.openBox('customerBox');
       boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
       boxreportpenjualan = await Hive.openBox('penjualanReport');
+      tokenbox = await Hive.openBox('tokenbox');
     } catch (e) {
     }
   }
@@ -685,6 +693,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       customerBox.close();
       boxpostpenjualan.close();
       boxreportpenjualan.close();
+      tokenbox.close();
     } catch (e) {
     }
   }
@@ -693,8 +702,15 @@ class SplashscreenController extends GetxController with StateMixin implements W
     await getBox();
     try {
       print("getvendor");
-      print(await encryptsalescodeforvendor(salesIdParams.value));
-      var result = await ApiClient().getData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/setting/customer/${customerIdParams.value}");
+      // print(await encryptsalescodeforvendor(salesIdParams.value));
+      var tokenboxdata = await tokenbox.get(salesIdParams.value);
+      var dectoken = Utils().decrypt(tokenboxdata);
+      print(dectoken);
+      var result = await ApiClient().getData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/setting/customer/${customerIdParams.value}",options: Options(headers: {
+          'Authorization': 'Bearer ${dectoken}',
+          'Accept': 'application/json',
+      },));
+      print(result);
       var data = VendorInfo.fromJson(result);
       if(data.availVendors.isNotEmpty){
         int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
@@ -720,6 +736,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
     } catch (e) {
       moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+      await loginapivendor();
     }
     
     await closebox();
@@ -877,26 +894,28 @@ class SplashscreenController extends GetxController with StateMixin implements W
     }
   }
 
-  encryptsalescodeforvendor(String toencrypt){
-    final key = enc.Key.fromUtf8("fVkhoDWRAd4Rgj6l"); //hardcode 
-    final iv = enc.IV.fromUtf8("tGYINBYOtJ2tZoZJ"); //hardcode 
-
-    final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc));
-    final encrypted = encrypter.encrypt(toencrypt, iv: iv);
-
-    return encrypted.base64;
+  loginapivendor() async {
+    try {
+      String encparam = await Utils().encryptsalescodeforvendor(salesIdParams.value);
+      var params = {
+        "username" : encparam
+      };
+      print(params);
+      var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
+            params,
+            Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+      var dataresp = LoginResponse.fromJson(result);
+      print(dataresp.data!.token);
+      print(await Utils().decrypt(dataresp.data!.token.toString()));
+      if(!tokenbox.isOpen){
+        tokenbox = await Hive.openBox('tokenbox');
+      }
+      tokenbox.delete(salesIdParams.value);
+      tokenbox.put(salesIdParams.value, dataresp.data!.token);
+    } catch (e) {
+      
+    }
   }
-
-//   String decrypt(String encrypted) {
-//   final key = Key.fromUtf8("1245714587458888"); //hardcode combination of 16 character
-//   final iv = IV.fromUtf8("e16ce888a20dadb8"); //hardcode combination of 16 character
-
-//   final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
-//   Encrypted enBase64 = Encrypted.from64(encrypted);
-//   final decrypted = encrypter.decrypt(enBase64, iv: iv);
-//   return decrypted;
-// }
-
 
   @override
   void didChangeAccessibilityFeatures() {}
