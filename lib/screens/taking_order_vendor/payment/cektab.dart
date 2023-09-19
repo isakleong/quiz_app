@@ -152,7 +152,7 @@ class CekTab extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        print(_takingOrderVendorController.nmbank.value.text);
+                        //print(_takingOrderVendorController.nmbank.value.text);
                         if (_takingOrderVendorController
                                     .jatuhtempotgl.value.text ==
                                 "" ||
@@ -160,7 +160,7 @@ class CekTab extends StatelessWidget {
                                 "" ||
                             _takingOrderVendorController.nomorcek.value.text ==
                                 "") {
-                          print("here");
+                          //print("here");
                           Get.snackbar(
                               "Error", "Pastikan semua form sudah di isi !",
                               backgroundColor: Colors.red.withOpacity(0.5));

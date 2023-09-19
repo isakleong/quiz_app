@@ -354,7 +354,7 @@ class ReturController extends GetxController {
     if (flag == "null") {
       List<CartModel> items = <CartModel>[];
       for (var i = 0; i < selectedProducttarikbarang[0].detailProduct.length; i++) {
-        print(" isi listqty ${listQtytb[i]}");
+        //print(" isi listqty ${listQtytb[i]}");
         if (listQtytb[i] != 0 ) {
           items.add(CartModel(
               selectedProducttarikbarang[0].kdProduct,

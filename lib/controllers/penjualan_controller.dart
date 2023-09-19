@@ -147,7 +147,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   
   getproduct({String? type, String? custid}) async {
     try {
-      print("heree");
+      //print("heree");
       bool isdev = false;
       var params =  {
         'customerNo': isdev ? "10A01010007" : custid,
@@ -158,7 +158,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
               HttpHeaders.contentTypeHeader: "application/json",'Authorization': 'Bearer ${dectoken}','Accept': 'application/json'
             }
           ));
-      print(getVendorItem);
+      //print(getVendorItem);
       masteritemvendorbox.delete(globalkeybox);
       masteritemvendorbox.put(globalkeybox, getVendorItem);
       var data = MasterItemVendor.fromJson(getVendorItem);
@@ -185,7 +185,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         }
       }
     }catch (e) {
-      print(e.toString());
+      //print(e.toString());
       if(type == null){
         needtorefresh.value = true;
       } else {
@@ -225,7 +225,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         listAddress.add(addressdata[i]);
       }
     }
-    print("***********");
+    //print("***********");
     try {
     //get vendor data
       if(!vendorBox.isOpen) await getBox();
@@ -234,19 +234,19 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       for (var i = 0; i < datavendor.length; i++) {
         vendorlist.add(datavendor[i]);
       }
-    print("*******2****$activevendor");
+    //print("*******2****$activevendor");
       idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
-    print("*******2.1****$idvendor");
+    //print("*******2.1****$idvendor");
       globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
-    print("*******2.2****");
+    //print("*******2.2****");
       var databox = masteritemvendorbox.get(globalkeybox);
-    print("*******2.3****");
+    //print("*******2.3****");
       if (databox != null){
         var dataconv = MasterItemVendor.fromJson(databox);
         totalpiutang.value = dataconv.receivables!;
         totaljatuhtempo.value = dataconv.overdue_invoices!;
       }
-    print("*******3****");
+    //print("*******3****");
       var itemvendorhive = itemvendorbox.get(globalkeybox);
       if(itemvendorhive != null){
         listProduct.clear();
@@ -263,16 +263,16 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         await getproduct(custid: custid);
       }
     await getpenjualanstate();
-    print("***********");
+    //print("***********");
     } catch (e) {
-      print(e.toString());
+      //print(e.toString());
       needtorefresh.value = true;
     }
     await closebox();
   }
 
   addToCart(){
-    print(selectedProduct.value[0].detailProduct[0].hrg);
+    //print(selectedProduct.value[0].detailProduct[0].hrg);
     for (var i = 0; i < selectedProduct.value[0].detailProduct.length; i++) {
       if (listQty[i] != 0) {
         cartList.add(CartModel(
@@ -293,7 +293,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     selectedValue.value = "";
     selectedProduct.clear();
     cnt.value.clear();
-    print(cartList.length);
+    //print(cartList.length);
     fillCartDetail();
   }
 
@@ -318,7 +318,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       if (cartDetailList.isEmpty) {
         List<CartModel> data = [CartModel(cartList[i].kdProduct, cartList[i].nmProduct,cartList[i].Qty, cartList[i].Satuan, cartList[i].hrgPerPieces, cartList[i].iduom,cartList[i].iditem,cartList[i].komisi)];
         listAnimation.add(Tween<Offset>(begin: Offset((-0.9 - (i * 0.06)), 0),end: const Offset(0, 0)).animate(CurvedAnimation(parent: AnimationController(vsync: this,duration: const Duration(milliseconds: 700))..forward(),curve: Curves.easeInOut)));
-        print("ini item id yang dimasukkan ${cartList[i].iditem}");
+        //print("ini item id yang dimasukkan ${cartList[i].iditem}");
         cartDetailList.add(CartDetail(cartList[i].kdProduct,cartList[i].nmProduct,data,cartList[i].iditem));
       } else {
         for (var j = 0; j < cartDetailList.length; j++) {
@@ -345,14 +345,14 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
               List<CartModel> data = [CartModel(cartList[i].kdProduct,cartList[i].nmProduct,cartList[i].Qty,cartList[i].Satuan,cartList[i].hrgPerPieces, cartList[i].iduom,cartList[i].iditem,cartList[i].komisi)];
               listAnimation.add(Tween<Offset>(begin: Offset((-0.9 - (i * 0.06)), 0),end: const Offset(0, 0)).animate(CurvedAnimation(parent: AnimationController(vsync: this,duration: const Duration(milliseconds: 700))..forward(),curve: Curves.easeInOut)));
               cartDetailList.add(CartDetail(cartList[i].kdProduct, cartList[i].nmProduct, data, cartList[i].iditem));
-              print("ini item id yang dimasukkan ${cartList[i].iditem}");
+              //print("ini item id yang dimasukkan ${cartList[i].iditem}");
             }
           }
         }
       }
     }
     if(type == null){ 
-      print("here");
+      //print("here");
       if(cartList.isNotEmpty){
         convertalldatatojson();
       } else {
@@ -621,7 +621,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     }
     var dectoken = await gettoken();
     final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}sales-orders/store');
-      print(vendorlist[idvendor].baseApiUrl);
+      //print(vendorlist[idvendor].baseApiUrl);
     final request = http.MultipartRequest('POST', url);
     request.headers.addAll({
       'Accept': 'application/json',
@@ -640,17 +640,17 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
         request.fields['data[$i][komisi]'] = data[i]['komisi'];
       }try {
-        print(request.fields);
+        //print(request.fields);
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
 
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(responseString);
-          print(responseString);
+          //print(responseString);
           if(jsonResponse["success"] == true){
-            print("success 1");
+            //print("success 1");
             if(jsonResponse["data"][0]["success"] == true){
-                print("success 2");
+                //print("success 2");
                 datareportpenjualan[idx].condition = "success";
                 listpostdata.removeAt(idxpost);
                 await boxpostpenjualan.delete(globalkeybox);
@@ -681,14 +681,14 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
                 }
             }
           } else {
-            print("on else");
+            //print("on else");
             datareportpenjualan[idx].condition = "pending";
             await boxreportpenjualan.delete(globalkeybox);
             await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
           }
 
         } else {
-          print("on else not 200");
+          //print("on else not 200");
           var jsonResponse = jsonDecode(responseString);
           try {
             if (jsonResponse["code"] == "300"){
@@ -700,19 +700,19 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
             datareportpenjualan[idx].condition = "pending";
             await boxreportpenjualan.delete(globalkeybox);
             await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
-            print(responseString);
+            //print(responseString);
           }
         }
       } on SocketException {
           datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
-          print("socketexception");
+          //print("socketexception");
       } catch (e) {
           datareportpenjualan[idx].condition = "pending";
           await boxreportpenjualan.delete(globalkeybox);
           await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
-          print("$e abnormal ");
+          //print("$e abnormal ");
       }  finally{
           await closebox();
           controllerLaporan.getReportList(true);
@@ -726,17 +726,17 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       var params = {
         "username" : encparam
       };
-      print(params);
+      //print(params);
       var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
       var dataresp = LoginResponse.fromJson(result);
-      print(dataresp.data!.token);
-      print(await Utils().decrypt(dataresp.data!.token.toString()));
+      //print(dataresp.data!.token);
+      //print(await Utils().decrypt(dataresp.data!.token.toString()));
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');
       }
-      print("already in");
+      //print("already in");
       tokenbox.delete(salesiddata);
       tokenbox.put(salesiddata, dataresp.data!.token);
     } catch (e) {

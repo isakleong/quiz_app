@@ -74,10 +74,10 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                             ),
                             child: InkWell(
                                 onTap: () {
-                                  print((1 * width).toString());
-                                  print(_takingOrderVendorController
-                                      .cartDetailList[index].nmProduct
-                                      .toString());
+                                  //print((1 * width).toString());
+                                  //print(_takingOrderVendorController
+                                   //   .cartDetailList[index].nmProduct
+                                    //  .toString());
                                   // _takingOrderVendorController.showProdukSerupa(
                                   //   _takingOrderVendorController
                                   //       .cartDetailList[index],

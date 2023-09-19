@@ -165,7 +165,7 @@ class ShopCartTarikBarang extends StatelessWidget {
                             : _takingOrderVendorController
                                 .selectedAlasantb.value,
                         onChanged: (data) {
-                          print(data);
+                          //print(data);
                           _takingOrderVendorController.selectedAlasantb.value =
                               data!;
                         },

@@ -27,9 +27,9 @@ class LaporanController extends GetxController {
       boxreportpenjualan = await Hive.openBox('penjualanReport');
       vendorBox = await Hive.openBox('vendorBox');
       boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
-      print("try 1");
+      //print("try 1");
     } catch (e) {
-      print("catch");
+      //print("catch");
     }
   }
   
@@ -45,7 +45,7 @@ class LaporanController extends GetxController {
 
   getReportList(bool isclosebox) async {
     await getBox();
-    print("get report list");
+    //print("get report list");
     //getting key for box
     String salesid = await Utils().getParameterData("sales");
     String cust = await Utils().getParameterData("cust");
@@ -88,7 +88,7 @@ class LaporanController extends GetxController {
       var converteddatapembayaran = json.decode(datapembayaranreport);
       for (var i = 0; i < converteddatapembayaran['data'].length; i++) {
         if(Utils().isDateNotToday(Utils().formatDate(converteddatapembayaran['data'][i]['tanggal'])) && converteddatapembayaran['data'][i]['condition'] == "success"){
-          print("old report " + converteddatapembayaran['data'][i]['id']);
+          //print("old report " + converteddatapembayaran['data'][i]['id']);
         } else {
           List<PaymentData> listPayment = [];
           var datalistpayment = converteddatapembayaran['data'][i]['listpayment'];
@@ -103,7 +103,7 @@ class LaporanController extends GetxController {
 
     //read filter condition
     if (choosedReport.value.contains("Semua") || choosedReport.value == "") {
-      print("semua");
+      //print("semua");
       //
       listReportPenjualanShow.value.clear();
       listReportPenjualanShow.value.addAll(listReportPenjualan);
@@ -114,7 +114,7 @@ class LaporanController extends GetxController {
       allReportlength.value = listReportPenjualanShow.length + listReportPembayaranshow.length;
     } 
     else if (choosedReport.value == "Transaksi Penjualan") {
-      print("Penjualan");
+      //print("Penjualan");
       listReportPembayaranshow.value.clear();
       //
       listReportPenjualanShow.value.clear();
@@ -123,7 +123,7 @@ class LaporanController extends GetxController {
       allReportlength.value = listReportPenjualanShow.length ;
     } 
     else if (choosedReport.value == "Transaksi Pembayaran") {
-      print("Pembayaran");
+      //print("Pembayaran");
       //
       listReportPenjualanShow.value.clear();
       //
@@ -133,7 +133,7 @@ class LaporanController extends GetxController {
       allReportlength.value = listReportPembayaranshow.length;
     } 
     else if (choosedReport.value == "Transaksi Retur") {
-      print("Retur");
+      //print("Retur");
       listReportPenjualanShow.clear();
       listReportPembayaranshow.clear();
       allReportlength.value = 0;

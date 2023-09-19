@@ -491,7 +491,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
           final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
-          print(result.toString());
+          //print(result.toString());
           var data = jsonDecode(result.toString());
           data["AppModule"].map((item) {
             moduleList.add(Module.from(item));
@@ -522,7 +522,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           // }
           var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
           if(idx != -1){
-          print("-1 <>");
+          //print("-1 <>");
             await getBox();
             var datacustomerbox = await customerBox.get(customerIdParams.value);
             var datatoken = await tokenbox.get(salesIdParams.value);
@@ -545,7 +545,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           }
           await postTrackingVersion();
         } catch (e) {
-            print("ctc");
+          //print("ctc");
 
           errorMessage(e.toString());
           openErrorDialog();
@@ -703,16 +703,16 @@ class SplashscreenController extends GetxController with StateMixin implements W
   getVendor() async { 
     await getBox();
     try {
-      print("getvendor");
+      //print("getvendor");
       // print(await encryptsalescodeforvendor(salesIdParams.value));
       var tokenboxdata = await tokenbox.get(salesIdParams.value);
       var dectoken = Utils().decrypt(tokenboxdata);
-      print(dectoken);
+      //print(dectoken);
       var result = await ApiClient().getData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/setting/customer/${customerIdParams.value}",options: Options(headers: {
           'Authorization': 'Bearer ${dectoken}',
           'Accept': 'application/json',
       },));
-      print(result);
+      //print(result);
       var data = VendorInfo.fromJson(result);
       if(data.availVendors.isNotEmpty){
         int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
@@ -745,7 +745,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   }
 
   postTrackingVersion() async {
-    print("post");
+    //print("post");
     var trackVersionBox = await Hive.openBox('trackVersionBox');
     var trackVersion = trackVersionBox.get('trackVersion');
     var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
@@ -901,13 +901,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
       var params = {
         "username" : encparam
       };
-      print(params);
+      //print(params);
       var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
       var dataresp = LoginResponse.fromJson(result);
-      print(dataresp.data!.token);
-      print(await Utils().decrypt(dataresp.data!.token.toString()));
+      //print(dataresp.data!.token);
+      //print(await Utils().decrypt(dataresp.data!.token.toString()));
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');
       }

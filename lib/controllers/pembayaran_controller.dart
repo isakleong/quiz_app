@@ -233,7 +233,7 @@ class PembayaranController extends GetxController {
       if(globalkeybox == "") await getGlobalKeyBox();
       savepembayaranstate();
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -241,7 +241,7 @@ class PembayaranController extends GetxController {
     try {
       for (var i = 0; i < listpaymentdata.length; i++) {
         if (listpaymentdata[i].jenis == jenis) {
-          print(i);
+          //print(i);
           Get.back();
           PaymentData dataTemp = listpaymentdata[i];
           // listpaymentdata.removeWhere((element) => element.jenis == jenis);
@@ -303,7 +303,7 @@ class PembayaranController extends GetxController {
       if(globalkeybox == "") await getGlobalKeyBox();
       savepembayaranstate();
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -337,7 +337,7 @@ class PembayaranController extends GetxController {
       if(globalkeybox == "") await getGlobalKeyBox();
       savepembayaranstate();
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -581,17 +581,17 @@ class PembayaranController extends GetxController {
         });
       
       try {
-        print(request.fields);
+        //print(request.fields);
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
-        print("ini idx : $idx ${dataconvert[idx].id} ini idxpost $idxpost ${listpostdata[idxpost].dataList}");
+        //print("ini idx : $idx ${dataconvert[idx].id} ini idxpost $idxpost ${listpostdata[idxpost].dataList}");
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(responseString);
-          print(responseString);
+          //print(responseString);
           if(jsonResponse["success"] == true){
-            print("success 1");
+            //print("success 1");
             if(jsonResponse["data"][0]["success"] == true){
-                print("success 2");
+                //print("success 2");
                 dataconvert[idx].condition = "success";
                 listpostdata.removeAt(idxpost);
                 await postpembayaranbox.delete(globalkeybox);
@@ -601,7 +601,7 @@ class PembayaranController extends GetxController {
                 await boxPembayaranReport.delete(globalkeybox);
                 await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
             } else {
-                print("else 1");
+                //print("else 1");
               var flag = 0;
                 for (var i = 0; i < jsonResponse["data"][0]["errors"].length; i++) {
                   if(jsonResponse["data"][0]["errors"][i]['code'] == AppConfig().orderalreadyexistvendor){
@@ -623,13 +623,13 @@ class PembayaranController extends GetxController {
                 }
             }
           } else {
-            print("else 2");
+            //print("else 2");
             dataconvert[idx].condition = "pending";
             await boxPembayaranReport.delete(globalkeybox);
             await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
           }
         } else {
-          print("else 3");
+          //print("else 3");
           var jsonResponse = jsonDecode(responseString);
           try {
             if (jsonResponse["code"] == "300"){
@@ -641,19 +641,19 @@ class PembayaranController extends GetxController {
             dataconvert[idx].condition = "pending";
             await boxPembayaranReport.delete(globalkeybox);
             await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
-            print(responseString);
+            //print(responseString);
           }
         }
       } on SocketException {
           dataconvert[idx].condition = "pending";
           await boxPembayaranReport.delete(globalkeybox);
           await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
-          print("socketexception");
+          //print("socketexception");
       } catch (e) {
           dataconvert[idx].condition = "pending";
           await boxPembayaranReport.delete(globalkeybox);
           await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
-          print("$e abnormal ");
+          //print("$e abnormal ");
       }  finally{
           await closebox();
           controllerLaporan.getReportList(true);
@@ -667,13 +667,13 @@ class PembayaranController extends GetxController {
       var params = {
         "username" : encparam
       };
-      print(params);
+      //print(params);
       var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
       var dataresp = LoginResponse.fromJson(result);
-      print(dataresp.data!.token);
-      print(await Utils().decrypt(dataresp.data!.token.toString()));
+      //print(dataresp.data!.token);
+      //print(await Utils().decrypt(dataresp.data!.token.toString()));
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');
       }

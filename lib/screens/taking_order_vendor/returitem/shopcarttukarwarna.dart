@@ -60,7 +60,7 @@ class ShopCartTukarWarna extends StatelessWidget {
                                   _takingOrderVendorController
                                       .selectedProductTukarWarna[0]
                                       .kdProduct)) {
-                            print("already added");
+                            //print("already added");
                             _takingOrderVendorController
                                 .showEditProdukPengganti(context);
                           } else {
