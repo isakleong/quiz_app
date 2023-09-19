@@ -115,7 +115,7 @@ class InfoProdukPage extends StatelessWidget {
         );
       },
       onTap: (NodeData data) {
-        print('index = ${data.index}');
+        //print('index = ${data.index}');
       },
       controller: _takingOrderVendorController.treecontroller,
     );

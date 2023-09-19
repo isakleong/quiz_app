@@ -97,7 +97,7 @@ class PaymentList extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          print("edit");
+                          //print("edit");
                           _takingOrderVendorController.handleeditpayment(jenis);
                         },
                         child: Container(
@@ -123,7 +123,7 @@ class PaymentList extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          print("delete");
+                          //print("delete");
                           _takingOrderVendorController.handleDeleteItemPayment(
                               metode, jenis);
                         },

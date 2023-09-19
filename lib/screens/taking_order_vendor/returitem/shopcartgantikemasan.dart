@@ -168,7 +168,7 @@ class ShopCartGantiKemasan extends StatelessWidget {
                             : _takingOrderVendorController
                                 .selectedAlasangk.value,
                         onChanged: (data) {
-                          print(data);
+                          //print(data);
                           _takingOrderVendorController.selectedAlasangk.value =
                               data!;
                         },

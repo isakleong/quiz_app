@@ -10,7 +10,7 @@ import 'package:sfa_tools/tools/logging.dart';
 class ApiClient {
   Future getData(String url, String path, {int? timeouttime, var options}) async {
     try {
-      print(url);
+      //print(url);
       final dio = Dio(  
         BaseOptions(baseUrl: url,connectTimeout: Duration(seconds: timeouttime ?? 5 ))
       )..interceptors.add(Logging());
@@ -39,14 +39,14 @@ class ApiClient {
         return response.data;
       }
       else{
-        print("heree");
+        //print("heree");
         final response = await dio.get(path,options: options);
-        print(response);
+        //print(response);
         return response.data;
       }
 
     } catch (e) {
-      print(e.toString());
+      //print(e.toString());
       if(url == "") {
         throw Exception(Message.errorConnection);
       } else {

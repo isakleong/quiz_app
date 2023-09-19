@@ -455,7 +455,7 @@ class Backgroundservicecontroller {
             final fileDate = DateTime.parse(fileDateStr);
             if (fileDate.isBefore(sevenDaysAgo) || fileDate.isAtSameMomentAs(sevenDaysAgo)) {
               await entity.delete();
-              print('Deleted old log file: ${entity.path}');
+              //print('Deleted old log file: ${entity.path}');
             }
           }
         }
@@ -468,9 +468,9 @@ class Backgroundservicecontroller {
 
         await file.writeAsString("$content\n", mode: FileMode.append);
 
-        print('File written successfully.');
+        //print('File written successfully.');
       } catch (e) {
-        print('Error writing to file: $e');
+        //print('Error writing to file: $e');
       }
     }
   }
@@ -493,22 +493,22 @@ class Backgroundservicecontroller {
       List<dynamic> keys = await getListKey('penjualan');
       await createLogTes("finish get key");
       await closebox();
-      print("keys penjualan");
+      // print("keys penjualan");
       if(keys.isNotEmpty){
-        print("keys pemnjualan");
+        // print("keys pemnjualan");
         await createLogTes("key not empty");
         for (var m = 0; m < keys.length; m++) {
           await sendPendingData(keys[m]);
         }
       }
 
-      //pending pembayaran **api not ready**
+      //pending pembayaran
       await getBox();
-      print("get list key pembayran");
+      // print("get list key pembayran");
       List<dynamic> keyspembayaran = await getListKey('pembayaran');
       await closebox();
       if(keyspembayaran.isNotEmpty){
-      print("keyspembayaran is not empty");
+      // print("keyspembayaran is not empty");
         for (var m = 0; m < keyspembayaran.length; m++) {
           await sendPendingDatapembayaran(keyspembayaran[m]);
         }
@@ -834,13 +834,13 @@ class Backgroundservicecontroller {
       var params = {
         "username" : encparam
       };
-      print(params);
+      //print(params);
       var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
       var dataresp = LoginResponse.fromJson(result);
-      print(dataresp.data!.token);
-      print(await Utils().decrypt(dataresp.data!.token.toString()));
+      //print(dataresp.data!.token);
+      //print(await Utils().decrypt(dataresp.data!.token.toString()));
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');
       }
@@ -900,7 +900,7 @@ class Backgroundservicecontroller {
           'Authorization': 'Bearer ${dectoken}',
           'Accept': 'application/json',
         });
-        print(request.fields.toString());
+        //print(request.fields.toString());
         try {
           await createLogTes(request.fields.toString());
           final response = await request.send();
@@ -909,7 +909,7 @@ class Backgroundservicecontroller {
 
           if (response.statusCode == 200) {
             var jsonResponse = jsonDecode(responseString);
-            print(jsonResponse);
+            //print(jsonResponse);
             if(jsonResponse["success"] == true){
                 // print("response true");
                 var loopdatalength = jsonResponse['data'].length;
@@ -940,7 +940,7 @@ class Backgroundservicecontroller {
                 await boxPembayaranReport.delete(key);
                 await boxPembayaranReport.put(key,tojsondata(dataconvert));
             } else {
-              print("response not true");
+              //print("response not true");
               for (var i = 0; i < dataconvert.length; i++) {
                   for (var j = 0; j <= inc; j++) {
                       if ( dataconvert[i].id == request.fields['data[$j][extDocId]']){
@@ -983,7 +983,7 @@ class Backgroundservicecontroller {
             }
             await boxPembayaranReport.delete(key);
             await boxPembayaranReport.put(key,await tojsondata(dataconvert));
-            print("socketexception");
+            //print("socketexception");
         } catch (e) {
             // await createLogTes("$e abnormal");
              for (var i = 0; i < dataconvert.length; i++) {
@@ -995,7 +995,7 @@ class Backgroundservicecontroller {
             }
             await boxPembayaranReport.delete(key);
             await boxPembayaranReport.put(key,await tojsondata(dataconvert));
-            print("$e abnormal ");
+            //print("$e abnormal ");
         }
 
         await closebox();
