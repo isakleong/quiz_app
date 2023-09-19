@@ -59,9 +59,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
   @override
   void onInit() {
     super.onInit();
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String currentVersion = packageInfo.version;
-    appVersion.value = currentVersion;
 
     isError(false);
     // Add the controller as an observer when it's initialized
@@ -500,6 +497,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
           var moduleBox = await Hive.openBox<Module>('moduleBox');
           await moduleBox.clear();
           await moduleBox.addAll(moduleList);
+          
+          PackageInfo packageInfo = await PackageInfo.fromPlatform();
+          String currentVersion = packageInfo.version;
+          appVersion.value = currentVersion;
 
           // NOT USED ANYMORE (BECAUSE AUTO UPDATE FROM SFA)
           // await checkVersion(data["AppVersion"]);
