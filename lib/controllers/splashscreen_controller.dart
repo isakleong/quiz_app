@@ -59,6 +59,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
   @override
   void onInit() {
     super.onInit();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String currentVersion = packageInfo.version;
+    appVersion.value = currentVersion;
+
     isError(false);
     // Add the controller as an observer when it's initialized
     WidgetsBinding.instance.addObserver(this);
