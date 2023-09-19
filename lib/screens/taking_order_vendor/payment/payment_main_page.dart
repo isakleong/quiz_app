@@ -48,7 +48,9 @@ class PaymentMainPage extends StatelessWidget {
                             // Add any other child widgets you want inside the shimmering container
                           ),
                         ) :
-                        PiutangCard(nmtoko : _takingOrderVendorController.nmtoko.value,totalpiutang: _takingOrderVendorController.totalpiutang.value,totaljatuhtempo: _takingOrderVendorController.totalpiutang.value,)),
+                        PiutangCard(nmtoko : _takingOrderVendorController.nmtoko.value,
+                        totalpiutang: _takingOrderVendorController.totalpiutang.value == "0" || _takingOrderVendorController.totalpiutang.value == "null" ? "0" : "${Utils().formatNumber(int.parse( _takingOrderVendorController.totalpiutang.value))}",
+                        totaljatuhtempo: _takingOrderVendorController.totaljatuhtempo.value == "0" || _takingOrderVendorController.totaljatuhtempo.value == "null" ? "0" : "${Utils().formatNumber(int.parse( _takingOrderVendorController.totaljatuhtempo.value))}")),
                     const SizedBox(
                       height: 15,
                     ),

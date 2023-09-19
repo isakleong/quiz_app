@@ -117,7 +117,7 @@ void onStart(ServiceInstance service) async {
     );
   });
 
-  Timer.periodic(const Duration(minutes: 1), (timer) async {
+  Timer.periodic(const Duration(minutes: 3), (timer) async {
     await Backgroundservicecontroller().getPendingData();
 
     if (service is AndroidServiceInstance) {
@@ -493,7 +493,9 @@ class Backgroundservicecontroller {
       List<dynamic> keys = await getListKey('penjualan');
       await createLogTes("finish get key");
       await closebox();
+      print("keys penjualan");
       if(keys.isNotEmpty){
+        print("keys pemnjualan");
         await createLogTes("key not empty");
         for (var m = 0; m < keys.length; m++) {
           await sendPendingData(keys[m]);
