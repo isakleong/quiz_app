@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -521,6 +522,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
               await closebox();
                 if(datacustomerbox!= null){
                   Customer custdata = datacustomerbox;
+                  print(await encryptsalescodeforvendor(salesIdParams.value));
                   if(!Utils().isDateNotToday(Utils().formatDate(custdata.timestamp))){
                     await checkofflinevendor();
                     await moduleBox.clear();
@@ -690,6 +692,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
   getVendor() async { 
     await getBox();
     try {
+      print("getvendor");
+      print(await encryptsalescodeforvendor(salesIdParams.value));
       var result = await ApiClient().getData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/setting/customer/${customerIdParams.value}");
       var data = VendorInfo.fromJson(result);
       if(data.availVendors.isNotEmpty){
@@ -872,6 +876,27 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
     }
   }
+
+  encryptsalescodeforvendor(String toencrypt){
+    final key = enc.Key.fromUtf8("fVkhoDWRAd4Rgj6l"); //hardcode 
+    final iv = enc.IV.fromUtf8("tGYINBYOtJ2tZoZJ"); //hardcode 
+
+    final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc));
+    final encrypted = encrypter.encrypt(toencrypt, iv: iv);
+
+    return encrypted.base64;
+  }
+
+//   String decrypt(String encrypted) {
+//   final key = Key.fromUtf8("1245714587458888"); //hardcode combination of 16 character
+//   final iv = IV.fromUtf8("e16ce888a20dadb8"); //hardcode combination of 16 character
+
+//   final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+//   Encrypted enBase64 = Encrypted.from64(encrypted);
+//   final decrypted = encrypter.decrypt(enBase64, iv: iv);
+//   return decrypted;
+// }
+
 
   @override
   void didChangeAccessibilityFeatures() {}

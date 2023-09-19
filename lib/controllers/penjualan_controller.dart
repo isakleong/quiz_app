@@ -230,8 +230,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       if(itemvendorhive != null){
         listProduct.clear();
         for (var i = 0; i < itemvendorhive.length; i++) {
-          print("in heree");
-          print(itemvendorhive[i]);
+          // print("in heree");
+          // print(itemvendorhive[i]);
           listProduct.add(itemvendorhive[i]);
         }
         if(Utils().isDateNotToday(Utils().formatDate(listProduct[0].timestamp))){

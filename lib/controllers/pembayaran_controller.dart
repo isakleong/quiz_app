@@ -378,14 +378,23 @@ class PembayaranController extends GetxController {
       for (var i = 0; i < listpaymentdata.length; i++) {
         totalpayment = totalpayment + listpaymentdata[i].value;
       }
-      var length = converteddatapembayaran['data'].length + 1;
-      var inc = "0";
-      if(length < 10){
-        inc = "00$length";
-      } else if (length < 100) {
-        inc = "0$length";
+      String inc = "000";
+      var idx = 0;
+      if(converteddatapembayaran['data'].length != null) {
+          for (var i = 0; i < converteddatapembayaran['data'].length; i++) {
+            if(!Utils().isDateNotToday(Utils().formatDate(converteddatapembayaran['data'][i]['tanggal']))){
+              idx = idx + 1;
+            }
+          }
+      }
+
+      idx = idx + 1;
+      if (idx < 10){
+        inc = "00$idx";
+      } else if (idx < 100 && idx > 9){
+        inc = "0$idx";
       } else {
-        inc = length.toString();
+        inc = "$idx";
       }
       DateTime now = DateTime.now();
       String noorder = "GP-$salesid-${DateFormat('yyMMddHHmm').format(now)}-$inc";
@@ -557,7 +566,7 @@ class PembayaranController extends GetxController {
         print(request.fields);
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
-
+        print("ini idx : $idx ${dataconvert[idx].id} ini idxpost $idxpost ${listpostdata[idxpost].dataList}");
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(responseString);
           print(responseString);
@@ -596,13 +605,13 @@ class PembayaranController extends GetxController {
                 }
             }
           } else {
-                print("else 2");
+            print("else 2");
             dataconvert[idx].condition = "pending";
             await boxPembayaranReport.delete(globalkeybox);
             await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
           }
         } else {
-                print("else 3");
+          print("else 3");
           dataconvert[idx].condition = "pending";
           await boxPembayaranReport.delete(globalkeybox);
           await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));

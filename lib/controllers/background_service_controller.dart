@@ -15,6 +15,7 @@ import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/models/cartdetail.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/customer.dart';
+import 'package:sfa_tools/models/reportpembayaranmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/servicebox.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
@@ -23,6 +24,7 @@ import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import '../models/detailproductdata.dart';
 import '../models/module.dart';
+import '../models/paymentdata.dart';
 import '../models/penjualanpostmodel.dart';
 import '../models/productdata.dart';
 import '../models/quiz.dart';
@@ -488,25 +490,36 @@ class Backgroundservicecontroller {
           await sendPendingData(keys[m]);
         }
       }
-      //pending pembayaran
-      await getBox();
-      print("get list key pembayran");
-      List<dynamic> keyspembayaran = await getListKey('pembayaran');
-      await closebox();
-      if(keyspembayaran.isNotEmpty){
-      print("keyspembayaran is not empty");
-        for (var m = 0; m < keyspembayaran.length; m++) {
-          await sendPendingDatapembayaran(keyspembayaran[m]);
-        }
-      }
 
-      //clear report
+      //pending pembayaran **api not ready**
+      // await getBox();
+      // print("get list key pembayran");
+      // List<dynamic> keyspembayaran = await getListKey('pembayaran');
+      // await closebox();
+      // if(keyspembayaran.isNotEmpty){
+      // print("keyspembayaran is not empty");
+      //   for (var m = 0; m < keyspembayaran.length; m++) {
+      //     await sendPendingDatapembayaran(keyspembayaran[m]);
+      //   }
+      // }
+
+      //clear report penjualan
       await getBox();
-      List<dynamic> keysreport = await getListKeyReport();
+      List<dynamic> keysreport = await getListKeyReport('penjualan');
       await closebox();
       if(keysreport.isNotEmpty){
         for (var m = 0; m < keysreport.length; m++) {
           await removeoldreport(keysreport[m]);
+         }
+      }
+
+      //clear report pembayaran
+      await getBox();
+      List<dynamic> keysreportpembayaran = await getListKeyReport('pembayaran');
+      await closebox();
+      if(keysreportpembayaran.isNotEmpty){
+        for (var m = 0; m < keysreportpembayaran.length; m++) {
+          await removeoldreportpembayaran(keysreportpembayaran[m]);
          }
       }
   }
@@ -526,10 +539,6 @@ class Backgroundservicecontroller {
         listpost.add(listpostbox[i]);
       }
       await closebox();
-      // await createLogTes("Listpost length ${listpost.length}");
-      // for (var i = 0; i < listpost.length; i++) {
-      //   await postDataOrder(listpost[i].dataList,salesid,cust,keybox,vendorurl);
-      // }
       await postDataPembayaranAll(listpost, salesid, cust, keybox, vendorurl);
     }
   }
@@ -572,6 +581,26 @@ class Backgroundservicecontroller {
       await closebox();
   }
 
+  removeoldreportpembayaran(String keybox) async {
+      await getBox();
+      var datapembayaranlist = [];
+      var datareportpembayaran = await boxPembayaranReport.get(keybox);
+      var converteddatapembayaran = json.decode(datareportpembayaran);
+      for (var i = 0; i < converteddatapembayaran['data'].length; i++) {
+        if(Utils().isDateNotToday(Utils().formatDate(converteddatapembayaran['data'][i]['tanggal'])) && converteddatapembayaran['data'][i]['condition'] == "success"){
+        } else {
+            datapembayaranlist.add(converteddatapembayaran['data'][i]);
+        }
+      }
+      var joinedjson = {
+         "data" : datapembayaranlist
+      };
+      await boxPembayaranReport.delete(keybox);
+      await boxPembayaranReport.put(keybox,jsonEncode(joinedjson));
+      await closebox();
+
+  }
+
   getListKey(String jenis) async {
     if(jenis == 'penjualan'){
       List<dynamic> keys = boxpostpenjualan.keys.toList();
@@ -582,9 +611,14 @@ class Backgroundservicecontroller {
     }
   }
 
-  getListKeyReport() async {
+  getListKeyReport(String jenis) async {
+    if(jenis == 'penjualan'){
       List<dynamic> keys = boxreportpenjualan.keys.toList();
       return keys;
+    } else if (jenis == 'pembayaran') {
+      List<dynamic> keys = boxPembayaranReport.keys.toList();
+      return keys;
+    }
   }
 
   getBox() async {
@@ -769,10 +803,133 @@ class Backgroundservicecontroller {
         await createLogTes("on postDataPembayaranAll");
         await getBox();
         var _datareportpembayaran = await boxPembayaranReport.get(key);
-        print(_datareportpembayaran);
+
+        //create post data
         var inc = 0;
         final url = Uri.parse('${vendorurl}payments/store');
         final request = http.MultipartRequest('POST', url);
+        var _datapostpembayaran = await postpembayaranbox.get(key);
+        List<PenjualanPostModel> _postdata = <PenjualanPostModel>[];
+        for (var i = 0; i < _datapostpembayaran.length; i++) {
+          _postdata.add(_datapostpembayaran[i]);
+        }
+        for (var i = 0; i < _postdata.length; i++) {
+          // print("ini post data " + _postdata[i].toString());
+          for (var j = 0; j < _postdata[i].dataList.length; j++) {
+            // print("ini isi detail ${_postdata[i].dataList[j]['extDocId']}");
+            request.fields['data[$inc][extDocId]'] = _postdata[i].dataList[j]['extDocId'];
+            request.fields['data[$inc][customerNo]'] = _postdata[i].dataList[j]['customerNo'];
+            request.fields['data[$inc][amount]'] = _postdata[i].dataList[j]['amount'].toString();
+            request.fields['data[$inc][salespersonCode]'] = _postdata[i].dataList[j]['salespersonCode'];
+            request.fields['data[$inc][entryDate]'] = _postdata[i].dataList[j]['entryDate'];
+            request.fields['data[$inc][bankId]'] = _postdata[i].dataList[j]['bankId'].toString();
+            request.fields['data[$inc][paymentMethodId]'] = _postdata[i].dataList[j]['paymentMethodId'].toString();
+            request.fields['data[$inc][bankName]'] = _postdata[i].dataList[j]['bankName'];
+            request.fields['data[$inc][dueDate]'] = _postdata[i].dataList[j]['dueDate'];
+            request.fields['data[$inc][serialNum]'] = _postdata[i].dataList[j]['serialNum'];
+            inc = inc + 1;
+          }
+        }
+        print(request.fields.toString());
+        try {
+          await createLogTes(request.fields.toString());
+          // print(request.fields);
+          final response = await request.send();
+          final responseString = await response.stream.bytesToString();
+          // print(responseString);
+          await createLogTes(responseString);
+
+          if (response.statusCode == 200) {
+            var jsonResponse = jsonDecode(responseString);
+            print(jsonResponse);
+            if(jsonResponse["success"] == true){
+                // print("response true");
+                var loopdatalength = jsonResponse['data'].length;
+                // for (var k = 0; k < loopdatalength; k++) {
+                //   for (var i = 0; i < _datareportpenjualan.length; i++) {
+                //       if ( _datareportpenjualan[i].id == jsonResponse['data'][k]['extDocId'] && jsonResponse['data'][k]['success'] == true){
+                //         _datareportpenjualan[i].condition = "success";
+                //       } else if (_datareportpenjualan[i].id == jsonResponse['data'][k]['extDocId'] && jsonResponse['data'][k]['success'] == false){
+                //           var listerror = jsonResponse['data'][k]['errors'].length;
+                //           for (var m = 0; m < listerror; m++) {
+                //             if(jsonResponse['data'][i]['errors'][m]['code'] == AppConfig().orderalreadyexistvendor){
+                //               _datareportpenjualan[i].condition = "success";
+                //               break;
+                //             } else {
+                //               _datareportpenjualan[i].condition = "pending";
+                //             }
+                //           }
+                //       }
+                //   }
+                // }
+                
+                // List<PenjualanPostModel> postadatanew = [];
+                // for (var i = 0; i < data.length; i++) {
+                //   for (var k = 0; k < _datareportpenjualan.length; k++) {
+                //     if(data[i].dataList[0]['extDocId'] == _datareportpenjualan[k].id && _datareportpenjualan[k].condition != "success"){
+                //       postadatanew.add(data[i]);
+                //       break;
+                //     }
+                //   }
+                // }
+
+                // await boxpostpenjualan.delete(key);
+                // if(postadatanew.isNotEmpty){
+                //   await boxpostpenjualan.put(key,postadatanew);
+                // }
+                // await boxreportpenjualan.delete(key);
+                // await boxreportpenjualan.put(key,_datareportpenjualan);
+            } else {
+              //   for (var i = 0; i < _datareportpenjualan.length; i++) {
+              //     for (var j = 0; j <= inc; j++) {
+              //         if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
+              //             _datareportpenjualan[i].condition = "pending";
+              //         }
+              //     }
+              // }
+              // await createLogTes("response not true");
+              // await boxreportpenjualan.delete(key);
+              // await boxreportpenjualan.put(key,_datareportpenjualan);
+            }
+          } else {
+            //  for (var i = 0; i < _datareportpenjualan.length; i++) {
+            //     for (var j = 0; j <= inc; j++) {
+            //         if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
+            //             _datareportpenjualan[i].condition = "pending";
+            //         }
+            //     }
+            // }
+            // await createLogTes("response not 200");
+            // await boxreportpenjualan.delete(key);
+            // await boxreportpenjualan.put(key,_datareportpenjualan);
+            // print(responseString);
+          }
+        } on SocketException {
+            // await createLogTes("socketexception");
+            //  for (var i = 0; i < _datareportpenjualan.length; i++) {
+            //     for (var j = 0; j <= inc; j++) {
+            //         if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
+            //             _datareportpenjualan[i].condition = "pending";
+            //         }
+            //     }
+            // }
+            // await boxreportpenjualan.delete(key);
+            // await boxreportpenjualan.put(key,_datareportpenjualan);
+            // print("socketexception");
+        } catch (e) {
+            // await createLogTes("$e abnormal");
+            //  for (var i = 0; i < _datareportpenjualan.length; i++) {
+            //     for (var j = 0; j <= inc; j++) {
+            //         if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
+            //             _datareportpenjualan[i].condition = "pending";
+            //         }
+            //     }
+            // }
+            // await boxreportpenjualan.delete(key);
+            // await boxreportpenjualan.put(key,_datareportpenjualan);
+            // print("$e abnormal ");
+        }
+
         await closebox();
   }
   

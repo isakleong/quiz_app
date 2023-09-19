@@ -85,18 +85,19 @@ class LaporanController extends GetxController {
     listReportPembayaranshow.clear();
     var datapembayaranreport = boxPembayaranReport.get(gkey);
     if(datapembayaranreport != null){
-      print("pembayaran not null");
-      // print(datapembayaranreport);
       var converteddatapembayaran = json.decode(datapembayaranreport);
       for (var i = 0; i < converteddatapembayaran['data'].length; i++) {
-        List<PaymentData> listPayment = [];
-        // print(converteddatapembayaran['data'][i]);
-        var datalistpayment = converteddatapembayaran['data'][i]['listpayment'];
-        for (var j = 0; j < datalistpayment.length; j++) {
-          listPayment.add(PaymentData(datalistpayment[j]['jenis'], datalistpayment[j]['nomor'], datalistpayment[j]['tipe'], datalistpayment[j]['jatuhtempo'],  datalistpayment[j]['value']));
+        if(Utils().isDateNotToday(Utils().formatDate(converteddatapembayaran['data'][i]['tanggal'])) && converteddatapembayaran['data'][i]['condition'] == "success"){
+          print("old report " + converteddatapembayaran['data'][i]['id']);
+        } else {
+          List<PaymentData> listPayment = [];
+          var datalistpayment = converteddatapembayaran['data'][i]['listpayment'];
+          for (var j = 0; j < datalistpayment.length; j++) {
+            listPayment.add(PaymentData(datalistpayment[j]['jenis'], datalistpayment[j]['nomor'], datalistpayment[j]['tipe'], datalistpayment[j]['jatuhtempo'],  datalistpayment[j]['value']));
+          }
+          listReportPembayaran.add(ReportPembayaranModel(converteddatapembayaran['data'][i]['condition'],converteddatapembayaran['data'][i]['id'], converteddatapembayaran['data'][i]['total'], converteddatapembayaran['data'][i]['tanggal'], converteddatapembayaran['data'][i]['waktu'],
+          listPayment));
         }
-        listReportPembayaran.add(ReportPembayaranModel(converteddatapembayaran['data'][i]['condition'],converteddatapembayaran['data'][i]['id'], converteddatapembayaran['data'][i]['total'], converteddatapembayaran['data'][i]['tanggal'], converteddatapembayaran['data'][i]['waktu'],
-         listPayment));
       }
     }
 
@@ -171,7 +172,7 @@ class LaporanController extends GetxController {
     }
     listReportPenjualanShow.refresh();
     listReportPembayaranshow.refresh();
-    getReportList(true);
+    // getReportList(true);
   }
 
 }
