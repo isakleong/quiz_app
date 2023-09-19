@@ -362,7 +362,7 @@ class ReturController extends GetxController {
               listQtytb[i],
               selectedProducttarikbarang[0].detailProduct[i].satuan,
               0,
-              selectedProducttarikbarang[0].id,""));
+              selectedProducttarikbarang[0].id,"",'0'));
         }
       }
       if (items.isNotEmpty) {
@@ -388,7 +388,7 @@ class ReturController extends GetxController {
               listQtytb[i],
               selectedProducttarikbarang[0].detailProduct[i].satuan,
               0,
-              selectedProducttarikbarang[0].id,""));
+              selectedProducttarikbarang[0].id,"",'0'));
         }
       }
       if (items.isNotEmpty) {
@@ -436,7 +436,7 @@ class ReturController extends GetxController {
               listQtygk[i],
               selectedProductgantikemasan[0].detailProduct[i].satuan,
               0,
-              selectedProductgantikemasan[0].id,""));
+              selectedProductgantikemasan[0].id,"",'0'));
         }
       }
       if (items.isNotEmpty) {
@@ -462,7 +462,7 @@ class ReturController extends GetxController {
               listQtygk[i],
               selectedProductgantikemasan[0].detailProduct[i].satuan,
               0,
-              selectedProductgantikemasan[0].id,""));
+              selectedProductgantikemasan[0].id,"",'0'));
         }
       }
       if (items.isNotEmpty) {
@@ -506,7 +506,7 @@ class ReturController extends GetxController {
               listQtysm[i],
               selectedProductservismebel[0].detailProduct[i].satuan,
               0,
-              selectedProductservismebel[0].id,""));
+              selectedProductservismebel[0].id,"",'0'));
         }
       }
       if (items.isNotEmpty) {
@@ -531,7 +531,7 @@ class ReturController extends GetxController {
               listQtysm[i],
               selectedProductservismebel[0].detailProduct[i].satuan,
               0,
-              selectedProductservismebel[0].id,""));
+              selectedProductservismebel[0].id,"",'0'));
         }
       }
       if (items.isNotEmpty) {
@@ -575,7 +575,7 @@ class ReturController extends GetxController {
               listQtygb[i],
               selectedProductgantibarang[0].detailProduct[i].satuan,
               0,
-              selectedProductgantibarang[0].id,""));
+              selectedProductgantibarang[0].id,"",'0'));
         }
       }
       if (items.isNotEmpty) {
@@ -600,7 +600,7 @@ class ReturController extends GetxController {
               listQtygb[i],
               selectedProductgantibarang[0].detailProduct[i].satuan,
               0,
-              selectedProductgantibarang[0].id,""));
+              selectedProductgantibarang[0].id,"",'0'));
         }
       }
       if (items.isNotEmpty) {
@@ -636,7 +636,7 @@ class ReturController extends GetxController {
             listQtypp[i],
             selectedProductProdukPengganti[0].detailProduct[i].satuan,
             selectedProductProdukPengganti[0].detailProduct[i].hrg,
-            selectedProductProdukPengganti[0].id,""));
+            selectedProductProdukPengganti[0].id,"",'0'));
       }
     }
     for (var i = 0; i < list.length; i++) {
@@ -796,7 +796,7 @@ class ReturController extends GetxController {
     List<CartModel> list = <CartModel>[];
     for (var i = 0; i < listitemforProdukPengganti[0].itemOrder.length; i++) {
       CartModel data = listitemforProdukPengganti[0].itemOrder[i];
-      list.add(CartModel(data.kdProduct, data.nmProduct, data.Qty, data.Satuan,data.hrgPerPieces,data.iduom,data.iditem));
+      list.add(CartModel(data.kdProduct, data.nmProduct, data.Qty, data.Satuan,data.hrgPerPieces,data.iduom,data.iditem,'0'));
     }
     List<CartDetail> listdetail = <CartDetail>[];
     for (var i = 0; i < listProdukPengganti.length; i++) {
@@ -861,7 +861,7 @@ class ReturController extends GetxController {
                 listQtytw[k],
                 _penjualanController.listProduct[i].detailProduct[k].satuan,
                 _penjualanController.listProduct[i].detailProduct[k].hrg,
-                _penjualanController.listProduct[i].id,""));
+                _penjualanController.listProduct[i].id,"",'0'));
           }
         }
         break;
@@ -920,7 +920,7 @@ class ReturController extends GetxController {
             listQtytw[i],
             selectedProductTukarWarna[0].detailProduct[i].satuan,
             selectedProductTukarWarna[0].detailProduct[i].hrg,
-            selectedProductTukarWarna[0].id,""));
+            selectedProductTukarWarna[0].id,"",'0'));
       }
     }
     var curritem = 0;

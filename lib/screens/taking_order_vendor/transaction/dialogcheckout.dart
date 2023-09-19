@@ -288,18 +288,20 @@ class DialogCheckOut extends StatelessWidget {
                         ],
                       ),
                     ),
-                    /*komisi
+                    if(double.parse(_takingOrderVendorController.komisi.value) > 0)
                     Container(
                       width: 1.5,
                       height: 0.06 * height,
                       color: Colors.grey.shade400,
                     ),
+                    if(double.parse(_takingOrderVendorController.komisi.value) > 0)
                     Image.asset(
                       'assets/images/komisi.png',
                       width: 25.sp,
                       height: 25.sp,
                       fit: BoxFit.fill,
                     ),
+                    if(double.parse(_takingOrderVendorController.komisi.value) > 0)
                     Padding(
                       padding: const EdgeInsets.only(top: 5),
                       child: Column(
@@ -307,7 +309,7 @@ class DialogCheckOut extends StatelessWidget {
                         children: [
                           TextView(
                             text:
-                                Utils().formatNumber(2500),
+                                Utils().formatNumber(double.parse(_takingOrderVendorController.komisi.value)),
                             headings: 'H2',
                             fontSize: 10.sp,
                             color: Colors.amber.shade900,
@@ -319,7 +321,7 @@ class DialogCheckOut extends StatelessWidget {
                           )
                         ],
                       ),
-                     ), */
+                     ), 
                   ]),
             ),
             SizedBox(

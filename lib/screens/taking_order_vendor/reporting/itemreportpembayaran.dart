@@ -58,10 +58,22 @@ class ItemReportPembayaran extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextView(
-                          text: data.id,
-                          headings: 'H4',
-                          fontSize: width < 450 ? 10.sp : 14,
+                        Row(
+                          children: [
+                            TextView(
+                              text: data.id,
+                              headings: 'H4',
+                              fontSize: width < 450 ? 8.sp : 14,
+                            ),
+                            if(data.condition != 'success')
+                            SizedBox(width: 5.sp,),
+                            if(data.condition != 'success')
+                           ChipsItem(
+                                satuan: data.condition,
+                                color: data.condition == 'pending' ? Colors.amber : Colors.red,
+                                fontSize: width < 450 ? 8.sp : 12,
+                              )
+                          ],
                         ),
                         ChipsItem(
                           satuan: total,

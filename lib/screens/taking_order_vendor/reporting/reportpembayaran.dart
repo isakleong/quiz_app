@@ -13,7 +13,7 @@ class ReportPembayaran extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Column(
+    return Obx(() => Column(
       children: [
         for (int index = 0;index < _takingOrderVendorController.listReportPembayaranshow.value.length;index++)
           index == 0 && index != _takingOrderVendorController.listReportPembayaranshow.value.length - 1
@@ -112,6 +112,6 @@ class ReportPembayaran extends StatelessWidget {
                           ),
                         ),
       ],
-    );
+    )); 
   }
 }

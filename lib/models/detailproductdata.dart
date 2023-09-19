@@ -14,5 +14,8 @@ class DetailProductData {
   @HiveField(2)
   double hrg;
 
-  DetailProductData(this.satuan, this.hrg, this.id);
+  @HiveField(3)
+  String komisi;
+
+  DetailProductData(this.satuan, this.hrg, this.id, this.komisi);
 }

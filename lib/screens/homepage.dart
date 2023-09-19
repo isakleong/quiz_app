@@ -63,7 +63,9 @@ class Homepage extends StatelessWidget {
                                 shrinkWrap: true,
                                 itemCount: splashscreenController.moduleList.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return Padding(
+                                  return 
+                                  splashscreenController.moduleList[index].moduleID.toLowerCase() == "taking order vendor" ?
+                                  SizedBox() :  Padding(
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 10),
                                     child: Card(
@@ -106,7 +108,7 @@ class Homepage extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                  );
+                                  ) ;
                                 },
                               ),
                             );

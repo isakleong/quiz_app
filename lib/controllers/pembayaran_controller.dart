@@ -1,14 +1,25 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:sfa_tools/controllers/splashscreen_controller.dart';
+import 'package:sfa_tools/models/reportpembayaranmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/paymentlist.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import '../common/app_config.dart';
+import '../models/loginmodel.dart';
+import '../models/masteritemvendor.dart';
 import '../models/paymentdata.dart';
+import '../models/penjualanpostmodel.dart';
 import '../models/vendor.dart';
 import '../screens/taking_order_vendor/transaction/dialogdelete.dart';
+import 'package:http/http.dart' as http;
+
+import '../tools/service.dart';
+import 'laporan_controller.dart';
 
 class PembayaranController extends GetxController {
   //for payment page
@@ -30,18 +41,52 @@ class PembayaranController extends GetxController {
   var tabvaluetunai = 0;
   var tabvaluetransfer = 1;
   var tabvaluecek = 2;
+  var idvendor = -1;
   late Box boxPembayaranReport;
   late Box boxPembayaranState;
   late Box vendorBox; 
+  late Box masteritemvendorbox;
+  late Box postpembayaranbox;
+  late Box tokenbox;
   String globalkeybox = "";
   String activevendor = "";
   List<Vendor> vendorlist = <Vendor>[];
+
+  tojsondata(List<ReportPembayaranModel> listreport){
+    List<Map<String, dynamic>> listreportmap = listreport.map((clist) {
+      var _pdata = [];
+      for (var i = 0; i < clist.paymentList.length; i++) {
+        _pdata.add({
+          'jenis' : clist.paymentList[i].jenis,
+          'nomor' : clist.paymentList[i].nomor,
+          'tipe' : clist.paymentList[i].tipe,
+          'jatuhtempo' : clist.paymentList[i].jatuhtempo,
+          'value' : clist.paymentList[i].value
+        });
+      }
+      return {
+          'condition' : clist.condition,
+          'id': clist.id,
+          'total' : clist.total,
+          'tanggal' :clist.tanggal,
+          'waktu' : clist.waktu,
+          'listpayment' : _pdata
+      };
+    }).toList();
+    var datamerge = {
+         "data" : listreportmap
+    };
+    return jsonEncode(datamerge);
+  }
 
   getbox() async {
     try {
       boxPembayaranState = await Hive.openBox('boxPembayaranState');
       vendorBox = await Hive.openBox('vendorBox');
       boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
+      masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
+      postpembayaranbox = await Hive.openBox("postpembayaranbox");
+      tokenbox = await Hive.openBox('tokenbox');
     } catch (e) {
       
     }
@@ -52,6 +97,9 @@ class PembayaranController extends GetxController {
       boxPembayaranState.close();
       boxPembayaranReport.close();
       vendorBox.close();
+      masteritemvendorbox.close();
+      postpembayaranbox.close();
+      tokenbox.close();
     } catch (e) {
       
     }
@@ -89,7 +137,7 @@ class PembayaranController extends GetxController {
       await boxPembayaranState.close();
       if(databox != null){
         var dataconvjson = jsonDecode(databox);
-        print(dataconvjson);
+        // print(dataconvjson);
         for (var i = 0; i < dataconvjson.length; i++) {
           listpaymentdata.add(PaymentData(dataconvjson[i]['jenis'], dataconvjson[i]['nomor'], dataconvjson[i]['tipe'], dataconvjson[i]['jatuhtempo'], dataconvjson[i]['value']));
         }
@@ -304,7 +352,7 @@ class PembayaranController extends GetxController {
       for (var i = 0; i < datavendor.length; i++) {
         vendorlist.add(datavendor[i]);
       }
-      var idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
+      idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
       globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
     } catch (e) {
       await closebox();
@@ -312,7 +360,9 @@ class PembayaranController extends GetxController {
   }
 
   savepaymentdata() async {
+    await getbox();
     String salesid = await Utils().getParameterData("sales");
+    String custid = await Utils().getParameterData("cust");
 
     if(globalkeybox == "") await getGlobalKeyBox();
 
@@ -330,30 +380,39 @@ class PembayaranController extends GetxController {
         'tipe': datalist.tipe
       };
     }).toList();
-      String jsonpembayaran = jsonEncode(listpaymentdatamap);
       var totalpayment = 0.0;
       for (var i = 0; i < listpaymentdata.length; i++) {
         totalpayment = totalpayment + listpaymentdata[i].value;
       }
-      var length = converteddatapembayaran['data'].length + 1;
-      var inc = "0";
-      if(length < 10){
-        inc = "00$length";
-      } else if (length < 100) {
-        inc = "0$length";
+      String inc = "000";
+      var idx = 0;
+      if(converteddatapembayaran['data'].length != null) {
+          for (var i = 0; i < converteddatapembayaran['data'].length; i++) {
+            if(!Utils().isDateNotToday(Utils().formatDate(converteddatapembayaran['data'][i]['tanggal']))){
+              idx = idx + 1;
+            }
+          }
+      }
+
+      idx = idx + 1;
+      if (idx < 10){
+        inc = "00$idx";
+      } else if (idx < 100 && idx > 9){
+        inc = "0$idx";
       } else {
-        inc = length.toString();
+        inc = "$idx";
       }
       DateTime now = DateTime.now();
       String noorder = "GP-$salesid-${DateFormat('yyMMddHHmm').format(now)}-$inc";
       String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(now);
       String time = DateFormat('HH:mm').format(now);
       var jsondata = {
+          'condition' : 'pending',
           'id': noorder,
           'total' : totalpayment,
           'tanggal' :date,
           'waktu' : time,
-          'listpayment' :jsonpembayaran
+          'listpayment' :listpaymentdatamap
         };
       var datapembayaranlist = [];
       for (var i = 0; i < converteddatapembayaran['data'].length; i++) {
@@ -365,6 +424,8 @@ class PembayaranController extends GetxController {
       };
       boxPembayaranReport.delete(globalkeybox);
       boxPembayaranReport.put(globalkeybox, jsonEncode(joinedjson));
+      await closebox();
+      await savepaymentdatatoapi(noorder, date, custid, salesid);
     }else {
       List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
       return {
@@ -375,7 +436,6 @@ class PembayaranController extends GetxController {
         'tipe': datalist.tipe
       };
     }).toList();
-      String jsonpembayaran = jsonEncode(listpaymentdatamap);
       var totalpayment = 0.0;
       for (var i = 0; i < listpaymentdata.length; i++) {
         totalpayment = totalpayment + listpaymentdata[i].value;
@@ -386,19 +446,265 @@ class PembayaranController extends GetxController {
       String time = DateFormat('HH:mm').format(now);
       var jsondata = {
          "data" : [{
+          'condition' : 'pending',
           'id': noorder,
           'total' : totalpayment,
           'tanggal' :date,
           'waktu' : time,
-          'listpayment' :jsonpembayaran
+          'listpayment' :listpaymentdatamap
         }]
       };
       boxPembayaranReport.delete(globalkeybox);
       boxPembayaranReport.put(globalkeybox, jsonEncode(jsondata));
+      await closebox();
+      await savepaymentdatatoapi(noorder, date, custid, salesid);
     }
-    boxPembayaranReport.close();
-    clearvariable();
-    deletepembayaranstate();
+  }
+
+  savepaymentdatatoapi(String noorder , String datetimes, String custid, String salesid) async {
+    await getbox();
+    var databox = masteritemvendorbox.get(globalkeybox);
+    if (databox != null){
+      var data = MasterItemVendor.fromJson(databox);
+      
+      List<Map<String, dynamic>> datajson = [];
+      for (var i = 0; i < listpaymentdata.length; i++) {
+        String bankdata = '';
+        String paymentid = '';
+        String serialNum = '';
+        if(listpaymentdata[i].jenis == "cek"){
+          bankdata = listpaymentdata[i].tipe;
+          serialNum = listpaymentdata[i].nomor;
+        }
+        for (var k = 0; k < data.paymentMethods!.length; k++) {
+          if(listpaymentdata[i].jenis == "Tunai"){
+            if(data.paymentMethods![k].name!.toLowerCase() == listpaymentdata[i].tipe.toLowerCase()){
+              paymentid = data.paymentMethods![k].id.toString();
+            }
+          } else if (listpaymentdata[i].jenis == "Transfer"){
+            if(data.paymentMethods![k].name!.toLowerCase() == listpaymentdata[i].jenis.toLowerCase()){
+              paymentid = data.paymentMethods![k].id.toString();
+            }
+          } else if (listpaymentdata[i].jenis == "cek"){
+            if(data.paymentMethods![k].name!.toLowerCase() == "Cek/Giro/Slip".toLowerCase()){
+              paymentid = data.paymentMethods![k].id.toString();
+            }
+          }
+        }
+          datajson.add(
+            {
+              'extDocId' : noorder,
+              'entryDate' : datetimes,
+              'customerNo' : custid,
+              'amount' : listpaymentdata[i].value,
+              'bankId' : listpaymentdata[i].jenis.toString() == "Transfer" ? data.banks![0].id : '',
+              'paymentMethodId' : paymentid,
+              'serialNum' : serialNum,
+              'bankName' : bankdata,
+              'dueDate' : listpaymentdata[i].jatuhtempo,
+              'salespersonCode' : salesid,
+            }
+          );
+      }
+      var listpostpembayaranbox = await postpembayaranbox.get(globalkeybox);
+      List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
+      if (listpostpembayaranbox == null){
+          listpost.add(PenjualanPostModel(datajson));
+      } else {
+        for (var i = 0; i < listpostpembayaranbox.length; i++) {
+          listpost.add(listpostpembayaranbox[i]);
+        }
+        listpost.add(PenjualanPostModel(datajson));
+      }
+      await postpembayaranbox.delete(globalkeybox);
+      await postpembayaranbox.put(globalkeybox,listpost);
+      await closebox();
+      clearvariable();
+      deletepembayaranstate();
+      sendPaymentToApi(datajson,listpost);
+    }
+
+  }
+
+  gettoken() async {
+      String salesId = await Utils().getParameterData('sales');
+      var tokenboxdata = await tokenbox.get(salesId);
+      var dectoken = Utils().decrypt(tokenboxdata);
+      return dectoken;
+  }
+
+  sendPaymentToApi(List<Map<String, dynamic>> data,List<PenjualanPostModel> listpostdata) async {
+    // print(data);
+    String noorder = data[0]['extDocId'];
+    LaporanController controllerLaporan = callcontroller("laporancontroller");
+    await getbox();
+
+    var dectoken = await gettoken();
+    var datareportpembayaran = json.decode(await boxPembayaranReport.get(globalkeybox));
+    List<ReportPembayaranModel> dataconvert = [];
+
+    for (var i = 0; i < datareportpembayaran['data'].length; i++) {
+      List<PaymentData> _data = <PaymentData>[];
+      var detail = datareportpembayaran['data'][i]['listpayment'];
+      for (var k = 0; k < detail.length; k++) {
+        _data.add(PaymentData(detail[k]['jenis'], detail[k]['nomor'], detail[k]['tipe'], detail[k]['jatuhtempo'], detail[k]['value']));
+      }
+      dataconvert.add(ReportPembayaranModel(datareportpembayaran['data'][i]['condition'], datareportpembayaran['data'][i]['id'], datareportpembayaran['data'][i]['total'], datareportpembayaran['data'][i]['tanggal'], datareportpembayaran['data'][i]['waktu'], _data));
+    }
+
+    var idx = dataconvert.indexWhere((element) => element.id == noorder);
+    var idxpost = -1;
+    for (var i = 0; i < listpostdata.length; i++) {
+      if(listpostdata[i].dataList[0]['extDocId'] == noorder){
+          idxpost = i;
+          break;
+      }
+    }
+
+    final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}payments/store');
+    final request = http.MultipartRequest('POST', url);
+      for (var i = 0; i < data.length; i++) {
+        request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
+        request.fields['data[$i][customerNo]'] = data[i]['customerNo'];
+        request.fields['data[$i][amount]'] = data[i]['amount'].toString();
+        request.fields['data[$i][salespersonCode]'] = data[i]['salespersonCode'];
+        request.fields['data[$i][entryDate]'] = data[i]['entryDate'];
+        request.fields['data[$i][bankId]'] = data[i]['bankId'].toString();
+        request.fields['data[$i][paymentMethodId]'] = data[i]['paymentMethodId'].toString();
+        request.fields['data[$i][bankName]'] = data[i]['bankName'];
+        request.fields['data[$i][dueDate]'] = data[i]['dueDate'];
+        request.fields['data[$i][serialNum]'] = data[i]['serialNum'];
+      }
+        request.headers.addAll({
+          'Authorization': 'Bearer $dectoken',
+          'Accept': 'application/json',
+        });
+      
+      try {
+        print(request.fields);
+        final response = await request.send();
+        final responseString = await response.stream.bytesToString();
+        print("ini idx : $idx ${dataconvert[idx].id} ini idxpost $idxpost ${listpostdata[idxpost].dataList}");
+        if (response.statusCode == 200) {
+          var jsonResponse = jsonDecode(responseString);
+          print(responseString);
+          if(jsonResponse["success"] == true){
+            print("success 1");
+            if(jsonResponse["data"][0]["success"] == true){
+                print("success 2");
+                dataconvert[idx].condition = "success";
+                listpostdata.removeAt(idxpost);
+                await postpembayaranbox.delete(globalkeybox);
+                if(listpostdata.isNotEmpty) {
+                  await postpembayaranbox.put(globalkeybox,listpostdata);
+                }
+                await boxPembayaranReport.delete(globalkeybox);
+                await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
+            } else {
+                print("else 1");
+              var flag = 0;
+                for (var i = 0; i < jsonResponse["data"][0]["errors"].length; i++) {
+                  if(jsonResponse["data"][0]["errors"][i]['code'] == AppConfig().orderalreadyexistvendor){
+                      dataconvert[idx].condition = "success";
+                      listpostdata.removeAt(idxpost);
+                      await postpembayaranbox.delete(globalkeybox);
+                      if(listpostdata.isNotEmpty) {
+                        await postpembayaranbox.put(globalkeybox,listpostdata);
+                      }
+                      await boxPembayaranReport.delete(globalkeybox);
+                      await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
+                      flag = 1;
+                  }
+                }
+                if(flag == 0){
+                  dataconvert[idx].condition = "pending";
+                  await boxPembayaranReport.delete(globalkeybox);
+                  await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
+                }
+            }
+          } else {
+            print("else 2");
+            dataconvert[idx].condition = "pending";
+            await boxPembayaranReport.delete(globalkeybox);
+            await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
+          }
+        } else {
+          print("else 3");
+          var jsonResponse = jsonDecode(responseString);
+          try {
+            if (jsonResponse["code"] == "300"){
+              await loginapivendor();
+            }
+          } catch (e) {
+            
+          } finally{
+            dataconvert[idx].condition = "pending";
+            await boxPembayaranReport.delete(globalkeybox);
+            await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
+            print(responseString);
+          }
+        }
+      } on SocketException {
+          dataconvert[idx].condition = "pending";
+          await boxPembayaranReport.delete(globalkeybox);
+          await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
+          print("socketexception");
+      } catch (e) {
+          dataconvert[idx].condition = "pending";
+          await boxPembayaranReport.delete(globalkeybox);
+          await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
+          print("$e abnormal ");
+      }  finally{
+          await closebox();
+          controllerLaporan.getReportList(true);
+      }
+  }
+  
+  loginapivendor() async {
+    try {
+      String salesiddata = await Utils().getParameterData("sales");
+      String encparam = await Utils().encryptsalescodeforvendor(salesiddata);
+      var params = {
+        "username" : encparam
+      };
+      print(params);
+      var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
+            params,
+            Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+      var dataresp = LoginResponse.fromJson(result);
+      print(dataresp.data!.token);
+      print(await Utils().decrypt(dataresp.data!.token.toString()));
+      if(!tokenbox.isOpen){
+        tokenbox = await Hive.openBox('tokenbox');
+      }
+      tokenbox.delete(salesiddata);
+      tokenbox.put(salesiddata, dataresp.data!.token);
+    } catch (e) {
+      
+    }
+  }
+
+  callcontroller(String controllername){
+    if(controllername.toLowerCase() == "LaporanController".toLowerCase()){
+      final isControllerRegistered = GetInstance().isRegistered<LaporanController>();
+      if(!isControllerRegistered){
+          final LaporanController controller =  Get.put(LaporanController());
+          return controller;
+      } else {
+          final LaporanController controller = Get.find();
+          return controller;
+      }
+    } else if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()){
+      final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
+      if(!isControllerRegistered){
+          final SplashscreenController controller =  Get.put(SplashscreenController());
+          return controller;
+      } else {
+          final SplashscreenController controller = Get.find();
+          return controller;
+      }    
+    }
+    
   }
 
   clearvariable(){

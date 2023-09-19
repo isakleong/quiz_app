@@ -20,19 +20,22 @@ class DetailProductDataAdapter extends TypeAdapter<DetailProductData> {
       fields[0] as String,
       fields[2] as double,
       fields[1] as String,
+      fields[3] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, DetailProductData obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.satuan)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.hrg);
+      ..write(obj.hrg)
+      ..writeByte(3)
+      ..write(obj.komisi);
   }
 
   @override

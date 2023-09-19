@@ -8,6 +8,7 @@ import 'package:sfa_tools/screens/taking_order_vendor/payment/paymentlist.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/paymenttab.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/piutangcard.dart';
 import 'package:sfa_tools/widgets/backbuttonaction.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../tools/utils.dart';
 
@@ -37,7 +38,17 @@ class PaymentMainPage extends StatelessWidget {
                     Padding(
                         padding: EdgeInsets.only(
                             left: 0.05 * width, top: 0.01 * height),
-                        child: PiutangCard(nmtoko : _takingOrderVendorController.nmtoko.value)),
+                        child: _takingOrderVendorController.totalpiutang.value == "" ? Shimmer.fromColors(
+                          baseColor: Colors.grey.shade400,
+                          highlightColor: Colors.grey.shade200,
+                          child: Container(
+                            width: 0.9 * width,
+                            height: 0.2 * height,
+                            color: Colors.white,
+                            // Add any other child widgets you want inside the shimmering container
+                          ),
+                        ) :
+                        PiutangCard(nmtoko : _takingOrderVendorController.nmtoko.value,totalpiutang: _takingOrderVendorController.totalpiutang.value,totaljatuhtempo: _takingOrderVendorController.totalpiutang.value,)),
                     const SizedBox(
                       height: 15,
                     ),
