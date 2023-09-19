@@ -497,52 +497,49 @@ class SplashscreenController extends GetxController with StateMixin implements W
           await moduleBox.clear();
           await moduleBox.addAll(moduleList);
 
-          await checkVersion(data["AppVersion"]);
-
-          if (isNeedUpdate.value) {
-            print("hereeee");
-            change(null, status: RxStatus.success());
-            appsDialog(
-                type: "app_info",
-                title: TextView(
-                  headings: "H4",
-                  text:
-                      "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi ${appName.value}.\n4. Tunggu hingga proses update selesai.",
-                  textAlign: TextAlign.start,
-                ),
-                leftBtnMsg: "ok",
-                isAnimated: true,
-                leftActionClick: () {
-                  Get.back();
-                  SystemNavigator.pop();
-                });
-          } else {
-            print("else");
-            var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
-            if(idx != -1){
-            print("-1 <>");
-              await getBox();
-              var datacustomerbox = await customerBox.get(customerIdParams.value);
-              var datatoken = await tokenbox.get(salesIdParams.value);
-              if(datatoken == null){
-                await loginapivendor();
-              }
-              await closebox();
-                if(datacustomerbox!= null){
-                  Customer custdata = datacustomerbox;
-                  if(!Utils().isDateNotToday(Utils().formatDate(custdata.timestamp))){
-                    await checkofflinevendor();
-                    await moduleBox.clear();
-                    moduleBox.addAll(moduleList);
-                  } else {
-                    await getVendor();
-                  }
+          // NOT USED ANYMORE (BECAUSE AUTO UPDATE FROM SFA)
+          // await checkVersion(data["AppVersion"]);
+          // if (isNeedUpdate.value) {
+          //   change(null, status: RxStatus.success());
+          //   appsDialog(
+          //     type: "app_info",
+          //     title: TextView(
+          //       headings: "H4",
+          //       text: "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi ${appName.value}.\n4. Tunggu hingga proses update selesai.",
+          //       textAlign: TextAlign.start,
+          //     ),
+          //     leftBtnMsg: "ok",
+          //     isAnimated: true,
+          //     leftActionClick: () {
+          //       Get.back();
+          //       SystemNavigator.pop();
+          //     }
+          //   );
+          // }
+          var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
+          if(idx != -1){
+          print("-1 <>");
+            await getBox();
+            var datacustomerbox = await customerBox.get(customerIdParams.value);
+            var datatoken = await tokenbox.get(salesIdParams.value);
+            if(datatoken == null){
+              await loginapivendor();
+            }
+            await closebox();
+              if(datacustomerbox!= null){
+                Customer custdata = datacustomerbox;
+                if(!Utils().isDateNotToday(Utils().formatDate(custdata.timestamp))){
+                  await checkofflinevendor();
+                  await moduleBox.clear();
+                  moduleBox.addAll(moduleList);
                 } else {
                   await getVendor();
                 }
-            }
-            await postTrackingVersion();
+              } else {
+                await getVendor();
+              }
           }
+          await postTrackingVersion();
         } catch (e) {
             print("ctc");
 
@@ -629,50 +626,51 @@ class SplashscreenController extends GetxController with StateMixin implements W
     await closebox();
   }
 
-  checkVersion(var data) async {
-    isNeedUpdate(false);
+  // NOT USED ANYMORE (BECAUSE AUTO UPDATE FROM SFA)
+  // checkVersion(var data) async {
+  //   isNeedUpdate(false);
 
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String currentVersion = packageInfo.version;
-    appVersion.value = currentVersion;
+  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  //   String currentVersion = packageInfo.version;
+  //   appVersion.value = currentVersion;
 
-    try {
-      String latestVersion = data[0]["Value"];
-      appName.value = data[0]["AppName"];
+  //   try {
+  //     String latestVersion = data[0]["Value"];
+  //     appName.value = data[0]["AppName"];
 
-      int currentVersionConverted =Utils().convertVersionNumber(currentVersion);
-      int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
+  //     int currentVersionConverted =Utils().convertVersionNumber(currentVersion);
+  //     int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
 
-      //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
-      bool moduleVersionStatus = true;
-      int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
+  //     //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
+  //     bool moduleVersionStatus = true;
+  //     int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
 
-      Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
-      var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
-      retrySubmitQuizBox.close();
+  //     Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
+  //     var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
+  //     retrySubmitQuizBox.close();
 
-      if (isRetrySubmit != null && isRetrySubmit.value == "true") {
-        cntPendingData = 1;
-      }
+  //     if (isRetrySubmit != null && isRetrySubmit.value == "true") {
+  //       cntPendingData = 1;
+  //     }
 
-      for (int i = 0; i < moduleList.length; i++) {
-        int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
-        if (moduleVersionConverted > currentVersionConverted) {
-          moduleVersionStatus = false;
-          break;
-        }
-      }
+  //     for (int i = 0; i < moduleList.length; i++) {
+  //       int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
+  //       if (moduleVersionConverted > currentVersionConverted) {
+  //         moduleVersionStatus = false;
+  //         break;
+  //       }
+  //     }
 
-      if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
-        isNeedUpdate(true);
-      }
-    } catch (e) {
-      errorMessage.value = e.toString();
-      openErrorDialog();
-      isError(true);
-      change(null, status: RxStatus.error(errorMessage.value));
-    }
-  }
+  //     if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
+  //       isNeedUpdate(true);
+  //     }
+  //   } catch (e) {
+  //     errorMessage.value = e.toString();
+  //     openErrorDialog();
+  //     isError(true);
+  //     change(null, status: RxStatus.error(errorMessage.value));
+  //   }
+  // }
 
   getBox() async {
     try {
