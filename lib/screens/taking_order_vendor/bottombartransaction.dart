@@ -20,7 +20,7 @@ final TakingOrderVendorController _takingOrderVendorController =
       PaymentMainPage(),
       // ReturMainPage(),
       ReportMainPage(),
-      InformasiMainPage()
+      // InformasiMainPage()
     ];
   }
 
@@ -57,13 +57,13 @@ final TakingOrderVendorController _takingOrderVendorController =
         activeColorPrimary: AppConfig.mainCyan,
         inactiveColorPrimary: const Color(0XFF3c3c3c),
       ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(Icons.info),
-        title: ("Informasi"),
-        activeColorSecondary: AppConfig.mainCyan,
-        activeColorPrimary: AppConfig.mainCyan,
-        inactiveColorPrimary: const Color(0XFF3c3c3c),
-      ),
+      // PersistentBottomNavBarItem(
+      //   icon: const Icon(Icons.info),
+      //   title: ("Informasi"),
+      //   activeColorSecondary: AppConfig.mainCyan,
+      //   activeColorPrimary: AppConfig.mainCyan,
+      //   inactiveColorPrimary: const Color(0XFF3c3c3c),
+      // ),
     ];
   }
 
