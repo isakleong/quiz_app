@@ -137,7 +137,6 @@ class PembayaranController extends GetxController {
       await boxPembayaranState.close();
       if(databox != null){
         var dataconvjson = jsonDecode(databox);
-        // print(dataconvjson);
         for (var i = 0; i < dataconvjson.length; i++) {
           listpaymentdata.add(PaymentData(dataconvjson[i]['jenis'], dataconvjson[i]['nomor'], dataconvjson[i]['tipe'], dataconvjson[i]['jatuhtempo'], dataconvjson[i]['value']));
         }
@@ -369,6 +368,7 @@ class PembayaranController extends GetxController {
     if(!Hive.isBoxOpen('BoxPembayaranReport')) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
     var datapembayaranreport = await boxPembayaranReport.get(globalkeybox);
 
+    //cek apakah sudah ada data report pembayaran
     if(datapembayaranreport != null){
       var converteddatapembayaran = json.decode(datapembayaranreport);
       List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
@@ -427,6 +427,7 @@ class PembayaranController extends GetxController {
       await closebox();
       await savepaymentdatatoapi(noorder, date, custid, salesid);
     }else {
+      //membuat data detail
       List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
       return {
         'jenis': datalist.jenis,
@@ -436,14 +437,21 @@ class PembayaranController extends GetxController {
         'tipe': datalist.tipe
       };
     }).toList();
+
+      //membuat data header
+      /// menjumlah total pembayaran
       var totalpayment = 0.0;
       for (var i = 0; i < listpaymentdata.length; i++) {
         totalpayment = totalpayment + listpaymentdata[i].value;
       }
+
+      ///membuat nomor GP (auto increment diset ke 001 karena belum ada report atau input di hari ini)
       DateTime now = DateTime.now();
       String noorder = "GP-$salesid-${DateFormat('yyMMddHHmm').format(now)}-001";
       String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(now);
       String time = DateFormat('HH:mm').format(now);
+
+      //memasukkan data ke dalam format json['data']
       var jsondata = {
          "data" : [{
           'condition' : 'pending',
@@ -454,19 +462,26 @@ class PembayaranController extends GetxController {
           'listpayment' :listpaymentdatamap
         }]
       };
+
+      //data report disimpan dalam bentuk json ke hive
       boxPembayaranReport.delete(globalkeybox);
       boxPembayaranReport.put(globalkeybox, jsonEncode(jsondata));
       await closebox();
+
+      //selanjutnya menyimpan data ke hive untuk pengiriman API via background
       await savepaymentdatatoapi(noorder, date, custid, salesid);
     }
   }
 
   savepaymentdatatoapi(String noorder , String datetimes, String custid, String salesid) async {
     await getbox();
+
+    //ambil data informasi payment id dan bank id yang tersimpan di masteritem vendor box (yang di isi pada penjualan controller)
     var databox = masteritemvendorbox.get(globalkeybox);
     if (databox != null){
       var data = MasterItemVendor.fromJson(databox);
       
+      //membuat data sesuai dengan body yang digunakan untuk request ke API
       List<Map<String, dynamic>> datajson = [];
       for (var i = 0; i < listpaymentdata.length; i++) {
         String bankdata = '';
@@ -506,21 +521,34 @@ class PembayaranController extends GetxController {
             }
           );
       }
+
+      //data post disimpan atau di ubah menjadi sesuai dengan class PenjualanPostModel (nama sama dengan body penjualan karena class tersebut mewakili penggunaan di pembayaran)
       var listpostpembayaranbox = await postpembayaranbox.get(globalkeybox);
       List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
+
+      //cek apakah ada data pending
       if (listpostpembayaranbox == null){
           listpost.add(PenjualanPostModel(datajson));
       } else {
+        //jika ada data pending maka data sebelumnya akan dimasukkan ke listpost, kemudian data yang baru masuk di masukkan di index terakhir
         for (var i = 0; i < listpostpembayaranbox.length; i++) {
           listpost.add(listpostpembayaranbox[i]);
         }
         listpost.add(PenjualanPostModel(datajson));
       }
+
+      //seluruh data post akan disimpan di hive, dalam bentuk List<PenjualanPostModel>
       await postpembayaranbox.delete(globalkeybox);
       await postpembayaranbox.put(globalkeybox,listpost);
       await closebox();
+
+      //seluruh variable di clear untuk mengembalikan tampilan ke awal
       clearvariable();
+
+      //state yang telah disimpan , di hapus agar saat user mencoba buka menu pembayaran lagi tidak ada data yang ditampilkan
       deletepembayaranstate();
+
+      //proses pengiriman data yang telah diinput ke API, bukan semua data pending. dikirim secara terpisah bukan await agar user tidak perlu menunggu response dari API
       sendPaymentToApi(datajson,listpost);
     }
 
@@ -534,15 +562,20 @@ class PembayaranController extends GetxController {
   }
 
   sendPaymentToApi(List<Map<String, dynamic>> data,List<PenjualanPostModel> listpostdata) async {
-    // print(data);
+
+    //menyiapkan nomor order yang akan dikirim
     String noorder = data[0]['extDocId'];
     LaporanController controllerLaporan = callcontroller("laporancontroller");
     await getbox();
 
+    //ambil token yang telah di decrypt
     var dectoken = await gettoken();
-    var datareportpembayaran = json.decode(await boxPembayaranReport.get(globalkeybox));
-    List<ReportPembayaranModel> dataconvert = [];
 
+    //ambil data report pembayaran
+    var datareportpembayaran = json.decode(await boxPembayaranReport.get(globalkeybox));
+
+    //mengubah data report pembayaran dari json ke ReporPembayaranModel
+    List<ReportPembayaranModel> dataconvert = [];
     for (var i = 0; i < datareportpembayaran['data'].length; i++) {
       List<PaymentData> _data = <PaymentData>[];
       var detail = datareportpembayaran['data'][i]['listpayment'];
@@ -552,7 +585,10 @@ class PembayaranController extends GetxController {
       dataconvert.add(ReportPembayaranModel(datareportpembayaran['data'][i]['condition'], datareportpembayaran['data'][i]['id'], datareportpembayaran['data'][i]['total'], datareportpembayaran['data'][i]['tanggal'], datareportpembayaran['data'][i]['waktu'], _data));
     }
 
+    //mencari ada di index berapakah nomor order yang akan di kirim pada list report
     var idx = dataconvert.indexWhere((element) => element.id == noorder);
+    
+    //mencari ada di index berapakah nomor order yang akan dikirim pada list pending data
     var idxpost = -1;
     for (var i = 0; i < listpostdata.length; i++) {
       if(listpostdata[i].dataList[0]['extDocId'] == noorder){
@@ -580,18 +616,16 @@ class PembayaranController extends GetxController {
           'Accept': 'application/json',
         });
       
+      //proses pengiriman data
       try {
-        //print(request.fields);
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
-        //print("ini idx : $idx ${dataconvert[idx].id} ini idxpost $idxpost ${listpostdata[idxpost].dataList}");
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(responseString);
-          //print(responseString);
           if(jsonResponse["success"] == true){
-            //print("success 1");
             if(jsonResponse["data"][0]["success"] == true){
-                //print("success 2");
+              //jika kedua response adalah success maka,
+              // data report akan diubah statusnya (condition) menjadi success. dan akan dihapus dari list data pending agar tidak dikirim via background
                 dataconvert[idx].condition = "success";
                 listpostdata.removeAt(idxpost);
                 await postpembayaranbox.delete(globalkeybox);
@@ -601,7 +635,8 @@ class PembayaranController extends GetxController {
                 await boxPembayaranReport.delete(globalkeybox);
                 await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
             } else {
-                //print("else 1");
+            //jika response kedua bukan true maka akan ada pengecekan error code, jika error code sama dengan order already exist maka. 
+            //data report akan diubah statusnya (condition) menjadi success. dan akan dihapus dari list data pending agar tidak dikirim via background
               var flag = 0;
                 for (var i = 0; i < jsonResponse["data"][0]["errors"].length; i++) {
                   if(jsonResponse["data"][0]["errors"][i]['code'] == AppConfig().orderalreadyexistvendor){
@@ -616,6 +651,7 @@ class PembayaranController extends GetxController {
                       flag = 1;
                   }
                 }
+                //jika error code tidak cocok dengan code order already exist, maka data report akan diubah statusnya (condition) menjadi pending
                 if(flag == 0){
                   dataconvert[idx].condition = "pending";
                   await boxPembayaranReport.delete(globalkeybox);
@@ -623,15 +659,16 @@ class PembayaranController extends GetxController {
                 }
             }
           } else {
-            //print("else 2");
+            //jika response utama bukan true maka data report akan diubah statusnya (condition) menjadi pending
             dataconvert[idx].condition = "pending";
             await boxPembayaranReport.delete(globalkeybox);
             await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
           }
         } else {
-          //print("else 3");
+          //jika reponse dari API bukan 200 maka data report akan diubah statusnya (condition) menjadi pending
           var jsonResponse = jsonDecode(responseString);
           try {
+            //jika code yang didapat dari pengiriman adalah 300 maka akan dicoba untuk mendapatkan token lagi
             if (jsonResponse["code"] == "300"){
               await loginapivendor();
             }
@@ -641,21 +678,21 @@ class PembayaranController extends GetxController {
             dataconvert[idx].condition = "pending";
             await boxPembayaranReport.delete(globalkeybox);
             await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
-            //print(responseString);
           }
         }
       } on SocketException {
+          //jika tidak terdapat koneksi maka data report akan diubah statusnya (condition) menjadi pending
           dataconvert[idx].condition = "pending";
           await boxPembayaranReport.delete(globalkeybox);
           await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
-          //print("socketexception");
       } catch (e) {
+          //jika terdapat error yang tidak di ketahui maka data report akan diubah statusnya (condition) menjadi pending
           dataconvert[idx].condition = "pending";
           await boxPembayaranReport.delete(globalkeybox);
           await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
-          //print("$e abnormal ");
       }  finally{
           await closebox();
+          //setelah proses selesai maka data list laporan akan direfresh
           controllerLaporan.getReportList(true);
       }
   }

@@ -504,11 +504,9 @@ class Backgroundservicecontroller {
 
       //pending pembayaran
       await getBox();
-      // print("get list key pembayran");
       List<dynamic> keyspembayaran = await getListKey('pembayaran');
       await closebox();
       if(keyspembayaran.isNotEmpty){
-      // print("keyspembayaran is not empty");
         for (var m = 0; m < keyspembayaran.length; m++) {
           await sendPendingDatapembayaran(keyspembayaran[m]);
         }
@@ -588,7 +586,9 @@ class Backgroundservicecontroller {
         }
       }
       await boxreportpenjualan.delete(keybox);
-      await boxreportpenjualan.put(keybox,listReportPenjualan);
+      if(listReportPenjualan.isNotEmpty){
+        await boxreportpenjualan.put(keybox,listReportPenjualan);
+      }
       await closebox();
   }
 
@@ -607,7 +607,9 @@ class Backgroundservicecontroller {
          "data" : datapembayaranlist
       };
       await boxPembayaranReport.delete(keybox);
-      await boxPembayaranReport.put(keybox,jsonEncode(joinedjson));
+      if(datapembayaranlist.isNotEmpty){
+        await boxPembayaranReport.put(keybox,jsonEncode(joinedjson));
+      }
       await closebox();
 
   }
@@ -720,10 +722,8 @@ class Backgroundservicecontroller {
         
         try {
           await createLogTes(request.fields.toString());
-          // print(request.fields);
           final response = await request.send();
           final responseString = await response.stream.bytesToString();
-          // print(responseString);
           await createLogTes(responseString);
 
           if (response.statusCode == 200) {
@@ -786,18 +786,17 @@ class Backgroundservicecontroller {
             } catch (e) {
               
             } finally{
-             for (var i = 0; i < _datareportpenjualan.length; i++) {
-                for (var j = 0; j <= inc; j++) {
-                    if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
-                        _datareportpenjualan[i].condition = "pending";
-                    }
-                }
+              for (var i = 0; i < _datareportpenjualan.length; i++) {
+                  for (var j = 0; j <= inc; j++) {
+                      if ( _datareportpenjualan[i].id == request.fields['data[$j][extDocId]']){
+                          _datareportpenjualan[i].condition = "pending";
+                      }
+                  }
+              }
+              await createLogTes("response not 200");
+              await boxreportpenjualan.delete(key);
+              await boxreportpenjualan.put(key,_datareportpenjualan);
             }
-            await createLogTes("response not 200");
-            await boxreportpenjualan.delete(key);
-            await boxreportpenjualan.put(key,_datareportpenjualan);
-            }
-            // print(responseString);
           }
         } on SocketException {
             await createLogTes("socketexception");
@@ -810,7 +809,6 @@ class Backgroundservicecontroller {
             }
             await boxreportpenjualan.delete(key);
             await boxreportpenjualan.put(key,_datareportpenjualan);
-            // print("socketexception");
         } catch (e) {
             await createLogTes("$e abnormal");
              for (var i = 0; i < _datareportpenjualan.length; i++) {
@@ -822,7 +820,6 @@ class Backgroundservicecontroller {
             }
             await boxreportpenjualan.delete(key);
             await boxreportpenjualan.put(key,_datareportpenjualan);
-            // print("$e abnormal ");
         }
         await closebox();
   }
