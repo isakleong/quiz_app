@@ -144,6 +144,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
   cekoutstanding(String codeitem){
     try {
+      print(codeitem);
       infoos.value = "";
       var outstandingqty = 0;
       var satuan = "";
@@ -161,7 +162,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
         infoos.value = "$outstandingqty $satuan";
       }
     } catch (e) {
-      
+      print(e);
     }
   }
 
@@ -218,6 +219,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   getBoxOutStanding() async {
     try {
       outstandingBox = await Hive.openBox('outstandingBox');
+      vendorBox = await Hive.openBox('vendorBox');
     } catch (e) {}
   }
 
@@ -256,6 +258,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
   getListDataOutStanding() async {
     try {
+      await getBoxOutStanding();
       isFailedLoadOutstanding.value = false;
       isLoadingOutstanding.value = true;
       String salescode = await Utils().getParameterData("sales");
@@ -269,7 +272,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       }
       idvendorg =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
       String keyos = "$salescode|$custcode|${vendorlist[idvendorg].prefix}|${vendorlist[idvendorg].baseApiUrl}";
-      await getBoxOutStanding();
+      if(!outstandingBox.isOpen) outstandingBox = await Hive.openBox('outstandingBox');
       var dataosbox = await outstandingBox.get(keyos);
       outstandingBox.close();
       if (dataosbox != null) {
@@ -313,12 +316,14 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
         outstandingBox.delete(keyos);
         outstandingBox.put(keyos, jsonEncode(makejson));
         await outstandingBox.close();
+        await vendorBox.close();
         // print(listDataOutstanding[0].salesOrder!.code);
       }
       isLoadingOutstanding.value = false;
     } catch (e) {
       isLoadingOutstanding.value = false;
       isFailedLoadOutstanding.value = true;
+      print(e);
     }
   }
   
