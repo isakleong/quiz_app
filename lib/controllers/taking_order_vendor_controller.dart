@@ -21,10 +21,13 @@ import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
 import 'package:sfa_tools/tools/utils.dart';
+import '../common/app_config.dart';
 import '../models/cartdetail.dart';
+import '../models/loginmodel.dart';
 import '../models/outstandingdata.dart';
 import '../models/tarikbarangmodel.dart';
 import '../models/treenodedata.dart';
+import '../models/vendor.dart';
 import '../tools/service.dart';
 
 class TakingOrderVendorController extends GetxController with GetTickerProviderStateMixin {
@@ -67,16 +70,15 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   }
 
   setactivendor() async {
-    SplashscreenController splashscreenController =
-        callcontroller("splashscreencontroller");
+    SplashscreenController splashscreenController = callcontroller("splashscreencontroller");
     activevendor = splashscreenController.selectedVendor.value.toLowerCase();
     _penjualanController.activevendor = activevendor;
     _laporanController.activevendor = activevendor;
     _pembayaranController.activevendor = activevendor;
+    await getListDataOutStanding();
     await _laporanController.getReportList(true);
     await _pembayaranController.loadpembayaranstate();
     await _penjualanController.getListItem();
-    await getListDataOutStanding();
   }
 
   handleSaveConfirm(String msg, String title, var ontap) {
@@ -109,6 +111,9 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxList<ShipToAddress> get listaddress => _penjualanController.listAddress;
   RxBool get needtorefresh => _penjualanController.needtorefresh;
   get komisi => _penjualanController.komisi;
+  RxString infoos = "".obs;
+  late Box tokenbox;
+  late Box vendorBox; 
 
   getListItem() {
     _penjualanController.getListItem();
@@ -131,16 +136,41 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   }
 
   handleProductSearchButton(String val) async {
+    await cekoutstanding(val);
     await animationController.reverse();
     await _penjualanController.handleProductSearchButton(val);
     await animationController.forward();
+  }
+
+  cekoutstanding(String codeitem){
+    try {
+      infoos.value = "";
+      var outstandingqty = 0;
+      var satuan = "";
+      if(listDataOutstanding.isNotEmpty){
+        for (var i = 0; i < listDataOutstanding.length; i++) {
+          for(var j =0; j < listDataOutstanding[i].details!.length; j++){
+            if(codeitem == listDataOutstanding[i].details![j].itemCode){
+              outstandingqty = outstandingqty + listDataOutstanding[i].details![j].qty!;
+              satuan = listDataOutstanding[i].details![j].uom!;
+            }
+          }
+        }
+      }
+      if(outstandingqty != 0 && satuan != ""){
+        infoos.value = "$outstandingqty $satuan";
+      }
+    } catch (e) {
+      
+    }
   }
 
   countTotalDetail(CartDetail data) {
     return _penjualanController.countTotalDetail(data);
   }
 
-  handleEditItem(CartDetail data) {
+  handleEditItem(CartDetail data) async {
+    await cekoutstanding(data.kdProduct);
     _penjualanController.handleEditItem(data);
   }
 
@@ -182,6 +212,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxList<OutstandingData> listDataOutstanding = <OutstandingData>[].obs;
   RxBool isLoadingOutstanding = false.obs;
   RxBool isFailedLoadOutstanding = false.obs;
+  List<Vendor> vendorlist = <Vendor>[];
+  int idvendorg = -1;
 
   getBoxOutStanding() async {
     try {
@@ -209,13 +241,34 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     }
   }
 
+  gettoken() async {
+      try {
+        tokenbox = await Hive.openBox('tokenbox');
+      } catch (e) {
+        
+      }
+      String salesId = await Utils().getParameterData('sales');
+      var tokenboxdata = await tokenbox.get(salesId);
+      var dectoken = Utils().decrypt(tokenboxdata);
+      tokenbox.close();
+      return dectoken;
+  }
+
   getListDataOutStanding() async {
     try {
       isFailedLoadOutstanding.value = false;
       isLoadingOutstanding.value = true;
       String salescode = await Utils().getParameterData("sales");
       String custcode = await Utils().getParameterData("cust");
-      String keyos = "${salescode}|${custcode}|$activevendor";
+      if(!vendorBox.isOpen) vendorBox = await Hive.openBox('vendorBox');
+      var datavendor = vendorBox.get("$salescode|$custcode");
+      vendorBox.close();
+      vendorlist.clear();
+      for (var i = 0; i < datavendor.length; i++) {
+        vendorlist.add(datavendor[i]);
+      }
+      idvendorg =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
+      String keyos = "$salescode|$custcode|${vendorlist[idvendorg].prefix}|${vendorlist[idvendorg].baseApiUrl}";
       await getBoxOutStanding();
       var dataosbox = await outstandingBox.get(keyos);
       outstandingBox.close();
@@ -228,12 +281,14 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
          }
       }
 
-      String dectoken = "1|u1mXz55jhHhW4za4fpFCJLC5ti7m3QUyhVL4flCp";
-      String urls = "https://mitra.tirtakencana.com/tangki-air-jerapah-lyo-dev/api/";
-      // urls = vendorlist[idvendor].baseApiUrl
+      // String dectoken = "1|u1mXz55jhHhW4za4fpFCJLC5ti7m3QUyhVL4flCp";
+      // String urls = "https://mitra.tirtakencana.com/tangki-air-jerapah-lyo-dev/api/";
+      // "customerNo": "13A88040075"
+
+      String dectoken = await gettoken();
+      String urls = vendorlist[idvendorg].baseApiUrl;
       var params = {
-        // "customerNo" : Utils().getParameterData("cust").toString()
-        "customerNo": "13A88040075"
+        "customerNo" : await Utils().getParameterData("cust")
       };
       var getVendoroustanding = await ApiClient().postData(
           urls,
@@ -246,7 +301,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
           }));
       if (getVendoroustanding != null) {
         var dataresponse = OutstandingResponse.fromJson(getVendoroustanding);
-        // print(dataresponse);
         listDataOutstanding.clear();
         for (var i = 0; i < dataresponse.data!.length; i++) {
           listDataOutstanding.add(dataresponse.data![i]);
@@ -265,7 +319,28 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     } catch (e) {
       isLoadingOutstanding.value = false;
       isFailedLoadOutstanding.value = true;
-      // print(e);
+    }
+  }
+  
+  loginapivendor() async {
+    try {
+      String salesiddata = await Utils().getParameterData("sales");
+      String encparam = await Utils().encryptsalescodeforvendor(salesiddata);
+      var params = {
+        "username" : encparam
+      };
+      var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
+            params,
+            Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+      var dataresp = LoginResponse.fromJson(result);
+      if(!tokenbox.isOpen){
+        tokenbox = await Hive.openBox('tokenbox');
+      }
+      tokenbox.delete(salesiddata);
+      tokenbox.put(salesiddata, dataresp.data!.token);
+      tokenbox.close();
+    } catch (e) {
+      
     }
   }
 

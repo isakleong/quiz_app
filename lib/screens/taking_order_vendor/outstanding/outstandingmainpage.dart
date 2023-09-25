@@ -67,7 +67,26 @@ class OutStandingMainPage extends StatelessWidget {
                             ),
                           ),
                         )
-                      : Expanded(
+                      : _takingOrderVendorController.listDataOutstanding.isEmpty ? Column(children: [
+                        SizedBox(height: 0.1 * height,),
+                        TextView(
+                          text: "Tidak Ada Outstanding",headings: 'H3',fontSize: 16.sp,
+                        ),
+                        SizedBox(
+                          width: 0.5 * width,
+                          child: TextView(
+                            text: "Tidak Ada Barang yang belum terkirim.",headings: 'H5',fontSize: 14.sp,
+                          ),
+                        ),
+                        Center(
+                          child: Image.asset(
+                              'assets/images/noOutstanding.png',
+                              width: 0.7 * width,
+                              height: 0.3 * height,
+                              fit: BoxFit.contain,
+                            ),
+                        ),
+                      ],) : Expanded(
                           child: ListView.builder(
                           itemBuilder: (c, i) {
                             return Padding(

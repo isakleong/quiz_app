@@ -236,11 +236,8 @@ class ProductSearch extends StatelessWidget {
                           if (suggestion == "") {
                             _takingOrderVendorController.cnt.value.text = "";
                           } else {
-                            _takingOrderVendorController.cnt.value.text =
-                                suggestion.nmProduct;
-                            _takingOrderVendorController
-                                .handleProductSearchButton(
-                                    suggestion.kdProduct);
+                            _takingOrderVendorController.cnt.value.text = suggestion.nmProduct;
+                            _takingOrderVendorController.handleProductSearchButton(suggestion.kdProduct);
                           }
                         },
                         hideSuggestionsOnKeyboardHide: true,

@@ -117,6 +117,17 @@ class Shoppingcart extends StatelessWidget {
               color: Colors.grey.shade300,
             ),
           ),
+          _takingOrderVendorController.infoos.value == "" ? Container() : Padding(
+            padding: EdgeInsets.only(top: 8.0, bottom: 8),
+            child: Center(
+              child: Container(
+                width: 0.86 * width,decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.pink.shade700),
+                child: TextView(
+                  text: "Masih ada outstanding sebanyak ${_takingOrderVendorController.infoos.value}",color: Colors.white,headings: 'H4',fontSize: 11.sp,
+                ),          
+              ),
+            ),
+          ),
           Obx(()=>SizedBox(
             height: 80,
             child: Row(children: [

@@ -17,7 +17,7 @@ class CartList extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    print(data.nmProduct.length);
+    // print(data.nmProduct.length);
     return Card(
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
