@@ -42,6 +42,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   String activevendor = "";
   RxString overlayactivepenjualan = "main".obs;
   late Box outstandingBox;
+  RxString custcode = "".obs;
 
   @override
   void onInit() {
@@ -75,6 +76,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     _penjualanController.activevendor = activevendor;
     _laporanController.activevendor = activevendor;
     _pembayaranController.activevendor = activevendor;
+    custcode.value = await Utils().getParameterData("cust");
     await getListDataOutStanding();
     await _laporanController.getReportList(true);
     await _pembayaranController.loadpembayaranstate();
@@ -144,7 +146,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
   cekoutstanding(String codeitem){
     try {
-      print(codeitem);
+      // print(codeitem);
       infoos.value = "";
       var outstandingqty = 0;
       var satuan = "";

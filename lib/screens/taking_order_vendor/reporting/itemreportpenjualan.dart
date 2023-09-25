@@ -9,8 +9,10 @@ import '../../../widgets/textview.dart';
 
 class ItemReportPenjualan extends StatelessWidget {
   String idx;
+  String custid;
   ReportPenjualanModel data;
-  ItemReportPenjualan({super.key, required this.idx, required this.data});
+  ItemReportPenjualan(
+      {super.key, required this.idx, required this.data, required this.custid});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,8 @@ class ItemReportPenjualan extends StatelessWidget {
         color: Colors.white,
         child: SizedBox(
           width: 0.9 * width,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -58,18 +61,10 @@ class ItemReportPenjualan extends StatelessWidget {
                         Row(
                           children: [
                             TextView(
-                              text: data.id,
+                              text: data.id + " ($custid)",
                               headings: 'H4',
-                              fontSize: width < 450 ? 8.sp : 14,
+                              fontSize: width < 450 ? 7.sp : 9.sp,
                             ),
-                            if(data.condition != 'success')
-                            SizedBox(width: 5.sp,),
-                            if(data.condition != 'success')
-                           ChipsItem(
-                                satuan: data.condition,
-                                color: data.condition == 'pending' ? Colors.amber : Colors.red,
-                                fontSize: width < 450 ? 8.sp : 12,
-                              )
                           ],
                         ),
                         data.notes == ""
@@ -90,9 +85,25 @@ class ItemReportPenjualan extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      TextView(
-                        text:Utils().formatDate(data.tanggal),
-                        fontSize: width < 450 ? 9.sp : 14,
+                      Row(
+                        children: [
+                          if (data.condition != 'success')
+                            ChipsItem(
+                              satuan: data.condition,
+                              color: data.condition == 'pending'
+                                  ? Colors.amber
+                                  : Colors.red,
+                              fontSize: width < 450 ? 8.sp : 9.sp,
+                            ),
+                          if (data.condition != 'success')
+                            SizedBox(
+                              width: 2.sp,
+                            ),
+                          TextView(
+                            text: Utils().formatDate(data.tanggal),
+                            fontSize: width < 450 ? 9.sp : 14,
+                          ),
+                        ],
                       ),
                       TextView(
                         text: data.waktu,

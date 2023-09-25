@@ -11,8 +11,8 @@ class ItemReportPembayaran extends StatelessWidget {
   String idx;
   ReportPembayaranModel data;
   String total;
-  ItemReportPembayaran(
-      {super.key, required this.idx, required this.data, required this.total});
+  String custid;
+  ItemReportPembayaran({super.key, required this.idx, required this.data, required this.total,required this.custid});
 
   @override
   Widget build(BuildContext context) {

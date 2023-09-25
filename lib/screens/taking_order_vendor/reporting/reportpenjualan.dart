@@ -14,30 +14,17 @@ class ReportPenjualan extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Obx(() => Column(
-      children: [
-        for (int index = 0;index <_takingOrderVendorController.listReportPenjualanShow.value.length;index++)
-          index == 0 && index !=_takingOrderVendorController.listReportPenjualanShow.value.length - 1
-          ? Column(
-                children: [
-                    Padding(
-                        padding: EdgeInsets.only(
-                            left: 0.05 * width,
-                            top: 15,
-                            right: 0.05 * width),
-                        child: ReportHeader(
-                          img: 'assets/images/custorder.png',
-                          title: "Penjualan",
-                        )),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    ItemReportPenjualan(
-                      idx: (index + 1).toString(),
-                      data: _takingOrderVendorController.listReportPenjualanShow.value[index],
-                    )
-                  ],
-                )
-              : index == 0 && index == _takingOrderVendorController.listReportPenjualanShow.value.length - 1
+          children: [
+            for (int index = 0;
+                index <
+                    _takingOrderVendorController
+                        .listReportPenjualanShow.value.length;
+                index++)
+              index == 0 &&
+                      index !=
+                          _takingOrderVendorController
+                                  .listReportPenjualanShow.value.length -
+                              1
                   ? Column(
                       children: [
                         Padding(
@@ -54,30 +41,37 @@ class ReportPenjualan extends StatelessWidget {
                         ),
                         ItemReportPenjualan(
                           idx: (index + 1).toString(),
-                          data: _takingOrderVendorController.listReportPenjualanShow.value[index],
-                        ),
-                        SizedBox(
-                          height: 0.04 * height,
-                        ),
-                        Container(
-                          width: width,
-                          color: Colors.grey.shade300,
-                          height: 10,
+                          custid: _takingOrderVendorController.custcode.value,
+                          data: _takingOrderVendorController
+                              .listReportPenjualanShow.value[index],
                         )
                       ],
                     )
-                  : index != 0 && index == _takingOrderVendorController.listReportPenjualanShow.value.length - 1
+                  : index == 0 &&
+                          index ==
+                              _takingOrderVendorController
+                                      .listReportPenjualanShow.value.length -
+                                  1
                       ? Column(
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(
-                                  left: 0.05 * width,
-                                  top: 15,
-                                  right: 0.05 * width),
-                              child: ItemReportPenjualan(
-                                idx: (index + 1).toString(),
-                                data: _takingOrderVendorController.listReportPenjualanShow.value[index],
-                              ),
+                                padding: EdgeInsets.only(
+                                    left: 0.05 * width,
+                                    top: 15,
+                                    right: 0.05 * width),
+                                child: ReportHeader(
+                                  img: 'assets/images/custorder.png',
+                                  title: "Penjualan",
+                                )),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            ItemReportPenjualan(
+                              idx: (index + 1).toString(),
+                              custid:
+                                  _takingOrderVendorController.custcode.value,
+                              data: _takingOrderVendorController
+                                  .listReportPenjualanShow.value[index],
                             ),
                             SizedBox(
                               height: 0.04 * height,
@@ -89,16 +83,51 @@ class ReportPenjualan extends StatelessWidget {
                             )
                           ],
                         )
-                      : Padding(
-                          padding: EdgeInsets.only(
-                              left: 0.05 * width,
-                              top: 15,
-                              right: 0.05 * width),
-                          child: ItemReportPenjualan(
-                            idx: (index + 1).toString(),
-                            data: _takingOrderVendorController.listReportPenjualanShow.value[index],
-                          )),
-      ],
-    )); 
+                      : index != 0 &&
+                              index ==
+                                  _takingOrderVendorController
+                                          .listReportPenjualanShow
+                                          .value
+                                          .length -
+                                      1
+                          ? Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 0.05 * width,
+                                      top: 15,
+                                      right: 0.05 * width),
+                                  child: ItemReportPenjualan(
+                                    idx: (index + 1).toString(),
+                                    custid: _takingOrderVendorController
+                                        .custcode.value,
+                                    data: _takingOrderVendorController
+                                        .listReportPenjualanShow.value[index],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 0.04 * height,
+                                ),
+                                Container(
+                                  width: width,
+                                  color: Colors.grey.shade300,
+                                  height: 10,
+                                )
+                              ],
+                            )
+                          : Padding(
+                              padding: EdgeInsets.only(
+                                  left: 0.05 * width,
+                                  top: 15,
+                                  right: 0.05 * width),
+                              child: ItemReportPenjualan(
+                                idx: (index + 1).toString(),
+                                custid:
+                                    _takingOrderVendorController.custcode.value,
+                                data: _takingOrderVendorController
+                                    .listReportPenjualanShow.value[index],
+                              )),
+          ],
+        ));
   }
 }

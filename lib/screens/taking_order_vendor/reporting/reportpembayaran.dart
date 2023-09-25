@@ -14,34 +14,18 @@ class ReportPembayaran extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Obx(() => Column(
-      children: [
-        for (int index = 0;index < _takingOrderVendorController.listReportPembayaranshow.value.length;index++)
-          index == 0 && index != _takingOrderVendorController.listReportPembayaranshow.value.length - 1
-              ? Column(
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.only(
-                            left: 0.05 * width,
-                            top: 15,
-                            right: 0.05 * width),
-                        child: ReportHeader(
-                          img: 'assets/images/custpayment.png',
-                          title: "Pembayaran",
-                        )),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    ItemReportPembayaran(
-                      idx: (index + 1).toString(),
-                      data: _takingOrderVendorController
-                          .listReportPembayaranshow.value[index],
-                      total:
-                          "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
-                    ),
-                  ],
-                )
-              : index == 0 && index == _takingOrderVendorController.listReportPembayaranshow.value.length - 1 ? 
-              Column(
+          children: [
+            for (int index = 0;
+                index <
+                    _takingOrderVendorController
+                        .listReportPembayaranshow.value.length;
+                index++)
+              index == 0 &&
+                      index !=
+                          _takingOrderVendorController
+                                  .listReportPembayaranshow.value.length -
+                              1
+                  ? Column(
                       children: [
                         Padding(
                             padding: EdgeInsets.only(
@@ -57,36 +41,41 @@ class ReportPembayaran extends StatelessWidget {
                         ),
                         ItemReportPembayaran(
                           idx: (index + 1).toString(),
+                          custid: _takingOrderVendorController.custcode.value,
                           data: _takingOrderVendorController
                               .listReportPembayaranshow.value[index],
                           total:
                               "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
                         ),
-                        SizedBox(
-                          height: 0.04 * height,
-                        ),
-                        Container(
-                          width: width,
-                          color: Colors.grey.shade300,
-                          height: 10,
-                        )
                       ],
                     )
-                  : index != 0 && index == _takingOrderVendorController.listReportPembayaranshow.value.length - 1
+                  : index == 0 &&
+                          index ==
+                              _takingOrderVendorController
+                                      .listReportPembayaranshow.value.length -
+                                  1
                       ? Column(
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(
-                                  left: 0.05 * width,
-                                  top: 15,
-                                  right: 0.05 * width),
-                              child: ItemReportPembayaran(
-                                idx: (index + 1).toString(),
-                                data: _takingOrderVendorController
-                                    .listReportPembayaranshow.value[index],
-                                total:
-                                    "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
-                              ),
+                                padding: EdgeInsets.only(
+                                    left: 0.05 * width,
+                                    top: 15,
+                                    right: 0.05 * width),
+                                child: ReportHeader(
+                                  img: 'assets/images/custpayment.png',
+                                  title: "Pembayaran",
+                                )),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            ItemReportPembayaran(
+                              idx: (index + 1).toString(),
+                              custid:
+                                  _takingOrderVendorController.custcode.value,
+                              data: _takingOrderVendorController
+                                  .listReportPembayaranshow.value[index],
+                              total:
+                                  "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
                             ),
                             SizedBox(
                               height: 0.04 * height,
@@ -98,20 +87,56 @@ class ReportPembayaran extends StatelessWidget {
                             )
                           ],
                         )
-                      : Padding(
-                          padding: EdgeInsets.only(
-                              left: 0.05 * width,
-                              top: 15,
-                              right: 0.05 * width),
-                          child: ItemReportPembayaran(
-                            idx: (index + 1).toString(),
-                            data: _takingOrderVendorController
-                                .listReportPembayaranshow.value[index],
-                            total:
-                                "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
-                          ),
-                        ),
-      ],
-    )); 
+                      : index != 0 &&
+                              index ==
+                                  _takingOrderVendorController
+                                          .listReportPembayaranshow
+                                          .value
+                                          .length -
+                                      1
+                          ? Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 0.05 * width,
+                                      top: 15,
+                                      right: 0.05 * width),
+                                  child: ItemReportPembayaran(
+                                    idx: (index + 1).toString(),
+                                    custid: _takingOrderVendorController
+                                        .custcode.value,
+                                    data: _takingOrderVendorController
+                                        .listReportPembayaranshow.value[index],
+                                    total:
+                                        "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 0.04 * height,
+                                ),
+                                Container(
+                                  width: width,
+                                  color: Colors.grey.shade300,
+                                  height: 10,
+                                )
+                              ],
+                            )
+                          : Padding(
+                              padding: EdgeInsets.only(
+                                  left: 0.05 * width,
+                                  top: 15,
+                                  right: 0.05 * width),
+                              child: ItemReportPembayaran(
+                                idx: (index + 1).toString(),
+                                custid:
+                                    _takingOrderVendorController.custcode.value,
+                                data: _takingOrderVendorController
+                                    .listReportPembayaranshow.value[index],
+                                total:
+                                    "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                              ),
+                            ),
+          ],
+        ));
   }
 }
