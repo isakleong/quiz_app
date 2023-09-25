@@ -3,6 +3,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
+import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
@@ -16,7 +17,8 @@ class ProductSearch extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Obx(() => _takingOrderVendorController.nmtoko.value == "" ? Shimmer.fromColors(
+    return Obx(() => _takingOrderVendorController.nmtoko.value == "" ? 
+      Shimmer.fromColors(
             baseColor: Colors.grey.shade400,
             highlightColor: Colors.grey.shade200,
             child: Container(
@@ -28,77 +30,98 @@ class ProductSearch extends StatelessWidget {
           ):
       Card(
           elevation: 10,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           color: Colors.white,
           child: SizedBox(
             width: 0.9 * width,
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, 
+              children: [
               Padding(
                 padding: const EdgeInsets.only(left: 15, top: 15),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Stack(
-                      alignment: Alignment.center,
+                    Row(
                       children: [
-                        Container(
-                          width: 50.sp,
-                          height: 50.sp,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppConfig.mainCyan,
-                          ),
-                        ),
-                        Image.asset(
-                          'assets/images/custorder.png',
-                          width: 35.sp,
-                          height: 35.sp,
-                          fit: BoxFit.cover,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextView(
-                            headings: "H2", text: "Penjualan", fontSize: 10.sp),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
+                        Stack(
+                          alignment: Alignment.center,
                           children: [
-                            Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  width: 14.sp,
-                                  height: 14.sp,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppConfig.mainCyan,
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.home,
-                                  color: Colors.white,
-                                  size: 10.sp,
-                                )
-                              ],
+                            Container(
+                              width: 50.sp,
+                              height: 50.sp,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppConfig.mainCyan,
+                              ),
                             ),
-                            const SizedBox(
-                              width: 5,
+                            Image.asset(
+                              'assets/images/custorder.png',
+                              width: 35.sp,
+                              height: 35.sp,
+                              fit: BoxFit.cover,
                             ),
+                          ],
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             TextView(
-                              text: _takingOrderVendorController.nmtoko.value,
-                              fontSize: 10.sp,
+                                headings: "H2", text: "Penjualan", fontSize: 10.sp),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Row(
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      width: 14.sp,
+                                      height: 14.sp,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: AppConfig.mainCyan,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.home,
+                                      color: Colors.white,
+                                      size: 10.sp,
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                TextView(
+                                  text: _takingOrderVendorController.nmtoko.value,
+                                  fontSize: 10.sp,
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ],
+                    ),
+                    Padding(
+                      padding:  EdgeInsets.only(right: 0.025 * width),
+                      child: CustomElevatedButton(
+                            text: "Outstanding",
+                            onTap: () {
+                              _takingOrderVendorController.overlayactivepenjualan.value = "outstanding";
+                            },
+                            width: 0.25 * width,
+                            radius: 10,
+                            backgroundColor: Colors.orange.shade600,
+                            textcolor: Colors.white,
+                            elevation: 5,
+                            fonts: 9.sp,
+                            bordercolor: Colors.orange.shade600,
+                            headings: 'H2'),
                     )
                   ],
                 ),

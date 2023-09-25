@@ -4,6 +4,7 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/information/informasi_main_page.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/outstanding/outstandingmainpage.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/returitem/retur_main_page.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/payment_main_page.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/report_main_page.dart';
@@ -12,16 +13,32 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BottomBartransaction extends StatelessWidget {
   BottomBartransaction({super.key});
-final TakingOrderVendorController _takingOrderVendorController =
-      Get.put(TakingOrderVendorController());
+
+  final TakingOrderVendorController _takingOrderVendorController = Get.put(TakingOrderVendorController());
+
   List<Widget> _buildScreens() {
     return [
-      TakingOrderVendorMainPage(),
+      AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        child: getwidget(_takingOrderVendorController.overlayactivepenjualan.value), 
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return FadeTransition(opacity: animation, child: child);
+        },),
       PaymentMainPage(),
       // ReturMainPage(),
       ReportMainPage(),
       // InformasiMainPage()
     ];
+  }
+
+  Widget getwidget(String jenis){
+    if(jenis == "outstanding"){
+      return OutStandingMainPage();
+    }else if (jenis == "penjualan"){
+      return TakingOrderVendorMainPage();
+    } else {
+      return TakingOrderVendorMainPage();
+    }
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -67,7 +84,6 @@ final TakingOrderVendorController _takingOrderVendorController =
     ];
   }
 
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -76,21 +92,18 @@ final TakingOrderVendorController _takingOrderVendorController =
         designSize: const Size(360, 690),
         minTextAdapt: true,
         builder: (context, child) {
-          return PersistentTabView(
+          return Obx(() => PersistentTabView(
             context,
             navBarHeight: 0.08 * height,
             controller: _takingOrderVendorController.controllerBar,
             screens: _buildScreens(),
             items: _navBarsItems(),
             confineInSafeArea: true,
-            backgroundColor:
-                const Color(0xFFeaeaea), // Default is Colors.white.
+            backgroundColor: const Color(0xFFeaeaea), // Default is Colors.white.
             handleAndroidBackButtonPress: true, // Default is true.
-            resizeToAvoidBottomInset:
-                true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+            resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
             stateManagement: true, // Default is true.
-            hideNavigationBarWhenKeyboardShows:
-                true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+            hideNavigationBarWhenKeyboardShows: true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
             decoration: const NavBarDecoration(
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10), topRight: Radius.circular(10)),
@@ -109,9 +122,8 @@ final TakingOrderVendorController _takingOrderVendorController =
               curve: Curves.ease,
               duration: Duration(milliseconds: 200),
             ),
-            navBarStyle: NavBarStyle
-                .style3, // Choose the nav bar style with this property.
-          );
+            navBarStyle: NavBarStyle.style3, // Choose the nav bar style with this property.
+          ));
         });
   }
 }

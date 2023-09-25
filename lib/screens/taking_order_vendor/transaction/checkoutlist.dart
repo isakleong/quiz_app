@@ -10,7 +10,6 @@ class CheckoutList extends StatelessWidget {
   String idx;
   CartDetail data;
   CheckoutList({super.key, required this.idx, required this.data});
-  final TakingOrderVendorController _takingOrderVendorController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,7 @@ class CheckoutList extends StatelessWidget {
       child: SizedBox(
         width: 0.9 * width,
         child: Padding(
-          padding: const EdgeInsets.only(top: 7, bottom: 7),
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
           child: Column(
             children: [
               Row(
@@ -58,42 +57,25 @@ class CheckoutList extends StatelessWidget {
                           children: [
                             TextView(
                               headings: 'H4',
-                              fontSize: 9.5.sp,
+                              fontSize:
+                                  data.nmProduct.length > 40 ? 8.sp : 9.5.sp,
                               text: data.nmProduct,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                data.itemOrder.isNotEmpty
-                                    ? ChipsItem(
-                                        satuan:
-                                            "${data.itemOrder[0].Qty} ${data.itemOrder[0].Satuan}",
-                                        fontSize: 8.sp,
-                                      )
-                                    : Container(),
-                                data.itemOrder.length > 1
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 5.0),
-                                        child: ChipsItem(
-                                          satuan:
-                                              "${data.itemOrder[1].Qty} ${data.itemOrder[1].Satuan}",
-                                          fontSize: 8.sp,
-                                        ))
-                                    : Container(),
-                                data.itemOrder.length > 2
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 5.0),
-                                        child: ChipsItem(
-                                          satuan:
-                                              "${data.itemOrder[2].Qty} ${data.itemOrder[2].Satuan}",
-                                          fontSize: 8.sp,
-                                        ))
-                                    : Container()
-                                // SizedBox(
-                                //   width: 0.1 * width,
-                                // ),
+                                for (var l = 0; l < data.itemOrder.length; l++)
+                                  l == 0 ? ChipsItem(
+                                          satuan: "${data.itemOrder[l].Qty} ${data.itemOrder[l].Satuan}",
+                                          fontSize: data.nmProduct.length > 40 ? 7.5.sp : 8.sp,
+                                        )
+                                      : Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 5.0),
+                                          child: ChipsItem(
+                                            satuan: "${data.itemOrder[l].Qty} ${data.itemOrder[l].Satuan}",
+                                            fontSize: data.nmProduct.length > 40 ? 7.5.sp : 8.sp,
+                                          ))
                               ],
                             )
                           ],

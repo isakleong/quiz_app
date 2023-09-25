@@ -59,9 +59,16 @@ class ItemListPenjualan extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                if(width < 450)
                                 TextView(
                                   headings: 'H4',
-                                  fontSize: width < 450 ? 10.sp : 13,
+                                  fontSize: data.nmProduct.length  > 30 ? 8.sp : 10.sp ,
+                                  text: data.nmProduct,
+                                )
+                                else
+                                TextView(
+                                  headings: 'H4',
+                                  fontSize: data.nmProduct.length > 50 ? 8.sp : data.nmProduct.length  > 40 ? 9.sp : 10.sp ,
                                   text: data.nmProduct,
                                 ),
                                 Row(

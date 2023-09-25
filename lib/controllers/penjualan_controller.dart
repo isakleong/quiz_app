@@ -152,11 +152,13 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         'customerNo': isdev ? "10A01010007" : custid,
       };
       var dectoken = await gettoken();
+      // print(vendorlist[idvendor].baseApiUrl);
       var getVendorItem = await ApiClient().postData(vendorlist[idvendor].baseApiUrl,"setting/vendor-info",jsonEncode(params), Options(
             headers: {
               HttpHeaders.contentTypeHeader: "application/json",'Authorization': 'Bearer ${dectoken}','Accept': 'application/json'
             }
           ));
+      // print(getVendorItem);
       masteritemvendorbox.delete(globalkeybox);
       masteritemvendorbox.put(globalkeybox, getVendorItem);
       var data = MasterItemVendor.fromJson(getVendorItem);
@@ -183,6 +185,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         }
       }
     }catch (e) {
+      // print(e.toString());
       if(type == null){
         needtorefresh.value = true;
       } else {

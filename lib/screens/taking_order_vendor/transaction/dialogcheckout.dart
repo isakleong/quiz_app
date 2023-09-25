@@ -82,27 +82,11 @@ class DialogCheckOut extends StatelessWidget {
                                 child: TextView(
                                   text: value.address,
                                   textAlign: TextAlign.left,
-                                  fontSize: 10.sp,
+                                  fontSize: value.address.length > 40 ? 8.sp : 10.sp,
                                   headings: 'H4',
                                 ),
                               );
                             }).toList(),
-                            
-                            // <String>[
-                            //   'Pilih Alamat Pengiriman',
-                            //   'Pemancar Lamtemen Timur',
-                            //   'Alamat Dummy',
-                            // ].map((String value) {
-                            //   return DropdownMenuItem<String>(
-                            //     value: value,
-                            //     child: TextView(
-                            //       text: value,
-                            //       textAlign: TextAlign.left,
-                            //       fontSize: 10.sp,
-                            //       headings: 'H4',
-                            //     ),
-                            //   );
-                            // }).toList(),
                           ),
                         ),
                       ),
@@ -217,8 +201,7 @@ class DialogCheckOut extends StatelessWidget {
                         right: 0.05 * width),
                     child: CheckoutList(
                         idx: (index + 1).toString(),
-                        data:
-                            _takingOrderVendorController.cartDetailList[index]),
+                        data:_takingOrderVendorController.cartDetailList[index]),
                   );
                 },
                 physics: const BouncingScrollPhysics(),
@@ -243,8 +226,7 @@ class DialogCheckOut extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextView(
-                            text:
-                                "${_takingOrderVendorController.cartDetailList.length}",
+                            text: "${_takingOrderVendorController.cartDetailList.length}",
                             headings: 'H2',
                             fontSize: 11.sp,
                             color: Colors.amber.shade900,
@@ -274,10 +256,9 @@ class DialogCheckOut extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextView(
-                            text: Utils().formatNumber(
-                                _takingOrderVendorController.countPriceTotal()),
+                            text: Utils().formatNumber(_takingOrderVendorController.countPriceTotal()),
                             headings: 'H2',
-                            fontSize: 11.sp,
+                            fontSize: Utils().formatNumber(_takingOrderVendorController.countPriceTotal()).length > 12 ? 8.sp : 10.sp,
                             color: Colors.amber.shade900,
                           ),
                           TextView(
@@ -308,10 +289,9 @@ class DialogCheckOut extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextView(
-                            text:
-                                Utils().formatNumber(double.parse(_takingOrderVendorController.komisi.value)),
+                            text: Utils().formatNumber(double.parse(_takingOrderVendorController.komisi.value)),
                             headings: 'H2',
-                            fontSize: 10.sp,
+                            fontSize: Utils().formatNumber(double.parse(_takingOrderVendorController.komisi.value)).length > 12 ? 8.sp : 10.sp,
                             color: Colors.amber.shade900,
                           ),
                           TextView(

@@ -43,7 +43,7 @@ class Shoppingcart extends StatelessWidget {
                     TextView(
                       headings: 'H4',
                       maxLines: 1,
-                      fontSize: 10.sp,
+                      fontSize: _takingOrderVendorController.selectedProduct[0].nmProduct.length > 40 ? 8.sp : 9.5.sp,
                       textAlign: TextAlign.left,
                       text: _takingOrderVendorController
                           .selectedProduct[0].nmProduct,

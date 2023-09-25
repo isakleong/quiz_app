@@ -20,6 +20,9 @@ import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart
 import '../models/cartdetail.dart';
 import '../models/tarikbarangmodel.dart';
 import '../models/treenodedata.dart';
+import '../screens/taking_order_vendor/payment/payment_main_page.dart';
+import '../screens/taking_order_vendor/reporting/report_main_page.dart';
+import '../screens/taking_order_vendor/transaction/transaction_main_page.dart';
 
 class TakingOrderVendorController extends GetxController with GetTickerProviderStateMixin {
   final PembayaranController _pembayaranController = Get.put(PembayaranController());
@@ -31,6 +34,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   final keyconfirm = GlobalKey();
   final PersistentTabController controllerBar = PersistentTabController(initialIndex: 0);
   String activevendor = "";
+  RxString overlayactivepenjualan = "main".obs;
+  
 
   @override
   void onInit() {
