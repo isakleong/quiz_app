@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/date_symbols.dart';
 import 'package:sfa_tools/widgets/closeoverlayaction.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sfa_tools/widgets/refreshaction.dart';
 import '../../../common/app_config.dart';
 import '../../../widgets/textview.dart';
 
 class OutstandingCustCard extends StatelessWidget {
   String nmtoko;
+  bool isfailed;
   var ontap;
-  OutstandingCustCard({super.key,required this.nmtoko, required this.ontap});
+  var ontaprefresh;
+  OutstandingCustCard({super.key, required this.nmtoko, required this.ontap, required this.ontaprefresh,required this.isfailed});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +46,7 @@ class OutstandingCustCard extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left :5.0),
+                          padding: const EdgeInsets.only(left: 5.0),
                           child: Image.asset(
                             'assets/images/outstanding.png',
                             width: 35.sp,
@@ -99,7 +104,12 @@ class OutstandingCustCard extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 20),
-                  child: CloseOverlayAction(ontap: ontap),
+                  child: Row(
+                    children: [
+                      isfailed ? RefreshAction(ontap: ontaprefresh) : SizedBox(),
+                      CloseOverlayAction(ontap: ontap),
+                    ],
+                  ),
                 ),
               ],
             ),

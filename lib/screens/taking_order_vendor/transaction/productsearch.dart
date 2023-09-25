@@ -116,11 +116,11 @@ class ProductSearch extends StatelessWidget {
                             },
                             width: 0.25 * width,
                             radius: 10,
-                            backgroundColor: Colors.orange.shade600,
+                            backgroundColor: Colors.orange.shade700,
                             textcolor: Colors.white,
                             elevation: 5,
                             fonts: 9.sp,
-                            bordercolor: Colors.orange.shade600,
+                            bordercolor: Colors.orange.shade700,
                             headings: 'H2'),
                     )
                   ],
