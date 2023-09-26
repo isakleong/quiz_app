@@ -480,7 +480,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
           return controller;
       }    
     }
-    
   }
 
   cekvalidcheckout(){

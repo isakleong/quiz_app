@@ -51,6 +51,32 @@ class PembayaranController extends GetxController {
   String globalkeybox = "";
   String activevendor = "";
   List<Vendor> vendorlist = <Vendor>[];
+  List<Map<String, dynamic>> datajsonsend = [];
+  List<PenjualanPostModel> listpostsend = <PenjualanPostModel>[];
+
+  refreshmastervendor() async {
+    try {
+        String cust = await Utils().getParameterData("cust");
+        if(globalkeybox == "") await getGlobalKeyBox();
+        var params =  {
+          'customerNo':  cust,
+        };
+        await getbox();
+        var dectoken = await gettoken();
+        var getVendorItem = await ApiClient().postData(vendorlist[idvendor].baseApiUrl,"setting/vendor-info",jsonEncode(params), Options(
+              headers: {
+                HttpHeaders.contentTypeHeader: "application/json",'Authorization': 'Bearer $dectoken','Accept': 'application/json'
+              }
+            ));
+        if(!masteritemvendorbox.isOpen) masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
+        masteritemvendorbox.delete(globalkeybox);
+        masteritemvendorbox.put(globalkeybox, getVendorItem);
+        await closebox();
+    // ignore: empty_catches
+    } catch (e) {
+      loginapivendor();
+    }
+  }
 
   tojsondata(List<ReportPembayaranModel> listreport){
     List<Map<String, dynamic>> listreportmap = listreport.map((clist) {
@@ -136,6 +162,12 @@ class PembayaranController extends GetxController {
       var databox = boxPembayaranState.get(globalkeybox);
       await boxPembayaranState.close();
       if(databox != null){
+        if(!Hive.isBoxOpen("masteritemvendorbox")) masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
+        var datamaster = masteritemvendorbox.get(globalkeybox);
+        if(datamaster == null){
+          await deletepembayaranstate();
+          return;
+        }
         var dataconvjson = jsonDecode(databox);
         for (var i = 0; i < dataconvjson.length; i++) {
           listpaymentdata.add(PaymentData(dataconvjson[i]['jenis'], dataconvjson[i]['nomor'], dataconvjson[i]['tipe'], dataconvjson[i]['jatuhtempo'], dataconvjson[i]['value']));
@@ -358,15 +390,24 @@ class PembayaranController extends GetxController {
     }
   }
 
-  savepaymentdata() async {
+  Future<bool> savepaymentdata() async {
     await getbox();
     String salesid = await Utils().getParameterData("sales");
     String custid = await Utils().getParameterData("cust");
 
     if(globalkeybox == "") await getGlobalKeyBox();
+    
+    if(!Hive.isBoxOpen('masteritemvendorbox')) masteritemvendorbox = await Hive.openBox('masteritemvendorbox');
+    var databox = masteritemvendorbox.get(globalkeybox);
+    if(databox == null){
+      await refreshmastervendor();
+      return false;
+    }
 
     if(!Hive.isBoxOpen('BoxPembayaranReport')) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
     var datapembayaranreport = await boxPembayaranReport.get(globalkeybox);
+
+    await closebox();
 
     //cek apakah sudah ada data report pembayaran
     if(datapembayaranreport != null){
@@ -422,11 +463,29 @@ class PembayaranController extends GetxController {
       var joinedjson = {
          "data" : datapembayaranlist
       };
-      boxPembayaranReport.delete(globalkeybox);
-      boxPembayaranReport.put(globalkeybox, jsonEncode(joinedjson));
-      await closebox();
-      await savepaymentdatatoapi(noorder, date, custid, salesid);
-    }else {
+      
+      await savepaymentdatatoapi(noorder, date, custid, salesid,databox);
+      if(listpostsend.isNotEmpty && datajsonsend.isNotEmpty){
+        await savepaymenttoreport(globalkeybox, jsonEncode(joinedjson));
+        return true;
+      } else {
+        for (var i = 0; i < listpostsend.length; i++) {
+          for (var j = 0; j < listpostsend[i].dataList.length; j++) {
+            if(listpostsend[i].dataList[j]['entryDate'] == noorder){
+              listpostsend.removeAt(i);
+              break;
+            }
+          }
+        }
+        if(!postpembayaranbox.isOpen) postpembayaranbox = await Hive.openBox('postpembayaranbox');
+        await postpembayaranbox.delete(globalkeybox);
+        await postpembayaranbox.put(globalkeybox,listpostsend);
+        await postpembayaranbox.close();
+        await refreshmastervendor();
+        return false;
+      }
+    }
+    else {
       //membuat data detail
       List<Map<String, dynamic>> listpaymentdatamap = listpaymentdata.map((datalist) {
       return {
@@ -463,26 +522,55 @@ class PembayaranController extends GetxController {
         }]
       };
 
-      //data report disimpan dalam bentuk json ke hive
-      boxPembayaranReport.delete(globalkeybox);
-      boxPembayaranReport.put(globalkeybox, jsonEncode(jsondata));
-      await closebox();
-
       //selanjutnya menyimpan data ke hive untuk pengiriman API via background
-      await savepaymentdatatoapi(noorder, date, custid, salesid);
+      await savepaymentdatatoapi(noorder, date, custid, salesid,databox);
+      if(listpostsend.isNotEmpty && datajsonsend.isNotEmpty){
+        await savepaymenttoreport(globalkeybox, jsonEncode(jsondata));
+        return true;
+      } else {
+        for (var i = 0; i < listpostsend.length; i++) {
+          for (var j = 0; j < listpostsend[i].dataList.length; j++) {
+            if(listpostsend[i].dataList[j]['entryDate'] == noorder){
+              listpostsend.removeAt(i);
+              break;
+            }
+          }
+        }
+        if(!postpembayaranbox.isOpen) postpembayaranbox = await Hive.openBox('postpembayaranbox');
+        await postpembayaranbox.delete(globalkeybox);
+        await postpembayaranbox.put(globalkeybox,listpostsend);
+        await postpembayaranbox.close();
+        await refreshmastervendor();
+        return false;
+      }
     }
   }
 
-  savepaymentdatatoapi(String noorder , String datetimes, String custid, String salesid) async {
-    await getbox();
+  savepaymenttoreport(String key, var jsondata) async {
+      await getbox();
+      //data report disimpan dalam bentuk json ke hive
+      boxPembayaranReport.delete(globalkeybox);
+      boxPembayaranReport.put(globalkeybox, jsondata);
+      await closebox();
 
-    //ambil data informasi payment id dan bank id yang tersimpan di masteritem vendor box (yang di isi pada penjualan controller)
-    var databox = masteritemvendorbox.get(globalkeybox);
-    if (databox != null){
-      var data = MasterItemVendor.fromJson(databox);
+      //seluruh variable di clear untuk mengembalikan tampilan ke awal
+      clearvariable();
+
+      //state yang telah disimpan , di hapus agar saat user mencoba buka menu pembayaran lagi tidak ada data yang ditampilkan
+      deletepembayaranstate();
+
+      //proses pengiriman data yang telah diinput ke API, bukan semua data pending. dikirim secara terpisah bukan await agar user tidak perlu menunggu response dari API
+      sendPaymentToApi(datajsonsend,listpostsend);
+  }
+
+  savepaymentdatatoapi(String noorder , String datetimes, String custid, String salesid, var datapayment) async {
+    try {
+      datajsonsend.clear();
+      listpostsend.clear();
+      //ambil data informasi payment id dan bank id yang tersimpan di masteritem vendor box (yang di isi pada penjualan controller)
+      var data = MasterItemVendor.fromJson(datapayment);
       
       //membuat data sesuai dengan body yang digunakan untuk request ke API
-      List<Map<String, dynamic>> datajson = [];
       for (var i = 0; i < listpaymentdata.length; i++) {
         String bankdata = '';
         String paymentid = '';
@@ -506,7 +594,7 @@ class PembayaranController extends GetxController {
             }
           }
         }
-          datajson.add(
+          datajsonsend.add(
             {
               'extDocId' : noorder,
               'entryDate' : datetimes,
@@ -521,35 +609,28 @@ class PembayaranController extends GetxController {
             }
           );
       }
-
+      await getbox();
       //data post disimpan atau di ubah menjadi sesuai dengan class PenjualanPostModel (nama sama dengan body penjualan karena class tersebut mewakili penggunaan di pembayaran)
       var listpostpembayaranbox = await postpembayaranbox.get(globalkeybox);
-      List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
 
       //cek apakah ada data pending
       if (listpostpembayaranbox == null){
-          listpost.add(PenjualanPostModel(datajson));
+          listpostsend.add(PenjualanPostModel(datajsonsend));
       } else {
         //jika ada data pending maka data sebelumnya akan dimasukkan ke listpost, kemudian data yang baru masuk di masukkan di index terakhir
         for (var i = 0; i < listpostpembayaranbox.length; i++) {
-          listpost.add(listpostpembayaranbox[i]);
+          listpostsend.add(listpostpembayaranbox[i]);
         }
-        listpost.add(PenjualanPostModel(datajson));
+        listpostsend.add(PenjualanPostModel(datajsonsend));
       }
 
       //seluruh data post akan disimpan di hive, dalam bentuk List<PenjualanPostModel>
       await postpembayaranbox.delete(globalkeybox);
-      await postpembayaranbox.put(globalkeybox,listpost);
+      await postpembayaranbox.put(globalkeybox,listpostsend);
       await closebox();
-
-      //seluruh variable di clear untuk mengembalikan tampilan ke awal
-      clearvariable();
-
-      //state yang telah disimpan , di hapus agar saat user mencoba buka menu pembayaran lagi tidak ada data yang ditampilkan
-      deletepembayaranstate();
-
-      //proses pengiriman data yang telah diinput ke API, bukan semua data pending. dikirim secara terpisah bukan await agar user tidak perlu menunggu response dari API
-      sendPaymentToApi(datajson,listpost);
+      return true;
+    } catch (e) {
+      return false;
     }
 
   }
@@ -704,13 +785,10 @@ class PembayaranController extends GetxController {
       var params = {
         "username" : encparam
       };
-      //print(params);
       var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
       var dataresp = LoginResponse.fromJson(result);
-      //print(dataresp.data!.token);
-      //print(await Utils().decrypt(dataresp.data!.token.toString()));
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');
       }

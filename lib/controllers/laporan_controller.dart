@@ -103,37 +103,25 @@ class LaporanController extends GetxController {
 
     //read filter condition
     if (choosedReport.value.contains("Semua") || choosedReport.value == "") {
-      //print("semua");
-      //
       listReportPenjualanShow.value.clear();
       listReportPenjualanShow.value.addAll(listReportPenjualan);
-      //
       listReportPembayaranshow.clear();
       listReportPembayaranshow.value.addAll(listReportPembayaran);
-      //
       allReportlength.value = listReportPenjualanShow.length + listReportPembayaranshow.length;
     } 
     else if (choosedReport.value == "Transaksi Penjualan") {
-      //print("Penjualan");
       listReportPembayaranshow.value.clear();
-      //
       listReportPenjualanShow.value.clear();
       listReportPenjualanShow.value.addAll(listReportPenjualan);
-      //
       allReportlength.value = listReportPenjualanShow.length ;
     } 
     else if (choosedReport.value == "Transaksi Pembayaran") {
-      //print("Pembayaran");
-      //
       listReportPenjualanShow.value.clear();
-      //
       listReportPembayaranshow.clear();
       listReportPembayaranshow.value.addAll(listReportPembayaran);
-      //
       allReportlength.value = listReportPembayaranshow.length;
     } 
     else if (choosedReport.value == "Transaksi Retur") {
-      //print("Retur");
       listReportPenjualanShow.clear();
       listReportPembayaranshow.clear();
       allReportlength.value = 0;
@@ -141,9 +129,6 @@ class LaporanController extends GetxController {
     if(isclosebox){
       await closebox();
     }
-    // print("ini length pembayaran ${listReportPembayaranshow.value.length} ini penjualan ${listReportPenjualanShow.value.length}");
-    // listReportPenjualanShow.refresh();
-    // listReportPembayaranshow.refresh();
   }
 
   filteReport() async {

@@ -28,6 +28,7 @@ import '../models/outstandingdata.dart';
 import '../models/tarikbarangmodel.dart';
 import '../models/treenodedata.dart';
 import '../models/vendor.dart';
+import '../screens/taking_order_vendor/payment/dialogerrorpayment.dart';
 import '../tools/service.dart';
 
 class TakingOrderVendorController extends GetxController with GetTickerProviderStateMixin {
@@ -228,18 +229,19 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   bool loaddataoutstandinghive(var dataosbox) {
     try {
       var dataosboxjson = jsonDecode(dataosbox);
-      if (!Utils().isDateNotToday(dataosboxjson['timestamp'])) {
         if (dataosboxjson['data'] != null) {
           var decodetoosdata = OutstandingResponse.fromJson(dataosboxjson['data']);
           listDataOutstanding.clear();
           for (var i = 0; i < decodetoosdata.data!.length; i++) {
             listDataOutstanding.add(decodetoosdata.data![i]);
           }
-          return true;
+          if (!Utils().isDateNotToday(dataosboxjson['timestamp'])) {
+            return false;
+          } else {
+            return true;
+          }
         }
         return false;
-      }
-      return false;
     } catch (e) {
       return false;
     }
@@ -249,13 +251,16 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       try {
         tokenbox = await Hive.openBox('tokenbox');
       } catch (e) {
-        
+        // ignore: avoid_print
+        print(e);
+      } finally{
+        String salesId = await Utils().getParameterData('sales');
+        var tokenboxdata = await tokenbox.get(salesId);
+        var dectoken = Utils().decrypt(tokenboxdata);
+        tokenbox.close();
+        // ignore: control_flow_in_finally
+        return dectoken;
       }
-      String salesId = await Utils().getParameterData('sales');
-      var tokenboxdata = await tokenbox.get(salesId);
-      var dectoken = Utils().decrypt(tokenboxdata);
-      tokenbox.close();
-      return dectoken;
   }
 
   getListDataOutStanding() async {
@@ -265,6 +270,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       isLoadingOutstanding.value = true;
       String salescode = await Utils().getParameterData("sales");
       String custcode = await Utils().getParameterData("cust");
+
+      //proses get list vendor untuk mendapatkan base url vendor
       if(!vendorBox.isOpen) vendorBox = await Hive.openBox('vendorBox');
       var datavendor = vendorBox.get("$salescode|$custcode");
       vendorBox.close();
@@ -273,12 +280,14 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
         vendorlist.add(datavendor[i]);
       }
       idvendorg =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
+
+      //membuat key box dan mencoba mengambil data outstanding pada hive jika ada
       String keyos = "$salescode|$custcode|${vendorlist[idvendorg].prefix}|${vendorlist[idvendorg].baseApiUrl}";
       if(!outstandingBox.isOpen) outstandingBox = await Hive.openBox('outstandingBox');
       var dataosbox = await outstandingBox.get(keyos);
       outstandingBox.close();
       if (dataosbox != null) {
-         var isnotnull = await loaddataoutstandinghive(dataosbox);
+         var isnotnull = loaddataoutstandinghive(dataosbox);
          if(isnotnull){
             isLoadingOutstanding.value = false;
             isFailedLoadOutstanding.value = false;
@@ -286,10 +295,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
          }
       }
 
-      // String dectoken = "1|u1mXz55jhHhW4za4fpFCJLC5ti7m3QUyhVL4flCp";
-      // String urls = "https://mitra.tirtakencana.com/tangki-air-jerapah-lyo-dev/api/";
-      // "customerNo": "13A88040075"
-
+      //proses mengambil data outstanding menggunakan API
       String dectoken = await gettoken();
       String urls = vendorlist[idvendorg].baseApiUrl;
       var params = {
@@ -301,7 +307,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
           jsonEncode(params),
           Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
-            'Authorization': 'Bearer ${dectoken}',
+            'Authorization': 'Bearer $dectoken',
             'Accept': 'application/json'
           }));
       if (getVendoroustanding != null) {
@@ -319,20 +325,22 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
         outstandingBox.put(keyos, jsonEncode(makejson));
         await outstandingBox.close();
         await vendorBox.close();
-        // print(listDataOutstanding[0].salesOrder!.code);
       }
       isLoadingOutstanding.value = false;
     } catch (e) {
       isLoadingOutstanding.value = false;
-      isFailedLoadOutstanding.value = true;
-      print(e);
+      if(listDataOutstanding.isEmpty){
+        isFailedLoadOutstanding.value = true;
+      }
+      await loginapivendor();
+      // print(e);
     }
   }
   
   loginapivendor() async {
     try {
       String salesiddata = await Utils().getParameterData("sales");
-      String encparam = await Utils().encryptsalescodeforvendor(salesiddata);
+      String encparam = Utils().encryptsalescodeforvendor(salesiddata);
       var params = {
         "username" : encparam
       };
@@ -399,13 +407,26 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   }
 
   savepaymentdata() async {
-    await _pembayaranController.savepaymentdata();
-    await _laporanController.getReportList(false);
-    try {
-      Navigator.pop(keyconfirm.currentContext!);
-      // ignore: empty_catches
-    } catch (e) {}
-    controllerBar.jumpToTab(2);
+    bool isdone = await _pembayaranController.savepaymentdata();
+    // bool isdone = false;
+    if(isdone){
+      await _laporanController.getReportList(false);
+      try {
+        Navigator.pop(keyconfirm.currentContext!);
+        // ignore: empty_catches
+      } catch (e) {}
+      controllerBar.jumpToTab(2);
+    } else {
+      try {
+        Navigator.pop(keyconfirm.currentContext!);
+        // ignore: empty_catches
+      } catch (e) {}
+      Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogErrorPayment(judul: "Data Payment tidak ditemukan, silahkan coba lagi !",ontap: (){},)));
+    }
   }
 
   //for retur page
