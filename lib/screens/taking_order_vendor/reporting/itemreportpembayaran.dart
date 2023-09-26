@@ -12,7 +12,12 @@ class ItemReportPembayaran extends StatelessWidget {
   ReportPembayaranModel data;
   String total;
   String custid;
-  ItemReportPembayaran({super.key, required this.idx, required this.data, required this.total,required this.custid});
+  ItemReportPembayaran(
+      {super.key,
+      required this.idx,
+      required this.data,
+      required this.total,
+      required this.custid});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +35,6 @@ class ItemReportPembayaran extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
@@ -52,49 +56,52 @@ class ItemReportPembayaran extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              TextView(
+                                text: data.id + " ($custid)",
+                                headings: 'H4',
+                                fontSize: width < 450 ? 7.sp : 9.sp,
+                              ),
+                              if (data.condition != 'success')
+                                Padding(
+                                  padding: EdgeInsets.only(left: 2.sp),
+                                  child: ChipsItem(
+                                    satuan: data.condition,
+                                    color: data.condition == 'pending'
+                                        ? Colors.amber
+                                        : Colors.red,
+                                    fontSize: width < 450 ? 8.sp : 8.5.sp,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          ChipsItem(
+                            satuan: total,
+                            fontSize: width < 450 ? 8.sp : 9.sp,
+                          )
+                        ],
+                      ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            TextView(
-                              text: data.id,
-                              headings: 'H4',
-                              fontSize: width < 450 ? 8.sp : 14,
-                            ),
-                            if(data.condition != 'success')
-                            SizedBox(width: 5.sp,),
-                            if(data.condition != 'success')
-                           ChipsItem(
-                                satuan: data.condition,
-                                color: data.condition == 'pending' ? Colors.amber : Colors.red,
-                                fontSize: width < 450 ? 8.sp : 12,
-                              )
-                          ],
-                        ),
-                        ChipsItem(
-                          satuan: total,
-                          fontSize: width < 450 ? 8.sp : 13,
-                        )
-                      ],
-                    )
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.only(right: 10,),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       TextView(
                         text: Utils().formatDate(data.tanggal),
-                        fontSize: width < 450 ? 9.sp : 14,
+                        fontSize: width < 450 ? 8.sp : 10.sp,
                       ),
                       TextView(
                         text: data.waktu,
-                        fontSize: width < 450 ? 9.sp : 14,
+                        fontSize: width < 450 ? 8.sp : 10.sp,
                       )
                     ],
                   ),

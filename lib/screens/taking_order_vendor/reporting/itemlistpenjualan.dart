@@ -19,12 +19,11 @@ class ItemListPenjualan extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 5,
-            height: 0.04 * height,
+            width: 5,height: 0.05 * height,
             decoration: const BoxDecoration(color: Color(0xFFfe8a66)),
           ),
           SizedBox(
-            width: 0.7 * width,
+            width: 0.8 *  width,
             child: Padding(
               padding: const EdgeInsets.only(top: 7, bottom: 7),
               child: Column(
@@ -36,11 +35,11 @@ class ItemListPenjualan extends StatelessWidget {
                         Row(
                           children: [
                             SizedBox(
-                              width: 0.025 * width,
+                              width: 0.02 * width,
                             ),
                             Container(
-                              width: 0.07 * width,
-                              height: 0.04 * height,
+                              width: 0.08 * width,
+                              height: 0.05 * height,
                               decoration: BoxDecoration(
                                   color: Colors.blueGrey,
                                   borderRadius: BorderRadius.circular(8)),
@@ -54,7 +53,7 @@ class ItemListPenjualan extends StatelessWidget {
                               ),
                             ),
                             SizedBox(
-                              width: 0.025 * width,
+                              width: 0.02 * width,
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,7 +67,7 @@ class ItemListPenjualan extends StatelessWidget {
                                 else
                                 TextView(
                                   headings: 'H4',
-                                  fontSize: data.nmProduct.length > 50 ? 8.sp : data.nmProduct.length  > 40 ? 9.sp : 10.sp ,
+                                  fontSize: data.nmProduct.length > 50 ? 9.5.sp : 10.sp ,
                                   text: data.nmProduct,
                                 ),
                                 Row(

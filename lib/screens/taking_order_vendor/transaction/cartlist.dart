@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
@@ -71,9 +73,9 @@ class CartList extends StatelessWidget {
                                     text: data.nmProduct,
                                     fontSize: data.nmProduct.length > 40 &&
                                             data.nmProduct.length < 45
-                                        ? 8.sp
+                                        ? 9.sp
                                         : data.nmProduct.length > 45
-                                            ? 7.5.sp
+                                            ? 8.5.sp
                                             : 9.5.sp,
                                   ),
                                 )
@@ -188,7 +190,7 @@ class CartList extends StatelessWidget {
                       satuan: Utils().formatNumber(
                           _takingOrderVendorController.countTotalDetail(data)),
                       color: const Color(0xFF8B4513),
-                      fontSize: 8.sp,
+                      fontSize: 7.8.sp,
                     )
                   else
                     ChipsItem(

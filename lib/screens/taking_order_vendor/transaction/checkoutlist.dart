@@ -57,8 +57,7 @@ class CheckoutList extends StatelessWidget {
                           children: [
                             TextView(
                               headings: 'H4',
-                              fontSize:
-                                  data.nmProduct.length > 40 ? 8.sp : 9.5.sp,
+                              fontSize: data.nmProduct.length > 40 ? 8.7.sp : 9.5.sp,
                               text: data.nmProduct,
                             ),
                             Row(

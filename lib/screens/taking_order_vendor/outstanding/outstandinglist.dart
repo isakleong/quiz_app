@@ -66,16 +66,18 @@ class OutstandingList extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextView(
-                            fontSize: 9.sp,
+                            fontSize: data.details![n].itemName!.length > 45 ? 10.sp : 11.sp,
                             headings: 'H4',
-                            text: "${n + 1}. ${data.details![n].itemName}"),
+                            text: n == 0 ? "${n + 1}.  ${data.details![n].itemName}" : "${n + 1}. ${data.details![n].itemName}"),
                         Row(
                           children: [
+                            SizedBox(
+                              width: 5,
+                            ),
                             TextView(
-                              fontSize: 10.sp,
+                              fontSize: data.details![n].itemName!.length > 40 ? 8.sp : 11.sp,
                               headings: 'H4',
-                              text:
-                                  "${data.details![n].qty} ${data.details![n].uom}",
+                              text:"${data.details![n].qty} ${data.details![n].uom}",
                             ),
                             SizedBox(
                               width: 5,

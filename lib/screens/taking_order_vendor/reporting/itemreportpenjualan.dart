@@ -65,6 +65,17 @@ class ItemReportPenjualan extends StatelessWidget {
                               headings: 'H4',
                               fontSize: width < 450 ? 7.sp : 9.sp,
                             ),
+                            if (data.condition != 'success')
+                              Padding(
+                                padding: EdgeInsets.only(left: 2.sp),
+                                child: ChipsItem(
+                                  satuan: data.condition,
+                                  color: data.condition == 'pending'
+                                      ? Colors.amber
+                                      : Colors.red,
+                                  fontSize: width < 450 ? 8.sp : 8.5.sp,
+                                ),
+                              ),
                           ],
                         ),
                         data.notes == ""
@@ -74,7 +85,7 @@ class ItemReportPenjualan extends StatelessWidget {
                                     ? "${data.notes.substring(0, 30)}...      "
                                     : data.notes,
                                 color: const Color(0xFFf5511e),
-                                fontSize: width < 450 ? 8.sp : 12,
+                                fontSize: width < 450 ? 8.sp : 9.sp,
                               )
                       ],
                     )
@@ -85,29 +96,13 @@ class ItemReportPenjualan extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Row(
-                        children: [
-                          if (data.condition != 'success')
-                            ChipsItem(
-                              satuan: data.condition,
-                              color: data.condition == 'pending'
-                                  ? Colors.amber
-                                  : Colors.red,
-                              fontSize: width < 450 ? 8.sp : 9.sp,
-                            ),
-                          if (data.condition != 'success')
-                            SizedBox(
-                              width: 2.sp,
-                            ),
-                          TextView(
-                            text: Utils().formatDate(data.tanggal),
-                            fontSize: width < 450 ? 9.sp : 14,
-                          ),
-                        ],
+                      TextView(
+                        text: Utils().formatDate(data.tanggal),
+                        fontSize: width < 450 ? 8.sp : 10.sp,
                       ),
                       TextView(
                         text: data.waktu,
-                        fontSize: width < 450 ? 9.sp : 14,
+                        fontSize: width < 450 ? 8.sp : 10.sp,
                       )
                     ],
                   ),
