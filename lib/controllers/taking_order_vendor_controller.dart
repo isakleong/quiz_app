@@ -231,15 +231,17 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     try {
       var dataosboxjson = jsonDecode(dataosbox);
         if (dataosboxjson['data'] != null) {
+          // print("data not null");
           var decodetoosdata = OutstandingResponse.fromJson(dataosboxjson['data']);
           listDataOutstanding.clear();
           for (var i = 0; i < decodetoosdata.data!.length; i++) {
             listDataOutstanding.add(decodetoosdata.data![i]);
           }
           if (!Utils().isDateNotToday(dataosboxjson['timestamp'])) {
-            return false;
-          } else {
+            // print("here");
             return true;
+          } else {
+            return false;
           }
         }
         return false;
@@ -288,7 +290,9 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       var dataosbox = await outstandingBox.get(keyos);
       outstandingBox.close();
       if (dataosbox != null) {
+        // print("data os box " + dataosbox);
          var isnotnull = loaddataoutstandinghive(dataosbox);
+        //  print(isnotnull);
          if(isnotnull){
             isLoadingOutstanding.value = false;
             isFailedLoadOutstanding.value = false;
