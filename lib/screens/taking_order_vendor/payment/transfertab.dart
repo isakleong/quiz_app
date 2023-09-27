@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/buttonpayment.dart';
 import 'package:sfa_tools/tools/textfieldformatter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
 
@@ -120,6 +121,18 @@ class TransferTab extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      _takingOrderVendorController.listProduct.isEmpty ?
+                      Shimmer.fromColors(
+                              baseColor: Colors.grey.shade400,
+                              highlightColor: Colors.grey.shade200,
+                              child: Container(
+                                width: 0.3 * width,
+                                height: 0.05 * height,
+                                color: Colors.white,
+                                // Add any other child widgets you want inside the shimmering container
+                              ),
+                            )
+                          :
                       ButtonPayment(
                         ontap: () {
                            _takingOrderVendorController.choosedTransferMethod.value = 'MANDIRI';

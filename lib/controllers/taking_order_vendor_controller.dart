@@ -79,9 +79,9 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     _pembayaranController.activevendor = activevendor;
     custcode.value = await Utils().getParameterData("cust");
     await getListDataOutStanding();
+    await _penjualanController.getListItem();
     await _laporanController.getReportList(true);
     await _pembayaranController.loadpembayaranstate();
-    await _penjualanController.getListItem();
   }
 
   handleSaveConfirm(String msg, String title, var ontap) {
@@ -423,9 +423,15 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       } catch (e) {}
       Get.dialog(Dialog(
         backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: DialogErrorPayment(judul: "Data Payment tidak ditemukan, silahkan coba lagi !",ontap: (){},)));
+        shape: const RoundedRectangleBorder( borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogErrorPayment(
+          judul: "Data Payment tidak ditemukan, silahkan coba lagi !",
+           ontap: (){
+            Get.back();
+            },
+          )
+        )
+      );
     }
   }
 

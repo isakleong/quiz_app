@@ -488,7 +488,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
           final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
-          //print(result.toString());
+          // print(result.toString());
           var data = jsonDecode(result.toString());
           data["AppModule"].map((item) {
             moduleList.add(Module.from(item));
@@ -710,10 +710,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
       var dectoken = Utils().decrypt(tokenboxdata);
       //print(dectoken);
       var result = await ApiClient().getData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/setting/customer/${customerIdParams.value}",options: Options(headers: {
-          'Authorization': 'Bearer ${dectoken}',
+          'Authorization': 'Bearer $dectoken',
           'Accept': 'application/json',
       },));
-      //print(result);
+      // print(result);
       var data = VendorInfo.fromJson(result);
       if(data.availVendors.isNotEmpty){
         int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));

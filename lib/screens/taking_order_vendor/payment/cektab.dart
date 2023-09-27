@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/tools/textfieldformatter.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 
 class CekTab extends StatelessWidget {
@@ -13,6 +14,7 @@ class CekTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Obx(() => Stack(
           children: [
             Container(
@@ -150,6 +152,18 @@ class CekTab extends StatelessWidget {
                     SizedBox(
                       width: 0.05 * width,
                     ),
+                    _takingOrderVendorController.listProduct.isEmpty ?
+                      Shimmer.fromColors(
+                              baseColor: Colors.grey.shade400,
+                              highlightColor: Colors.grey.shade200,
+                              child: Container(
+                                width: 0.25 * width,
+                                height: 0.05 * height,
+                                color: Colors.white,
+                                // Add any other child widgets you want inside the shimmering container
+                              ),
+                            )
+                          :
                     ElevatedButton(
                       onPressed: () {
                         //print(_takingOrderVendorController.nmbank.value.text);

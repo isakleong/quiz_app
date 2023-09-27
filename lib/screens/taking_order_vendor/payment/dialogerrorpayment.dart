@@ -60,9 +60,7 @@ class DialogErrorPayment extends StatelessWidget {
                 children: [
                   CustomElevatedButton(
                       text: "Oke",
-                      onTap: (){
-                        Get.back();
-                      },
+                      onTap: ontap,
                       width: 0.18 * width,
                       height: 0.045 * height,
                       radius: 8,

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/buttonpayment.dart';
 import 'package:sfa_tools/tools/textfieldformatter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
 
@@ -117,36 +118,50 @@ class TunaiTab extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ButtonPayment(
-                        ontap: () {
-                          if (_takingOrderVendorController
-                                      .choosedTunaiMethod.value ==
-                                  "Pilih Lokasi Setoran" ||
-                              _takingOrderVendorController
-                                      .choosedTunaiMethod.value ==
-                                  "") {
-                            Get.snackbar("Error",
-                                "Pilih Lokasi Setoran Terlebih Dahulu !",
-                                backgroundColor: Colors.red.withOpacity(0.5));
-                          } else {
-                            _takingOrderVendorController.insertRecord("Tunai");
-                          }
-                        },
-                        bgcolor: _takingOrderVendorController.listpaymentdata
-                                .any((data) => data.jenis == 'Tunai')
-                            ? const Color(0xFF398e3d)
-                            : const Color(0XFF319088),
-                        icon: _takingOrderVendorController.listpaymentdata
-                                .any((data) => data.jenis == 'Tunai')
-                            ? FontAwesomeIcons.pencilSquare
-                            : FontAwesomeIcons.plusSquare,
-                        txt: _takingOrderVendorController.listpaymentdata
-                                .any((data) => data.jenis == 'Tunai')
-                            ? "Ganti Pembayaran"
-                            : "Tambah Pembayaran",
-                        fonts: 10.5.sp,
-                        icsize: 14.sp,
-                      )
+                      _takingOrderVendorController.listProduct.isEmpty
+                          ? Shimmer.fromColors(
+                              baseColor: Colors.grey.shade400,
+                              highlightColor: Colors.grey.shade200,
+                              child: Container(
+                                width: 0.3 * width,
+                                height: 0.05 * height,
+                                color: Colors.white,
+                                // Add any other child widgets you want inside the shimmering container
+                              ),
+                            )
+                          : ButtonPayment(
+                              ontap: () {
+                                if (_takingOrderVendorController
+                                            .choosedTunaiMethod.value ==
+                                        "Pilih Lokasi Setoran" ||
+                                    _takingOrderVendorController
+                                            .choosedTunaiMethod.value ==
+                                        "") {
+                                  Get.snackbar("Error",
+                                      "Pilih Lokasi Setoran Terlebih Dahulu !",
+                                      backgroundColor:
+                                          Colors.red.withOpacity(0.5));
+                                } else {
+                                  _takingOrderVendorController
+                                      .insertRecord("Tunai");
+                                }
+                              },
+                              bgcolor: _takingOrderVendorController
+                                      .listpaymentdata
+                                      .any((data) => data.jenis == 'Tunai')
+                                  ? const Color(0xFF398e3d)
+                                  : const Color(0XFF319088),
+                              icon: _takingOrderVendorController.listpaymentdata
+                                      .any((data) => data.jenis == 'Tunai')
+                                  ? FontAwesomeIcons.pencilSquare
+                                  : FontAwesomeIcons.plusSquare,
+                              txt: _takingOrderVendorController.listpaymentdata
+                                      .any((data) => data.jenis == 'Tunai')
+                                  ? "Ganti Pembayaran"
+                                  : "Tambah Pembayaran",
+                              fonts: 10.5.sp,
+                              icsize: 14.sp,
+                            )
                     ],
                   ),
                 ],
