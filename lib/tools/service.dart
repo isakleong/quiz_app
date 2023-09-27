@@ -96,15 +96,15 @@ class ApiClient {
     //get ip
     var ipAddress = [];
     for (var interface in await NetworkInterface.list()) {
-      // print('== Interface: ${interface.name} ==');
       for (var addr in interface.addresses) {
-        // print('${addr.address} ${addr.host} ${addr.isLoopback} ${addr.rawAddress} ${addr.type.name}');
-        ipAddress = addr.rawAddress;
+        if(addr.type.name == "IPv4"){
+          ipAddress = addr.rawAddress;
+        }
       }
     }
 
     if(ipAddress.isNotEmpty) {
-      if(ipAddress[0] == "10" && ipAddress[1] == "10") {
+      if(ipAddress[0].toString() == "10" && ipAddress[1].toString() == "10") {
         return "true|${AppConfig.baseLocalUrl}";
       } else {
         return "true|${AppConfig.basePublicUrl}";

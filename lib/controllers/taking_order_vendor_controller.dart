@@ -607,7 +607,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     }
   }
 
-  handleselectedindeinformasi(int index) {
+  handleselectedindexinformasi(int index) {
     indexSegmentinformasi.value = index;
     for (var i = 0; i < selectedsegmentinformasi.length; i++) {
       selectedsegmentinformasi[i] = false;
@@ -616,14 +616,10 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   }
 
   getfilelist() async {
-    if (await File('/storage/emulated/0/TKTW/infoproduk/sfafilelist.txt')
-        .exists()) {
-      var res =
-          await File('/storage/emulated/0/TKTW/infoproduk/sfafilelist.txt')
-              .readAsString();
+    if (await File('/storage/emulated/0/TKTW/infoproduk/sfafilelist.txt').exists()) {
+      var res = await File('/storage/emulated/0/TKTW/infoproduk/sfafilelist.txt').readAsString();
       var ls = const LineSplitter();
       var tlist = ls.convert(res);
-      // print(tlist);
       await generateTreeinfoproduct(tlist);
     } else {
       listnode.clear();
@@ -655,8 +651,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
           if (i == tsplit.length - 1) {
             tnode.isFile = true;
             tnode.fullname = temp;
-            tnode.extension =
-                str.substring(str.lastIndexOf(".") + 1, str.length);
+            tnode.extension = str.substring(str.lastIndexOf(".") + 1, str.length);
           }
           if (head.name == "") {
             listnode.add(tnode);

@@ -1,8 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,9 +12,8 @@ class PriceListPage extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     return Column(
       children: [
-        SizedBox(height: 0.02 * height,),
-        Expanded(
-            child: ListView.builder(
+        SizedBox(height: 0.01 * height,),
+        Expanded( child: ListView.builder(
           itemBuilder: (c, i) {
             return Padding(
               padding: EdgeInsets.only(left: 0.05 * width,bottom: 0.025 * height),

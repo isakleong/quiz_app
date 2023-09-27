@@ -52,7 +52,7 @@ class InformasiMainPage extends StatelessWidget {
                     child: ToggleButtons(
                       isSelected: _takingOrderVendorController.selectedsegmentinformasi,
                       onPressed: (index) {
-                        _takingOrderVendorController.handleselectedindeinformasi(index);
+                        _takingOrderVendorController.handleselectedindexinformasi(index);
                       },
                       constraints: 
                       width < 450 ? BoxConstraints(minWidth: 0.25 * width,minHeight: 0.04 * height) :
