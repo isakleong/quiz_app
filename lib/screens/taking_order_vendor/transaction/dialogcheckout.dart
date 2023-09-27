@@ -82,7 +82,7 @@ class DialogCheckOut extends StatelessWidget {
                                 child: TextView(
                                   text: value.address,
                                   textAlign: TextAlign.left,
-                                  fontSize: value.address.length > 40 ? 8.sp : 10.sp,
+                                  fontSize: 10.sp,
                                   headings: 'H4',
                                 ),
                               );

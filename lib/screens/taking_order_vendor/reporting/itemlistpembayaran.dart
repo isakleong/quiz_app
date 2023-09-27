@@ -21,7 +21,7 @@ class ItemListPembayaran extends StatelessWidget {
         children: [
           Container(
             width: 5,
-            height: 0.04 * height,
+            height: 0.05 * height,
             decoration: const BoxDecoration(color: Color(0xFF4fc2f8)),
           ),
           SizedBox(
@@ -40,8 +40,8 @@ class ItemListPembayaran extends StatelessWidget {
                               width: 0.025 * width,
                             ),
                             Container(
-                              width: 0.07 * width,
-                              height: 0.04 * height,
+                              width: 0.08 * width,
+                              height: 0.05 * height,
                               decoration: BoxDecoration(
                                   color: Colors.blueGrey,
                                   borderRadius: BorderRadius.circular(8)),
