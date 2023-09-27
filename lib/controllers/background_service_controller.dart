@@ -385,8 +385,7 @@ class Backgroundservicecontroller {
     }
   }
 
-  accessBox(String type, String key, String value,
-      {String box = 'serviceBox'}) async {
+  accessBox(String type, String key, String value, {String box = 'serviceBox'}) async {
     try {
       await hiveInitializer();
     } catch (e) {
@@ -701,8 +700,7 @@ class Backgroundservicecontroller {
     return false;
   }
 
-  postDataOrderAll(List<PenjualanPostModel> data, String salesid, String custid,
-      String key, String vendorurl) async {
+  postDataOrderAll(List<PenjualanPostModel> data, String salesid, String custid,String key, String vendorurl) async {
     await createLogTes("on post Data order All");
     await getBox();
     var dectoken = await gettoken();
