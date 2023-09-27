@@ -301,6 +301,11 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       }
 
       //proses mengambil data outstanding menggunakan API
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+
       String dectoken = await gettoken();
       String urls = vendorlist[idvendorg].baseApiUrl;
       var params = {

@@ -92,7 +92,7 @@ class ApiClient {
     }
   }
 
-  Future<String> checkConnection() async {
+  Future<String> checkConnection({String? jenis}) async {
     //get ip
     var ipAddress = [];
     for (var interface in await NetworkInterface.list()) {
@@ -105,8 +105,14 @@ class ApiClient {
 
     if(ipAddress.isNotEmpty) {
       if(ipAddress[0].toString() == "10" && ipAddress[1].toString() == "10") {
+        if(jenis == "vendor"){
+          return "true|${AppConfig.baseUrlVendorLocal}";
+        }
         return "true|${AppConfig.baseLocalUrl}";
       } else {
+        if(jenis == "vendor"){
+          return "true|${AppConfig.baseUrlVendor}";
+        }
         return "true|${AppConfig.basePublicUrl}";
       }
     } else {

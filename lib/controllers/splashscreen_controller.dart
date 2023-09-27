@@ -701,16 +701,24 @@ class SplashscreenController extends GetxController with StateMixin implements W
   getVendor() async { 
     await getBox();
     try {
-      //print("getvendor");
-      // print(await encryptsalescodeforvendor(salesIdParams.value));
+      
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+
+      if(!isConnected){
+        moduleList.removeWhere((element) => element.moduleID.contains("Taking Order Vendor"));
+        await closebox();
+        return;
+      }
+
       var tokenboxdata = await tokenbox.get(salesIdParams.value);
       var dectoken = Utils().decrypt(tokenboxdata);
-      //print(dectoken);
-      var result = await ApiClient().getData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/setting/customer/${customerIdParams.value}",options: Options(headers: {
+      var result = await ApiClient().getData(urlAPI,"${AppConfig.apiurlvendorpath}/api/setting/customer/${customerIdParams.value}",options: Options(headers: {
           'Authorization': 'Bearer $dectoken',
           'Accept': 'application/json',
       },));
-      // print(result);
       var data = VendorInfo.fromJson(result);
       if(data.availVendors.isNotEmpty){
         int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
