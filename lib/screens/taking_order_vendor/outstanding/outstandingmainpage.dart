@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/outstanding/outstandingcustcard.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/outstanding/outstandinglist.dart';
-import 'package:sfa_tools/widgets/closeoverlayaction.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../common/app_config.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
-import '../../../widgets/backbuttonaction.dart';
 import '../../../widgets/textview.dart';
 
 class OutStandingMainPage extends StatelessWidget {
@@ -48,7 +42,7 @@ class OutStandingMainPage extends StatelessWidget {
                         },ontaprefresh: () async {
                         await _takingOrderVendorController.getListDataOutStanding();
                       },))) ,
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Obx(

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 
 import '../common/app_config.dart';
 
@@ -20,7 +17,7 @@ class CloseOverlayAction extends StatelessWidget {
         shape: const CircleBorder(),
         padding: const EdgeInsets.all(10),
       ),
-      child: Icon(FontAwesomeIcons.close,
+      child: const Icon(FontAwesomeIcons.close,
           size: 35, color: Colors.white),
     );
   }

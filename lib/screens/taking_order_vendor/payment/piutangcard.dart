@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../widgets/textview.dart';

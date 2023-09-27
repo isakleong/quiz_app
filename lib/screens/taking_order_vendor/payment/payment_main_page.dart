@@ -49,8 +49,8 @@ class PaymentMainPage extends StatelessWidget {
                           ),
                         ) :
                         PiutangCard(nmtoko : _takingOrderVendorController.nmtoko.value,
-                        totalpiutang: _takingOrderVendorController.totalpiutang.value == "0" || _takingOrderVendorController.totalpiutang.value == "null" ? "0" : "${Utils().formatNumber(int.parse( _takingOrderVendorController.totalpiutang.value))}",
-                        totaljatuhtempo: _takingOrderVendorController.totaljatuhtempo.value == "0" || _takingOrderVendorController.totaljatuhtempo.value == "null" ? "0" : "${Utils().formatNumber(int.parse( _takingOrderVendorController.totaljatuhtempo.value))}")),
+                        totalpiutang: _takingOrderVendorController.totalpiutang.value == "0" || _takingOrderVendorController.totalpiutang.value == "null" ? "0" : Utils().formatNumber(int.parse( _takingOrderVendorController.totalpiutang.value)),
+                        totaljatuhtempo: _takingOrderVendorController.totaljatuhtempo.value == "0" || _takingOrderVendorController.totaljatuhtempo.value == "null" ? "0" : Utils().formatNumber(int.parse( _takingOrderVendorController.totaljatuhtempo.value)))),
                     const SizedBox(
                       height: 15,
                     ),
@@ -98,7 +98,7 @@ class PaymentMainPage extends StatelessWidget {
                                                       .jenis ==
                                                   "cek"
                                               ? "Cek / Giro / Slip - ${_takingOrderVendorController.listpaymentdata[index].tipe} [${_takingOrderVendorController.listpaymentdata[index].nomor}]"
-                                              : "${_takingOrderVendorController.listpaymentdata[index].jenis}"  + (_takingOrderVendorController.listpaymentdata[index].jenis == "Transfer" ? "" : " - ${_takingOrderVendorController.listpaymentdata[index].tipe}"),
+                                              : _takingOrderVendorController.listpaymentdata[index].jenis  + (_takingOrderVendorController.listpaymentdata[index].jenis == "Transfer" ? "" : " - ${_takingOrderVendorController.listpaymentdata[index].tipe}"),
                                       jatuhtempo: _takingOrderVendorController
                                                   .listpaymentdata[index]
                                                   .jatuhtempo ==

@@ -155,7 +155,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       // print(vendorlist[idvendor].baseApiUrl);
       var getVendorItem = await ApiClient().postData(vendorlist[idvendor].baseApiUrl,"setting/vendor-info",jsonEncode(params), Options(
             headers: {
-              HttpHeaders.contentTypeHeader: "application/json",'Authorization': 'Bearer ${dectoken}','Accept': 'application/json'
+              HttpHeaders.contentTypeHeader: "application/json",'Authorization': 'Bearer $dectoken','Accept': 'application/json'
             }
           ));
       // print(getVendorItem);
@@ -612,7 +612,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       final request = http.MultipartRequest('POST', url);
       request.headers.addAll({
         'Accept': 'application/json',
-        'Authorization': 'Bearer ${dectoken}',
+        'Authorization': 'Bearer $dectoken',
       });
 
       for (var i = 0; i < data.length; i++) {
@@ -677,8 +677,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
             if (jsonResponse["code"] == "300"){
               await loginapivendor();
             }
-          } catch (e) {
-            
           } finally{
             datareportpenjualan[idx].condition = "pending";
             await boxreportpenjualan.delete(globalkeybox);
@@ -702,7 +700,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   loginapivendor() async {
     try {
       String salesiddata = await Utils().getParameterData("sales");
-      String encparam = await Utils().encryptsalescodeforvendor(salesiddata);
+      String encparam = Utils().encryptsalescodeforvendor(salesiddata);
       var params = {
         "username" : encparam
       };

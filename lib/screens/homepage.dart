@@ -65,7 +65,7 @@ class Homepage extends StatelessWidget {
                                 itemBuilder: (BuildContext context, int index) {
                                   return 
                                   splashscreenController.moduleList[index].moduleID.toLowerCase() == "taking order vendor" ?
-                                  SizedBox() :  Padding(
+                                  const SizedBox() :  Padding(
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 10),
                                     child: Card(

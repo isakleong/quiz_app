@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
-import 'dart:math';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -20,7 +16,6 @@ import 'package:sfa_tools/controllers/background_service_controller.dart';
 import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/loginmodel.dart';
 import 'package:sfa_tools/models/module.dart';
-import 'package:sfa_tools/models/servicebox.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
@@ -708,7 +703,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       // print(await encryptsalescodeforvendor(salesIdParams.value));
       var tokenboxdata = await tokenbox.get(salesIdParams.value);
       var dectoken = Utils().decrypt(tokenboxdata);
-      //print(dectoken);
+      print(dectoken);
       var result = await ApiClient().getData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/setting/customer/${customerIdParams.value}",options: Options(headers: {
           'Authorization': 'Bearer $dectoken',
           'Accept': 'application/json',
@@ -898,7 +893,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
   loginapivendor() async {
     try {
-      String encparam = await Utils().encryptsalescodeforvendor(salesIdParams.value);
+      String encparam = Utils().encryptsalescodeforvendor(salesIdParams.value);
       var params = {
         "username" : encparam
       };

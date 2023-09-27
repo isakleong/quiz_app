@@ -57,9 +57,9 @@ class PaymentMethods {
   }
   
   Map<dynamic, dynamic> toJson() {
-    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
+    final Map<dynamic, dynamic> data = <dynamic, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
     return data;
   }
 }
@@ -76,9 +76,9 @@ class Banks {
   }
 
   Map<dynamic, dynamic> toJson() {
-    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
+    final Map<dynamic, dynamic> data = <dynamic, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
     return data;
   }
 }

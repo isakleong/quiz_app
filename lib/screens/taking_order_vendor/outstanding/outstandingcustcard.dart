@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/date_symbols.dart';
 import 'package:sfa_tools/widgets/closeoverlayaction.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sfa_tools/widgets/refreshaction.dart';
@@ -106,7 +102,7 @@ class OutstandingCustCard extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 20),
                   child: Row(
                     children: [
-                      isfailed ? RefreshAction(ontap: ontaprefresh) : SizedBox(),
+                      isfailed ? RefreshAction(ontap: ontaprefresh) : const SizedBox(),
                       CloseOverlayAction(ontap: ontap),
                     ],
                   ),

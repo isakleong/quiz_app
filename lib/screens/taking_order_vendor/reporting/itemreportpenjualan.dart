@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/reporting/itemlistpenjualan.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
@@ -61,7 +60,7 @@ class ItemReportPenjualan extends StatelessWidget {
                         Row(
                           children: [
                             TextView(
-                              text: data.id + " ($custid)",
+                              text: "${data.id} ($custid)",
                               headings: 'H4',
                               fontSize: width < 450 ? 7.sp : 9.sp,
                             ),

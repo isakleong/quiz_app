@@ -6,7 +6,6 @@ import 'package:sfa_tools/tools/textfieldformatter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
-import '../../../widgets/textview.dart';
 
 class TransferTab extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();

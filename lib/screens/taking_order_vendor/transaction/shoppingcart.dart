@@ -118,7 +118,7 @@ class Shoppingcart extends StatelessWidget {
             ),
           ),
           _takingOrderVendorController.infoos.value == "" ? Container() : Padding(
-            padding: EdgeInsets.only(top: 8.0, bottom: 8),
+            padding: const EdgeInsets.only(top: 8.0, bottom: 8),
             child: Center(
               child: Container(
                 width: 0.86 * width,decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.pink.shade700),

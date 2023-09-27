@@ -11,15 +11,15 @@ class OutstandingResponse {
     if (json['data'] != null) {
       data = <OutstandingData>[];
       json['data'].forEach((v) {
-        data!.add(new OutstandingData.fromJson(v));
+        data!.add(OutstandingData.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    data['message'] = this.message;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['success'] = success;
+    data['message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
@@ -35,23 +35,23 @@ class OutstandingData {
 
   OutstandingData.fromJson(Map<String, dynamic> json) {
     salesOrder = json['salesOrder'] != null
-        ? new SalesOrder.fromJson(json['salesOrder'])
+        ? SalesOrder.fromJson(json['salesOrder'])
         : null;
     if (json['details'] != null) {
       details = <DetailsSo>[];
       json['details'].forEach((v) {
-        details!.add(new DetailsSo.fromJson(v));
+        details!.add(DetailsSo.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.salesOrder != null) {
-      data['salesOrder'] = this.salesOrder!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (salesOrder != null) {
+      data['salesOrder'] = salesOrder!.toJson();
     }
-    if (this.details != null) {
-      data['details'] = this.details!.map((v) => v.toJson()).toList();
+    if (details != null) {
+      data['details'] = details!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -80,12 +80,12 @@ class SalesOrder {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['code'] = this.code;
-    data['totalAmount'] = this.totalAmount;
-    data['orderDate'] = this.orderDate;
-    data['totalAmountFormated'] = this.totalAmountFormated;
-    data['orderDateFormated'] = this.orderDateFormated;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['code'] = code;
+    data['totalAmount'] = totalAmount;
+    data['orderDate'] = orderDate;
+    data['totalAmountFormated'] = totalAmountFormated;
+    data['orderDateFormated'] = orderDateFormated;
     return data;
   }
 }
@@ -106,11 +106,11 @@ class DetailsSo {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['code'] = this.itemCode;
-    data['name'] = this.itemName;
-    data['uom'] = this.uom;
-    data['qty'] = this.qty;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['code'] = itemCode;
+    data['name'] = itemName;
+    data['uom'] = uom;
+    data['qty'] = qty;
     return data;
   }
 }

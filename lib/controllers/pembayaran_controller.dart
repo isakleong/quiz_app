@@ -80,9 +80,9 @@ class PembayaranController extends GetxController {
 
   tojsondata(List<ReportPembayaranModel> listreport){
     List<Map<String, dynamic>> listreportmap = listreport.map((clist) {
-      var _pdata = [];
+      var pdata = [];
       for (var i = 0; i < clist.paymentList.length; i++) {
-        _pdata.add({
+        pdata.add({
           'jenis' : clist.paymentList[i].jenis,
           'nomor' : clist.paymentList[i].nomor,
           'tipe' : clist.paymentList[i].tipe,
@@ -96,7 +96,7 @@ class PembayaranController extends GetxController {
           'total' : clist.total,
           'tanggal' :clist.tanggal,
           'waktu' : clist.waktu,
-          'listpayment' : _pdata
+          'listpayment' : pdata
       };
     }).toList();
     var datamerge = {
@@ -658,12 +658,12 @@ class PembayaranController extends GetxController {
     //mengubah data report pembayaran dari json ke ReporPembayaranModel
     List<ReportPembayaranModel> dataconvert = [];
     for (var i = 0; i < datareportpembayaran['data'].length; i++) {
-      List<PaymentData> _data = <PaymentData>[];
+      List<PaymentData> data = <PaymentData>[];
       var detail = datareportpembayaran['data'][i]['listpayment'];
       for (var k = 0; k < detail.length; k++) {
-        _data.add(PaymentData(detail[k]['jenis'], detail[k]['nomor'], detail[k]['tipe'], detail[k]['jatuhtempo'], detail[k]['value']));
+        data.add(PaymentData(detail[k]['jenis'], detail[k]['nomor'], detail[k]['tipe'], detail[k]['jatuhtempo'], detail[k]['value']));
       }
-      dataconvert.add(ReportPembayaranModel(datareportpembayaran['data'][i]['condition'], datareportpembayaran['data'][i]['id'], datareportpembayaran['data'][i]['total'], datareportpembayaran['data'][i]['tanggal'], datareportpembayaran['data'][i]['waktu'], _data));
+      dataconvert.add(ReportPembayaranModel(datareportpembayaran['data'][i]['condition'], datareportpembayaran['data'][i]['id'], datareportpembayaran['data'][i]['total'], datareportpembayaran['data'][i]['tanggal'], datareportpembayaran['data'][i]['waktu'], data));
     }
 
     //mencari ada di index berapakah nomor order yang akan di kirim pada list report
@@ -753,8 +753,6 @@ class PembayaranController extends GetxController {
             if (jsonResponse["code"] == "300"){
               await loginapivendor();
             }
-          } catch (e) {
-            
           } finally{
             dataconvert[idx].condition = "pending";
             await boxPembayaranReport.delete(globalkeybox);
@@ -781,7 +779,7 @@ class PembayaranController extends GetxController {
   loginapivendor() async {
     try {
       String salesiddata = await Utils().getParameterData("sales");
-      String encparam = await Utils().encryptsalescodeforvendor(salesiddata);
+      String encparam = Utils().encryptsalescodeforvendor(salesiddata);
       var params = {
         "username" : encparam
       };

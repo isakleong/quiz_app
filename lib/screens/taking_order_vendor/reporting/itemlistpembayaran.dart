@@ -69,7 +69,7 @@ class ItemListPembayaran extends StatelessWidget {
                                       ? "Potongan CN"
                                       : data.jenis == "cek"
                                           ? "Cek / Giro / Slip - ${data.tipe} [${data.nomor}]"
-                                          : "${data.jenis}" + (data.jenis == "Transfer" ? "" : " - ${data.tipe}"),
+                                          :  (data.jenis == "Transfer" ? data.jenis : "${data.jenis} - ${data.tipe}"),
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,

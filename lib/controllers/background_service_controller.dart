@@ -447,7 +447,7 @@ class Backgroundservicecontroller {
 
   Future<void> createLogTes(String content) async {
     bool allowWriteLog = false; // Change to true to enable log writing
-    final directoryPath = '/storage/emulated/0/TKTW/sfalog';
+    const directoryPath = '/storage/emulated/0/TKTW/sfalog';
     final currentDate = DateTime.now();
     final formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
     final filePath = '$directoryPath/$formattedDate.txt';
@@ -461,7 +461,7 @@ class Backgroundservicecontroller {
         }
 
         // Delete log files older than 7 days
-        final sevenDaysAgo = currentDate.subtract(Duration(days: 7));
+        final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
         await for (var entity in directory.list()) {
           if (entity is File) {
             final fileDateStr =
@@ -804,7 +804,6 @@ class Backgroundservicecontroller {
           if (jsonResponse["code"] == "300") {
             loginapivendor();
           }
-        } catch (e) {
         } finally {
           for (var i = 0; i < _datareportpenjualan.length; i++) {
             for (var j = 0; j <= inc; j++) {
@@ -850,7 +849,7 @@ class Backgroundservicecontroller {
   loginapivendor() async {
     try {
       String salesiddata = await Utils().getParameterData("sales");
-      String encparam = await Utils().encryptsalescodeforvendor(salesiddata);
+      String encparam = Utils().encryptsalescodeforvendor(salesiddata);
       var params = {"username": encparam};
       //print(params);
       var result = await ApiClient().postData(
@@ -979,7 +978,6 @@ class Backgroundservicecontroller {
           if (jsonResponse["code"] == "300") {
             loginapivendor();
           }
-        } catch (e) {
         } finally {
           for (var i = 0; i < dataconvert.length; i++) {
             for (var j = 0; j <= inc; j++) {
