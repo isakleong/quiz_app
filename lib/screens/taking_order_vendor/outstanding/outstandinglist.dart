@@ -77,7 +77,7 @@ class OutstandingList extends StatelessWidget {
                             const SizedBox(
                               width: 5,
                             ),
-                            Icon(FontAwesomeIcons.minusCircle,
+                            Icon(FontAwesomeIcons.circleMinus,
                                 size: 14.sp, color: Colors.red),
                             const SizedBox(
                               width: 15,

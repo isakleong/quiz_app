@@ -193,7 +193,7 @@ class ProductSearch extends StatelessWidget {
                               labelStyle: TextStyle(fontSize: 12.sp),
                               border: InputBorder.none,
                               prefixIcon: Icon(
-                                FontAwesomeIcons.search,
+                                FontAwesomeIcons.magnifyingGlass,
                                 color: const Color(0XFF319088),
                                 size: 14.sp,
                               )),

@@ -76,7 +76,7 @@ class DialogCheckOut extends StatelessWidget {
                             onChanged: (String? newValue) {
                               _takingOrderVendorController.choosedAddress.value = newValue!;
                             },
-                            items: _takingOrderVendorController.listaddress.value.map((value) {
+                            items: _takingOrderVendorController.listaddress.map((value) {
                               return DropdownMenuItem<String>(
                                 value: value.address,
                                 child: TextView(

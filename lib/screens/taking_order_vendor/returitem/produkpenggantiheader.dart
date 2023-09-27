@@ -13,7 +13,7 @@ class ProdukPenggantiHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: Row(
@@ -64,7 +64,7 @@ class ProdukPenggantiHeader extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: const [
                         Icon(
-                          FontAwesomeIcons.checkCircle,
+                          FontAwesomeIcons.circleCheck,
                           size: 18,
                         ),
                         SizedBox(

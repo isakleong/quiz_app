@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +8,7 @@ import '../../../widgets/textview.dart';
 class ItemListPembayaran extends StatelessWidget {
   String idx;
   PaymentData data;
-  final TakingOrderVendorController _takingOrderVendorController = Get.find();
+  // final TakingOrderVendorController _takingOrderVendorController = Get.find();
   ItemListPembayaran({super.key, required this.idx, required this.data});
 
   @override

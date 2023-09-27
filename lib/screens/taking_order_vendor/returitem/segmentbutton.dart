@@ -11,9 +11,9 @@ class SegmentButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
     return Obx(() => ToggleButtons(
-          isSelected: _takingOrderVendorController.selectedsegment.value,
+          isSelected: _takingOrderVendorController.selectedsegment,
           onPressed: (index) {
             _takingOrderVendorController.indexSegment.value = index;
             for (int buttonIndex = 0;

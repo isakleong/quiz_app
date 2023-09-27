@@ -12,7 +12,7 @@ class PotonganCnTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
     return Obx(() => Stack(
           children: [
             Container(
@@ -62,8 +62,8 @@ class PotonganCnTab extends StatelessWidget {
                             : const Color(0XFF319088),
                         icon: _takingOrderVendorController.listpaymentdata
                                 .any((data) => data.jenis == 'cn')
-                            ? FontAwesomeIcons.pencilSquare
-                            : FontAwesomeIcons.plusSquare,
+                            ? FontAwesomeIcons.squarePen
+                            : FontAwesomeIcons.squarePlus,
                         txt: _takingOrderVendorController.listpaymentdata
                                 .any((data) => data.jenis == 'cn')
                             ? "Ganti Pembayaran"

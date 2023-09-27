@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:sfa_tools/models/tarikbarangmodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/chipsitem.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
-import '../../../controllers/taking_order_vendor_controller.dart';
 
 class CheckoutListGb extends StatelessWidget {
   TarikBarangModel data;
   String idx;
   CheckoutListGb({super.key, required this.idx, required this.data});
-  final TakingOrderVendorController _takingOrderVendorController = Get.find();
+  // final TakingOrderVendorController _takingOrderVendorController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
     return Card(
       elevation: 10,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

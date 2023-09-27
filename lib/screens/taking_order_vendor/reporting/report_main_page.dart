@@ -62,7 +62,7 @@ class ReportMainPage extends StatelessWidget {
                       await _takingOrderVendorController.filteReport();
                     },
                   )),
-              ReportBody(),
+              const ReportBody(),
             ],
           )
         ]),

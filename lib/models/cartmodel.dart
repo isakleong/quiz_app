@@ -11,9 +11,11 @@ class CartModel extends HiveObject {
   String nmProduct;
 
   @HiveField(2)
+  // ignore: non_constant_identifier_names
   int Qty;
 
   @HiveField(3)
+  // ignore: non_constant_identifier_names
   String Satuan;
 
   @HiveField(4)

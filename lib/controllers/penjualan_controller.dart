@@ -120,6 +120,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       itemvendorbox = await Hive.openBox("itemVendorBox");
       masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
       tokenbox = await Hive.openBox('tokenbox');
+    // ignore: empty_catches
     } catch (e) {
     }
   }
@@ -134,6 +135,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       itemvendorbox.close();
       masteritemvendorbox.close();
       tokenbox.close();
+    // ignore: empty_catches
     } catch (e) {
     }
   }
@@ -149,6 +151,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     try {
       bool isdev = false;
       var params =  {
+        // ignore: dead_code
         'customerNo': isdev ? "10A01010007" : custid,
       };
       var dectoken = await gettoken();
@@ -263,7 +266,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   addToCart(){
     //print(selectedProduct.value[0].detailProduct[0].hrg);
-    for (var i = 0; i < selectedProduct.value[0].detailProduct.length; i++) {
+    for (var i = 0; i < selectedProduct[0].detailProduct.length; i++) {
       if (listQty[i] != 0) {
         cartList.add(CartModel(
             selectedProduct[0].kdProduct,
@@ -713,6 +716,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       }
       tokenbox.delete(salesiddata);
       tokenbox.put(salesiddata, dataresp.data!.token);
+    // ignore: empty_catches
     } catch (e) {
       
     }

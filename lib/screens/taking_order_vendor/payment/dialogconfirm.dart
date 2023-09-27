@@ -9,6 +9,7 @@ import '../../../widgets/customelevatedbutton.dart';
 class DialogConfirm extends StatelessWidget {
   String message;
   String title;
+  // ignore: prefer_typing_uninitialized_variables
   var onTap;
   DialogConfirm({super.key, required this.message, required this.title, required this.onTap});
 

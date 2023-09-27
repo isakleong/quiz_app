@@ -111,7 +111,7 @@ class CekTab extends StatelessWidget {
                             ),
                             border: const OutlineInputBorder(),
                             prefixIcon: Icon(
-                              FontAwesomeIcons.bank,
+                              FontAwesomeIcons.buildingColumns,
                               color: const Color(0XFF319088),
                               size: 12.sp,
                             )),
@@ -209,8 +209,8 @@ class CekTab extends StatelessWidget {
                               Icon(
                                 _takingOrderVendorController.listpaymentdata
                                         .any((data) => data.jenis == 'cek')
-                                    ? FontAwesomeIcons.pencilSquare
-                                    : FontAwesomeIcons.plusSquare,
+                                    ? FontAwesomeIcons.squarePen
+                                    : FontAwesomeIcons.squarePlus,
                                 size: 14.sp,
                               ),
                               SizedBox(

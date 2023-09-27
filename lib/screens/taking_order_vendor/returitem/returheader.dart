@@ -13,7 +13,7 @@ class ReturHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
     return Column(
       children: [
         const SizedBox(
@@ -89,7 +89,7 @@ class ReturHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: const [
                     Icon(
-                      FontAwesomeIcons.solidCheckCircle,
+                      FontAwesomeIcons.solidCircleCheck,
                       size: 18,
                     ),
                     SizedBox(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ButtonPayment extends StatelessWidget {
+  // ignore: prefer_typing_uninitialized_variables
   var ontap;
   Color bgcolor;
   IconData icon;

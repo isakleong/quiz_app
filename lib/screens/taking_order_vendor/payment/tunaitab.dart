@@ -153,8 +153,8 @@ class TunaiTab extends StatelessWidget {
                                   : const Color(0XFF319088),
                               icon: _takingOrderVendorController.listpaymentdata
                                       .any((data) => data.jenis == 'Tunai')
-                                  ? FontAwesomeIcons.pencilSquare
-                                  : FontAwesomeIcons.plusSquare,
+                                  ? FontAwesomeIcons.squarePen
+                                  : FontAwesomeIcons.squarePlus,
                               txt: _takingOrderVendorController.listpaymentdata
                                       .any((data) => data.jenis == 'Tunai')
                                   ? "Ganti Pembayaran"

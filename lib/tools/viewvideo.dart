@@ -12,10 +12,10 @@ class ViewVideoScreen extends StatefulWidget {
   const ViewVideoScreen(this.path, {Key? key}) : super(key: key);
 
   @override
-  _ViewVideoScreenState createState() => _ViewVideoScreenState();
+  ViewVideoScreenState createState() => ViewVideoScreenState();
 }
 
-class _ViewVideoScreenState extends State<ViewVideoScreen> {
+class ViewVideoScreenState extends State<ViewVideoScreen> {
   late VideoPlayerController videoController;
   late ChewieController chewieController;
   late Future<void> future;

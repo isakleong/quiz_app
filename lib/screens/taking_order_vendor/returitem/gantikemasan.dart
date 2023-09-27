@@ -37,7 +37,7 @@ class GantiKemasan extends StatelessWidget {
                           labelStyle: TextStyle(fontSize: 16),
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(
-                            FontAwesomeIcons.search,
+                            FontAwesomeIcons.magnifyingGlass,
                             color: Color(0XFF319088),
                           )),
                     ),

@@ -2,6 +2,7 @@ class MasterItemVendor {
   String? prefix;
   String? name;
   String? receivables;
+  // ignore: non_constant_identifier_names
   String? overdue_invoices;
   List<Banks>? banks;
   List<PaymentMethods>? paymentMethods;

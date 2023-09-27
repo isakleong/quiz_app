@@ -7,10 +7,10 @@ class ViewPDFScreen extends StatefulWidget {
   const ViewPDFScreen(this.path, {Key? key}) : super(key: key);
 
   @override
-  _ViewPDFScreenState createState() => _ViewPDFScreenState();
+  ViewPDFScreenState createState() => ViewPDFScreenState();
 }
 
-class _ViewPDFScreenState extends State<ViewPDFScreen> {
+class ViewPDFScreenState extends State<ViewPDFScreen> {
   int pageindex = 0, pagecount = 0;
   late PdfController controller;
 

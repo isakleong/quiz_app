@@ -113,6 +113,7 @@ class PembayaranController extends GetxController {
       masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
       postpembayaranbox = await Hive.openBox("postpembayaranbox");
       tokenbox = await Hive.openBox('tokenbox');
+    // ignore: empty_catches
     } catch (e) {
       
     }
@@ -126,6 +127,7 @@ class PembayaranController extends GetxController {
       masteritemvendorbox.close();
       postpembayaranbox.close();
       tokenbox.close();
+    // ignore: empty_catches
     } catch (e) {
       
     }
@@ -792,6 +794,7 @@ class PembayaranController extends GetxController {
       }
       tokenbox.delete(salesiddata);
       tokenbox.put(salesiddata, dataresp.data!.token);
+    // ignore: empty_catches
     } catch (e) {
       
     }

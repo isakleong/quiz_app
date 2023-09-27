@@ -8,7 +8,9 @@ import '../../../widgets/textview.dart';
 class OutstandingCustCard extends StatelessWidget {
   String nmtoko;
   bool isfailed;
+  // ignore: prefer_typing_uninitialized_variables
   var ontap;
+  // ignore: prefer_typing_uninitialized_variables
   var ontaprefresh;
   OutstandingCustCard({super.key, required this.nmtoko, required this.ontap, required this.ontaprefresh,required this.isfailed});
 

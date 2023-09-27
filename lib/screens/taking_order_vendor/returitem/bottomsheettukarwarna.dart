@@ -119,7 +119,7 @@ class BottomSheetTukarWarna extends StatelessWidget {
                               labelStyle: TextStyle(fontSize: 16),
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(
-                                FontAwesomeIcons.search,
+                                FontAwesomeIcons.magnifyingGlass,
                                 color: Color(0XFF398f3e),
                               )),
                         ),
@@ -157,6 +157,7 @@ class BottomSheetTukarWarna extends StatelessWidget {
                           );
                         },
                         onSuggestionSelected: (suggestion) {
+                          // ignore: unrelated_type_equality_checks
                           if (suggestion == "") {
                             _takingOrderVendorController
                                 .produkpenggantifield.value.text = "";

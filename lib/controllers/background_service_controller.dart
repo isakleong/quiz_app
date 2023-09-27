@@ -452,6 +452,7 @@ class Backgroundservicecontroller {
     final formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
     final filePath = '$directoryPath/$formattedDate.txt';
 
+    // ignore: dead_code
     if (allowWriteLog) {
       try {
         final directory = Directory(directoryPath);
@@ -660,6 +661,7 @@ class Backgroundservicecontroller {
         postpembayaranbox = await Hive.openBox("postpembayaranbox");
         boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
         tokenbox = await Hive.openBox('tokenbox');
+      // ignore: empty_catches
       } catch (e) {}
     } catch (e) {
       try {
@@ -669,6 +671,7 @@ class Backgroundservicecontroller {
         postpembayaranbox = await Hive.openBox("postpembayaranbox");
         boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
         tokenbox = await Hive.openBox('tokenbox');
+      // ignore: empty_catches
       } catch (err) {}
     }
   }
@@ -681,6 +684,7 @@ class Backgroundservicecontroller {
       postpembayaranbox.close();
       boxPembayaranReport.close();
       tokenbox.close();
+    // ignore: empty_catches
     } catch (e) {}
   }
 
@@ -866,6 +870,7 @@ class Backgroundservicecontroller {
       }
       tokenbox.delete(salesiddata);
       tokenbox.put(salesiddata, dataresp.data!.token);
+    // ignore: empty_catches
     } catch (e) {}
   }
 

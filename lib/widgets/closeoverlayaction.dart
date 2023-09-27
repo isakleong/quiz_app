@@ -17,7 +17,7 @@ class CloseOverlayAction extends StatelessWidget {
         shape: const CircleBorder(),
         padding: const EdgeInsets.all(10),
       ),
-      child: const Icon(FontAwesomeIcons.close,
+      child: const Icon(FontAwesomeIcons.xmark,
           size: 35, color: Colors.white),
     );
   }

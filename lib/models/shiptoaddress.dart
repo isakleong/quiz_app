@@ -19,9 +19,11 @@ class ShipToAddress extends HiveObject {
   final String county;
 
   @HiveField(4)
+  // ignore: non_constant_identifier_names
   final String PostCode;
 
   @HiveField(5)
+  // ignore: non_constant_identifier_names
   final String City;
 
   ShipToAddress({
@@ -29,7 +31,9 @@ class ShipToAddress extends HiveObject {
     required this.name,
     required this.address,
     required this.county,
+    // ignore: non_constant_identifier_names
     required this.PostCode,
+    // ignore: non_constant_identifier_names
     required this.City
   });
   

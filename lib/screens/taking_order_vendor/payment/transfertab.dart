@@ -155,8 +155,8 @@ class TransferTab extends StatelessWidget {
                             : const Color(0XFF319088),
                         icon: _takingOrderVendorController.listpaymentdata
                                 .any((data) => data.jenis == 'Transfer')
-                            ? FontAwesomeIcons.pencilSquare
-                            : FontAwesomeIcons.plusSquare,
+                            ? FontAwesomeIcons.squarePen
+                            : FontAwesomeIcons.squarePlus,
                         txt: _takingOrderVendorController.listpaymentdata
                                 .any((data) => data.jenis == 'Transfer')
                             ? "Ganti Pembayaran"

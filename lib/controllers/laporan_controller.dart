@@ -38,6 +38,7 @@ class LaporanController extends GetxController {
       vendorBox.close();
       boxreportpenjualan.close();
       boxPembayaranReport.close();
+    // ignore: empty_catches
     } catch (e) {
       
     }
@@ -103,22 +104,22 @@ class LaporanController extends GetxController {
 
     //read filter condition
     if (choosedReport.value.contains("Semua") || choosedReport.value == "") {
-      listReportPenjualanShow.value.clear();
-      listReportPenjualanShow.value.addAll(listReportPenjualan);
+      listReportPenjualanShow.clear();
+      listReportPenjualanShow.addAll(listReportPenjualan);
       listReportPembayaranshow.clear();
-      listReportPembayaranshow.value.addAll(listReportPembayaran);
+      listReportPembayaranshow.addAll(listReportPembayaran);
       allReportlength.value = listReportPenjualanShow.length + listReportPembayaranshow.length;
     } 
     else if (choosedReport.value == "Transaksi Penjualan") {
-      listReportPembayaranshow.value.clear();
-      listReportPenjualanShow.value.clear();
-      listReportPenjualanShow.value.addAll(listReportPenjualan);
+      listReportPembayaranshow.clear();
+      listReportPenjualanShow.clear();
+      listReportPenjualanShow.addAll(listReportPenjualan);
       allReportlength.value = listReportPenjualanShow.length ;
     } 
     else if (choosedReport.value == "Transaksi Pembayaran") {
-      listReportPenjualanShow.value.clear();
+      listReportPenjualanShow.clear();
       listReportPembayaranshow.clear();
-      listReportPembayaranshow.value.addAll(listReportPembayaran);
+      listReportPembayaranshow.addAll(listReportPembayaran);
       allReportlength.value = listReportPembayaranshow.length;
     } 
     else if (choosedReport.value == "Transaksi Retur") {
@@ -133,21 +134,21 @@ class LaporanController extends GetxController {
 
   filteReport() async {
     if (choosedReport.value.contains("Semua") || choosedReport.value == "") {
-      listReportPenjualanShow.value.clear();
-      listReportPenjualanShow.value.addAll(listReportPenjualan);
+      listReportPenjualanShow.clear();
+      listReportPenjualanShow.addAll(listReportPenjualan);
       listReportPembayaranshow.clear();
-      listReportPembayaranshow.value.addAll(listReportPembayaran);
+      listReportPembayaranshow.addAll(listReportPembayaran);
       allReportlength.value =
         listReportPenjualanShow.length + listReportPembayaranshow.length;
     } else if (choosedReport.value == "Transaksi Penjualan") {
-      listReportPenjualanShow.value.clear();
-      listReportPenjualanShow.value.addAll(listReportPenjualan);
+      listReportPenjualanShow.clear();
+      listReportPenjualanShow.addAll(listReportPenjualan);
       listReportPembayaranshow.clear();
       allReportlength.value = listReportPenjualanShow.length ;
     } else if (choosedReport.value == "Transaksi Pembayaran") {
-      listReportPenjualanShow.value.clear();
+      listReportPenjualanShow.clear();
       listReportPembayaranshow.clear();
-      listReportPembayaranshow.value.addAll(listReportPembayaran);
+      listReportPembayaranshow.addAll(listReportPembayaran);
       allReportlength.value =
          listReportPembayaranshow.length;
     } else if (choosedReport.value == "Transaksi Retur") {

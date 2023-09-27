@@ -13,6 +13,8 @@ import '../../../tools/viewvideo.dart';
 class InfoProdukPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
 
+  InfoProdukPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

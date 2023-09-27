@@ -15,16 +15,8 @@ class ReportPembayaran extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     return Obx(() => Column(
           children: [
-            for (int index = 0;
-                index <
-                    _takingOrderVendorController
-                        .listReportPembayaranshow.value.length;
-                index++)
-              index == 0 &&
-                      index !=
-                          _takingOrderVendorController
-                                  .listReportPembayaranshow.value.length -
-                              1
+            for (int index = 0;index <_takingOrderVendorController.listReportPembayaranshow.length;index++)
+              index == 0 && index != _takingOrderVendorController.listReportPembayaranshow.length - 1
                   ? Column(
                       children: [
                         Padding(
@@ -43,16 +35,16 @@ class ReportPembayaran extends StatelessWidget {
                           idx: (index + 1).toString(),
                           custid: _takingOrderVendorController.custcode.value,
                           data: _takingOrderVendorController
-                              .listReportPembayaranshow.value[index],
+                              .listReportPembayaranshow[index],
                           total:
-                              "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                              "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow[index].total.toInt())}",
                         ),
                       ],
                     )
                   : index == 0 &&
                           index ==
                               _takingOrderVendorController
-                                      .listReportPembayaranshow.value.length -
+                                      .listReportPembayaranshow.length -
                                   1
                       ? Column(
                           children: [
@@ -73,9 +65,9 @@ class ReportPembayaran extends StatelessWidget {
                               custid:
                                   _takingOrderVendorController.custcode.value,
                               data: _takingOrderVendorController
-                                  .listReportPembayaranshow.value[index],
+                                  .listReportPembayaranshow[index],
                               total:
-                                  "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                                  "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow[index].total.toInt())}",
                             ),
                             SizedBox(
                               height: 0.04 * height,
@@ -87,13 +79,7 @@ class ReportPembayaran extends StatelessWidget {
                             )
                           ],
                         )
-                      : index != 0 &&
-                              index ==
-                                  _takingOrderVendorController
-                                          .listReportPembayaranshow
-                                          .value
-                                          .length -
-                                      1
+                      : index != 0 && index == _takingOrderVendorController.listReportPembayaranshow.length - 1
                           ? Column(
                               children: [
                                 Padding(
@@ -106,9 +92,8 @@ class ReportPembayaran extends StatelessWidget {
                                     custid: _takingOrderVendorController
                                         .custcode.value,
                                     data: _takingOrderVendorController
-                                        .listReportPembayaranshow.value[index],
-                                    total:
-                                        "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                                        .listReportPembayaranshow[index],
+                                    total: "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow[index].total.toInt())}",
                                   ),
                                 ),
                                 SizedBox(
@@ -128,12 +113,9 @@ class ReportPembayaran extends StatelessWidget {
                                   right: 0.05 * width),
                               child: ItemReportPembayaran(
                                 idx: (index + 1).toString(),
-                                custid:
-                                    _takingOrderVendorController.custcode.value,
-                                data: _takingOrderVendorController
-                                    .listReportPembayaranshow.value[index],
-                                total:
-                                    "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow.value[index].total.toInt())}",
+                                custid: _takingOrderVendorController.custcode.value,
+                                data: _takingOrderVendorController .listReportPembayaranshow[index],
+                                total: "Rp ${Utils().formatNumber(_takingOrderVendorController.listReportPembayaranshow[index].total.toInt())}",
                               ),
                             ),
           ],

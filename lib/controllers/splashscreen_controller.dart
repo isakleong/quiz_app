@@ -680,6 +680,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
       boxreportpenjualan = await Hive.openBox('penjualanReport');
       tokenbox = await Hive.openBox('tokenbox');
+    // ignore: empty_catches
     } catch (e) {
     }
   }
@@ -692,6 +693,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       boxpostpenjualan.close();
       boxreportpenjualan.close();
       tokenbox.close();
+    // ignore: empty_catches
     } catch (e) {
     }
   }
@@ -703,7 +705,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       // print(await encryptsalescodeforvendor(salesIdParams.value));
       var tokenboxdata = await tokenbox.get(salesIdParams.value);
       var dectoken = Utils().decrypt(tokenboxdata);
-      print(dectoken);
+      //print(dectoken);
       var result = await ApiClient().getData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/setting/customer/${customerIdParams.value}",options: Options(headers: {
           'Authorization': 'Bearer $dectoken',
           'Accept': 'application/json',
@@ -909,6 +911,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
       tokenbox.delete(salesIdParams.value);
       tokenbox.put(salesIdParams.value, dataresp.data!.token);
+    // ignore: empty_catches
     } catch (e) {
       
     }

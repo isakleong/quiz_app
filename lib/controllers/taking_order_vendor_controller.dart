@@ -165,7 +165,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
         infoos.value = "$outstandingqty $satuan";
       }
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -223,6 +223,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     try {
       outstandingBox = await Hive.openBox('outstandingBox');
       vendorBox = await Hive.openBox('vendorBox');
+    // ignore: empty_catches
     } catch (e) {}
   }
 
@@ -354,6 +355,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       tokenbox.delete(salesiddata);
       tokenbox.put(salesiddata, dataresp.data!.token);
       tokenbox.close();
+    // ignore: empty_catches
     } catch (e) {
       
     }

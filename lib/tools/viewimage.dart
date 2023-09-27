@@ -7,10 +7,10 @@ class ViewImageScreen extends StatefulWidget {
   const ViewImageScreen(this.path, {Key? key}) : super(key: key);
 
   @override
-  _ViewImageScreenState createState() => _ViewImageScreenState();
+  ViewImageScreenState createState() => ViewImageScreenState();
 }
 
-class _ViewImageScreenState extends State<ViewImageScreen> {
+class ViewImageScreenState extends State<ViewImageScreen> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(

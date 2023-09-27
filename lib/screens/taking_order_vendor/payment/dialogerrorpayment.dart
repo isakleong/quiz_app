@@ -7,6 +7,7 @@ import '../../../widgets/textview.dart';
 
 class DialogErrorPayment extends StatelessWidget {
   String judul;
+  // ignore: prefer_typing_uninitialized_variables
   var ontap;
   DialogErrorPayment({super.key, required this.judul, required this.ontap});
 
