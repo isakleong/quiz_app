@@ -586,7 +586,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   }
 
   // for informasi page
-  RxList<bool> selectedsegmentinformasi = [true, false].obs;
+  RxList<bool> selectedsegmentinformasi = [true, false, false].obs;
   RxList<bool> selectedsegmentcategory = [true, false, false].obs;
   RxInt indexselectedsegmentcategory = 0.obs;
   RxInt indexSegmentinformasi = 0.obs;

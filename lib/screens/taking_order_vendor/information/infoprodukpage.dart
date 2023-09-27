@@ -98,7 +98,7 @@ class InfoProdukPage extends StatelessWidget {
                             item.extension == "jpeg" ? Image.asset("assets/images/filejpg.png",height: 30) : 
                             item.extension == "pdf" ? Image.asset("assets/images/filepdf.png",height: 30) : 
                             item.extension == "mp4" ? Image.asset("assets/images/filemp4.png",height: 30) :
-                            Image.asset("assets/images/filejpg.png"),
+                            Image.asset("assets/images/filejpg.png",height: 30),
                           ),
                           AutoSizeText(
                             item.name.replaceAll("%20",""),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/information/pricelistpage.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/information/promopage.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import '../../../common/app_config.dart';
@@ -16,6 +17,7 @@ class InformasiMainPage extends StatelessWidget {
   List pages = [
     PromoPage(),
     InfoProdukPage(),
+    PriceListPage()
   ];
 
   @override
@@ -64,6 +66,7 @@ class InformasiMainPage extends StatelessWidget {
                       children: [
                         'Promo',
                         'Info Produk',
+                        'Daftar Harga'
                       ].map((item) => 
                       TextView(
                         text: item, textAlign: TextAlign.center,headings: 'H5',fontSize: 11.sp,

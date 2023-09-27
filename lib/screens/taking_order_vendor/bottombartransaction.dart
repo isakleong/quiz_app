@@ -9,6 +9,8 @@ import 'package:sfa_tools/screens/taking_order_vendor/reporting/report_main_page
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/transaction_main_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'information/informasi_main_page.dart';
+
 class BottomBartransaction extends StatelessWidget {
   BottomBartransaction({super.key});
 
@@ -25,7 +27,7 @@ class BottomBartransaction extends StatelessWidget {
       PaymentMainPage(),
       // ReturMainPage(),
       ReportMainPage(),
-      // InformasiMainPage()
+      InformasiMainPage()
     ];
   }
 
@@ -44,7 +46,6 @@ class BottomBartransaction extends StatelessWidget {
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.shopping_bag),
         title: ("Penjualan"),
-        // textStyle: TextStyle(color: Colors.white),
         activeColorPrimary: AppConfig.mainCyan,
         activeColorSecondary: AppConfig.mainCyan,
         inactiveColorPrimary: const Color(0XFF3c3c3c),
@@ -52,7 +53,6 @@ class BottomBartransaction extends StatelessWidget {
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.payment_rounded),
         title: ("Pembayaran"),
-        // textStyle: TextStyle(color: Colors.white),
         activeColorPrimary: AppConfig.mainCyan,
         activeColorSecondary: AppConfig.mainCyan,
         inactiveColorPrimary: const Color(0XFF3c3c3c),
@@ -72,13 +72,13 @@ class BottomBartransaction extends StatelessWidget {
         activeColorPrimary: AppConfig.mainCyan,
         inactiveColorPrimary: const Color(0XFF3c3c3c),
       ),
-      // PersistentBottomNavBarItem(
-      //   icon: const Icon(Icons.info),
-      //   title: ("Informasi"),
-      //   activeColorSecondary: AppConfig.mainCyan,
-      //   activeColorPrimary: AppConfig.mainCyan,
-      //   inactiveColorPrimary: const Color(0XFF3c3c3c),
-      // ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.info),
+        title: ("Informasi"),
+        activeColorSecondary: AppConfig.mainCyan,
+        activeColorPrimary: AppConfig.mainCyan,
+        inactiveColorPrimary: const Color(0XFF3c3c3c),
+      ),
     ];
   }
 

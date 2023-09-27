@@ -17,63 +17,65 @@ class PromoPage extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Obx(()=> Column(
+      body: Column(
         children: [
-        Container(
-          width: width,
-          height: width < 450 ? 145 : 170,
-          margin: const EdgeInsets.only(top: 10,bottom: 10),
-          child: Swiper(
-            autoplay: true,
-            autoplayDelay: 6000,
-            viewportFraction: width < 450 ? 0.7 : 0.6,
-            scale: width < 450 ? 0.7 : 0.65,
-            itemCount: _takingOrderVendorController.imgpath.length,
-            pagination: const SwiperPagination(
-              margin: EdgeInsets.only(top: 20),
-              builder: DotSwiperPaginationBuilder(color: Colors.grey, size: 8, activeColor: Colors.teal, activeSize: 12)
-            ),
-            itemBuilder: (context, index) {
-              return InkWell(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
-                  child: Image.file(File('${_takingOrderVendorController.basepath}${_takingOrderVendorController.imgpath[index]}'), fit: BoxFit.contain,),
-                ),
-              );
-            },
-            ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.white,
-          ),
-            child: ToggleButtons(
-              isSelected: _takingOrderVendorController.selectedsegmentcategory,
-              onPressed: (index) {
-                _takingOrderVendorController.handleselectedsegmentcategory(index);
+        /* untuk menampilkan banner dan category
+          Container(
+            width: width,
+            height: width < 450 ? 145 : 170,
+            margin: const EdgeInsets.only(top: 10,bottom: 10),
+            child: Swiper(
+              autoplay: true,
+              autoplayDelay: 6000,
+              viewportFraction: width < 450 ? 0.7 : 0.6,
+              scale: width < 450 ? 0.7 : 0.65,
+              itemCount: _takingOrderVendorController.imgpath.length,
+              pagination: const SwiperPagination(
+                margin: EdgeInsets.only(top: 20),
+                builder: DotSwiperPaginationBuilder(color: Colors.grey, size: 8, activeColor: Colors.teal, activeSize: 12)
+              ),
+              itemBuilder: (context, index) {
+                return InkWell(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Image.file(File('${_takingOrderVendorController.basepath}${_takingOrderVendorController.imgpath[index]}'), fit: BoxFit.contain,),
+                  ),
+                );
               },
-              constraints: BoxConstraints(minWidth: 0.25 * width,minHeight: 0.03 * height),
-              borderColor: Colors.grey,
-              selectedBorderColor: Colors.grey.shade700,
-              borderRadius: BorderRadius.circular(10.0),
-              borderWidth: 1.0,
-              selectedColor: Colors.grey.shade700,
-              fillColor: Colors.grey.shade700,
-              children: [
-                'Cat',
-                'Bahan Bangunan',
-                'Mebel',
-              ].map((item) => 
-              TextView(
-                text: item, textAlign: TextAlign.center,headings: 'H5',fontSize: 9.sp,
-                color: _takingOrderVendorController.indexselectedsegmentcategory.value == 0 && item == "Cat" ? Colors.white :
-                _takingOrderVendorController.indexselectedsegmentcategory.value == 1 && item == "Bahan Bangunan" ? Colors.white :
-                _takingOrderVendorController.indexselectedsegmentcategory.value == 2 && item == "Mebel" ? Colors.white : Colors.grey.shade500 ,
-                ))
-            .toList(),
+              ),
           ),
-        ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+            ),
+              child: ToggleButtons(
+                isSelected: _takingOrderVendorController.selectedsegmentcategory,
+                onPressed: (index) {
+                  _takingOrderVendorController.handleselectedsegmentcategory(index);
+                },
+                constraints: BoxConstraints(minWidth: 0.25 * width,minHeight: 0.03 * height),
+                borderColor: Colors.grey,
+                selectedBorderColor: Colors.grey.shade700,
+                borderRadius: BorderRadius.circular(10.0),
+                borderWidth: 1.0,
+                selectedColor: Colors.grey.shade700,
+                fillColor: Colors.grey.shade700,
+                children: [
+                  'Cat',
+                  'Bahan Bangunan',
+                  'Mebel',
+                ].map((item) => 
+                TextView(
+                  text: item, textAlign: TextAlign.center,headings: 'H5',fontSize: 9.sp,
+                  color: _takingOrderVendorController.indexselectedsegmentcategory.value == 0 && item == "Cat" ? Colors.white :
+                  _takingOrderVendorController.indexselectedsegmentcategory.value == 1 && item == "Bahan Bangunan" ? Colors.white :
+                  _takingOrderVendorController.indexselectedsegmentcategory.value == 2 && item == "Mebel" ? Colors.white : Colors.grey.shade500 ,
+                  ))
+              .toList(),
+            ),
+          ),
+        */
         const SizedBox(height: 5),
         Expanded(
           child: Padding(
@@ -139,7 +141,7 @@ class PromoPage extends StatelessWidget {
             );
           }),
         ))
-      ])) 
+      ])
     );
   }
 }

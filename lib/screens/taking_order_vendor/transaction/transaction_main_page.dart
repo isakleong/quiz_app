@@ -9,8 +9,7 @@ import 'package:sfa_tools/screens/taking_order_vendor/transaction/productsearch.
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/shoppingcart.dart';
 
 class TakingOrderVendorMainPage extends StatelessWidget {
-  final TakingOrderVendorController _takingOrderVendorController =
-      Get.put(TakingOrderVendorController());
+  final TakingOrderVendorController _takingOrderVendorController = Get.put(TakingOrderVendorController());
   TakingOrderVendorMainPage({super.key});
 
   @override
@@ -74,26 +73,21 @@ class TakingOrderVendorMainPage extends StatelessWidget {
                             ),
                             child: InkWell(
                                 onTap: () {
-                                  //print((1 * width).toString());
-                                  //print(_takingOrderVendorController
-                                   //   .cartDetailList[index].nmProduct
-                                    //  .toString());
                                   // _takingOrderVendorController.showProdukSerupa(
                                   //   _takingOrderVendorController
                                   //       .cartDetailList[index],
                                   // );
                                 },
                                 child: SlideTransition(
-                                  position: _takingOrderVendorController
-                                      .listAnimation[index],
+                                  position: _takingOrderVendorController.listAnimation[index],
                                   child: CartList(
                                     idx: (index + 1).toString(),
-                                    data: _takingOrderVendorController
-                                        .cartDetailList[index],
+                                    data: _takingOrderVendorController.cartDetailList[index],
                                   ),
-                                )),
-                          );
-                        },
+                                )
+                              ),
+                            );
+                          },
                         physics: const BouncingScrollPhysics(),
                       ),
                     ),
