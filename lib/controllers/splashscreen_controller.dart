@@ -173,7 +173,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
     var sdkInt = androidInfo.version.sdkInt;
 
     if (type == 'STORAGE') {
-      appsDialog(
+      try {
+        appsDialog(
           type: "app_info",
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -371,8 +372,14 @@ class SplashscreenController extends GetxController with StateMixin implements W
               await syncAppsReady('STORAGE');
             }
           });
+      } catch (e) {
+        openErrorDialog();
+        isError(true);
+        change(null, status: RxStatus.error(e.toString()));
+      }
     } else if (type == 'EXTERNAL STORAGE') {
-      appsDialog(
+      try {
+        appsDialog(
           type: "",
           title: RichText(
             textAlign: TextAlign.center,
@@ -401,7 +408,11 @@ class SplashscreenController extends GetxController with StateMixin implements W
             Get.back();
             await syncAppsReady('EXTERNAL STORAGE');
           });
-    }
+      } catch (e) {
+        openErrorDialog();
+        isError(true);
+        change(null, status: RxStatus.error(e.toString()));
+      }}
   }
 
   Future<bool> checkAppsPermission(String type) async {
