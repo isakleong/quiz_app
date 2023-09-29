@@ -91,10 +91,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
         await getParameterData();
         await getModuleData();
       } else {
-        openPermissionRequestDialog('EXTERNAL STORAGE');
+        await openPermissionRequestDialog('EXTERNAL STORAGE');
       }
     } else {
-      openPermissionRequestDialog('STORAGE');
+      await openPermissionRequestDialog('STORAGE');
     }
   }
 
@@ -483,7 +483,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
           final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
-          // print(result.toString());
+          print(result.toString());
           var data = jsonDecode(result.toString());
           data["AppModule"].map((item) {
             moduleList.add(Module.from(item));
@@ -492,6 +492,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           var moduleBox = await Hive.openBox<Module>('moduleBox');
           await moduleBox.clear();
           await moduleBox.addAll(moduleList);
+          print(moduleList.length);
           
           PackageInfo packageInfo = await PackageInfo.fromPlatform();
           String currentVersion = packageInfo.version;
@@ -518,7 +519,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
           // }
           var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
           if(idx != -1){
-          //print("-1 <>");
             await getBox();
             var datacustomerbox = await customerBox.get(customerIdParams.value);
             var datatoken = await tokenbox.get(salesIdParams.value);
@@ -526,23 +526,22 @@ class SplashscreenController extends GetxController with StateMixin implements W
               await loginapivendor();
             }
             await closebox();
-              if(datacustomerbox!= null){
-                Customer custdata = datacustomerbox;
-                if(!Utils().isDateNotToday(Utils().formatDate(custdata.timestamp))){
-                  await checkofflinevendor();
-                  await moduleBox.clear();
-                  moduleBox.addAll(moduleList);
-                } else {
-                  await getVendor();
-                }
+            if(datacustomerbox!= null){
+              Customer custdata = datacustomerbox;
+              if(!Utils().isDateNotToday(Utils().formatDate(custdata.timestamp))){
+                await checkofflinevendor();
+                await moduleBox.clear();
+                moduleBox.addAll(moduleList);
               } else {
                 await getVendor();
               }
+            } else {
+              await getVendor();
+            }
           }
           await postTrackingVersion();
         } catch (e) {
           //print("ctc");
-
           errorMessage(e.toString());
           openErrorDialog();
           isError(true);
@@ -916,14 +915,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
       var params = {
         "username" : encparam
       };
-      //print(params);
       var result = await ApiClient().postData(urlAPI,"${AppConfig.apiurlvendorpath}/api/login",
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
       var dataresp = LoginResponse.fromJson(result);
-      //print(dataresp.data!.token);
-      //print(await Utils().decrypt(dataresp.data!.token.toString()));
-      // print("$urlAPI${AppConfig.apiurlvendorpath}/api/login");
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');
       }
