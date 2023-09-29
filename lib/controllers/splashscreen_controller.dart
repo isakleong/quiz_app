@@ -483,7 +483,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
           final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
-          print(result.toString());
+          // print(result.toString());
           var data = jsonDecode(result.toString());
           data["AppModule"].map((item) {
             moduleList.add(Module.from(item));
@@ -492,7 +492,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           var moduleBox = await Hive.openBox<Module>('moduleBox');
           await moduleBox.clear();
           await moduleBox.addAll(moduleList);
-          print(moduleList.length);
+          // print(moduleList.length);
           
           PackageInfo packageInfo = await PackageInfo.fromPlatform();
           String currentVersion = packageInfo.version;
