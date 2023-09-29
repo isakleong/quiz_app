@@ -719,6 +719,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           'Authorization': 'Bearer $dectoken',
           'Accept': 'application/json',
       },));
+      // print("$urlAPI${AppConfig.apiurlvendorpath}/api/setting/customer/${customerIdParams.value}");
       var data = VendorInfo.fromJson(result);
       if(data.availVendors.isNotEmpty){
         int index = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order Vendor"));
@@ -903,22 +904,32 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
   loginapivendor() async {
     try {
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+      if(!isConnected){
+        return;
+      }
+
       String encparam = Utils().encryptsalescodeforvendor(salesIdParams.value);
       var params = {
         "username" : encparam
       };
       //print(params);
-      var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
+      var result = await ApiClient().postData(urlAPI,"${AppConfig.apiurlvendorpath}/api/login",
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
       var dataresp = LoginResponse.fromJson(result);
       //print(dataresp.data!.token);
       //print(await Utils().decrypt(dataresp.data!.token.toString()));
+      // print("$urlAPI${AppConfig.apiurlvendorpath}/api/login");
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');
       }
       tokenbox.delete(salesIdParams.value);
       tokenbox.put(salesIdParams.value, dataresp.data!.token);
+      tokenbox.close();
     // ignore: empty_catches
     } catch (e) {
       

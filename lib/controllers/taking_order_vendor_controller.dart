@@ -56,13 +56,10 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   }
 
   callcontroller(String controllername) {
-    if (controllername.toLowerCase() ==
-        "splashscreencontroller".toLowerCase()) {
-      final isControllerRegistered =
-          GetInstance().isRegistered<SplashscreenController>();
+    if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()) {
+      final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
       if (!isControllerRegistered) {
-        final SplashscreenController controller =
-            Get.put(SplashscreenController());
+        final SplashscreenController controller = Get.put(SplashscreenController());
         return controller;
       } else {
         final SplashscreenController controller = Get.find();
@@ -290,9 +287,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       var dataosbox = await outstandingBox.get(keyos);
       outstandingBox.close();
       if (dataosbox != null) {
-        // print("data os box " + dataosbox);
          var isnotnull = loaddataoutstandinghive(dataosbox);
-        //  print(isnotnull);
          if(isnotnull){
             isLoadingOutstanding.value = false;
             isFailedLoadOutstanding.value = false;
@@ -306,13 +301,32 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       bool isConnected = arrConnTest[0] == 'true';
       String urlAPI = arrConnTest[1];
 
+      if (!isConnected){
+        if(listDataOutstanding.isEmpty){
+          isLoadingOutstanding.value = false;
+          isFailedLoadOutstanding.value = true;
+          return;
+        } else{
+          isLoadingOutstanding.value = false;
+          isFailedLoadOutstanding.value = false;
+          return;
+        }
+      }
+
       String dectoken = await gettoken();
       String urls = vendorlist[idvendorg].baseApiUrl;
+      if(urlAPI == AppConfig.baseUrlVendorLocal){
+        urlAPI = Utils().changeUrl(urls);
+      } else {
+        urlAPI = urls;
+      }
+
       var params = {
         "customerNo" : await Utils().getParameterData("cust")
       };
+      // print(urlAPI);
       var getVendoroustanding = await ApiClient().postData(
-          urls,
+          urlAPI,
           "sales-orders/outstanding",
           jsonEncode(params),
           Options(headers: {
@@ -320,6 +334,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
             'Authorization': 'Bearer $dectoken',
             'Accept': 'application/json'
           }));
+          // print("${urlAPI}sales-orders/outstanding");
       if (getVendoroustanding != null) {
         var dataresponse = OutstandingResponse.fromJson(getVendoroustanding);
         listDataOutstanding.clear();
@@ -343,20 +358,27 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
         isFailedLoadOutstanding.value = true;
       }
       await loginapivendor();
-      // print(e);
     }
   }
   
   loginapivendor() async {
     try {
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+      if(!isConnected){
+        return;
+      }
       String salesiddata = await Utils().getParameterData("sales");
       String encparam = Utils().encryptsalescodeforvendor(salesiddata);
       var params = {
         "username" : encparam
       };
-      var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
+      var result = await ApiClient().postData(urlAPI,"${AppConfig.apiurlvendorpath}/api/login",
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+          // print("$urlAPI${AppConfig.apiurlvendorpath}/api/login");
       var dataresp = LoginResponse.fromJson(result);
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');

@@ -56,18 +56,36 @@ class PembayaranController extends GetxController {
 
   refreshmastervendor() async {
     try {
+
         String cust = await Utils().getParameterData("cust");
         if(globalkeybox == "") await getGlobalKeyBox();
         var params =  {
           'customerNo':  cust,
         };
+
+        var connTest = await ApiClient().checkConnection(jenis: "vendor");
+        var arrConnTest = connTest.split("|");
+        bool isConnected = arrConnTest[0] == 'true';
+        String urlAPI = arrConnTest[1];
+
+        if(!isConnected){
+            return;
+        }
+
+        String urls = vendorlist[idvendor].baseApiUrl;
+        if(urlAPI == AppConfig.baseUrlVendorLocal){
+          urlAPI = Utils().changeUrl(urls);
+        } else {
+          urlAPI = urls;
+        }
         await getbox();
         var dectoken = await gettoken();
-        var getVendorItem = await ApiClient().postData(vendorlist[idvendor].baseApiUrl,"setting/vendor-info",jsonEncode(params), Options(
+        var getVendorItem = await ApiClient().postData(urlAPI,"setting/vendor-info",jsonEncode(params), Options(
               headers: {
                 HttpHeaders.contentTypeHeader: "application/json",'Authorization': 'Bearer $dectoken','Accept': 'application/json'
               }
             ));
+          // print("${urlAPI}setting/vendor-info");
         if(!masteritemvendorbox.isOpen) masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
         masteritemvendorbox.delete(globalkeybox);
         masteritemvendorbox.put(globalkeybox, getVendorItem);
@@ -645,6 +663,18 @@ class PembayaranController extends GetxController {
   }
 
   sendPaymentToApi(List<Map<String, dynamic>> data,List<PenjualanPostModel> listpostdata) async {
+    
+    var connTest = await ApiClient().checkConnection(jenis: "vendor");
+    var arrConnTest = connTest.split("|");
+    bool isConnected = arrConnTest[0] == 'true';
+    String urlAPI = arrConnTest[1];
+
+    String urls = vendorlist[idvendor].baseApiUrl;
+    if(urlAPI == AppConfig.baseUrlVendorLocal){
+      urlAPI = Utils().changeUrl(urls);
+    } else {
+      urlAPI = urls;
+    }
 
     //menyiapkan nomor order yang akan dikirim
     String noorder = data[0]['extDocId'];
@@ -680,7 +710,18 @@ class PembayaranController extends GetxController {
       }
     }
 
-    final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}payments/store');
+    if(!isConnected){
+      dataconvert[idx].condition = "pending";
+      if(!boxPembayaranReport.isOpen) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
+      await boxPembayaranReport.delete(globalkeybox);
+      await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
+      await closebox();
+      //setelah proses selesai maka data list laporan akan direfresh
+      controllerLaporan.getReportList(true);
+      return;
+    }
+
+    final url = Uri.parse('${urlAPI}payments/store');
     final request = http.MultipartRequest('POST', url);
       for (var i = 0; i < data.length; i++) {
         request.fields['data[$i][extDocId]'] = data[i]['extDocId'];
@@ -698,7 +739,7 @@ class PembayaranController extends GetxController {
           'Authorization': 'Bearer $dectoken',
           'Accept': 'application/json',
         });
-      
+      // print("${urlAPI}payments/store");
       //proses pengiriman data
       try {
         final response = await request.send();
@@ -711,10 +752,12 @@ class PembayaranController extends GetxController {
               // data report akan diubah statusnya (condition) menjadi success. dan akan dihapus dari list data pending agar tidak dikirim via background
                 dataconvert[idx].condition = "success";
                 listpostdata.removeAt(idxpost);
+                if(!postpembayaranbox.isOpen) postpembayaranbox = await Hive.openBox("postpembayaranbox");
                 await postpembayaranbox.delete(globalkeybox);
                 if(listpostdata.isNotEmpty) {
                   await postpembayaranbox.put(globalkeybox,listpostdata);
                 }
+                if(!boxPembayaranReport.isOpen) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
                 await boxPembayaranReport.delete(globalkeybox);
                 await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
             } else {
@@ -725,10 +768,12 @@ class PembayaranController extends GetxController {
                   if(jsonResponse["data"][0]["errors"][i]['code'] == AppConfig().orderalreadyexistvendor){
                       dataconvert[idx].condition = "success";
                       listpostdata.removeAt(idxpost);
+                      if(!postpembayaranbox.isOpen) postpembayaranbox = await Hive.openBox("postpembayaranbox");
                       await postpembayaranbox.delete(globalkeybox);
                       if(listpostdata.isNotEmpty) {
                         await postpembayaranbox.put(globalkeybox,listpostdata);
                       }
+                      if(!boxPembayaranReport.isOpen) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
                       await boxPembayaranReport.delete(globalkeybox);
                       await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
                       flag = 1;
@@ -737,6 +782,7 @@ class PembayaranController extends GetxController {
                 //jika error code tidak cocok dengan code order already exist, maka data report akan diubah statusnya (condition) menjadi pending
                 if(flag == 0){
                   dataconvert[idx].condition = "pending";
+                  if(!boxPembayaranReport.isOpen) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
                   await boxPembayaranReport.delete(globalkeybox);
                   await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
                 }
@@ -744,6 +790,7 @@ class PembayaranController extends GetxController {
           } else {
             //jika response utama bukan true maka data report akan diubah statusnya (condition) menjadi pending
             dataconvert[idx].condition = "pending";
+            if(!boxPembayaranReport.isOpen) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
             await boxPembayaranReport.delete(globalkeybox);
             await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
           }
@@ -757,6 +804,7 @@ class PembayaranController extends GetxController {
             }
           } finally{
             dataconvert[idx].condition = "pending";
+            if(!boxPembayaranReport.isOpen) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
             await boxPembayaranReport.delete(globalkeybox);
             await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
           }
@@ -764,11 +812,13 @@ class PembayaranController extends GetxController {
       } on SocketException {
           //jika tidak terdapat koneksi maka data report akan diubah statusnya (condition) menjadi pending
           dataconvert[idx].condition = "pending";
+          if(!boxPembayaranReport.isOpen) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
           await boxPembayaranReport.delete(globalkeybox);
           await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
       } catch (e) {
           //jika terdapat error yang tidak di ketahui maka data report akan diubah statusnya (condition) menjadi pending
           dataconvert[idx].condition = "pending";
+          if(!boxPembayaranReport.isOpen) boxPembayaranReport = await Hive.openBox('BoxPembayaranReport');
           await boxPembayaranReport.delete(globalkeybox);
           await boxPembayaranReport.put(globalkeybox,await tojsondata(dataconvert));
       }  finally{
@@ -780,20 +830,31 @@ class PembayaranController extends GetxController {
   
   loginapivendor() async {
     try {
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+
+      if(!isConnected){
+          return;
+      }
+
       String salesiddata = await Utils().getParameterData("sales");
       String encparam = Utils().encryptsalescodeforvendor(salesiddata);
       var params = {
         "username" : encparam
       };
-      var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
+      var result = await ApiClient().postData(urlAPI,"${AppConfig.apiurlvendorpath}/api/login",
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+      // print("$urlAPI${AppConfig.apiurlvendorpath}/api/login");
       var dataresp = LoginResponse.fromJson(result);
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');
       }
       tokenbox.delete(salesiddata);
       tokenbox.put(salesiddata, dataresp.data!.token);
+      tokenbox.close();
     // ignore: empty_catches
     } catch (e) {
       

@@ -119,6 +119,13 @@ class Utils {
       }
     }
   }
+
+  String changeUrl(String originalUrl) {
+  Uri originalUri = Uri.parse(originalUrl);
+  String newPath = originalUri.path; // Keep the original path
+  String newUrl = "${AppConfig.baseUrlVendorLocal}$newPath";
+  return newUrl;
+}
   
   String decrypt(String encrypted) {
   final key = Key.fromUtf8("fVkhoDWRAd4Rgj6l"); //hardcode combination of 16 character

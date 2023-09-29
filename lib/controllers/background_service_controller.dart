@@ -368,8 +368,7 @@ class Backgroundservicecontroller {
       String urlAPI = arrConnTest[1];
 
       if (isConnected) {
-        var req = await ApiClient()
-            .getData(urlAPI, "/quiz/status?sales_id=$encryptedParam");
+        var req = await ApiClient().getData(urlAPI, "/quiz/status?sales_id=$encryptedParam");
         Map<String, dynamic> jsonResponse = json.decode(req);
         ApiResponse response = ApiResponse.fromJson(jsonResponse);
         if (response.code.toString() == "200") {
@@ -510,7 +509,7 @@ class Backgroundservicecontroller {
     await closebox();
     // print("keys penjualan");
     if (keys.isNotEmpty) {
-      // print("keys pemnjualan");
+      // print("keys penjualan");
       await createLogTes("key not empty");
       for (var m = 0; m < keys.length; m++) {
         await sendPendingData(keys[m]);
@@ -522,6 +521,7 @@ class Backgroundservicecontroller {
     List<dynamic> keyspembayaran = await getListKey('pembayaran');
     await closebox();
     if (keyspembayaran.isNotEmpty) {
+      // print("keys keyspembayaran");
       for (var m = 0; m < keyspembayaran.length; m++) {
         await sendPendingDatapembayaran(keyspembayaran[m]);
       }
@@ -706,7 +706,19 @@ class Backgroundservicecontroller {
     var dectoken = await gettoken();
     var _datareportpenjualan = await boxreportpenjualan.get(key);
     var inc = 0;
-    final url = Uri.parse('${vendorurl}sales-orders/store');
+
+    var connTest = await ApiClient().checkConnection(jenis: "vendor");
+    var arrConnTest = connTest.split("|");
+    bool isConnected = arrConnTest[0] == 'true';
+    String urlAPI = arrConnTest[1];
+    String urls = vendorurl;
+    if(urlAPI == AppConfig.baseUrlVendorLocal){
+      urlAPI = Utils().changeUrl(urls);
+    } else {
+      urlAPI = urls;
+    }
+
+    final url = Uri.parse('${urlAPI}sales-orders/store');
     final request = http.MultipartRequest('POST', url);
     for (var i = 0; i < data.length; i++) {
       for (var j = 0; j < data[i].dataList.length; j++) {
@@ -734,6 +746,21 @@ class Backgroundservicecontroller {
       'Authorization': 'Bearer ${dectoken}',
       'Accept': 'application/json',
     });
+    // print("penjualan : ${urlAPI}sales-orders/store");
+    if(!isConnected){
+      await createLogTes("socketexception");
+      for (var i = 0; i < _datareportpenjualan.length; i++) {
+        for (var j = 0; j <= inc; j++) {
+          if (_datareportpenjualan[i].id == request.fields['data[$j][extDocId]']) {
+            _datareportpenjualan[i].condition = "pending";
+          }
+        }
+      }
+      await boxreportpenjualan.delete(key);
+      await boxreportpenjualan.put(key, _datareportpenjualan);
+      await closebox();
+      return;
+    }
 
     try {
       await createLogTes(request.fields.toString());
@@ -850,24 +877,24 @@ class Backgroundservicecontroller {
 
   loginapivendor() async {
     try {
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+      if(!isConnected){
+        return;
+      }
       String salesiddata = await Utils().getParameterData("sales");
       String encparam = Utils().encryptsalescodeforvendor(salesiddata);
       var params = {"username": encparam};
-      //print(params);
-      var result = await ApiClient().postData(
-          AppConfig.baseUrlVendor,
-          "${AppConfig.apiurlvendorpath}/api/login",
-          params,
-          Options(
-              headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+      var result = await ApiClient().postData(urlAPI,"${AppConfig.apiurlvendorpath}/api/login",params,Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
       var dataresp = LoginResponse.fromJson(result);
-      //print(dataresp.data!.token);
-      //print(await Utils().decrypt(dataresp.data!.token.toString()));
       if (!tokenbox.isOpen) {
         tokenbox = await Hive.openBox('tokenbox');
       }
       tokenbox.delete(salesiddata);
       tokenbox.put(salesiddata, dataresp.data!.token);
+      tokenbox.close();
     // ignore: empty_catches
     } catch (e) {}
   }
@@ -893,9 +920,21 @@ class Backgroundservicecontroller {
           _data));
     }
 
+    
+    var connTest = await ApiClient().checkConnection(jenis: "vendor");
+    var arrConnTest = connTest.split("|");
+    bool isConnected = arrConnTest[0] == 'true';
+    String urlAPI = arrConnTest[1];
+    String urls = vendorurl;
+    if(urlAPI == AppConfig.baseUrlVendorLocal){
+      urlAPI = Utils().changeUrl(urls);
+    } else {
+      urlAPI = urls;
+    }
+
     //create post data
     var inc = 0;
-    final url = Uri.parse('${vendorurl}payments/store');
+    final url = Uri.parse('${urlAPI}payments/store');
     final request = http.MultipartRequest('POST', url);
     for (var i = 0; i < data.length; i++) {
       for (var j = 0; j < data[i].dataList.length; j++) {
@@ -921,6 +960,21 @@ class Backgroundservicecontroller {
       'Authorization': 'Bearer ${dectoken}',
       'Accept': 'application/json',
     });
+    // print("pembayaran : ${urlAPI}payments/store");
+    if(!isConnected){
+      for (var i = 0; i < dataconvert.length; i++) {
+        for (var j = 0; j <= inc; j++) {
+          if (dataconvert[i].id == request.fields['data[$j][extDocId]']) {
+            dataconvert[i].condition = "pending";
+          }
+        }
+      }
+      if (!boxPembayaranReport.isOpen) boxPembayaranReport = await Hive.openBox("BoxPembayaranReport");
+      await boxPembayaranReport.delete(key);
+      await boxPembayaranReport.put(key, tojsondata(dataconvert));
+      await closebox();
+      return;
+    }
     //print(request.fields.toString());
     try {
       await createLogTes(request.fields.toString());

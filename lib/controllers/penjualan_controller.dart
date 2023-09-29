@@ -154,14 +154,39 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         // ignore: dead_code
         'customerNo': isdev ? "10A01010007" : custid,
       };
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+
+      String urls = vendorlist[idvendor].baseApiUrl;
+      if(urlAPI == AppConfig.baseUrlVendorLocal){
+        urlAPI = Utils().changeUrl(urls);
+      } else {
+        urlAPI = urls;
+      }
+
+      if (!isConnected){
+        if(type == null){
+          needtorefresh.value = true;
+        } else {
+          var itemvendorhive = itemvendorbox.get(globalkeybox);
+          listProduct.clear();
+          for (var i = 0; i < itemvendorhive.length; i++) {
+            listProduct.add(itemvendorhive[i]);
+          }
+        }
+        return;
+      }
+
       var dectoken = await gettoken();
-      // print(vendorlist[idvendor].baseApiUrl);
-      var getVendorItem = await ApiClient().postData(vendorlist[idvendor].baseApiUrl,"setting/vendor-info",jsonEncode(params), Options(
+      var getVendorItem = await ApiClient().postData(urlAPI,"setting/vendor-info",jsonEncode(params), Options(
             headers: {
               HttpHeaders.contentTypeHeader: "application/json",'Authorization': 'Bearer $dectoken','Accept': 'application/json'
             }
           ));
-      // print(getVendorItem);
+          
+      // print("${urlAPI}setting/vendor-info");
       masteritemvendorbox.delete(globalkeybox);
       masteritemvendorbox.put(globalkeybox, getVendorItem);
       var data = MasterItemVendor.fromJson(getVendorItem);
@@ -611,7 +636,30 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         }
       }
       var dectoken = await gettoken();
-      final url = Uri.parse('${vendorlist[idvendor].baseApiUrl}sales-orders/store');
+      
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+
+      if(!isConnected){
+          datareportpenjualan[idx].condition = "pending";
+          await boxreportpenjualan.delete(globalkeybox);
+          await boxreportpenjualan.put(globalkeybox,datareportpenjualan);
+          await closebox();
+          controllerLaporan.getReportList(true);
+          return;
+      }
+
+      String urls = vendorlist[idvendor].baseApiUrl;
+      if(urlAPI == AppConfig.baseUrlVendorLocal){
+        urlAPI = Utils().changeUrl(urls);
+      } else {
+        urlAPI = urls;
+      }
+
+      final url = Uri.parse('${urlAPI}sales-orders/store');
+      // print("${urlAPI}sales-orders/store");
       final request = http.MultipartRequest('POST', url);
       request.headers.addAll({
         'Accept': 'application/json',
@@ -702,20 +750,31 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   loginapivendor() async {
     try {
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+
+      if(!isConnected){
+          return;
+      }
+
       String salesiddata = await Utils().getParameterData("sales");
       String encparam = Utils().encryptsalescodeforvendor(salesiddata);
       var params = {
         "username" : encparam
       };
-      var result = await ApiClient().postData(AppConfig.baseUrlVendor,"${AppConfig.apiurlvendorpath}/api/login",
+      var result = await ApiClient().postData(urlAPI,"${AppConfig.apiurlvendorpath}/api/login",
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+          // print("$urlAPI${AppConfig.apiurlvendorpath}/api/login");
       var dataresp = LoginResponse.fromJson(result);
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');
       }
       tokenbox.delete(salesiddata);
       tokenbox.put(salesiddata, dataresp.data!.token);
+      tokenbox.close();
     // ignore: empty_catches
     } catch (e) {
       
