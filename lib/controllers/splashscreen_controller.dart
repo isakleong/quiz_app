@@ -375,7 +375,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       } catch (e) {
         openErrorDialog();
         isError(true);
-        change(null, status: RxStatus.error(e.toString()));
+        change(null, status: RxStatus.error("gagal meminta perizinan penyimpanan ! ${e.toString()}"));
       }
     } else if (type == 'EXTERNAL STORAGE') {
       try {
@@ -411,8 +411,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
       } catch (e) {
         openErrorDialog();
         isError(true);
-        change(null, status: RxStatus.error(e.toString()));
-      }}
+        change(null, status: RxStatus.error("gagal meminta perizinan penyimpanan eksternal ! ${e.toString()}"));
+      }
+    }
   }
 
   Future<bool> checkAppsPermission(String type) async {
