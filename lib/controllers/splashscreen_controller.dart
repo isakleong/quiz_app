@@ -50,6 +50,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   late Box boxreportpenjualan;
   late Box shiptobox;
   late Box tokenbox;
+  bool retrypermission = false;
 
   @override
   void onInit() {
@@ -169,6 +170,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   }
 
   openPermissionRequestDialog(String type, {bool? actionButton}) async {
+    retrypermission = false;
     var androidInfo = await DeviceInfoPlugin().androidInfo;
     var sdkInt = androidInfo.version.sdkInt;
 
@@ -373,10 +375,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
             }
           });
       } catch (e) {
+        retrypermission = true;
+        errorMessage("gagal meminta perizinan penyimpanan ! ${e.toString()}");
         openErrorDialog();
         isError(true);
         change(null, status: RxStatus.error("gagal meminta perizinan penyimpanan ! ${e.toString()}"));
-      }
+      } 
     } else if (type == 'EXTERNAL STORAGE') {
       try {
         appsDialog(
@@ -409,6 +413,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
             await syncAppsReady('EXTERNAL STORAGE');
           });
       } catch (e) {
+        retrypermission = true;
+        errorMessage("gagal meminta perizinan penyimpanan eksternal ! ${e.toString()}");
         openErrorDialog();
         isError(true);
         change(null, status: RxStatus.error("gagal meminta perizinan penyimpanan eksternal ! ${e.toString()}"));

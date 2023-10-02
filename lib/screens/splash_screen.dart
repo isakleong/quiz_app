@@ -75,7 +75,7 @@ class SplashScreen extends StatelessWidget {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    controller.getModuleData();
+                                    controller.retrypermission ? controller.startApp() : controller.getModuleData();
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppConfig.darkGreen,
