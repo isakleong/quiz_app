@@ -171,11 +171,11 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
   openPermissionRequestDialog(String type, {bool? actionButton}) async {
     retrypermission = false;
-    var androidInfo = await DeviceInfoPlugin().androidInfo;
-    var sdkInt = androidInfo.version.sdkInt;
 
     if (type == 'STORAGE') {
       try {
+        var androidInfo = await DeviceInfoPlugin().androidInfo;
+        var sdkInt = androidInfo.version.sdkInt;
         appsDialog(
           type: "app_info",
           title: Column(
@@ -383,6 +383,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
       } 
     } else if (type == 'EXTERNAL STORAGE') {
       try {
+        var androidInfo = await DeviceInfoPlugin().androidInfo;
+        var sdkInt = androidInfo.version.sdkInt;
         appsDialog(
           type: "",
           title: RichText(

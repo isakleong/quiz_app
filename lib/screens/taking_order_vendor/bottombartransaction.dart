@@ -27,7 +27,7 @@ class BottomBartransaction extends StatelessWidget {
       PaymentMainPage(),
       // ReturMainPage(),
       ReportMainPage(),
-      // InformasiMainPage()
+      InformasiMainPage()
     ];
   }
 
@@ -72,13 +72,13 @@ class BottomBartransaction extends StatelessWidget {
         activeColorPrimary: AppConfig.mainCyan,
         inactiveColorPrimary: const Color(0XFF3c3c3c),
       ),
-      // PersistentBottomNavBarItem(
-      //   icon: const Icon(Icons.info),
-      //   title: ("Informasi"),
-      //   activeColorSecondary: AppConfig.mainCyan,
-      //   activeColorPrimary: AppConfig.mainCyan,
-      //   inactiveColorPrimary: const Color(0XFF3c3c3c),
-      // ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.info),
+        title: ("Informasi"),
+        activeColorSecondary: AppConfig.mainCyan,
+        activeColorPrimary: AppConfig.mainCyan,
+        inactiveColorPrimary: const Color(0XFF3c3c3c),
+      ),
     ];
   }
 

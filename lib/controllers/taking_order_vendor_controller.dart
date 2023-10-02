@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:list_treeview/list_treeview.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/pembayaran_controller.dart';
@@ -30,6 +31,7 @@ import '../models/treenodedata.dart';
 import '../models/vendor.dart';
 import '../screens/taking_order_vendor/payment/dialogerrorpayment.dart';
 import '../tools/service.dart';
+import 'package:http/http.dart' as http;
 
 class TakingOrderVendorController extends GetxController with GetTickerProviderStateMixin {
   final PembayaranController _pembayaranController = Get.put(PembayaranController());
@@ -49,7 +51,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   void onInit() {
     super.onInit();
     setactivendor();
-    prepareinfoproduk();
+    // prepareinfoproduk();
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..forward();
     slideAnimation = Tween<Offset>(begin: const Offset(0, -0.2),end: const Offset(0, 0),).animate(CurvedAnimation(parent: animationController,curve: Curves.easeInOut,));
     _pembayaranController.controller = TabController(vsync: this, length: 3, initialIndex: 0);
@@ -79,6 +81,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     await _penjualanController.getListItem();
     await _laporanController.getReportList(true);
     await _pembayaranController.loadpembayaranstate();
+    await downloadConfigFile("getinfoproduk", "infoprodukconf.txt");
   }
 
   handleSaveConfirm(String msg, String title, var ontap) {
@@ -621,8 +624,94 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   var listnode = <TreeNodeData>[];
   TreeViewController? treecontroller;
   RxInt datanodelength = 0.obs;
-  String productdir = "/storage/emulated/0/Product Knowledge";
+  String productdir = "/storage/emulated/0/TKTW/infoproduk";
   RxInt indicatorIndex = 0.obs;
+
+  Future<void> downloadConfigFile(String url, String fileName) async {
+
+  // Create a folder if it doesn't exist
+  Directory directory = Directory('$productdir/');
+  if (!await directory.exists()) {
+    await directory.create(recursive: true);
+  }
+
+  var connTest = await ApiClient().checkConnection();
+  var arrConnTest = connTest.split("|");
+  bool isConnected = arrConnTest[0] == 'true';
+  String urlAPI = arrConnTest[1];
+  if(!isConnected){
+    prepareinfoproduk();
+    return;
+  }
+  // Create the file path
+  String filePath = '$productdir/$fileName';
+
+  // Download the file
+  final response = await http.get(Uri.parse('$urlAPI/$url'));
+
+  if (response.statusCode == 200) {
+    // Write the file
+    File file = File(filePath);
+    await file.writeAsBytes(response.bodyBytes);
+    if (await File('$productdir/infoprodukconf.txt').exists()) {
+      var res = await File('$productdir/infoprodukconf.txt').readAsString();
+      var ls = const LineSplitter();
+      var tlist = ls.convert(res);
+      for (var i = 0; i < tlist.length; i++) {
+        var pathh = tlist[i].split('/');
+        var dir = "";
+        for (var i = 0; i < pathh.length - 1; i++) {
+          dir = dir + "/${pathh[i]}";
+        }
+        var fname = pathh[pathh.length - 1];
+        await downloadfiles(dir, fname);
+      }
+    }
+    prepareinfoproduk();
+  } else {
+    print('Failed to download file');
+    prepareinfoproduk();
+    throw Exception('Failed to download file');
+  }
+}
+
+  Future<void> downloadfiles(String dir,String fname) async{
+
+     try {
+    
+        if (await Directory('$productdir/$dir'.replaceAll("%20", " ")).exists() && await File("$productdir/$dir/$fname".replaceAll("%20", " ")).exists()) {
+            return;
+        }
+      
+        var connTest = await ApiClient().checkConnection();
+        var arrConnTest = connTest.split("|");
+        bool isConnected = arrConnTest[0] == 'true';
+        String urlAPI = arrConnTest[1];
+        if(!isConnected){
+          return;
+        }
+        // Create a folder if it doesn't exist
+        Directory directory = Directory('$productdir/$dir'.replaceAll("%20", " "));
+        if (!await directory.exists()) {
+          await directory.create(recursive: true);
+        }
+
+        // Create the file path
+        String filePath = '$productdir/$dir/$fname';
+
+        // Download the file
+        final response = await http.get(Uri.parse("$urlAPI/getproductbydir?path=$dir/$fname"));
+
+        if (response.statusCode == 200) {
+          // Write the file
+          File file = File(filePath.replaceAll("%20", " "));
+          await file.writeAsBytes(response.bodyBytes);
+        }
+     } catch (e) {
+       print(e.toString());
+     }
+   
+  }
 
   prepareinfoproduk() async {
     await getfilelist();
@@ -643,8 +732,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   }
 
   getfilelist() async {
-    if (await File('/storage/emulated/0/TKTW/infoproduk/sfafilelist.txt').exists()) {
-      var res = await File('/storage/emulated/0/TKTW/infoproduk/sfafilelist.txt').readAsString();
+    if (await File('/storage/emulated/0/TKTW/infoproduk/infoprodukconf.txt').exists()) {
+      var res = await File('/storage/emulated/0/TKTW/infoproduk/infoprodukconf.txt').readAsString();
       var ls = const LineSplitter();
       var tlist = ls.convert(res);
       await generateTreeinfoproduct(tlist);

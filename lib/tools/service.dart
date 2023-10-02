@@ -39,14 +39,11 @@ class ApiClient {
         return response.data;
       }
       else{
-        //print("heree");
         final response = await dio.get(path,options: options);
-        //print(response);
         return response.data;
       }
 
     } catch (e) {
-      //print(e.toString());
       if(url == "") {
         throw Exception(Message.errorConnection);
       } else {

@@ -46,6 +46,7 @@ class InfoProdukPage extends StatelessWidget {
                   ? null
                   : () async {
                       var tdir = item.fullname.substring(0, item.fullname.lastIndexOf("/")).replaceAll("%20", " ");
+                      print(await Directory("${_takingOrderVendorController.productdir}/$tdir"));
                       if (await Directory("${_takingOrderVendorController.productdir}/$tdir").exists() && await File("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}").exists()) {
                         if (item.extension == "jpg" || item.extension == "jpeg") {
                           Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}"));
@@ -101,7 +102,7 @@ class InfoProdukPage extends StatelessWidget {
                             Image.asset("assets/images/filejpg.png",height: 30),
                           ),
                           AutoSizeText(
-                            item.name.replaceAll("%20",""),
+                            item.name.replaceAll("%20"," "),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             style: TextStyle(fontSize: MediaQuery.of(context).size.width < 450 ? 9.sp : 11.sp,fontWeight: FontWeight.normal),
