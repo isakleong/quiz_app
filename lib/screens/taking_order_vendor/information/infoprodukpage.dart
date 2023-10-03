@@ -46,7 +46,6 @@ class InfoProdukPage extends StatelessWidget {
                   ? null
                   : () async {
                       var tdir = item.fullname.substring(0, item.fullname.lastIndexOf("/")).replaceAll("%20", " ");
-                      print(await Directory("${_takingOrderVendorController.productdir}/$tdir"));
                       if (await Directory("${_takingOrderVendorController.productdir}/$tdir").exists() && await File("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}").exists()) {
                         if (item.extension == "jpg" || item.extension == "jpeg") {
                           Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}"));
@@ -63,8 +62,8 @@ class InfoProdukPage extends StatelessWidget {
                           titlePadding: const EdgeInsets.only(top: 0, bottom: 0),
                           cancel: OutlinedButton(
                             onPressed: () => {Get.back()},
-                            style: OutlinedButton.styleFrom(side: const BorderSide(width: 1, color: Colors.teal)),
-                            child: const Text("TUTUP", style: TextStyle(fontFamily: "Lato", fontSize: 12, fontWeight: FontWeight.bold, color: Colors.teal)),
+                            style: OutlinedButton.styleFrom(backgroundColor: Colors.teal),
+                            child: const Text("TUTUP", style: TextStyle(fontFamily: "Lato", fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
                           ),
                           contentPadding: const EdgeInsets.only(bottom: 15, left: 20, right: 20),
                           content: Column(

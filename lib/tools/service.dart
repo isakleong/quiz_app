@@ -5,6 +5,7 @@ import 'package:dio/io.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/tools/logging.dart';
+import 'package:http/http.dart' as http;
 // show Client, Request;
 
 class ApiClient {
@@ -160,6 +161,42 @@ class ApiClient {
   //   return testResult;
   // }
   
+  Future<void> downloadfiles(String dir,String fname) async{
+     try {
+        String productdir = AppConfig().productdir;
+    
+        if (await Directory('$productdir/$dir'.replaceAll("%20", " ")).exists() && await File("$productdir/$dir/$fname".replaceAll("%20", " ")).exists()) {
+            return;
+        }
+      
+        var connTest = await ApiClient().checkConnection();
+        var arrConnTest = connTest.split("|");
+        bool isConnected = arrConnTest[0] == 'true';
+        String urlAPI = arrConnTest[1];
+        if(!isConnected){
+          return;
+        }
+        // Create a folder if it doesn't exist
+        Directory directory = Directory('$productdir/$dir'.replaceAll("%20", " "));
+        if (!await directory.exists()) {
+          await directory.create(recursive: true);
+        }
+
+        // Create the file path
+        String filePath = '$productdir/$dir/$fname';
+
+        // Download the file
+        final response = await http.get(Uri.parse("$urlAPI/getproductbydir?path=$dir/$fname"));
+
+        if (response.statusCode == 200) {
+          // Write the file
+          File file = File(filePath.replaceAll("%20", " "));
+          await file.writeAsBytes(response.bodyBytes);
+        }
+     } catch (e) {
+       print(e.toString());
+     }
+  }
 
 }
 

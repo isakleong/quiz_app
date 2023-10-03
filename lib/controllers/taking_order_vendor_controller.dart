@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -624,93 +625,60 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   var listnode = <TreeNodeData>[];
   TreeViewController? treecontroller;
   RxInt datanodelength = 0.obs;
-  String productdir = "/storage/emulated/0/TKTW/infoproduk";
   RxInt indicatorIndex = 0.obs;
+    String productdir = AppConfig().productdir;
 
   Future<void> downloadConfigFile(String url, String fileName) async {
-
-  // Create a folder if it doesn't exist
-  Directory directory = Directory('$productdir/');
-  if (!await directory.exists()) {
-    await directory.create(recursive: true);
-  }
-
-  var connTest = await ApiClient().checkConnection();
-  var arrConnTest = connTest.split("|");
-  bool isConnected = arrConnTest[0] == 'true';
-  String urlAPI = arrConnTest[1];
-  if(!isConnected){
-    prepareinfoproduk();
-    return;
-  }
-  // Create the file path
-  String filePath = '$productdir/$fileName';
-
-  // Download the file
-  final response = await http.get(Uri.parse('$urlAPI/$url'));
-
-  if (response.statusCode == 200) {
-    // Write the file
-    File file = File(filePath);
-    await file.writeAsBytes(response.bodyBytes);
-    if (await File('$productdir/infoprodukconf.txt').exists()) {
-      var res = await File('$productdir/infoprodukconf.txt').readAsString();
-      var ls = const LineSplitter();
-      var tlist = ls.convert(res);
-      for (var i = 0; i < tlist.length; i++) {
-        var pathh = tlist[i].split('/');
-        var dir = "";
-        for (var i = 0; i < pathh.length - 1; i++) {
-          dir = dir + "/${pathh[i]}";
-        }
-        var fname = pathh[pathh.length - 1];
-        await downloadfiles(dir, fname);
-      }
-    }
-    prepareinfoproduk();
-  } else {
-    print('Failed to download file');
-    prepareinfoproduk();
-    throw Exception('Failed to download file');
-  }
-}
-
-  Future<void> downloadfiles(String dir,String fname) async{
-
-     try {
     
-        if (await Directory('$productdir/$dir'.replaceAll("%20", " ")).exists() && await File("$productdir/$dir/$fname".replaceAll("%20", " ")).exists()) {
-            return;
-        }
-      
-        var connTest = await ApiClient().checkConnection();
-        var arrConnTest = connTest.split("|");
-        bool isConnected = arrConnTest[0] == 'true';
-        String urlAPI = arrConnTest[1];
-        if(!isConnected){
-          return;
-        }
-        // Create a folder if it doesn't exist
-        Directory directory = Directory('$productdir/$dir'.replaceAll("%20", " "));
-        if (!await directory.exists()) {
-          await directory.create(recursive: true);
-        }
+    if (await File('$productdir/infoprodukconf.txt').exists()) {
+      prepareinfoproduk();
+      return;
+    }
 
-        // Create the file path
-        String filePath = '$productdir/$dir/$fname';
+    // Create a folder if it doesn't exist
+    Directory directory = Directory('$productdir/');
+    if (!await directory.exists()) {
+      await directory.create(recursive: true);
+    }
 
-        // Download the file
-        final response = await http.get(Uri.parse("$urlAPI/getproductbydir?path=$dir/$fname"));
+    var connTest = await ApiClient().checkConnection();
+    var arrConnTest = connTest.split("|");
+    bool isConnected = arrConnTest[0] == 'true';
+    String urlAPI = arrConnTest[1];
+    if(!isConnected){
+      prepareinfoproduk();
+      return;
+    }
+    // Create the file path
+    String filePath = '$productdir/$fileName';
 
-        if (response.statusCode == 200) {
-          // Write the file
-          File file = File(filePath.replaceAll("%20", " "));
-          await file.writeAsBytes(response.bodyBytes);
+    // Download the file
+    final response = await http.get(Uri.parse('$urlAPI/$url'));
+
+    if (response.statusCode == 200) {
+      // Write the file
+      File file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+      prepareinfoproduk();
+
+      if (await File('$productdir/infoprodukconf.txt').exists()) {
+        var res = await File('$productdir/infoprodukconf.txt').readAsString();
+        var ls = const LineSplitter();
+        var tlist = ls.convert(res);
+        for (var i = 0; i < tlist.length; i++) {
+          var pathh = tlist[i].split('/');
+          var dir = "";
+          for (var i = 0; i < pathh.length - 1; i++) {
+            dir =  "$dir/${pathh[i]}";
+          }
+          var fname = pathh[pathh.length - 1];
+          await ApiClient().downloadfiles(dir, fname);
         }
-     } catch (e) {
-       print(e.toString());
-     }
-   
+      }
+    } else {
+      prepareinfoproduk();
+      throw Exception('Failed to download file');
+    }
   }
 
   prepareinfoproduk() async {

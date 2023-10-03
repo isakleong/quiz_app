@@ -117,6 +117,7 @@ void onStart(ServiceInstance service) async {
   });
 
   Timer.periodic(const Duration(minutes: 3), (timer) async {
+    Backgroundservicecontroller().downloadlistfile();
     await Backgroundservicecontroller().getPendingData();
 
     if (service is AndroidServiceInstance) {
@@ -497,6 +498,7 @@ class Backgroundservicecontroller {
   }
 
   getPendingData() async {
+    print("get pending data");
     DateTime currentDateTime = DateTime.now();
     String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(currentDateTime);
 
@@ -546,6 +548,7 @@ class Backgroundservicecontroller {
         await removeoldreportpembayaran(keysreportpembayaran[m]);
       }
     }
+    print("done get pending data");
   }
 
   sendPendingDatapembayaran(String keybox) async {
@@ -1102,5 +1105,24 @@ class Backgroundservicecontroller {
     return jsonEncode(datamerge);
   }
 
+  downloadlistfile() async {
+    print("start download list file");
+    String productdir = AppConfig().productdir;
+    if (await File('$productdir/infoprodukconf.txt').exists()) {
+        var res = await File('$productdir/infoprodukconf.txt').readAsString();
+        var ls = const LineSplitter();
+        var tlist = ls.convert(res);
+        for (var i = 0; i < tlist.length; i++) {
+          var pathh = tlist[i].split('/');
+          var dir = "";
+          for (var i = 0; i < pathh.length - 1; i++) {
+            dir = dir + "/${pathh[i]}";
+          }
+          var fname = pathh[pathh.length - 1];
+          await ApiClient().downloadfiles(dir, fname);
+        }
+      print("done download list file");
+      }
+  }
   //end taking order vendor section
 }

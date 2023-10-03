@@ -21,6 +21,7 @@ class AppConfig {
   String itemcodenotfoundvendor = "101";
   String dateinvalidvendor = "102";
   String orderalreadyexistvendor = "103";
+  String productdir = "/storage/emulated/0/TKTW/infoproduk";
 
   // static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
   // static const String initUrl = "https://link.tirtakencana.com/SFATools";
