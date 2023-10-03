@@ -82,7 +82,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     await _penjualanController.getListItem();
     await _laporanController.getReportList(true);
     await _pembayaranController.loadpembayaranstate();
-    await downloadConfigFile("getinfoproduk", "infoprodukconf.txt");
+    await downloadConfigFile("getinfoproduk");
   }
 
   handleSaveConfirm(String msg, String title, var ontap) {
@@ -626,14 +626,20 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   TreeViewController? treecontroller;
   RxInt datanodelength = 0.obs;
   RxInt indicatorIndex = 0.obs;
-    String productdir = AppConfig().productdir;
+  String productdir = AppConfig().productdir;
+  String informasiconfig = AppConfig().informasiconfig;
+  List<String> listdir = [];
+  List<String> pricelistdir = [];
+  String branchuser = "10A";
+  String warnauser = "BLUE";
+  String areauser = "1A";
 
-  Future<void> downloadConfigFile(String url, String fileName) async {
+  Future<void> downloadConfigFile(String url) async {
     
-    if (await File('$productdir/infoprodukconf.txt').exists()) {
-      prepareinfoproduk();
-      return;
-    }
+    // if (await File('$productdir/$informasiconfig').exists()) {
+    //   processfile(false);
+    //   return;
+    // }
 
     // Create a folder if it doesn't exist
     Directory directory = Directory('$productdir/');
@@ -646,11 +652,11 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     bool isConnected = arrConnTest[0] == 'true';
     String urlAPI = arrConnTest[1];
     if(!isConnected){
-      prepareinfoproduk();
+      processfile(false);
       return;
     }
     // Create the file path
-    String filePath = '$productdir/$fileName';
+    String filePath = '$productdir/$informasiconfig';
 
     // Download the file
     final response = await http.get(Uri.parse('$urlAPI/$url'));
@@ -659,36 +665,113 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       // Write the file
       File file = File(filePath);
       await file.writeAsBytes(response.bodyBytes);
-      prepareinfoproduk();
-
-      if (await File('$productdir/infoprodukconf.txt').exists()) {
-        var res = await File('$productdir/infoprodukconf.txt').readAsString();
-        var ls = const LineSplitter();
-        var tlist = ls.convert(res);
-        for (var i = 0; i < tlist.length; i++) {
-          var pathh = tlist[i].split('/');
-          var dir = "";
-          for (var i = 0; i < pathh.length - 1; i++) {
-            dir =  "$dir/${pathh[i]}";
-          }
-          var fname = pathh[pathh.length - 1];
-          await ApiClient().downloadfiles(dir, fname);
-        }
-      }
+      processfile(true);
+      
     } else {
-      prepareinfoproduk();
+      processfile(false);
       throw Exception('Failed to download file');
     }
   }
 
-  prepareinfoproduk() async {
-    await getfilelist();
-    if (listnode.isNotEmpty) {
-      // print("not empty");
-      treecontroller = TreeViewController();
-      treecontroller!.treeData(listnode);
-      datanodelength.value = listnode.length;
+  isthereanyperiod(List<String> stringdata,bool download){
+    if(stringdata.length == 2){
+      //tanpa periode
+      var checkifpricelist = stringdata[1];
+      listdir.add(stringdata[1]);
+      if(download){
+        downloadusingdir(stringdata[1]);
+      }
+    } else if (stringdata.length == 3){
+      //terdapat periode
+      if(isinperiod(stringdata[2])){
+        listdir.add(stringdata[1]);
+        if(download){
+          downloadusingdir(stringdata[1]);
+        }
+      }
     }
+  }
+
+  processfile(bool download) async {
+    //download not using await because efficiency time for parallel download
+
+    if (await File('$productdir/$informasiconfig').exists()) {
+        listdir.clear();
+        var res = await File('$productdir/$informasiconfig').readAsString();
+        var ls = const LineSplitter();
+        var tlist = ls.convert(res);
+        for (var i = 0; i < tlist.length; i++) {
+          var undollar = tlist[i].split('\$');
+          var unpipelined = undollar[0].split("|");
+          if(unpipelined[0] == AppConfig().forall){
+            //untuk all cabang
+            isthereanyperiod(undollar,download);
+          } else if(unpipelined[0] == AppConfig().forbranch){
+              //untuk cabang tertentu
+              for (var j = 1; j < unpipelined.length; j++) {
+                if(unpipelined[j] == branchuser){
+                  isthereanyperiod(undollar,download);
+                }
+              }
+          } else if(unpipelined[0] == AppConfig().forcolor){
+              //untuk cabang dengan warna tertentu
+              for (var j = 1; j < unpipelined.length; j++) {
+                if(unpipelined[j] == warnauser){
+                  isthereanyperiod(undollar,download);
+                }
+              }  
+          } else if(unpipelined[0] == AppConfig().forarea){
+              //untuk cabang dengan area tertentu
+              for (var j = 1; j < unpipelined.length; j++) {
+                if(unpipelined[j] == areauser){
+                  isthereanyperiod(undollar,download);
+                }
+              }
+          }
+        }
+        await generateTreeinfoproduct(listdir);
+        if (listnode.isNotEmpty) {
+          treecontroller = TreeViewController();
+          treecontroller!.treeData(listnode);
+          datanodelength.value = listnode.length;
+        }
+      } else {
+        listnode.clear();
+        isSuccess.value = true;
+        datanodelength.value = listnode.length;
+      }
+  }
+
+  isinperiod(String tocompare){
+    List<String> dateStrings = tocompare.split('&');
+
+    // Extract the start and end date from the date strings
+    String startDateStr  = dateStrings[0].split('=')[1];
+    String endDateStr  = dateStrings[1];
+
+    // Parse the start and end dates
+    DateTime startDate = DateTime.parse(startDateStr);
+    DateTime endDate = DateTime.parse(endDateStr);
+
+    // Get the current date
+    DateTime currentDate = DateTime.now();
+
+    // Check if the current date is within the date range
+    if ((currentDate.isAfter(startDate) || Utils().isSameDate(startDate, currentDate)) && (currentDate.isBefore(endDate) || Utils().isSameDate(endDate, currentDate))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  downloadusingdir(String directoryfile) async {
+    var pathh = directoryfile.split('/');
+    var dir = "";
+    for (var i = 0; i < pathh.length - 1; i++) {
+      dir =  "$dir/${pathh[i]}";
+    }
+    var fname = pathh[pathh.length - 1];
+    await ApiClient().downloadfiles(dir, fname);
   }
 
   handleselectedindexinformasi(int index) {
@@ -697,19 +780,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       selectedsegmentinformasi[i] = false;
     }
     selectedsegmentinformasi[index] = true;
-  }
-
-  getfilelist() async {
-    if (await File('/storage/emulated/0/TKTW/infoproduk/infoprodukconf.txt').exists()) {
-      var res = await File('/storage/emulated/0/TKTW/infoproduk/infoprodukconf.txt').readAsString();
-      var ls = const LineSplitter();
-      var tlist = ls.convert(res);
-      await generateTreeinfoproduct(tlist);
-    } else {
-      listnode.clear();
-      isSuccess.value = true;
-      datanodelength.value = listnode.length;
-    }
   }
 
   generateTreeinfoproduct(List<String> tlist) {

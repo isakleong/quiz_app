@@ -117,7 +117,7 @@ void onStart(ServiceInstance service) async {
   });
 
   Timer.periodic(const Duration(minutes: 3), (timer) async {
-    Backgroundservicecontroller().downloadlistfile();
+    // Backgroundservicecontroller().downloadlistfile();
     await Backgroundservicecontroller().getPendingData();
 
     if (service is AndroidServiceInstance) {
@@ -1116,7 +1116,7 @@ class Backgroundservicecontroller {
           var pathh = tlist[i].split('/');
           var dir = "";
           for (var i = 0; i < pathh.length - 1; i++) {
-            dir = dir + "/${pathh[i]}";
+            dir = "$dir/${pathh[i]}";
           }
           var fname = pathh[pathh.length - 1];
           await ApiClient().downloadfiles(dir, fname);

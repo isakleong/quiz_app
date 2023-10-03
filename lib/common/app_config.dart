@@ -22,6 +22,11 @@ class AppConfig {
   String dateinvalidvendor = "102";
   String orderalreadyexistvendor = "103";
   String productdir = "/storage/emulated/0/TKTW/infoproduk";
+  String forall = "ALL";
+  String forbranch = "CABANG";
+  String forcolor = "COLOR";
+  String forarea = "AREA";
+  String informasiconfig = "infoconfig.txt";
 
   // static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
   // static const String initUrl = "https://link.tirtakencana.com/SFATools";
