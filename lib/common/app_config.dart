@@ -27,6 +27,9 @@ class AppConfig {
   String forcolor = "COLOR";
   String forarea = "AREA";
   String informasiconfig = "infoconfig.txt";
+  String folderpricelist = "Pricelist";
+  String folderProductKnowledge = "Product%20Knowledge";
+  String folderPromo = "Promo";
 
   // static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
   // static const String initUrl = "https://link.tirtakencana.com/SFATools";

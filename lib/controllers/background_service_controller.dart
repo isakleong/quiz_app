@@ -117,7 +117,7 @@ void onStart(ServiceInstance service) async {
   });
 
   Timer.periodic(const Duration(minutes: 3), (timer) async {
-    // Backgroundservicecontroller().downloadlistfile();
+    Backgroundservicecontroller().processfile(true);
     await Backgroundservicecontroller().getPendingData();
 
     if (service is AndroidServiceInstance) {
@@ -443,6 +443,11 @@ class Backgroundservicecontroller {
   late Box boxPembayaranReport;
   late Box tokenbox;
   List<Vendor> vendorlist = [];
+  String productdir = AppConfig().productdir;
+  String informasiconfig = AppConfig().informasiconfig;
+  String branchuser = "10A";
+  String warnauser = "BLUE";
+  String areauser = "1A";
 
   Future<void> createLogTes(String content) async {
     bool allowWriteLog = false; // Change to true to enable log writing
@@ -1105,24 +1110,71 @@ class Backgroundservicecontroller {
     return jsonEncode(datamerge);
   }
 
-  downloadlistfile() async {
-    print("start download list file");
-    String productdir = AppConfig().productdir;
-    if (await File('$productdir/infoprodukconf.txt').exists()) {
-        var res = await File('$productdir/infoprodukconf.txt').readAsString();
+  processfile(bool download) async {
+    print("download");
+    //download not using await because efficiency time for parallel download
+
+    if (await File('$productdir/$informasiconfig').exists()) {
+        var res = await File('$productdir/$informasiconfig').readAsString();
         var ls = const LineSplitter();
         var tlist = ls.convert(res);
         for (var i = 0; i < tlist.length; i++) {
-          var pathh = tlist[i].split('/');
-          var dir = "";
-          for (var i = 0; i < pathh.length - 1; i++) {
-            dir = "$dir/${pathh[i]}";
+          var undollar = tlist[i].split('\$');
+          var unpipelined = undollar[0].split("|");
+          if(unpipelined[0] == AppConfig().forall){
+            //untuk all cabang
+            isthereanyperiod(undollar,download);
+          } else if(unpipelined[0] == AppConfig().forbranch){
+              //untuk cabang tertentu
+              for (var j = 1; j < unpipelined.length; j++) {
+                if(unpipelined[j] == branchuser){
+                  isthereanyperiod(undollar,download);
+                }
+              }
+          } else if(unpipelined[0] == AppConfig().forcolor){
+              //untuk cabang dengan warna tertentu
+              for (var j = 1; j < unpipelined.length; j++) {
+                if(unpipelined[j] == warnauser){
+                  isthereanyperiod(undollar,download);
+                }
+              }  
+          } else if(unpipelined[0] == AppConfig().forarea){
+              //untuk cabang dengan area tertentu
+              for (var j = 1; j < unpipelined.length; j++) {
+                if(unpipelined[j] == areauser){
+                  isthereanyperiod(undollar,download);
+                }
+              }
           }
-          var fname = pathh[pathh.length - 1];
-          await ApiClient().downloadfiles(dir, fname);
         }
-      print("done download list file");
       }
+  }
+
+  isthereanyperiod(List<String> stringdata,bool download){
+    var filedir = stringdata[1];
+    if(stringdata.length == 2){
+      //tanpa periode
+      if(download){
+        downloadusingdir(filedir);
+      }
+    } else if (stringdata.length == 3){
+      //terdapat periode
+      if(Utils().isinperiod(stringdata[2])){
+        if(download){
+          downloadusingdir(filedir);
+        }
+      }
+    }
+  }
+
+  downloadusingdir(String directoryfile) async {
+    var pathh = directoryfile.split('/');
+    var dir = "";
+    for (var i = 0; i < pathh.length - 1; i++) {
+      dir =  "$dir/${pathh[i]}";
+    }
+    var fname = pathh[pathh.length - 1];
+    await ApiClient().downloadfiles(dir, fname);
   }
   //end taking order vendor section
 }

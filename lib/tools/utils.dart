@@ -133,6 +133,28 @@ class Utils {
       date1.day == date2.day;
   }
 
+  isinperiod(String tocompare){
+    List<String> dateStrings = tocompare.split('&');
+
+    // Extract the start and end date from the date strings
+    String startDateStr  = dateStrings[0].split('=')[1];
+    String endDateStr  = dateStrings[1];
+
+    // Parse the start and end dates
+    DateTime startDate = DateTime.parse(startDateStr);
+    DateTime endDate = DateTime.parse(endDateStr);
+
+    // Get the current date
+    DateTime currentDate = DateTime.now();
+
+    // Check if the current date is within the date range
+    if ((currentDate.isAfter(startDate) || isSameDate(startDate, currentDate)) && (currentDate.isBefore(endDate) || isSameDate(endDate, currentDate))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   String decrypt(String encrypted) {
   final key = Key.fromUtf8("fVkhoDWRAd4Rgj6l"); //hardcode combination of 16 character
   final iv = IV.fromUtf8("tGYINBYOtJ2tZoZJ"); //hardcode combination of 16 character

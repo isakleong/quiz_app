@@ -3,8 +3,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:list_treeview/list_treeview.dart';
+import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/tools/viewpdf.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../models/treenodedata.dart';
 import '../../../tools/viewimage.dart';
@@ -19,16 +21,39 @@ class InfoProdukPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Obx(()=>_takingOrderVendorController.isSuccess.value == false ? getProgressView() : 
+      body: Obx(()=>_takingOrderVendorController.isSuccess.value == false ? getProgressView(context) : 
       (_takingOrderVendorController.isSuccess.value == true && _takingOrderVendorController.datanodelength.value == 0 ) ? Container()
        : getBody(),
       ) 
     );
   }
 
-  Widget getProgressView() {
-    return const Center(
-      child: CircularProgressIndicator(),
+  Widget getProgressView(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    return Column(
+      children: [
+        SizedBox(height: 0.01 * height,),
+        Expanded( child: ListView.builder(
+          itemBuilder: (c, i) {
+                return Padding(
+                  padding: EdgeInsets.only(top:8.0,bottom: 8.0, left: 0.05 * width, right: 0.05 * width),
+                  child: Shimmer.fromColors(
+                        baseColor: Colors.grey.shade400,
+                        highlightColor: Colors.grey.shade200,
+                        child: Container(
+                          width: 0.8 * width,
+                          height: 0.05 * height,
+                          color: Colors.white,
+                          // Add any other child widgets you want inside the shimmering container
+                        ),
+                      ),
+                );
+          },
+          itemCount: 10,
+          physics: const BouncingScrollPhysics(),
+        )),
+      ],
     );
   }
 
@@ -45,14 +70,14 @@ class InfoProdukPage extends StatelessWidget {
             onTap: !item.isFile
                   ? null
                   : () async {
-                      var tdir = item.fullname.substring(0, item.fullname.lastIndexOf("/")).replaceAll("%20", " ");
-                      if (await Directory("${_takingOrderVendorController.productdir}/$tdir").exists() && await File("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}").exists()) {
+                      var tdir = "${AppConfig().folderProductKnowledge}/${item.fullname}".substring(0, "${AppConfig().folderProductKnowledge}/${item.fullname}".lastIndexOf("/")).replaceAll("%20", " ");
+                      if (await Directory("${_takingOrderVendorController.productdir}/$tdir").exists() && await File("${_takingOrderVendorController.productdir}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}").exists()) {
                         if (item.extension == "jpg" || item.extension == "jpeg") {
-                          Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}"));
+                          Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}"));
                         } else if (item.extension == "pdf") {
-                          Get.to(ViewPDFScreen("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}"));
+                          Get.to(ViewPDFScreen("${_takingOrderVendorController.productdir}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}"));
                         } else if (item.extension == "mp4") {
-                          Get.to(ViewVideoScreen("${_takingOrderVendorController.productdir}/${item.fullname.replaceAll("%20", " ")}"));
+                          Get.to(ViewVideoScreen("${_takingOrderVendorController.productdir}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}"));
                         }
                       } else {
                         Get.defaultDialog(

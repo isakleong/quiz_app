@@ -34,15 +34,19 @@ import '../screens/taking_order_vendor/payment/dialogerrorpayment.dart';
 import '../tools/service.dart';
 import 'package:http/http.dart' as http;
 
-class TakingOrderVendorController extends GetxController with GetTickerProviderStateMixin {
-  final PembayaranController _pembayaranController = Get.put(PembayaranController());
+class TakingOrderVendorController extends GetxController
+    with GetTickerProviderStateMixin {
+  final PembayaranController _pembayaranController =
+      Get.put(PembayaranController());
   final LaporanController _laporanController = Get.put(LaporanController());
-  final PenjualanController _penjualanController = Get.put(PenjualanController());
+  final PenjualanController _penjualanController =
+      Get.put(PenjualanController());
   final ReturController _returController = Get.put(ReturController());
   late AnimationController animationController;
   late Animation<Offset> slideAnimation;
   final keyconfirm = GlobalKey();
-  final PersistentTabController controllerBar = PersistentTabController(initialIndex: 0);
+  final PersistentTabController controllerBar =
+      PersistentTabController(initialIndex: 0);
   String activevendor = "";
   RxString overlayactivepenjualan = "main".obs;
   late Box outstandingBox;
@@ -53,16 +57,28 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     super.onInit();
     setactivendor();
     // prepareinfoproduk();
-    animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..forward();
-    slideAnimation = Tween<Offset>(begin: const Offset(0, -0.2),end: const Offset(0, 0),).animate(CurvedAnimation(parent: animationController,curve: Curves.easeInOut,));
-    _pembayaranController.controller = TabController(vsync: this, length: 3, initialIndex: 0);
+    animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500))
+      ..forward();
+    slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -0.2),
+      end: const Offset(0, 0),
+    ).animate(CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeInOut,
+    ));
+    _pembayaranController.controller =
+        TabController(vsync: this, length: 3, initialIndex: 0);
   }
 
   callcontroller(String controllername) {
-    if (controllername.toLowerCase() == "splashscreencontroller".toLowerCase()) {
-      final isControllerRegistered = GetInstance().isRegistered<SplashscreenController>();
+    if (controllername.toLowerCase() ==
+        "splashscreencontroller".toLowerCase()) {
+      final isControllerRegistered =
+          GetInstance().isRegistered<SplashscreenController>();
       if (!isControllerRegistered) {
-        final SplashscreenController controller = Get.put(SplashscreenController());
+        final SplashscreenController controller =
+            Get.put(SplashscreenController());
         return controller;
       } else {
         final SplashscreenController controller = Get.find();
@@ -72,7 +88,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   }
 
   setactivendor() async {
-    SplashscreenController splashscreenController = callcontroller("splashscreencontroller");
+    SplashscreenController splashscreenController =
+        callcontroller("splashscreencontroller");
     activevendor = splashscreenController.selectedVendor.value.toLowerCase();
     _penjualanController.activevendor = activevendor;
     _laporanController.activevendor = activevendor;
@@ -103,7 +120,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxList<CartDetail> get cartDetailList => _penjualanController.cartDetailList;
   RxList<CartModel> get cartList => _penjualanController.cartList;
   RxString get selectedValue => _penjualanController.selectedValue;
-  RxList<ProductData> get selectedProduct => _penjualanController.selectedProduct;
+  RxList<ProductData> get selectedProduct =>
+      _penjualanController.selectedProduct;
   Rx<TextEditingController> get cnt => _penjualanController.cnt;
   RxList<int> get listQty => _penjualanController.listQty;
   Rx<TextEditingController> get notes => _penjualanController.notes;
@@ -117,7 +135,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   get komisi => _penjualanController.komisi;
   RxString infoos = "".obs;
   late Box tokenbox;
-  late Box vendorBox; 
+  late Box vendorBox;
 
   getListItem() {
     _penjualanController.getListItem();
@@ -146,23 +164,24 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     await animationController.forward();
   }
 
-  cekoutstanding(String codeitem){
+  cekoutstanding(String codeitem) {
     try {
       // print(codeitem);
       infoos.value = "";
       var outstandingqty = 0;
       var satuan = "";
-      if(listDataOutstanding.isNotEmpty){
+      if (listDataOutstanding.isNotEmpty) {
         for (var i = 0; i < listDataOutstanding.length; i++) {
-          for(var j =0; j < listDataOutstanding[i].details!.length; j++){
-            if(codeitem == listDataOutstanding[i].details![j].itemCode){
-              outstandingqty = outstandingqty + listDataOutstanding[i].details![j].qty!;
+          for (var j = 0; j < listDataOutstanding[i].details!.length; j++) {
+            if (codeitem == listDataOutstanding[i].details![j].itemCode) {
+              outstandingqty =
+                  outstandingqty + listDataOutstanding[i].details![j].qty!;
               satuan = listDataOutstanding[i].details![j].uom!;
             }
           }
         }
       }
-      if(outstandingqty != 0 && satuan != ""){
+      if (outstandingqty != 0 && satuan != "") {
         infoos.value = "$outstandingqty $satuan";
       }
     } catch (e) {
@@ -224,47 +243,48 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     try {
       outstandingBox = await Hive.openBox('outstandingBox');
       vendorBox = await Hive.openBox('vendorBox');
-    // ignore: empty_catches
+      // ignore: empty_catches
     } catch (e) {}
   }
 
   bool loaddataoutstandinghive(var dataosbox) {
     try {
       var dataosboxjson = jsonDecode(dataosbox);
-        if (dataosboxjson['data'] != null) {
-          // print("data not null");
-          var decodetoosdata = OutstandingResponse.fromJson(dataosboxjson['data']);
-          listDataOutstanding.clear();
-          for (var i = 0; i < decodetoosdata.data!.length; i++) {
-            listDataOutstanding.add(decodetoosdata.data![i]);
-          }
-          if (!Utils().isDateNotToday(dataosboxjson['timestamp'])) {
-            // print("here");
-            return true;
-          } else {
-            return false;
-          }
+      if (dataosboxjson['data'] != null) {
+        // print("data not null");
+        var decodetoosdata =
+            OutstandingResponse.fromJson(dataosboxjson['data']);
+        listDataOutstanding.clear();
+        for (var i = 0; i < decodetoosdata.data!.length; i++) {
+          listDataOutstanding.add(decodetoosdata.data![i]);
         }
-        return false;
+        if (!Utils().isDateNotToday(dataosboxjson['timestamp'])) {
+          // print("here");
+          return true;
+        } else {
+          return false;
+        }
+      }
+      return false;
     } catch (e) {
       return false;
     }
   }
 
   gettoken() async {
-      try {
-        tokenbox = await Hive.openBox('tokenbox');
-      } catch (e) {
-        // ignore: avoid_print
-        print(e);
-      } finally{
-        String salesId = await Utils().getParameterData('sales');
-        var tokenboxdata = await tokenbox.get(salesId);
-        var dectoken = Utils().decrypt(tokenboxdata);
-        tokenbox.close();
-        // ignore: control_flow_in_finally
-        return dectoken;
-      }
+    try {
+      tokenbox = await Hive.openBox('tokenbox');
+    } catch (e) {
+      // ignore: avoid_print
+      print(e);
+    } finally {
+      String salesId = await Utils().getParameterData('sales');
+      var tokenboxdata = await tokenbox.get(salesId);
+      var dectoken = Utils().decrypt(tokenboxdata);
+      tokenbox.close();
+      // ignore: control_flow_in_finally
+      return dectoken;
+    }
   }
 
   getListDataOutStanding() async {
@@ -276,27 +296,30 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       String custcode = await Utils().getParameterData("cust");
 
       //proses get list vendor untuk mendapatkan base url vendor
-      if(!vendorBox.isOpen) vendorBox = await Hive.openBox('vendorBox');
+      if (!vendorBox.isOpen) vendorBox = await Hive.openBox('vendorBox');
       var datavendor = vendorBox.get("$salescode|$custcode");
       vendorBox.close();
       vendorlist.clear();
       for (var i = 0; i < datavendor.length; i++) {
         vendorlist.add(datavendor[i]);
       }
-      idvendorg =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
+      idvendorg = vendorlist
+          .indexWhere((element) => element.name.toLowerCase() == activevendor);
 
       //membuat key box dan mencoba mengambil data outstanding pada hive jika ada
-      String keyos = "$salescode|$custcode|${vendorlist[idvendorg].prefix}|${vendorlist[idvendorg].baseApiUrl}";
-      if(!outstandingBox.isOpen) outstandingBox = await Hive.openBox('outstandingBox');
+      String keyos =
+          "$salescode|$custcode|${vendorlist[idvendorg].prefix}|${vendorlist[idvendorg].baseApiUrl}";
+      if (!outstandingBox.isOpen)
+        outstandingBox = await Hive.openBox('outstandingBox');
       var dataosbox = await outstandingBox.get(keyos);
       outstandingBox.close();
       if (dataosbox != null) {
-         var isnotnull = loaddataoutstandinghive(dataosbox);
-         if(isnotnull){
-            isLoadingOutstanding.value = false;
-            isFailedLoadOutstanding.value = false;
-            return;
-         }
+        var isnotnull = loaddataoutstandinghive(dataosbox);
+        if (isnotnull) {
+          isLoadingOutstanding.value = false;
+          isFailedLoadOutstanding.value = false;
+          return;
+        }
       }
 
       //proses mengambil data outstanding menggunakan API
@@ -305,12 +328,12 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       bool isConnected = arrConnTest[0] == 'true';
       String urlAPI = arrConnTest[1];
 
-      if (!isConnected){
-        if(listDataOutstanding.isEmpty){
+      if (!isConnected) {
+        if (listDataOutstanding.isEmpty) {
           isLoadingOutstanding.value = false;
           isFailedLoadOutstanding.value = true;
           return;
-        } else{
+        } else {
           isLoadingOutstanding.value = false;
           isFailedLoadOutstanding.value = false;
           return;
@@ -319,15 +342,13 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
       String dectoken = await gettoken();
       String urls = vendorlist[idvendorg].baseApiUrl;
-      if(urlAPI == AppConfig.baseUrlVendorLocal){
+      if (urlAPI == AppConfig.baseUrlVendorLocal) {
         urlAPI = Utils().changeUrl(urls);
       } else {
         urlAPI = urls;
       }
 
-      var params = {
-        "customerNo" : await Utils().getParameterData("cust")
-      };
+      var params = {"customerNo": await Utils().getParameterData("cust")};
       // print(urlAPI);
       var getVendoroustanding = await ApiClient().postData(
           urlAPI,
@@ -338,7 +359,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
             'Authorization': 'Bearer $dectoken',
             'Accept': 'application/json'
           }));
-          // print("${urlAPI}sales-orders/outstanding");
+      // print("${urlAPI}sales-orders/outstanding");
       if (getVendoroustanding != null) {
         var dataresponse = OutstandingResponse.fromJson(getVendoroustanding);
         listDataOutstanding.clear();
@@ -358,48 +379,49 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       isLoadingOutstanding.value = false;
     } catch (e) {
       isLoadingOutstanding.value = false;
-      if(listDataOutstanding.isEmpty){
+      if (listDataOutstanding.isEmpty) {
         isFailedLoadOutstanding.value = true;
       }
       await loginapivendor();
     }
   }
-  
+
   loginapivendor() async {
     try {
       var connTest = await ApiClient().checkConnection(jenis: "vendor");
       var arrConnTest = connTest.split("|");
       bool isConnected = arrConnTest[0] == 'true';
       String urlAPI = arrConnTest[1];
-      if(!isConnected){
+      if (!isConnected) {
         return;
       }
       String salesiddata = await Utils().getParameterData("sales");
       String encparam = Utils().encryptsalescodeforvendor(salesiddata);
-      var params = {
-        "username" : encparam
-      };
-      var result = await ApiClient().postData(urlAPI,"${AppConfig.apiurlvendorpath}/api/login",
-            params,
-            Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
-          // print("$urlAPI${AppConfig.apiurlvendorpath}/api/login");
+      var params = {"username": encparam};
+      var result = await ApiClient().postData(
+          urlAPI,
+          "${AppConfig.apiurlvendorpath}/api/login",
+          params,
+          Options(
+              headers: {HttpHeaders.contentTypeHeader: "application/json"}));
+      // print("$urlAPI${AppConfig.apiurlvendorpath}/api/login");
       var dataresp = LoginResponse.fromJson(result);
-      if(!tokenbox.isOpen){
+      if (!tokenbox.isOpen) {
         tokenbox = await Hive.openBox('tokenbox');
       }
       tokenbox.delete(salesiddata);
       tokenbox.put(salesiddata, dataresp.data!.token);
       tokenbox.close();
-    // ignore: empty_catches
-    } catch (e) {
-      
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   //for laporan page
   RxString get choosedReport => _laporanController.choosedReport;
-  RxList<ReportPembayaranModel> get listReportPembayaranshow => _laporanController.listReportPembayaranshow;
-  RxList<ReportPenjualanModel> get listReportPenjualanShow => _laporanController.listReportPenjualanShow;
+  RxList<ReportPembayaranModel> get listReportPembayaranshow =>
+      _laporanController.listReportPembayaranshow;
+  RxList<ReportPenjualanModel> get listReportPenjualanShow =>
+      _laporanController.listReportPenjualanShow;
   RxInt get allReportlength => _laporanController.allReportlength;
 
   filteReport() async {
@@ -414,14 +436,19 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   Rx<TextEditingController> get nomorcek => _pembayaranController.nomorcek;
   Rx<TextEditingController> get nominalcek => _pembayaranController.nominalcek;
   Rx<TextEditingController> get nmbank => _pembayaranController.nmbank;
-  Rx<TextEditingController> get jatuhtempotgl => _pembayaranController.jatuhtempotgl;
-  RxList<PaymentData> get listpaymentdata => _pembayaranController.listpaymentdata;
+  Rx<TextEditingController> get jatuhtempotgl =>
+      _pembayaranController.jatuhtempotgl;
+  RxList<PaymentData> get listpaymentdata =>
+      _pembayaranController.listpaymentdata;
   TabController get controller => _pembayaranController.controller;
   Rx<TextEditingController> get nominalCn => _pembayaranController.nominalCn;
-  Rx<TextEditingController> get nominaltransfer => _pembayaranController.nominaltransfer;
-  RxString get choosedTransferMethod => _pembayaranController.choosedTransferMethod;
+  Rx<TextEditingController> get nominaltransfer =>
+      _pembayaranController.nominaltransfer;
+  RxString get choosedTransferMethod =>
+      _pembayaranController.choosedTransferMethod;
   RxString get choosedTunaiMethod => _pembayaranController.choosedTunaiMethod;
-  Rx<TextEditingController> get nominaltunai => _pembayaranController.nominaltunai;
+  Rx<TextEditingController> get nominaltunai =>
+      _pembayaranController.nominaltunai;
   get pembayaranListKey => _pembayaranController.pembayaranListKey;
   get showBanner => _pembayaranController.showBanner;
   get totalpiutang => _penjualanController.totalpiutang;
@@ -446,7 +473,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   savepaymentdata() async {
     bool isdone = await _pembayaranController.savepaymentdata();
     // bool isdone = false;
-    if(isdone){
+    if (isdone) {
       await _laporanController.getReportList(false);
       try {
         Navigator.pop(keyconfirm.currentContext!);
@@ -459,39 +486,56 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
         // ignore: empty_catches
       } catch (e) {}
       Get.dialog(Dialog(
-        backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder( borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: DialogErrorPayment(
-          judul: "Data Payment tidak ditemukan, silahkan coba lagi !",
-           ontap: (){
-            Get.back();
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: DialogErrorPayment(
+            judul: "Data Payment tidak ditemukan, silahkan coba lagi !",
+            ontap: () {
+              Get.back();
             },
-          )
-        )
-      );
+          )));
     }
   }
 
   //for retur page
-  Rx<TextEditingController> get tarikbarangfield => _returController.tarikbarangfield;
-  Rx<TextEditingController> get tukarwarnafield => _returController.tukarwarnafield;
-  Rx<TextEditingController> get gantikemasanfield => _returController.gantikemasanfield;
-  Rx<TextEditingController> get servismebelfield => _returController.servismebelfield;
-  Rx<TextEditingController> get gantibarangfield => _returController.gantibarangfield;
-  Rx<TextEditingController> get produkpenggantifield => _returController.produkpenggantifield;
-  RxList<ProductData> get selectedProducttarikbarang => _returController.selectedProducttarikbarang;
-  RxList<ProductData> get selectedProductgantikemasan => _returController.selectedProductgantikemasan;
-  RxList<ProductData> get selectedProductservismebel => _returController.selectedProductservismebel;
-  RxList<ProductData> get selectedProductgantibarang => _returController.selectedProductgantibarang;
-  RxList<ProductData> get selectedProductTukarWarna => _returController.selectedProductTukarWarna;
-  RxList<ProductData> get selectedProductProdukPengganti => _returController.selectedProductProdukPengganti;
-  RxList<TarikBarangModel> get listTarikBarang => _returController.listTarikBarang;
-  RxList<TarikBarangModel> get listgantikemasan => _returController.listgantikemasan;
-  RxList<TarikBarangModel> get listServisMebel => _returController.listServisMebel;
-  RxList<TarikBarangModel> get listGantiBarang => _returController.listGantiBarang;
+  Rx<TextEditingController> get tarikbarangfield =>
+      _returController.tarikbarangfield;
+  Rx<TextEditingController> get tukarwarnafield =>
+      _returController.tukarwarnafield;
+  Rx<TextEditingController> get gantikemasanfield =>
+      _returController.gantikemasanfield;
+  Rx<TextEditingController> get servismebelfield =>
+      _returController.servismebelfield;
+  Rx<TextEditingController> get gantibarangfield =>
+      _returController.gantibarangfield;
+  Rx<TextEditingController> get produkpenggantifield =>
+      _returController.produkpenggantifield;
+  RxList<ProductData> get selectedProducttarikbarang =>
+      _returController.selectedProducttarikbarang;
+  RxList<ProductData> get selectedProductgantikemasan =>
+      _returController.selectedProductgantikemasan;
+  RxList<ProductData> get selectedProductservismebel =>
+      _returController.selectedProductservismebel;
+  RxList<ProductData> get selectedProductgantibarang =>
+      _returController.selectedProductgantibarang;
+  RxList<ProductData> get selectedProductTukarWarna =>
+      _returController.selectedProductTukarWarna;
+  RxList<ProductData> get selectedProductProdukPengganti =>
+      _returController.selectedProductProdukPengganti;
+  RxList<TarikBarangModel> get listTarikBarang =>
+      _returController.listTarikBarang;
+  RxList<TarikBarangModel> get listgantikemasan =>
+      _returController.listgantikemasan;
+  RxList<TarikBarangModel> get listServisMebel =>
+      _returController.listServisMebel;
+  RxList<TarikBarangModel> get listGantiBarang =>
+      _returController.listGantiBarang;
   RxList<TukarWarnaModel> get listTukarWarna => _returController.listTukarWarna;
-  RxList<TarikBarangModel> get listProdukPengganti => _returController.listProdukPengganti;
-  RxList<TarikBarangModel> get listitemforProdukPengganti => _returController.listitemforProdukPengganti;
+  RxList<TarikBarangModel> get listProdukPengganti =>
+      _returController.listProdukPengganti;
+  RxList<TarikBarangModel> get listitemforProdukPengganti =>
+      _returController.listitemforProdukPengganti;
   RxList get listSisa => _returController.listSisa;
   RxInt get indexSegment => _returController.indexSegment;
   RxList<bool> get selectedsegment => _returController.selectedsegment;
@@ -500,12 +544,18 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxBool get gantikemasanhorizontal => _returController.gantikemasanhorizontal;
   RxBool get servismebelhorizontal => _returController.servismebelhorizontal;
   RxBool get gantibaranghorizontal => _returController.gantibaranghorizontal;
-  RxString get selectedKdProducttarikbarang => _returController.selectedKdProducttarikbarang;
-  RxString get selectedKdProductgantikemasan => _returController.selectedKdProductgantikemasan;
-  RxString get selectedKdProductservismebel => _returController.selectedKdProductservismebel;
-  RxString get selectedKdProductgantibarang => _returController.selectedKdProductgantibarang;
-  RxString get selectedKdProductTukarWarna => _returController.selectedKdProductTukarWarna;
-  RxString get selectedKdProductProdukPengganti => _returController.selectedKdProductProdukPengganti;
+  RxString get selectedKdProducttarikbarang =>
+      _returController.selectedKdProducttarikbarang;
+  RxString get selectedKdProductgantikemasan =>
+      _returController.selectedKdProductgantikemasan;
+  RxString get selectedKdProductservismebel =>
+      _returController.selectedKdProductservismebel;
+  RxString get selectedKdProductgantibarang =>
+      _returController.selectedKdProductgantibarang;
+  RxString get selectedKdProductTukarWarna =>
+      _returController.selectedKdProductTukarWarna;
+  RxString get selectedKdProductProdukPengganti =>
+      _returController.selectedKdProductProdukPengganti;
   RxString get selectedAlasantb => _returController.selectedAlasantb;
   RxString get selectedAlasangk => _returController.selectedAlasangk;
   RxBool get isOverfow => _returController.isOverfow;
@@ -629,17 +679,19 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   String productdir = AppConfig().productdir;
   String informasiconfig = AppConfig().informasiconfig;
   List<String> listdir = [];
-  List<String> pricelistdir = [];
+  RxList<String> pricelistdir = <String>[].obs;
   String branchuser = "10A";
   String warnauser = "BLUE";
   String areauser = "1A";
 
   Future<void> downloadConfigFile(String url) async {
-    
-    // if (await File('$productdir/$informasiconfig').exists()) {
-    //   processfile(false);
-    //   return;
-    // }
+    listdir.clear();
+    pricelistdir.clear();
+
+    if (await File('$productdir/$informasiconfig').exists()) {
+      processfile(false);
+      return;
+    }
 
     // Create a folder if it doesn't exist
     Directory directory = Directory('$productdir/');
@@ -651,7 +703,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     var arrConnTest = connTest.split("|");
     bool isConnected = arrConnTest[0] == 'true';
     String urlAPI = arrConnTest[1];
-    if(!isConnected){
+    if (!isConnected) {
       processfile(false);
       return;
     }
@@ -666,27 +718,55 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       File file = File(filePath);
       await file.writeAsBytes(response.bodyBytes);
       processfile(true);
-      
     } else {
       processfile(false);
       throw Exception('Failed to download file');
     }
   }
 
-  isthereanyperiod(List<String> stringdata,bool download){
-    if(stringdata.length == 2){
-      //tanpa periode
-      var checkifpricelist = stringdata[1];
-      listdir.add(stringdata[1]);
-      if(download){
-        downloadusingdir(stringdata[1]);
+  isthereanyperiod(List<String> stringdata, bool download) {
+    var filedir = stringdata[1];
+    var splitdir = filedir.split("/");
+    bool ispricelist = false;
+    bool isproductknowledge = false;
+    if (splitdir[0] == AppConfig().folderpricelist) {
+      ispricelist = true;
+    } else if (splitdir[0] == AppConfig().folderProductKnowledge) {
+      isproductknowledge = true;
+      filedir = "";
+      for (var i = 1; i < splitdir.length; i++) {
+        filedir = "$filedir/${splitdir[i]}";
       }
-    } else if (stringdata.length == 3){
+      filedir = filedir.substring(1, filedir.length);
+    }
+    if (stringdata.length == 2) {
+      //tanpa periode
+      if (ispricelist) {
+        pricelistdir.add(filedir);
+      } else if (isproductknowledge) {
+        listdir.add(filedir);
+      }
+      if (download) {
+        if (ispricelist) {
+          downloadusingdir(filedir);
+        } else {
+          downloadusingdir("${splitdir[0]}/$filedir");
+        }
+      }
+    } else if (stringdata.length == 3) {
       //terdapat periode
-      if(isinperiod(stringdata[2])){
-        listdir.add(stringdata[1]);
-        if(download){
-          downloadusingdir(stringdata[1]);
+      if (Utils().isinperiod(stringdata[2])) {
+        if (ispricelist) {
+          pricelistdir.add(filedir);
+        } else if (isproductknowledge) {
+          listdir.add(filedir);
+        }
+        if (download) {
+          if (ispricelist) {
+            downloadusingdir(filedir);
+          } else {
+            downloadusingdir("${splitdir[0]}/$filedir");
+          }
         }
       }
     }
@@ -696,71 +776,53 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     //download not using await because efficiency time for parallel download
 
     if (await File('$productdir/$informasiconfig').exists()) {
-        listdir.clear();
-        var res = await File('$productdir/$informasiconfig').readAsString();
-        var ls = const LineSplitter();
-        var tlist = ls.convert(res);
-        for (var i = 0; i < tlist.length; i++) {
-          var undollar = tlist[i].split('\$');
-          var unpipelined = undollar[0].split("|");
-          if(unpipelined[0] == AppConfig().forall){
-            //untuk all cabang
-            isthereanyperiod(undollar,download);
-          } else if(unpipelined[0] == AppConfig().forbranch){
-              //untuk cabang tertentu
-              for (var j = 1; j < unpipelined.length; j++) {
-                if(unpipelined[j] == branchuser){
-                  isthereanyperiod(undollar,download);
-                }
-              }
-          } else if(unpipelined[0] == AppConfig().forcolor){
-              //untuk cabang dengan warna tertentu
-              for (var j = 1; j < unpipelined.length; j++) {
-                if(unpipelined[j] == warnauser){
-                  isthereanyperiod(undollar,download);
-                }
-              }  
-          } else if(unpipelined[0] == AppConfig().forarea){
-              //untuk cabang dengan area tertentu
-              for (var j = 1; j < unpipelined.length; j++) {
-                if(unpipelined[j] == areauser){
-                  isthereanyperiod(undollar,download);
-                }
-              }
+      var res = await File('$productdir/$informasiconfig').readAsString();
+      var ls = const LineSplitter();
+      var tlist = ls.convert(res);
+      for (var i = 0; i < tlist.length; i++) {
+        var undollar = tlist[i].split('\$');
+        var unpipelined = undollar[0].split("|");
+        if (unpipelined[0] == AppConfig().forall) {
+          //untuk all cabang
+          isthereanyperiod(undollar, download);
+        } else if (unpipelined[0] == AppConfig().forbranch) {
+          //untuk cabang tertentu
+          for (var j = 1; j < unpipelined.length; j++) {
+            if (unpipelined[j] == branchuser) {
+              isthereanyperiod(undollar, download);
+            }
+          }
+        } else if (unpipelined[0] == AppConfig().forcolor) {
+          //untuk cabang dengan warna tertentu
+          for (var j = 1; j < unpipelined.length; j++) {
+            if (unpipelined[j] == warnauser) {
+              isthereanyperiod(undollar, download);
+            }
+          }
+        } else if (unpipelined[0] == AppConfig().forarea) {
+          //untuk cabang dengan area tertentu
+          for (var j = 1; j < unpipelined.length; j++) {
+            if (unpipelined[j] == areauser) {
+              isthereanyperiod(undollar, download);
+            }
           }
         }
+      }
+      if (listdir.isEmpty) {
+        listnode.clear();
+        isSuccess.value = true;
+      } else if (listdir.isNotEmpty) {
         await generateTreeinfoproduct(listdir);
         if (listnode.isNotEmpty) {
           treecontroller = TreeViewController();
           treecontroller!.treeData(listnode);
           datanodelength.value = listnode.length;
         }
-      } else {
-        listnode.clear();
-        isSuccess.value = true;
-        datanodelength.value = listnode.length;
       }
-  }
-
-  isinperiod(String tocompare){
-    List<String> dateStrings = tocompare.split('&');
-
-    // Extract the start and end date from the date strings
-    String startDateStr  = dateStrings[0].split('=')[1];
-    String endDateStr  = dateStrings[1];
-
-    // Parse the start and end dates
-    DateTime startDate = DateTime.parse(startDateStr);
-    DateTime endDate = DateTime.parse(endDateStr);
-
-    // Get the current date
-    DateTime currentDate = DateTime.now();
-
-    // Check if the current date is within the date range
-    if ((currentDate.isAfter(startDate) || Utils().isSameDate(startDate, currentDate)) && (currentDate.isBefore(endDate) || Utils().isSameDate(endDate, currentDate))) {
-      return true;
     } else {
-      return false;
+      listnode.clear();
+      isSuccess.value = true;
+      datanodelength.value = listnode.length;
     }
   }
 
@@ -768,7 +830,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     var pathh = directoryfile.split('/');
     var dir = "";
     for (var i = 0; i < pathh.length - 1; i++) {
-      dir =  "$dir/${pathh[i]}";
+      dir = "$dir/${pathh[i]}";
     }
     var fname = pathh[pathh.length - 1];
     await ApiClient().downloadfiles(dir, fname);
@@ -805,7 +867,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
           if (i == tsplit.length - 1) {
             tnode.isFile = true;
             tnode.fullname = temp;
-            tnode.extension = str.substring(str.lastIndexOf(".") + 1, str.length);
+            tnode.extension =
+                str.substring(str.lastIndexOf(".") + 1, str.length);
           }
           if (head.name == "") {
             listnode.add(tnode);
