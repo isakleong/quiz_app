@@ -662,6 +662,7 @@ class TakingOrderVendorController extends GetxController
   String informasiconfig = AppConfig().informasiconfig;
   List<String> listdir = [];
   RxList<String> pricelistdir = <String>[].obs;
+  RxList<String> promodir = <String>[].obs;
   late Box branchinfobox;
 
   Future<void> downloadConfigFile(String url) async {
@@ -709,6 +710,7 @@ class TakingOrderVendorController extends GetxController
     var splitdir = filedir.split("/");
     bool ispricelist = false;
     bool isproductknowledge = false;
+    bool ispromo = false;
     if (splitdir[0] == AppConfig().folderpricelist) {
       ispricelist = true;
     } else if (splitdir[0] == AppConfig().folderProductKnowledge) {
@@ -718,6 +720,8 @@ class TakingOrderVendorController extends GetxController
         filedir = "$filedir/${splitdir[i]}";
       }
       filedir = filedir.substring(1, filedir.length);
+    } else if (splitdir[0] == AppConfig().folderPromo){
+      ispromo = true;
     }
     if (stringdata.length == 2) {
       //tanpa periode
@@ -735,7 +739,7 @@ class TakingOrderVendorController extends GetxController
       if (download) {
         if (ispricelist) {
           downloadusingdir(filedir);
-        } else {
+        } else if (isproductknowledge){
           downloadusingdir("${splitdir[0]}/$filedir");
         }
       }
@@ -752,11 +756,15 @@ class TakingOrderVendorController extends GetxController
           if(idx == -1){
             listdir.add(filedir);
           }
+        } else if (ispromo){
+          promodir.add("$filedir|${stringdata[2]}");
         }
         if (download) {
           if (ispricelist) {
             downloadusingdir(filedir);
-          } else {
+          } else if (ispromo) {
+            downloadusingdir(filedir);
+          } else if (isproductknowledge){
             downloadusingdir("${splitdir[0]}/$filedir");
           }
         }
@@ -895,7 +903,6 @@ class TakingOrderVendorController extends GetxController
     isSuccess.value = true;
   }
 
-  //for promopage
   String basepath = '/storage/emulated/0/SFAPromo/';
 
   List<String> imgpath = [

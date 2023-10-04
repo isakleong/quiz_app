@@ -152,6 +152,7 @@ void onStart(ServiceInstance service) async {
 }
 
 class Backgroundservicecontroller {
+  
   Future hiveInitializer() async {
     Directory directory =
         await path_provider.getApplicationDocumentsDirectory();

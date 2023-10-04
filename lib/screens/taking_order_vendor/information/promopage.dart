@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
+import '../../../tools/utils.dart';
+import '../../../tools/viewimage.dart';
 import '../../../widgets/textview.dart';
 
 class PromoPage extends StatelessWidget {
@@ -16,10 +20,9 @@ class PromoPage extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-        /* untuk menampilkan banner dan category
+        backgroundColor: Colors.transparent,
+        body: Column(children: [
+          /* untuk menampilkan banner dan category
           Container(
             width: width,
             height: width < 450 ? 145 : 170,
@@ -76,72 +79,214 @@ class PromoPage extends StatelessWidget {
             ),
           ),
         */
-        const SizedBox(height: 5),
-        Expanded(
-          child: Padding(
-          padding: EdgeInsets.only(left: width < 450 ? 40 : 60,right: width < 450 ? 40 : 60),
-          child: GridView.builder(
-            itemCount: 5,
-            physics: const BouncingScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,mainAxisSpacing: 20,childAspectRatio: 0.75,crossAxisSpacing: 40), 
-          itemBuilder: (context, index) {
-            return Material(
-              elevation: 1.2,
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: width,
-                    height: width < 450 ? 105.sp : 170.sp,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: FileImage(File('${_takingOrderVendorController.basepath}${_takingOrderVendorController.imgpromo[index]}')),fit: BoxFit.fill)
-                        ,borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))
-                      ),
-                      child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Container(
-                          width: width,
-                          padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
-                          decoration: BoxDecoration(color: Colors.grey.shade900.withOpacity(0.7)),
-                          child: TextView(text: _takingOrderVendorController.imgpromo[index],color: Colors.white,fontSize: 11.sp,),
-                        )
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: 5),
+          Obx(() => _takingOrderVendorController.isSuccess.value == false &&
+                  _takingOrderVendorController.promodir.isEmpty
+              ? Column(
+                  children: [
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12,right: 12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(FontAwesomeIcons.calendarDays, color: Colors.green.shade600,size: 14.sp,)
-                              ,SizedBox(width: 6.sp,),
-                              TextView(text: '16 Jul - 18 Agu',fontSize: 11.sp,)
-                          ],),
-                        ),Padding(
-                          padding: const EdgeInsets.only(left: 12, right: 12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(FontAwesomeIcons.clock, color: Colors.blue.shade600,size: 14.sp,),
-                              SizedBox(width: 6.sp,),
-                              TextView(text: "Sisa 14 Hari Lagi",fontSize: 10.sp,)
-                          ],),
+                        Shimmer.fromColors(
+                          baseColor: Colors.grey.shade400,
+                          highlightColor: Colors.grey.shade200,
+                          child: Container(
+                            width: 0.4 * width,
+                            height: 0.3 * height,
+                            color: Colors.white,
+                            // Add any other child widgets you want inside the shimmering container
+                          ),
+                        ),Shimmer.fromColors(
+                          baseColor: Colors.grey.shade400,
+                          highlightColor: Colors.grey.shade200,
+                          child: Container(
+                            width: 0.4 * width,
+                            height: 0.3 * height,
+                            color: Colors.white,
+                            // Add any other child widgets you want inside the shimmering container
+                          ),
                         ),
-                    ]),
+                      ],
+                    ),
+                    SizedBox(height: 0.04 * height,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Shimmer.fromColors(
+                          baseColor: Colors.grey.shade400,
+                          highlightColor: Colors.grey.shade200,
+                          child: Container(
+                            width: 0.4 * width,
+                            height: 0.3 * height,
+                            color: Colors.white,
+                            // Add any other child widgets you want inside the shimmering container
+                          ),
+                        ),Shimmer.fromColors(
+                          baseColor: Colors.grey.shade400,
+                          highlightColor: Colors.grey.shade200,
+                          child: Container(
+                            width: 0.4 * width,
+                            height: 0.3 * height,
+                            color: Colors.white,
+                            // Add any other child widgets you want inside the shimmering container
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                )
+              : _takingOrderVendorController.isSuccess.value && _takingOrderVendorController.promodir.isEmpty ? 
+              Padding(
+                padding:  EdgeInsets.only(top: 0.2 * height),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset('assets/lottie/notfound.json', width: width * 0.35),
+                      const TextView(
+                        text: "Tidak Ada promo",
+                        headings: 'H4',
+                        fontSize: 20,
+                      )
+                    ],
                   ),
-              ]),
-            );
-          }),
-        ))
-      ])
-    );
+                ),
+              )  : Expanded(
+                  child: Padding(
+                  padding: EdgeInsets.only(
+                      left: width < 450 ? 40 : 60,
+                      right: width < 450 ? 40 : 60),
+                  child: GridView.builder(
+                      itemCount: _takingOrderVendorController.promodir.isEmpty
+                          ? 0
+                          : _takingOrderVendorController.promodir.length,
+                      physics: const BouncingScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 20,
+                              childAspectRatio: 0.75,
+                              crossAxisSpacing: 40),
+                      itemBuilder: (context, index) {
+                        //olah nama file
+                        var itemname = _takingOrderVendorController.promodir[index];
+                        var unpipelined = itemname.split("|");
+                        var filename = unpipelined[0].split("/")[1];
+                        int ext = filename.lastIndexOf(".");
+                        filename = filename.substring(0, ext);
+
+                        //tampilan periode
+                        List<String> dateStrings = unpipelined[1].split("&");
+                        String formattedDate1 = Utils().formatDateToMonthAlias(dateStrings[0].split('=')[1]);
+                        String formattedDate2 = Utils().formatDateToMonthAlias(dateStrings[1]);
+                        String result = '$formattedDate1 - $formattedDate2';
+
+                        // Hitung selisih hari
+                        DateTime endDate = DateTime.parse(dateStrings[1]);
+                        DateTime now = DateTime.now();
+                        int differenceInDays = endDate.difference(now).inDays;
+                        return InkWell(
+                          onTap: () async {
+                            if(await File("${_takingOrderVendorController.productdir}/${unpipelined[0].replaceAll("%20", " ")}").exists()){
+                                Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${unpipelined[0].replaceAll("%20", " ")}"));
+                            }
+                          },
+                          child: Material(
+                            elevation: 1.2,
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: width,
+                                    height: width < 450 ? 105.sp : 170.sp,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: FileImage(File(
+                                                  '${_takingOrderVendorController.productdir}/${unpipelined[0].replaceAll("%20", " ")}')),
+                                              fit: BoxFit.fill),
+                                          borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(12),
+                                              topRight: Radius.circular(12))),
+                                      child: Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Container(
+                                            width: width,
+                                            padding: const EdgeInsets.only(
+                                                left: 10, right: 10, bottom: 5),
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey.shade900
+                                                    .withOpacity(0.7)),
+                                            child: TextView(
+                                              text:
+                                                  filename.replaceAll("%20", " "),
+                                              color: Colors.white,
+                                              fontSize: 11.sp,
+                                            ),
+                                          )),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 12, right: 12),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Icon(
+                                                  FontAwesomeIcons.calendarDays,
+                                                  color: Colors.green.shade600,
+                                                  size: 14.sp,
+                                                ),
+                                                SizedBox(
+                                                  width: 6.sp,
+                                                ),
+                                                TextView(
+                                                  text: result,
+                                                  fontSize: 11.sp,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 12, right: 12),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Icon(
+                                                  FontAwesomeIcons.clock,
+                                                  color: Colors.blue.shade600,
+                                                  size: 14.sp,
+                                                ),
+                                                SizedBox(
+                                                  width: 6.sp,
+                                                ),
+                                                TextView(
+                                                  text:
+                                                      'Sisa $differenceInDays hari Lagi',
+                                                  fontSize: 10.sp,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ]),
+                                  ),
+                                ]),
+                          ),
+                        );
+                      }),
+                )))
+        ]));
   }
 }

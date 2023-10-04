@@ -155,6 +155,32 @@ class Utils {
     }
   }
 
+  String formatDateToMonthAlias(String dateString) {
+    List<String> parts = dateString.split('-');
+    int month = int.parse(parts[1]);
+    
+    // Mapping bulan
+    final Map<int, String> monthMapping = {
+      1: 'Jan',
+      2: 'Feb',
+      3: 'Mar',
+      4: 'Apr',
+      5: 'Mei',
+      6: 'Jun',
+      7: 'Jul',
+      8: 'Agu',
+      9: 'Sep',
+      10: 'Okt',
+      11: 'Nov',
+      12: 'Des'
+    };
+
+    String formattedDay = parts[2].padLeft(2, '0');
+    String formattedMonth = monthMapping[month]!;
+
+    return '$formattedDay $formattedMonth';
+  }
+
   String decrypt(String encrypted) {
   final key = Key.fromUtf8("fVkhoDWRAd4Rgj6l"); //hardcode combination of 16 character
   final iv = IV.fromUtf8("tGYINBYOtJ2tZoZJ"); //hardcode combination of 16 character
