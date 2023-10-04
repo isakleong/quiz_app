@@ -88,8 +88,7 @@ class TakingOrderVendorController extends GetxController
   }
 
   setactivendor() async {
-    SplashscreenController splashscreenController =
-        callcontroller("splashscreencontroller");
+    SplashscreenController splashscreenController = callcontroller("splashscreencontroller");
     activevendor = splashscreenController.selectedVendor.value.toLowerCase();
     _penjualanController.activevendor = activevendor;
     _laporanController.activevendor = activevendor;
@@ -303,14 +302,13 @@ class TakingOrderVendorController extends GetxController
       for (var i = 0; i < datavendor.length; i++) {
         vendorlist.add(datavendor[i]);
       }
-      idvendorg = vendorlist
-          .indexWhere((element) => element.name.toLowerCase() == activevendor);
+      idvendorg = vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
 
       //membuat key box dan mencoba mengambil data outstanding pada hive jika ada
-      String keyos =
-          "$salescode|$custcode|${vendorlist[idvendorg].prefix}|${vendorlist[idvendorg].baseApiUrl}";
-      if (!outstandingBox.isOpen)
+      String keyos ="$salescode|$custcode|${vendorlist[idvendorg].prefix}|${vendorlist[idvendorg].baseApiUrl}";
+      if (!outstandingBox.isOpen){
         outstandingBox = await Hive.openBox('outstandingBox');
+      }
       var dataosbox = await outstandingBox.get(keyos);
       outstandingBox.close();
       if (dataosbox != null) {
@@ -515,27 +513,17 @@ class TakingOrderVendorController extends GetxController
       _returController.selectedProducttarikbarang;
   RxList<ProductData> get selectedProductgantikemasan =>
       _returController.selectedProductgantikemasan;
-  RxList<ProductData> get selectedProductservismebel =>
-      _returController.selectedProductservismebel;
-  RxList<ProductData> get selectedProductgantibarang =>
-      _returController.selectedProductgantibarang;
-  RxList<ProductData> get selectedProductTukarWarna =>
-      _returController.selectedProductTukarWarna;
-  RxList<ProductData> get selectedProductProdukPengganti =>
-      _returController.selectedProductProdukPengganti;
-  RxList<TarikBarangModel> get listTarikBarang =>
-      _returController.listTarikBarang;
-  RxList<TarikBarangModel> get listgantikemasan =>
-      _returController.listgantikemasan;
-  RxList<TarikBarangModel> get listServisMebel =>
-      _returController.listServisMebel;
-  RxList<TarikBarangModel> get listGantiBarang =>
-      _returController.listGantiBarang;
+  RxList<ProductData> get selectedProductservismebel => _returController.selectedProductservismebel;
+  RxList<ProductData> get selectedProductgantibarang => _returController.selectedProductgantibarang;
+  RxList<ProductData> get selectedProductTukarWarna => _returController.selectedProductTukarWarna;
+  RxList<ProductData> get selectedProductProdukPengganti => _returController.selectedProductProdukPengganti;
+  RxList<TarikBarangModel> get listTarikBarang => _returController.listTarikBarang;
+  RxList<TarikBarangModel> get listgantikemasan => _returController.listgantikemasan;
+  RxList<TarikBarangModel> get listServisMebel => _returController.listServisMebel;
+  RxList<TarikBarangModel> get listGantiBarang => _returController.listGantiBarang;
   RxList<TukarWarnaModel> get listTukarWarna => _returController.listTukarWarna;
-  RxList<TarikBarangModel> get listProdukPengganti =>
-      _returController.listProdukPengganti;
-  RxList<TarikBarangModel> get listitemforProdukPengganti =>
-      _returController.listitemforProdukPengganti;
+  RxList<TarikBarangModel> get listProdukPengganti => _returController.listProdukPengganti;
+  RxList<TarikBarangModel> get listitemforProdukPengganti => _returController.listitemforProdukPengganti;
   RxList get listSisa => _returController.listSisa;
   RxInt get indexSegment => _returController.indexSegment;
   RxList<bool> get selectedsegment => _returController.selectedsegment;
@@ -544,18 +532,12 @@ class TakingOrderVendorController extends GetxController
   RxBool get gantikemasanhorizontal => _returController.gantikemasanhorizontal;
   RxBool get servismebelhorizontal => _returController.servismebelhorizontal;
   RxBool get gantibaranghorizontal => _returController.gantibaranghorizontal;
-  RxString get selectedKdProducttarikbarang =>
-      _returController.selectedKdProducttarikbarang;
-  RxString get selectedKdProductgantikemasan =>
-      _returController.selectedKdProductgantikemasan;
-  RxString get selectedKdProductservismebel =>
-      _returController.selectedKdProductservismebel;
-  RxString get selectedKdProductgantibarang =>
-      _returController.selectedKdProductgantibarang;
-  RxString get selectedKdProductTukarWarna =>
-      _returController.selectedKdProductTukarWarna;
-  RxString get selectedKdProductProdukPengganti =>
-      _returController.selectedKdProductProdukPengganti;
+  RxString get selectedKdProducttarikbarang => _returController.selectedKdProducttarikbarang;
+  RxString get selectedKdProductgantikemasan => _returController.selectedKdProductgantikemasan;
+  RxString get selectedKdProductservismebel => _returController.selectedKdProductservismebel;
+  RxString get selectedKdProductgantibarang => _returController.selectedKdProductgantibarang;
+  RxString get selectedKdProductTukarWarna => _returController.selectedKdProductTukarWarna;
+  RxString get selectedKdProductProdukPengganti => _returController.selectedKdProductProdukPengganti;
   RxString get selectedAlasantb => _returController.selectedAlasantb;
   RxString get selectedAlasangk => _returController.selectedAlasangk;
   RxBool get isOverfow => _returController.isOverfow;
@@ -680,18 +662,16 @@ class TakingOrderVendorController extends GetxController
   String informasiconfig = AppConfig().informasiconfig;
   List<String> listdir = [];
   RxList<String> pricelistdir = <String>[].obs;
-  String branchuser = "10A";
-  String warnauser = "BLUE";
-  String areauser = "1A";
+  late Box branchinfobox;
 
   Future<void> downloadConfigFile(String url) async {
     listdir.clear();
     pricelistdir.clear();
 
-    if (await File('$productdir/$informasiconfig').exists()) {
-      processfile(false);
-      return;
-    }
+    // if (await File('$productdir/$informasiconfig').exists()) {
+    //   processfile(false);
+    //   return;
+    // }
 
     // Create a folder if it doesn't exist
     Directory directory = Directory('$productdir/');
@@ -742,9 +722,15 @@ class TakingOrderVendorController extends GetxController
     if (stringdata.length == 2) {
       //tanpa periode
       if (ispricelist) {
-        pricelistdir.add(filedir);
+        int idx = pricelistdir.indexOf(filedir);
+        if(idx == -1){
+          pricelistdir.add(filedir);
+        }
       } else if (isproductknowledge) {
-        listdir.add(filedir);
+        int idx = listdir.indexOf(filedir);
+        if(idx == -1){
+          listdir.add(filedir);
+        }
       }
       if (download) {
         if (ispricelist) {
@@ -757,9 +743,15 @@ class TakingOrderVendorController extends GetxController
       //terdapat periode
       if (Utils().isinperiod(stringdata[2])) {
         if (ispricelist) {
-          pricelistdir.add(filedir);
+          int idx = pricelistdir.indexOf(filedir);
+          if(idx == -1){
+            pricelistdir.add(filedir);
+          }
         } else if (isproductknowledge) {
-          listdir.add(filedir);
+          int idx = listdir.indexOf(filedir);
+          if(idx == -1){
+            listdir.add(filedir);
+          }
         }
         if (download) {
           if (ispricelist) {
@@ -774,8 +766,29 @@ class TakingOrderVendorController extends GetxController
 
   processfile(bool download) async {
     //download not using await because efficiency time for parallel download
-
-    if (await File('$productdir/$informasiconfig').exists()) {
+    String branchuser = "";
+    String warnauser = "";
+    String areauser = "";
+    var databranch = null;
+    try {
+      branchinfobox = await Hive.openBox("BranchInfoBox");
+      databranch = await branchinfobox.get(await Utils().getParameterData("sales"));
+      branchuser = databranch[0]['branch'];
+      warnauser = databranch[0]['color'];
+      areauser = databranch[0]['area'];
+    // ignore: empty_catches
+    } catch (e) {
+      try {
+      databranch = await branchinfobox.get(await Utils().getParameterData("sales"));
+      branchuser = databranch[0]['branch'];
+      warnauser = databranch[0]['color'];
+      areauser = databranch[0]['area'];
+      } catch (e) {
+        print(e);
+      }
+    }
+    branchinfobox.close();
+    if (await File('$productdir/$informasiconfig').exists() && databranch != null) {
       var res = await File('$productdir/$informasiconfig').readAsString();
       var ls = const LineSplitter();
       var tlist = ls.convert(res);

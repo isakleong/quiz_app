@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:list_treeview/list_treeview.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/tools/viewpdf.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +12,7 @@ import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../models/treenodedata.dart';
 import '../../../tools/viewimage.dart';
 import '../../../tools/viewvideo.dart';
+import '../../../widgets/textview.dart';
 
 class InfoProdukPage extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -19,11 +21,22 @@ class InfoProdukPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Obx(()=>_takingOrderVendorController.isSuccess.value == false ? getProgressView(context) : 
-      (_takingOrderVendorController.isSuccess.value == true && _takingOrderVendorController.datanodelength.value == 0 ) ? Container()
-       : getBody(),
+      (_takingOrderVendorController.isSuccess.value == true && _takingOrderVendorController.datanodelength.value == 0 ) ? Center(
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset('assets/lottie/notfound.json', width: width * 0.35),
+            const TextView(
+              text: "Tidak Ada Info Produk",
+              headings: 'H4',
+              fontSize: 20,
+            )
+          ],
+        )) : getBody(),
       ) 
     );
   }

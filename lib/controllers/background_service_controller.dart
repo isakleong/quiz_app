@@ -442,12 +442,10 @@ class Backgroundservicecontroller {
   late Box postpembayaranbox;
   late Box boxPembayaranReport;
   late Box tokenbox;
+  late Box branchinfobox;
   List<Vendor> vendorlist = [];
   String productdir = AppConfig().productdir;
   String informasiconfig = AppConfig().informasiconfig;
-  String branchuser = "10A";
-  String warnauser = "BLUE";
-  String areauser = "1A";
 
   Future<void> createLogTes(String content) async {
     bool allowWriteLog = false; // Change to true to enable log writing
@@ -1113,6 +1111,27 @@ class Backgroundservicecontroller {
   processfile(bool download) async {
     print("download");
     //download not using await because efficiency time for parallel download
+    String branchuser = "";
+    String warnauser = "";
+    String areauser = "";
+    try {
+      branchinfobox = await Hive.openBox("BranchInfoBox");
+      var databranch = await branchinfobox.get(await Utils().getParameterData("sales"));
+      branchuser = databranch[0]['branch'];
+      warnauser = databranch[0]['color'];
+      areauser = databranch[0]['area'];
+    // ignore: empty_catches
+    } catch (e) {
+      try {
+      var databranch = await branchinfobox.get(await Utils().getParameterData("sales"));
+      branchuser = databranch[0]['branch'];
+      warnauser = databranch[0]['color'];
+      areauser = databranch[0]['area'];
+      } catch (e) {
+        print(e);
+      }
+    }
+    branchinfobox.close();
 
     if (await File('$productdir/$informasiconfig').exists()) {
         var res = await File('$productdir/$informasiconfig').readAsString();

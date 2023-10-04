@@ -50,6 +50,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   late Box boxreportpenjualan;
   late Box shiptobox;
   late Box tokenbox;
+  late Box branchinfobox;
   bool retrypermission = false;
 
   @override
@@ -503,7 +504,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
           final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
           final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
-          // print(result.toString());
           var data = jsonDecode(result.toString());
           data["AppModule"].map((item) {
             moduleList.add(Module.from(item));
@@ -512,6 +512,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
           var moduleBox = await Hive.openBox<Module>('moduleBox');
           await moduleBox.clear();
           await moduleBox.addAll(moduleList);
+
+          if(!Hive.isBoxOpen("BranchInfoBox")){
+            branchinfobox = await Hive.openBox('BranchInfoBox');
+          }
+          await branchinfobox.delete(salesIdParams.value);
+          await branchinfobox.put(salesIdParams.value, data['BranchInfo']);
+          await branchinfobox.close();
           // print(moduleList.length);
           
           PackageInfo packageInfo = await PackageInfo.fromPlatform();
