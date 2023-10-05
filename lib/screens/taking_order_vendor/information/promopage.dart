@@ -187,8 +187,52 @@ class PromoPage extends StatelessWidget {
                         int differenceInDays = endDate.difference(now).inDays;
                         return InkWell(
                           onTap: () async {
-                            if(await File("${_takingOrderVendorController.productdir}/${unpipelined[0].replaceAll("%20", " ")}").exists()){
-                                Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${unpipelined[0].replaceAll("%20", " ")}"));
+                            if(await File("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${unpipelined[0].replaceAll("%20", " ")}").exists()){
+                                Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${unpipelined[0].replaceAll("%20", " ")}"));
+                            } else {
+                                Get.defaultDialog(
+                                  radius: 6,
+                                  barrierDismissible: true,
+                                  title: "",
+                                  titlePadding:
+                                      const EdgeInsets.only(top: 0, bottom: 0),
+                                  cancel: OutlinedButton(
+                                    onPressed: () => {Get.back()},
+                                    style: OutlinedButton.styleFrom(
+                                        backgroundColor: Colors.teal),
+                                    child: const Text("TUTUP",
+                                        style: TextStyle(
+                                            fontFamily: "Lato",
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white)),
+                                  ),
+                                  contentPadding: const EdgeInsets.only(
+                                      bottom: 15, left: 20, right: 20),
+                                  content: Column(
+                                    children: [
+                                      const Text("Informasi Belum Tersedia",
+                                          style: TextStyle(
+                                              fontFamily: "Lato",
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black)),
+                                      const SizedBox(height: 25),
+                                      Text("File belum dapat diunduh,",
+                                          style: TextStyle(
+                                              fontFamily: "Lato",
+                                              fontSize: 15,
+                                              color: Colors.grey.shade800)),
+                                      const SizedBox(height: 6),
+                                      Text("mohon coba kembali lain waktu.",
+                                          style: TextStyle(
+                                              fontFamily: "Lato",
+                                              fontSize: 15,
+                                              color: Colors.grey.shade800)),
+                                      const SizedBox(height: 5),
+                                    ],
+                                  ),
+                                );
                             }
                           },
                           child: Material(
@@ -203,10 +247,11 @@ class PromoPage extends StatelessWidget {
                                     height: width < 450 ? 105.sp : 170.sp,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: FileImage(File(
-                                                  '${_takingOrderVendorController.productdir}/${unpipelined[0].replaceAll("%20", " ")}')),
-                                              fit: BoxFit.fill),
+                                          image: File('${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${unpipelined[0].replaceAll("%20", " ")}').existsSync()
+                                                ?
+                                          DecorationImage(
+                                              image: FileImage(File('${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${unpipelined[0].replaceAll("%20", " ")}')),
+                                              fit: BoxFit.fill) : const DecorationImage(image: AssetImage("assets/images/defaultpromo.jpg")),
                                           borderRadius: const BorderRadius.only(
                                               topLeft: Radius.circular(12),
                                               topRight: Radius.circular(12))),
@@ -220,8 +265,7 @@ class PromoPage extends StatelessWidget {
                                                 color: Colors.grey.shade900
                                                     .withOpacity(0.7)),
                                             child: TextView(
-                                              text:
-                                                  filename.replaceAll("%20", " "),
+                                              text: filename.replaceAll("%20", " "),
                                               color: Colors.white,
                                               fontSize: 11.sp,
                                             ),
@@ -252,7 +296,7 @@ class PromoPage extends StatelessWidget {
                                                 ),
                                                 TextView(
                                                   text: result,
-                                                  fontSize: 11.sp,
+                                                  fontSize:  width > 450 ? 11.sp : 10.sp,
                                                 )
                                               ],
                                             ),

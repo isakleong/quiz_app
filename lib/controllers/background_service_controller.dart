@@ -117,7 +117,7 @@ void onStart(ServiceInstance service) async {
   });
 
   Timer.periodic(const Duration(minutes: 3), (timer) async {
-    Backgroundservicecontroller().processfile(true);
+    Backgroundservicecontroller().getlistvendor();
     await Backgroundservicecontroller().getPendingData();
 
     if (service is AndroidServiceInstance) {
@@ -154,8 +154,7 @@ void onStart(ServiceInstance service) async {
 class Backgroundservicecontroller {
   
   Future hiveInitializer() async {
-    Directory directory =
-        await path_provider.getApplicationDocumentsDirectory();
+    Directory directory = await path_provider.getApplicationDocumentsDirectory();
     Hive.init(directory.path);
     Hive.registerAdapter(ModuleAdapter());
     Hive.registerAdapter(QuizAdapter());
@@ -644,6 +643,9 @@ class Backgroundservicecontroller {
     } else if (jenis == 'pembayaran') {
       List<dynamic> keys = postpembayaranbox.keys.toList();
       return keys;
+    } else if (jenis == 'vendor'){
+      List<dynamic> keys = vendorBox.keys.toList();
+      return keys;
     }
   }
 
@@ -661,7 +663,6 @@ class Backgroundservicecontroller {
     try {
       await hiveInitializer();
       try {
-        vendorBox = await Hive.openBox('vendorBox');
         boxpostpenjualan = await Hive.openBox('penjualanReportpostdata');
         boxreportpenjualan = await Hive.openBox('penjualanReport');
         postpembayaranbox = await Hive.openBox("postpembayaranbox");
@@ -671,7 +672,6 @@ class Backgroundservicecontroller {
       } catch (e) {}
     } catch (e) {
       try {
-        vendorBox = await Hive.openBox('vendorBox');
         boxpostpenjualan = await Hive.openBox('penjualanReportpostdata');
         boxreportpenjualan = await Hive.openBox('penjualanReport');
         postpembayaranbox = await Hive.openBox("postpembayaranbox");
@@ -684,7 +684,6 @@ class Backgroundservicecontroller {
 
   closebox() {
     try {
-      vendorBox.close();
       boxpostpenjualan.close();
       boxreportpenjualan.close();
       postpembayaranbox.close();
@@ -692,6 +691,36 @@ class Backgroundservicecontroller {
       tokenbox.close();
     // ignore: empty_catches
     } catch (e) {}
+  }
+
+  openbranchinfobox() async {
+    try {
+      await hiveInitializer();
+      try {
+        branchinfobox = await Hive.openBox('BranchInfoBox');
+      // ignore: empty_catches
+      } catch (e) {}
+    } catch (e) {
+      try {
+        branchinfobox = await Hive.openBox('BranchInfoBox');
+      // ignore: empty_catches
+      } catch (err) {}
+    }
+  }
+
+  openvendorbox() async {
+    try {
+      await hiveInitializer();
+      try {
+        vendorBox = await Hive.openBox('vendorBox');
+      // ignore: empty_catches
+      } catch (e) {}
+    } catch (e) {
+      try {
+        vendorBox = await Hive.openBox('vendorBox');
+      // ignore: empty_catches
+      } catch (err) {}
+    }
   }
 
   bool checkTimeDifference(String times) {
@@ -1109,33 +1138,50 @@ class Backgroundservicecontroller {
     return jsonEncode(datamerge);
   }
 
-  processfile(bool download) async {
+  getlistvendor() async {
+    print("getlistvendor");
+    await openvendorbox();
+    var keys = await getListKey('vendor');
+    if (keys.isEmpty){
+      return;
+    }
+    for (var i = 0; i < keys.length; i++) {
+      var datavendor = await vendorBox.get(keys[i]);
+      for (var i = 0; i < datavendor.length; i++) {
+        int isfound = vendorlist.indexWhere((element) => element.name.toLowerCase() == datavendor[i].name.toString().toLowerCase());
+        if(isfound == -1){
+          vendorlist.add(datavendor[i]);
+        }
+      }
+    }
+    vendorBox.close();
+    print("done getlistvendor");
+    for (var i = 0; i < vendorlist.length; i++) {
+      print("get ${vendorlist[i].name}");
+      await processfile(true, vendorlist[i].name);
+    }
+  }
+
+  processfile(bool download,String vendor) async {
     print("download");
     //download not using await because efficiency time for parallel download
     String branchuser = "";
     String warnauser = "";
     String areauser = "";
+    await openbranchinfobox();
+    var databranch = await branchinfobox.get(await Utils().getParameterData("sales"));
     try {
-      branchinfobox = await Hive.openBox("BranchInfoBox");
-      var databranch = await branchinfobox.get(await Utils().getParameterData("sales"));
       branchuser = databranch[0]['branch'];
       warnauser = databranch[0]['color'];
       areauser = databranch[0]['area'];
     // ignore: empty_catches
     } catch (e) {
-      try {
-      var databranch = await branchinfobox.get(await Utils().getParameterData("sales"));
-      branchuser = databranch[0]['branch'];
-      warnauser = databranch[0]['color'];
-      areauser = databranch[0]['area'];
-      } catch (e) {
-        print(e);
-      }
+      
     }
     branchinfobox.close();
 
-    if (await File('$productdir/$informasiconfig').exists()) {
-        var res = await File('$productdir/$informasiconfig').readAsString();
+    if (await File('$productdir/$vendor/$informasiconfig').exists()) {
+        var res = await File('$productdir/$vendor/$informasiconfig').readAsString();
         var ls = const LineSplitter();
         var tlist = ls.convert(res);
         for (var i = 0; i < tlist.length; i++) {
@@ -1143,26 +1189,26 @@ class Backgroundservicecontroller {
           var unpipelined = undollar[0].split("|");
           if(unpipelined[0] == AppConfig().forall){
             //untuk all cabang
-            isthereanyperiod(undollar,download);
+            isthereanyperiod(undollar,download,vendor);
           } else if(unpipelined[0] == AppConfig().forbranch){
               //untuk cabang tertentu
               for (var j = 1; j < unpipelined.length; j++) {
                 if(unpipelined[j] == branchuser){
-                  isthereanyperiod(undollar,download);
+                  isthereanyperiod(undollar,download,vendor);
                 }
               }
           } else if(unpipelined[0] == AppConfig().forcolor){
               //untuk cabang dengan warna tertentu
               for (var j = 1; j < unpipelined.length; j++) {
                 if(unpipelined[j] == warnauser){
-                  isthereanyperiod(undollar,download);
+                  isthereanyperiod(undollar,download,vendor);
                 }
               }  
           } else if(unpipelined[0] == AppConfig().forarea){
               //untuk cabang dengan area tertentu
               for (var j = 1; j < unpipelined.length; j++) {
                 if(unpipelined[j] == areauser){
-                  isthereanyperiod(undollar,download);
+                  isthereanyperiod(undollar,download,vendor);
                 }
               }
           }
@@ -1170,31 +1216,31 @@ class Backgroundservicecontroller {
       }
   }
 
-  isthereanyperiod(List<String> stringdata,bool download){
+  isthereanyperiod(List<String> stringdata,bool download, String vendor){
     var filedir = stringdata[1];
     if(stringdata.length == 2){
       //tanpa periode
       if(download){
-        downloadusingdir(filedir);
+        downloadusingdir(filedir,vendor);
       }
     } else if (stringdata.length == 3){
       //terdapat periode
       if(Utils().isinperiod(stringdata[2])){
         if(download){
-          downloadusingdir(filedir);
+          downloadusingdir(filedir,vendor);
         }
       }
     }
   }
 
-  downloadusingdir(String directoryfile) async {
+  downloadusingdir(String directoryfile,String vendor) async {
     var pathh = directoryfile.split('/');
     var dir = "";
     for (var i = 0; i < pathh.length - 1; i++) {
       dir =  "$dir/${pathh[i]}";
     }
     var fname = pathh[pathh.length - 1];
-    await ApiClient().downloadfiles(dir, fname);
+    await ApiClient().downloadfiles(dir, fname,vendor);
   }
   //end taking order vendor section
 }

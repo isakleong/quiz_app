@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -161,11 +162,12 @@ class ApiClient {
   //   return testResult;
   // }
   
-  Future<void> downloadfiles(String dir,String fname) async{
+  Future<void> downloadfiles(String dir,String fname, String vendorname) async{
      try {
         String productdir = AppConfig().productdir;
+        print("on download");
     
-        if (await Directory('$productdir/$dir'.replaceAll("%20", " ")).exists() && await File("$productdir/$dir/$fname".replaceAll("%20", " ")).exists()) {
+        if (await Directory('$productdir/$vendorname$dir'.replaceAll("%20", " ")).exists() && await File("$productdir/$vendorname$dir/$fname".replaceAll("%20", " ")).exists()) {
             return;
         }
       
@@ -177,16 +179,21 @@ class ApiClient {
           return;
         }
         // Create a folder if it doesn't exist
-        Directory directory = Directory('$productdir/$dir'.replaceAll("%20", " "));
+        Directory directory = Directory('$productdir/$vendorname$dir'.replaceAll("%20", " "));
         if (!await directory.exists()) {
           await directory.create(recursive: true);
         }
 
         // Create the file path
-        String filePath = '$productdir/$dir/$fname';
+        String filePath = '$productdir/$vendorname$dir/$fname';
+
+        var postbody = {
+          'path' : '$dir/$fname',
+          'vendor' : vendorname.toLowerCase()
+        };
 
         // Download the file
-        final response = await http.get(Uri.parse("$urlAPI/getproductbydir?path=$dir/$fname"));
+        final response = await http.post(Uri.parse("$urlAPI/getproductbydir"),headers: {"Content-Type": "application/json",}, body: jsonEncode(postbody),);
 
         if (response.statusCode == 200) {
           // Write the file
@@ -194,7 +201,6 @@ class ApiClient {
           await file.writeAsBytes(response.bodyBytes);
         }
      } catch (e) {
-       print(e.toString());
      }
   }
 

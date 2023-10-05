@@ -45,8 +45,7 @@ class TakingOrderVendorController extends GetxController
   late AnimationController animationController;
   late Animation<Offset> slideAnimation;
   final keyconfirm = GlobalKey();
-  final PersistentTabController controllerBar =
-      PersistentTabController(initialIndex: 0);
+  final PersistentTabController controllerBar = PersistentTabController(initialIndex: 0);
   String activevendor = "";
   RxString overlayactivepenjualan = "main".obs;
   late Box outstandingBox;
@@ -119,8 +118,7 @@ class TakingOrderVendorController extends GetxController
   RxList<CartDetail> get cartDetailList => _penjualanController.cartDetailList;
   RxList<CartModel> get cartList => _penjualanController.cartList;
   RxString get selectedValue => _penjualanController.selectedValue;
-  RxList<ProductData> get selectedProduct =>
-      _penjualanController.selectedProduct;
+  RxList<ProductData> get selectedProduct => _penjualanController.selectedProduct;
   Rx<TextEditingController> get cnt => _penjualanController.cnt;
   RxList<int> get listQty => _penjualanController.listQty;
   Rx<TextEditingController> get notes => _penjualanController.notes;
@@ -416,10 +414,8 @@ class TakingOrderVendorController extends GetxController
 
   //for laporan page
   RxString get choosedReport => _laporanController.choosedReport;
-  RxList<ReportPembayaranModel> get listReportPembayaranshow =>
-      _laporanController.listReportPembayaranshow;
-  RxList<ReportPenjualanModel> get listReportPenjualanShow =>
-      _laporanController.listReportPenjualanShow;
+  RxList<ReportPembayaranModel> get listReportPembayaranshow => _laporanController.listReportPembayaranshow;
+  RxList<ReportPenjualanModel> get listReportPenjualanShow => _laporanController.listReportPenjualanShow;
   RxInt get allReportlength => _laporanController.allReportlength;
 
   filteReport() async {
@@ -669,13 +665,13 @@ class TakingOrderVendorController extends GetxController
     listdir.clear();
     pricelistdir.clear();
 
-    // if (await File('$productdir/$informasiconfig').exists()) {
-    //   processfile(false);
-    //   return;
-    // }
+    if (await File('$productdir/$activevendor/$informasiconfig').exists()) {
+      processfile(false);
+      return;
+    }
 
     // Create a folder if it doesn't exist
-    Directory directory = Directory('$productdir/');
+    Directory directory = Directory('$productdir/$activevendor/');
     if (!await directory.exists()) {
       await directory.create(recursive: true);
     }
@@ -689,19 +685,26 @@ class TakingOrderVendorController extends GetxController
       return;
     }
     // Create the file path
-    String filePath = '$productdir/$informasiconfig';
+    String filePath = '$productdir/$activevendor/$informasiconfig';
 
     // Download the file
-    final response = await http.get(Uri.parse('$urlAPI/$url'));
+    final response = await http.get(Uri.parse('$urlAPI/$url?vendor=$activevendor'));
 
     if (response.statusCode == 200) {
       // Write the file
-      File file = File(filePath);
-      await file.writeAsBytes(response.bodyBytes);
-      processfile(true);
+      try {
+        var resp = jsonDecode(response.body);
+        if(resp['error'] == 'vendor tidak ditemukan'){
+          processfile(false);
+        }
+      } catch (e) {
+        File file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+        processfile(true);
+      }
     } else {
       processfile(false);
-      throw Exception('Failed to download file');
+      // throw Exception('Failed to download file');
     }
   }
 
@@ -796,8 +799,8 @@ class TakingOrderVendorController extends GetxController
       }
     }
     branchinfobox.close();
-    if (await File('$productdir/$informasiconfig').exists() && databranch != null) {
-      var res = await File('$productdir/$informasiconfig').readAsString();
+    if (await File('$productdir/$activevendor/$informasiconfig').exists() && databranch != null) {
+      var res = await File('$productdir/$activevendor/$informasiconfig').readAsString();
       var ls = const LineSplitter();
       var tlist = ls.convert(res);
       for (var i = 0; i < tlist.length; i++) {
@@ -854,7 +857,7 @@ class TakingOrderVendorController extends GetxController
       dir = "$dir/${pathh[i]}";
     }
     var fname = pathh[pathh.length - 1];
-    await ApiClient().downloadfiles(dir, fname);
+    await ApiClient().downloadfiles(dir, fname, activevendor);
   }
 
   handleselectedindexinformasi(int index) {
