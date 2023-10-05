@@ -958,6 +958,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
     }
   }
 
+  downloadulangdata(){
+    print("proses download ulang data");
+  }
+
   @override
   void didChangeAccessibilityFeatures() {}
 

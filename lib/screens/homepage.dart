@@ -156,7 +156,10 @@ class Homepage extends StatelessWidget {
                     confirm: Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: OutlinedButton(
-                        onPressed: () => {Get.back()},
+                        onPressed: () {
+                            Get.back();
+                            splashscreenController.downloadulangdata();
+                          },
                         style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.teal),
                         child: const Text("YA",
