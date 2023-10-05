@@ -194,7 +194,6 @@ class ApiClient {
 
         // Download the file
         final response = await http.post(Uri.parse("$urlAPI/getproductbydir"),headers: {"Content-Type": "application/json",}, body: jsonEncode(postbody),);
-
         if (response.statusCode == 200) {
           // Write the file
           File file = File(filePath.replaceAll("%20", " "));

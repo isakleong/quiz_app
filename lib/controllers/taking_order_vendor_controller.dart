@@ -665,10 +665,10 @@ class TakingOrderVendorController extends GetxController
     listdir.clear();
     pricelistdir.clear();
 
-    if (await File('$productdir/$activevendor/$informasiconfig').exists()) {
-      processfile(false);
-      return;
-    }
+    // if (await File('$productdir/$activevendor/$informasiconfig').exists()) {
+    //   processfile(false);
+    //   return;
+    // }
 
     // Create a folder if it doesn't exist
     Directory directory = Directory('$productdir/$activevendor/');
