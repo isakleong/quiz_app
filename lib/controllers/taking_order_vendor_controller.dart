@@ -35,21 +35,16 @@ import '../screens/taking_order_vendor/payment/dialogerrorpayment.dart';
 import '../tools/service.dart';
 import 'package:http/http.dart' as http;
 
-class TakingOrderVendorController extends GetxController
-    with GetTickerProviderStateMixin {
-  final PembayaranController _pembayaranController =
-      Get.put(PembayaranController());
+class TakingOrderVendorController extends GetxController with GetTickerProviderStateMixin {
+  final PembayaranController _pembayaranController = Get.put(PembayaranController());
   final LaporanController _laporanController = Get.put(LaporanController());
-  final PenjualanController _penjualanController =
-      Get.put(PenjualanController());
+  final PenjualanController _penjualanController = Get.put(PenjualanController());
   final ReturController _returController = Get.put(ReturController());
   late AnimationController animationController;
   late Animation<Offset> slideAnimation;
-  final keyconfirm = GlobalKey();
   final PersistentTabController controllerBar = PersistentTabController(initialIndex: 0);
   String activevendor = "";
   RxString overlayactivepenjualan = "main".obs;
-  late Box outstandingBox;
   RxString custcode = "".obs;
 
   @override
@@ -135,6 +130,7 @@ class TakingOrderVendorController extends GetxController
   late Box tokenbox;
   late Box vendorBox;
   GlobalKey keyalamat = GlobalKey();
+  GlobalKey keyconfirm = GlobalKey();
 
   getListItem() {
     _penjualanController.getListItem();
@@ -244,6 +240,7 @@ class TakingOrderVendorController extends GetxController
   RxBool isFailedLoadOutstanding = false.obs;
   List<Vendor> vendorlist = <Vendor>[];
   int idvendorg = -1;
+  late Box outstandingBox;
 
   getBoxOutStanding() async {
     try {
@@ -487,8 +484,9 @@ class TakingOrderVendorController extends GetxController
           backgroundColor: Colors.white,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: DialogErrorPayment(
-            judul: "Data Payment tidak ditemukan, silahkan coba lagi !",
+          child: DialogInfo(
+            judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
+            desc: "Data Payment tidak ditemukan, silahkan coba lagi !",
             ontap: () {
               Get.back();
             },
@@ -497,22 +495,14 @@ class TakingOrderVendorController extends GetxController
   }
 
   //for retur page
-  Rx<TextEditingController> get tarikbarangfield =>
-      _returController.tarikbarangfield;
-  Rx<TextEditingController> get tukarwarnafield =>
-      _returController.tukarwarnafield;
-  Rx<TextEditingController> get gantikemasanfield =>
-      _returController.gantikemasanfield;
-  Rx<TextEditingController> get servismebelfield =>
-      _returController.servismebelfield;
-  Rx<TextEditingController> get gantibarangfield =>
-      _returController.gantibarangfield;
-  Rx<TextEditingController> get produkpenggantifield =>
-      _returController.produkpenggantifield;
-  RxList<ProductData> get selectedProducttarikbarang =>
-      _returController.selectedProducttarikbarang;
-  RxList<ProductData> get selectedProductgantikemasan =>
-      _returController.selectedProductgantikemasan;
+  Rx<TextEditingController> get tarikbarangfield => _returController.tarikbarangfield;
+  Rx<TextEditingController> get tukarwarnafield => _returController.tukarwarnafield;
+  Rx<TextEditingController> get gantikemasanfield => _returController.gantikemasanfield;
+  Rx<TextEditingController> get servismebelfield => _returController.servismebelfield;
+  Rx<TextEditingController> get gantibarangfield => _returController.gantibarangfield;
+  Rx<TextEditingController> get produkpenggantifield => _returController.produkpenggantifield;
+  RxList<ProductData> get selectedProducttarikbarang => _returController.selectedProducttarikbarang;
+  RxList<ProductData> get selectedProductgantikemasan => _returController.selectedProductgantikemasan;
   RxList<ProductData> get selectedProductservismebel => _returController.selectedProductservismebel;
   RxList<ProductData> get selectedProductgantibarang => _returController.selectedProductgantibarang;
   RxList<ProductData> get selectedProductTukarWarna => _returController.selectedProductTukarWarna;

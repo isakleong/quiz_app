@@ -16,7 +16,7 @@ class AppConfig {
 
   static const String baseUrlVendor = "https://mitra.tirtakencana.com";
   static const String baseUrlVendorLocal = "http://10.11.22.21";
-  static const String apiurlvendorpath = "/tangki-air-jerapah";
+  static const String apiurlvendorpath = "/tangki-air-jerapah-dev";
   String unknowerrorvendor = "100";
   String itemcodenotfoundvendor = "101";
   String dateinvalidvendor = "102";
@@ -30,6 +30,7 @@ class AppConfig {
   String folderpricelist = "Pricelist";
   String folderProductKnowledge = "Product%20Knowledge";
   String folderPromo = "Promo";
+  String vendorstate = 'VENDOR STATE';
 
   // static const String baseUrl = "https://link.tirtakencana.com/SFATools/public/api";
   // static const String initUrl = "https://link.tirtakencana.com/SFATools";

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sfa_tools/common/app_config.dart';
@@ -16,12 +17,16 @@ import 'package:sfa_tools/controllers/background_service_controller.dart';
 import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/loginmodel.dart';
 import 'package:sfa_tools/models/module.dart';
+import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
+import 'package:shimmer/shimmer.dart';
 import '../models/vendorinfomodel.dart';
+import '../screens/taking_order_vendor/payment/dialogerrorpayment.dart';
+import 'package:http/http.dart' as http;
 
 class SplashscreenController extends GetxController with StateMixin implements WidgetsBindingObserver {
   var errorMessage = "".obs;
@@ -50,7 +55,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
   late Box shiptobox;
   late Box tokenbox;
   late Box branchinfobox;
+  late Box devicestatebox;
   bool retrypermission = false;
+  GlobalKey keybanner = GlobalKey();
 
   @override
   void onInit() {
@@ -726,6 +733,54 @@ class SplashscreenController extends GetxController with StateMixin implements W
     }
   }
 
+  managetokenbox(String action) async {
+    try {
+      if(action == 'open'){
+        tokenbox = await Hive.openBox('tokenbox');
+      } else {
+        tokenbox.close();
+      }
+    // ignore: empty_catches
+    } catch (e) {
+    }
+  }
+
+  managecustomerbox(String action) async {
+    try {
+      if(action == "open"){
+        customerBox = await Hive.openBox('customerBox');
+      } else {
+        customerBox.close();
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  manageshipbox(String action) async {
+    try {
+      if(action == "open"){
+        shiptobox = await Hive.openBox('shiptoBox');
+      } else {
+        shiptobox.close();
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  managedevicestatebox(String action) async{
+     try {
+      if(action == 'open'){
+        devicestatebox = await Hive.openBox('devicestatebox');
+      } else {
+        devicestatebox.close();
+      }
+    // ignore: empty_catches
+    } catch (e) {
+    }
+  }
+
   getVendor() async { 
     await getBox();
     try {
@@ -960,8 +1015,345 @@ class SplashscreenController extends GetxController with StateMixin implements W
     }
   }
 
-  downloadulangdata(){
-    print("proses download ulang data");
+ //untuk unduh ulang data
+  late dynamic jsonstate;
+  RxList<String> progressdownload = <String>['',''].obs;
+
+  int calculateJsonSize(dynamic jsonData) {
+    String jsonString = json.encode(jsonData);
+    int sizeInBytes = utf8.encode(jsonString).length;
+    return sizeInBytes;
+  }
+
+  Future<bool> _onWillPop() async {
+    return false;
+  }
+
+  showloadingbanner(BuildContext ctx){
+    progressdownload.clear();
+    for (var i = 0; i < 3; i++) {
+      progressdownload.add('');
+    }
+    double width = MediaQuery.of(ctx).size.width;
+    double height = MediaQuery.of(ctx).size.height;
+    Get.dialog(
+      barrierDismissible: false,
+      WillPopScope(
+        onWillPop: _onWillPop,
+        child: Dialog(
+          key: keybanner,
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: SizedBox(
+                width: width * 0.8,
+                height: 0.25 * height,
+                child: Stack(
+                  children: [
+            Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: height * 0.03,
+                  ),
+                  const TextView(text: "Mohon Menunggu",fontSize: 18, headings: 'H2'),
+                  SizedBox(
+                    height: height * 0.05,
+                  ),
+                  Obx(()=>Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      for(var k =0; k< progressdownload.length;k++)
+                        progressdownload[k] == ''? 
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              width: 0.1 * width,
+                              height: 0.1 * width,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ) : progressdownload[k] == 'ok'? Container(
+                              width: 0.1 * width,
+                              height: 0.1 * width,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.green,
+                              ),
+                            ) : Container(
+                              width: 0.1 * width,
+                              height: 0.1 * width,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                            )
+                        // Lottie.asset('assets/lottie/${progressdownload[k]}', width: width * 0.25),
+                  ],))
+                ],
+              ),
+            ),
+          ],
+        ),
+          )),
+      ));
+  }
+
+  unduhdataroute() async {
+    try {
+      final encryptedParam = await Utils.encryptData(await Utils().getParameterData("sales"));
+      var postbody = {
+        'sales' : encryptedParam
+      };
+      var connTest = await ApiClient().checkConnection();
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      if(!isConnected){
+        Navigator.pop(keybanner.currentContext!);
+          Get.dialog(Dialog(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: DialogInfo(
+              desc: "Tidak Ada koneksi internet !",
+              judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
+              ontap: () {
+                Get.back();
+              },
+            )));
+          return;
+      }
+      String urlAPI = arrConnTest[1];
+      final response = await http.post(Uri.parse("$urlAPI/getcustbyroute"),headers: {"Content-Type": "application/json",}, body: jsonEncode(postbody),);
+      var datajson = jsonDecode(response.body);
+      progressdownload[0] = 'ok';
+      unduhdatacustomer(datajson['data']);
+    } catch (e) {
+      //error tidak bisa update
+      progressdownload[0] = 'bad';
+      progressdownload[1] = 'bad';
+      unduhdataitem();
+    }
+  }
+
+  unduhdatacustomer(dynamic listcust) async {
+    try {
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      if(!isConnected){
+        Navigator.pop(keybanner.currentContext!);
+        progressdownload[1] = 'bad';
+        return;
+      }
+      String urlAPI = arrConnTest[1];
+      await managetokenbox('open');
+      var tokenboxdata = await tokenbox.get(salesIdParams.value);
+      var dectoken = Utils().decrypt(tokenboxdata);
+      await managetokenbox('close');
+      final url = Uri.parse('$urlAPI${AppConfig.apiurlvendorpath}/api/setting/multi-customer-info');
+      final request = http.MultipartRequest('POST', url);
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $dectoken',
+      });
+
+      for (var i = 0; i < listcust.length; i++) {
+        request.fields['customers[$i]'] = listcust[i]['CustID'];
+      }
+      final response = await request.send();
+      final responseString = await response.stream.bytesToString();
+      var datadecoded = jsonDecode(responseString);
+      await managecustomerbox('open');
+      await manageshipbox('open');
+      for (var i = 0; i < datadecoded['customers'].length; i++) {
+        Customer datacust = Customer.fromJson(datadecoded['customers'][i]['customer']);
+        if(!customerBox.isOpen) await managecustomerbox('open');
+        await customerBox.delete(datacust.no);
+        await customerBox.put(datacust.no,datacust);
+        if(datadecoded['customers'][i]['shipToAddresses'].length != 0){
+          for (var j = 0; j < datadecoded['customers'][i]['shipToAddresses'].length; j++) {
+            ShipToAddress dataaddr = ShipToAddress.fromJson(datadecoded['customers'][i]['shipToAddresses'][j]);
+            if(!shiptobox.isOpen) await manageshipbox('open');
+            await shiptobox.delete(datacust.no);
+            await shiptobox.put(datacust.no,dataaddr);
+          }
+        }
+      }
+      await managecustomerbox('close');
+      await manageshipbox('close');
+      progressdownload[1] = 'ok';
+      unduhdataitem();
+      return;
+    } on SocketException{
+        progressdownload[1] = 'bad';
+        Navigator.pop(keybanner.currentContext!);
+        await managetokenbox('close');
+        await managecustomerbox('close');
+        return;
+    } catch (e) {
+        progressdownload[1] = 'bad';
+        print(e.toString());
+        unduhdataitem();
+        await managetokenbox('close');
+        await managecustomerbox('close');
+        return;
+    }
+  }
+
+  unduhdataitem() async {
+    try {
+      await getBox();
+      // print("unduh data");
+      var connTest = await ApiClient().checkConnection(jenis: "vendor");
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      if(!isConnected){
+        progressdownload[2] = 'bad';
+        Navigator.pop(keybanner.currentContext!);
+        return;
+      }
+      String urlAPI = arrConnTest[1];
+
+      var tokenboxdata = await tokenbox.get(salesIdParams.value);
+      var dectoken = Utils().decrypt(tokenboxdata);
+      final url = Uri.parse('$urlAPI${AppConfig.apiurlvendorpath}/api/setting/all-items');
+      final request = http.MultipartRequest('POST', url);
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $dectoken',
+      });
+      final response = await request.send();
+      final responseString = await response.stream.bytesToString();
+      var datadecoded = jsonDecode(responseString);
+      print(datadecoded);
+      // print(calculateJsonSize(datadecoded)); //91458 bytes
+      // print(datadecoded.length); //155 item
+      progressdownload[2]= "ok";
+      Navigator.pop(keybanner.currentContext!);
+      return;
+      bool allok = true;
+      for (var i = 0; i < progressdownload.length; i++) {
+        if(progressdownload[i] != 'ok'){
+          allok = false;
+          break;
+        }
+      }
+      if(allok){
+        DateTime now = DateTime.now();
+        print('end time: $now');
+        await managedevicestatebox('open');
+        await devicestatebox.delete(salesIdParams.value);
+        await devicestatebox.put(salesIdParams.value, jsonstate);
+        await managedevicestatebox('close');
+        Navigator.pop(keybanner.currentContext!);
+        Get.dialog(Dialog(
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: DialogInfo(
+            desc: "Semua data telah diupdate !",
+            judul: "Informasi",lottieasset: "done.json",
+            ontap: () {
+              Get.back();
+            },
+          )));
+          return;
+      }
+      Navigator.pop(keybanner.currentContext!);
+    } on SocketException{
+      progressdownload[2] = 'bad';
+      Navigator.pop(keybanner.currentContext!);
+    } catch (e) {
+      print(e);
+      progressdownload[2] = 'bad';
+      Navigator.pop(keybanner.currentContext!);
+    }
+    await closebox();
+  }
+
+  getstateunduhulang() async {
+    try {
+      DateTime now = DateTime.now();
+      print('start time: $now');
+      var connTest = await ApiClient().checkConnection();
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      if(!isConnected){
+      //tidak ada koneksi tidak bisa update
+        Navigator.pop(keybanner.currentContext!);
+        Get.dialog(Dialog(
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: DialogInfo(
+            desc: "Tidak Ada koneksi internet !",
+            judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
+            ontap: () {
+              Get.back();
+            },
+          )));
+        return;
+      }
+      String urlAPI = arrConnTest[1];
+      String saleid = await Utils().getParameterData('sales');
+      String branchcode = saleid.toString().substring(0,3);
+      final result = await ApiClient().getData(urlAPI, "/getstate?branch=$branchcode");
+      jsonstate = jsonDecode(result);
+      await managedevicestatebox('open');
+      var datastatebox = await devicestatebox.get(saleid);
+      await managedevicestatebox('close');
+      if(datastatebox != null){
+        for (var i = 0; i < jsonstate['datastate'].length; i++) {
+          for (var k = 0; k < datastatebox['datastate'].length; k++) {
+            if(datastatebox['datastate'][k]['name'] == jsonstate['datastate'][i]['name'] && datastatebox['datastate'][k]['Value'] != jsonstate['datastate'][i]['Value']){
+              if(AppConfig().vendorstate.toLowerCase() == datastatebox['datastate'][k]['name'].toString().toLowerCase()){
+                //perlu update
+                // Navigator.pop(keybanner.currentContext!);
+                unduhdataroute();
+                return;
+              }
+            }
+          }
+        }
+        //sudah terupdate
+        Navigator.pop(keybanner.currentContext!);
+        Get.dialog(Dialog(
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: DialogInfo(
+            desc: "Semua data telah diupdate !",
+            judul: "Informasi",lottieasset: "done.json",
+            ontap: () {
+              Get.back();
+            },
+          )));
+        return;
+      }
+      //belum ada data state, perlu update
+      unduhdataroute();
+      return;
+    } catch (e) {
+      //error tidak bisa update
+      print(e);
+      Navigator.pop(keybanner.currentContext!);
+      Get.dialog(Dialog(
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: DialogInfo(
+            desc: e.toString(),
+            judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
+            ontap: () {
+              Get.back();
+            },
+          )));
+      return;
+    }
   }
 
   @override

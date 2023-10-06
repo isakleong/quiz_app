@@ -5,11 +5,13 @@ import '../../../common/app_config.dart';
 import '../../../widgets/customelevatedbutton.dart';
 import '../../../widgets/textview.dart';
 
-class DialogErrorPayment extends StatelessWidget {
+class DialogInfo extends StatelessWidget {
   String judul;
+  String desc;
+  String lottieasset;
   // ignore: prefer_typing_uninitialized_variables
   var ontap;
-  DialogErrorPayment({super.key, required this.judul, required this.ontap});
+  DialogInfo({super.key, required this.judul, required this.ontap, required this.desc, required this.lottieasset});
 
   @override
   Widget build(BuildContext context) {
@@ -27,22 +29,22 @@ class DialogErrorPayment extends StatelessWidget {
                 SizedBox(
                   height: height * 0.03,
                 ),
-                const TextView(
-                  text: "Oops, Terjadi kesalahan",
+                TextView(
+                  text: judul,
                   headings: 'H3',
                   fontSize: 17,
                 ),
                 SizedBox(
                   height: height * 0.01,
                 ),
-                Lottie.asset('assets/lottie/error.json', width: width * 0.25),
+                Lottie.asset('assets/lottie/$lottieasset', width: width * 0.25),
                 SizedBox(
-                  height: height * 0.01,
+                  height: height * 0.02,
                 ),
                 SizedBox(
                   width: width * 0.4,
                   child: TextView(
-                    text: judul,
+                    text: desc,
                     headings: 'H4',
                     textAlign: TextAlign.center,
                     fontSize: 15,
