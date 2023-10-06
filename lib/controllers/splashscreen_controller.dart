@@ -1141,6 +1141,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
   unduhdatacustomer(dynamic listcust) async {
     try {
+      String salesid = await Utils().getParameterData('sales');
       var connTest = await ApiClient().checkConnection(jenis: "vendor");
       var arrConnTest = connTest.split("|");
       bool isConnected = arrConnTest[0] == 'true';
@@ -1151,7 +1152,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
       String urlAPI = arrConnTest[1];
       await managetokenbox('open');
-      var tokenboxdata = await tokenbox.get(salesIdParams.value);
+      var tokenboxdata = await tokenbox.get(salesid);
       var dectoken = Utils().decrypt(tokenboxdata);
       await managetokenbox('close');
       final url = Uri.parse('$urlAPI${AppConfig.apiurlvendorpath}/api/setting/multi-customer-info');
@@ -1196,7 +1197,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
         return;
     } catch (e) {
         progressdownload[1] = 'bad';
-        print(e.toString());
         unduhdataitem();
         await managetokenbox('close');
         await managecustomerbox('close');
@@ -1206,8 +1206,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
   unduhdataitem() async {
     try {
-      await getBox();
       // print("unduh data");
+      String salesid = await Utils().getParameterData('sales');
       var connTest = await ApiClient().checkConnection(jenis: "vendor");
       var arrConnTest = connTest.split("|");
       bool isConnected = arrConnTest[0] == 'true';
@@ -1217,9 +1217,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
         return;
       }
       String urlAPI = arrConnTest[1];
-
-      var tokenboxdata = await tokenbox.get(salesIdParams.value);
+      await managetokenbox('open');
+      var tokenboxdata = await tokenbox.get(salesid);
       var dectoken = Utils().decrypt(tokenboxdata);
+      await managetokenbox('close');
       final url = Uri.parse('$urlAPI${AppConfig.apiurlvendorpath}/api/setting/all-items');
       final request = http.MultipartRequest('POST', url);
       request.headers.addAll({
@@ -1230,49 +1231,20 @@ class SplashscreenController extends GetxController with StateMixin implements W
       final responseString = await response.stream.bytesToString();
       var datadecoded = jsonDecode(responseString);
       print(datadecoded);
-      // print(calculateJsonSize(datadecoded)); //91458 bytes
-      // print(datadecoded.length); //155 item
       progressdownload[2]= "ok";
       Navigator.pop(keybanner.currentContext!);
       return;
-      bool allok = true;
-      for (var i = 0; i < progressdownload.length; i++) {
-        if(progressdownload[i] != 'ok'){
-          allok = false;
-          break;
-        }
-      }
-      if(allok){
-        DateTime now = DateTime.now();
-        print('end time: $now');
-        await managedevicestatebox('open');
-        await devicestatebox.delete(salesIdParams.value);
-        await devicestatebox.put(salesIdParams.value, jsonstate);
-        await managedevicestatebox('close');
-        Navigator.pop(keybanner.currentContext!);
-        Get.dialog(Dialog(
-          backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: DialogInfo(
-            desc: "Semua data telah diupdate !",
-            judul: "Informasi",lottieasset: "done.json",
-            ontap: () {
-              Get.back();
-            },
-          )));
-          return;
-      }
-      Navigator.pop(keybanner.currentContext!);
+      await updatestate();
     } on SocketException{
       progressdownload[2] = 'bad';
       Navigator.pop(keybanner.currentContext!);
+      await managetokenbox('close');
     } catch (e) {
       print(e);
       progressdownload[2] = 'bad';
       Navigator.pop(keybanner.currentContext!);
+      await managetokenbox('close');
     }
-    await closebox();
   }
 
   getstateunduhulang() async {
@@ -1354,6 +1326,39 @@ class SplashscreenController extends GetxController with StateMixin implements W
           )));
       return;
     }
+  }
+
+  updatestate() async{
+      bool allok = true;
+      String salesid = await Utils().getParameterData('sales');
+      for (var i = 0; i < progressdownload.length; i++) {
+        if(progressdownload[i] != 'ok'){
+          allok = false;
+          break;
+        }
+      }
+      if(allok){
+        DateTime now = DateTime.now();
+        print('end time: $now');
+        await managedevicestatebox('open');
+        await devicestatebox.delete(salesid);
+        await devicestatebox.put(salesid, jsonstate);
+        await managedevicestatebox('close');
+        Navigator.pop(keybanner.currentContext!);
+        Get.dialog(Dialog(
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: DialogInfo(
+            desc: "Semua data telah diupdate !",
+            judul: "Informasi",lottieasset: "done.json",
+            ontap: () {
+              Get.back();
+            },
+          )));
+          return;
+      }
+      Navigator.pop(keybanner.currentContext!);
   }
 
   @override
