@@ -439,19 +439,14 @@ class TakingOrderVendorController extends GetxController
   Rx<TextEditingController> get nomorcek => _pembayaranController.nomorcek;
   Rx<TextEditingController> get nominalcek => _pembayaranController.nominalcek;
   Rx<TextEditingController> get nmbank => _pembayaranController.nmbank;
-  Rx<TextEditingController> get jatuhtempotgl =>
-      _pembayaranController.jatuhtempotgl;
-  RxList<PaymentData> get listpaymentdata =>
-      _pembayaranController.listpaymentdata;
+  Rx<TextEditingController> get jatuhtempotgl =>_pembayaranController.jatuhtempotgl;
+  RxList<PaymentData> get listpaymentdata => _pembayaranController.listpaymentdata;
   TabController get controller => _pembayaranController.controller;
   Rx<TextEditingController> get nominalCn => _pembayaranController.nominalCn;
-  Rx<TextEditingController> get nominaltransfer =>
-      _pembayaranController.nominaltransfer;
-  RxString get choosedTransferMethod =>
-      _pembayaranController.choosedTransferMethod;
+  Rx<TextEditingController> get nominaltransfer => _pembayaranController.nominaltransfer;
+  RxString get choosedTransferMethod => _pembayaranController.choosedTransferMethod;
   RxString get choosedTunaiMethod => _pembayaranController.choosedTunaiMethod;
-  Rx<TextEditingController> get nominaltunai =>
-      _pembayaranController.nominaltunai;
+  Rx<TextEditingController> get nominaltunai => _pembayaranController.nominaltunai;
   get pembayaranListKey => _pembayaranController.pembayaranListKey;
   get showBanner => _pembayaranController.showBanner;
   get totalpiutang => _penjualanController.totalpiutang;
@@ -914,23 +909,6 @@ class TakingOrderVendorController extends GetxController
     }
     isSuccess.value = true;
   }
-
-  String basepath = '/storage/emulated/0/SFAPromo/';
-
-  List<String> imgpath = [
-    '001A_T_AA_23.jpg',
-    '04_TRO-1B_Retailer_BBS_23.jpg',
-    '04_TRO-2_Retailer_BBS_23.jpg',
-    '050_T_AA_23.jpg'
-  ];
-
-  List<String> imgpromo = [
-    '050_T_AAIP_23.jpg',
-    '064_T_AA_23.jpg',
-    '074A_T_AA_23.jpg',
-    '067_T_AA_23.jpg',
-    '080_R_AA_23.jpg',
-  ];
 
   handleselectedsegmentcategory(int index) {
     indexselectedsegmentcategory.value = index;

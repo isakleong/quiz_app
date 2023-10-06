@@ -21,7 +21,6 @@ import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
-
 import '../models/vendorinfomodel.dart';
 
 class SplashscreenController extends GetxController with StateMixin implements WidgetsBindingObserver {
