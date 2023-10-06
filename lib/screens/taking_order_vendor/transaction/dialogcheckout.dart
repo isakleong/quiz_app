@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/checkoutlist.dart';
 import 'package:sfa_tools/widgets/customelevatedbutton.dart';
+import 'package:sfa_tools/widgets/customshowcase.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
@@ -53,48 +54,53 @@ class DialogCheckOut extends StatelessWidget {
                   border: Border.all(color: Colors.grey.shade500),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Icon(Icons.home,
-                        color: AppConfig.mainCyan,
-                        size: 12
-                            .sp), // Use any desired icon from flutter_icons package
-                    const SizedBox(
-                        width: 8), // Adjust the space between icon and text
-                    Obx(
-                      () => Expanded(
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            value:  
-                            _takingOrderVendorController.listaddress.length > 1 ?
-                            _takingOrderVendorController.choosedAddress.value == "" ? 'Pilih Alamat Pengiriman' : _takingOrderVendorController.choosedAddress.value :
-                             _takingOrderVendorController.listaddress[0].address,
-                            onChanged: (String? newValue) {
-                              _takingOrderVendorController.choosedAddress.value = newValue!;
-                            },
-                            items: _takingOrderVendorController.listaddress.map((value) {
-                              return DropdownMenuItem<String>(
-                                value: value.address,
-                                child: TextView(
-                                  text: value.address,
-                                  textAlign: TextAlign.left,
-                                  fontSize: 10.sp,
-                                  headings: 'H4',
-                                ),
-                              );
-                            }).toList(),
+                child: CustomShowCase(
+                  description: 'Silahkan pilih alamat pengiriman !',
+                  globalkey: _takingOrderVendorController.keyalamat,
+                  fontsize: 12.sp,
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Icon(Icons.home,
+                          color: AppConfig.mainCyan,
+                          size: 12
+                              .sp), // Use any desired icon from flutter_icons package
+                      const SizedBox(
+                          width: 8), // Adjust the space between icon and text
+                      Obx(
+                        () => Expanded(
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              isExpanded: true,
+                              value:  
+                              _takingOrderVendorController.listaddress.length > 1 ?
+                              _takingOrderVendorController.choosedAddress.value == "" ? 'Pilih Alamat Pengiriman' : _takingOrderVendorController.choosedAddress.value :
+                               _takingOrderVendorController.listaddress[0].address,
+                              onChanged: (String? newValue) {
+                                _takingOrderVendorController.choosedAddress.value = newValue!;
+                              },
+                              items: _takingOrderVendorController.listaddress.map((value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.address,
+                                  child: TextView(
+                                    text: value.address,
+                                    textAlign: TextAlign.left,
+                                    fontSize: 10.sp,
+                                    headings: 'H4',
+                                  ),
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                  ],
+                      const SizedBox(
+                        width: 10,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -338,7 +344,7 @@ class DialogCheckOut extends StatelessWidget {
                       _takingOrderVendorController.handleSaveConfirm( "Yakin untuk simpan penjualan ?",
                          "Konfirmasi Penjualan", 
                          () async {
-                            await _takingOrderVendorController.checkout();
+                            await _takingOrderVendorController.checkout(context);
                         });
                     },
                     radius: 4,

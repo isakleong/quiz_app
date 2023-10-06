@@ -18,6 +18,7 @@ import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukserupa.dart';
 import 'package:http/http.dart' as http;
+import 'package:showcaseview/showcaseview.dart';
 import '../models/cartmodel.dart';
 import '../models/detailproductdata.dart';
 import '../models/loginmodel.dart';
@@ -477,7 +478,9 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: DialogCheckOut()));
+        child: ShowCaseWidget(
+          builder: Builder(builder: (_) => DialogCheckOut()),
+          )));
   }
 
   showProdukSerupa(CartDetail data) {

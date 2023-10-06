@@ -581,6 +581,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
         change(null, status: RxStatus.error(errorMessage.value));
       }
     } else {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String currentVersion = packageInfo.version;
+      appVersion.value = currentVersion;
       var moduleBox = await Hive.openBox<Module>('moduleBox');
       if (moduleBox.length > 0) {
         // print("first if");

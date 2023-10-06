@@ -23,6 +23,7 @@ import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/tukarwarnamodel.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
 import 'package:sfa_tools/tools/utils.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../common/app_config.dart';
 import '../models/cartdetail.dart';
 import '../models/loginmodel.dart';
@@ -133,6 +134,7 @@ class TakingOrderVendorController extends GetxController
   RxString infoos = "".obs;
   late Box tokenbox;
   late Box vendorBox;
+  GlobalKey keyalamat = GlobalKey();
 
   getListItem() {
     _penjualanController.getListItem();
@@ -144,6 +146,12 @@ class TakingOrderVendorController extends GetxController
 
   previewCheckOut() {
     _penjualanController.previewCheckOut();
+  }
+
+  reminderaddress(BuildContext ctx){
+    ShowCaseWidget.of(ctx).startShowCase([
+      keyalamat
+    ]);
   }
 
   addToCart() async {
@@ -203,7 +211,7 @@ class TakingOrderVendorController extends GetxController
     _penjualanController.showProdukSerupa(data);
   }
 
-  checkout() async {
+  checkout(BuildContext ctx) async {
     if (await _penjualanController.cekvalidcheckout()) {
       await _penjualanController.checkout();
       _laporanController.getReportList(false);
@@ -224,8 +232,9 @@ class TakingOrderVendorController extends GetxController
       controllerBar.jumpToTab(2);
     } else {
       Navigator.pop(keyconfirm.currentContext!);
-      Get.snackbar("error", "silahkan pilih alamat pengiriman terlebih dahulu",
-          backgroundColor: Colors.white, colorText: Colors.red);
+      reminderaddress(ctx);
+      // Get.snackbar("error", "silahkan pilih alamat pengiriman terlebih dahulu",
+      //     backgroundColor: Colors.white, colorText: Colors.red);
     }
   }
 
