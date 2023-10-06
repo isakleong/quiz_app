@@ -31,7 +31,7 @@ import '../models/outstandingdata.dart';
 import '../models/tarikbarangmodel.dart';
 import '../models/treenodedata.dart';
 import '../models/vendor.dart';
-import '../screens/taking_order_vendor/payment/dialogerrorpayment.dart';
+import '../widgets/dialoginfo.dart';
 import '../tools/service.dart';
 import 'package:http/http.dart' as http;
 

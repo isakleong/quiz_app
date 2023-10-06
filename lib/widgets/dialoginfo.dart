@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../common/app_config.dart';
-import '../../../widgets/customelevatedbutton.dart';
-import '../../../widgets/textview.dart';
+import '../common/app_config.dart';
+import 'customelevatedbutton.dart';
+import 'textview.dart';
 
 class DialogInfo extends StatelessWidget {
   String judul;

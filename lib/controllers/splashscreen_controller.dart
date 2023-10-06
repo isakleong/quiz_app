@@ -25,7 +25,7 @@ import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:shimmer/shimmer.dart';
 import '../models/vendorinfomodel.dart';
-import '../screens/taking_order_vendor/payment/dialogerrorpayment.dart';
+import '../widgets/dialoginfo.dart';
 import 'package:http/http.dart' as http;
 
 class SplashscreenController extends GetxController with StateMixin implements WidgetsBindingObserver {
