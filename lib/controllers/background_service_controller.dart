@@ -1139,7 +1139,6 @@ class Backgroundservicecontroller {
   }
 
   getlistvendor() async {
-    print("getlistvendor");
     await openvendorbox();
     var keys = await getListKey('vendor');
     if (keys.isEmpty){
@@ -1155,15 +1154,12 @@ class Backgroundservicecontroller {
       }
     }
     vendorBox.close();
-    print("done getlistvendor");
     for (var i = 0; i < vendorlist.length; i++) {
-      print("get ${vendorlist[i].name}");
       await processfile(true, vendorlist[i].name);
     }
   }
 
   processfile(bool download,String vendor) async {
-    print("download");
     //download not using await because efficiency time for parallel download
     String branchuser = "";
     String warnauser = "";

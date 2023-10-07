@@ -160,7 +160,7 @@ class Homepage extends StatelessWidget {
                         onPressed: () async {
                             Get.back();
                             splashscreenController.showloadingbanner(context);
-                            splashscreenController.getstateunduhulang();
+                            splashscreenController.unduhmoduleaccess();
                             // print(await Utils().getParameterData("sales"));
                             // splashscreenController.unduhdataitem();
                             // splashscreenController.unduhdataroute();
