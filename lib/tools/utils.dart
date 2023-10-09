@@ -3,8 +3,11 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:encrypt/encrypt.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/common/app_config.dart';
+
+import '../common/hivebox_vendor.dart';
 
 class Utils {
 
@@ -119,6 +122,164 @@ class Utils {
       }
     }
   }
+
+  
+  managetokenbox(String action) async {
+    try {
+      if(action == 'open'){
+        tokenbox = await Hive.openBox('tokenbox');
+      } else {
+        tokenbox.close();
+      }
+    // ignore: empty_catches
+    } catch (e) {
+    }
+  }
+
+  managecustomerbox(String action) async {
+    try {
+      if(action == "open"){
+        customerBox = await Hive.openBox('customerBox');
+      } else {
+        customerBox.close();
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  manageshipbox(String action) async {
+    try {
+      if(action == "open"){
+        shiptobox = await Hive.openBox('shiptoBox');
+      } else {
+        shiptobox.close();
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  managedevicestatebox(String action) async{
+     try {
+      if(action == 'open'){
+        devicestatebox = await Hive.openBox('devicestatebox');
+      } else {
+        devicestatebox.close();
+      }
+    // ignore: empty_catches
+    } catch (e) {
+    }
+  }
+
+  managebranchinfobox(String action) async {
+    try {
+      if(action == 'open'){
+        branchinfobox = await Hive.openBox('BranchInfoBox');
+      } else {
+        branchinfobox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  managepaymentmethodsbox(String action) async {
+    try {
+      if(action == 'open'){
+        paymentMethodsBox = await Hive.openBox('paymentMethodsBox');
+      } else {
+        paymentMethodsBox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  managebankbox(String action) async {
+    try {
+      if(action == 'open'){
+        bankbox = await Hive.openBox('BankBox');
+      } else {
+        bankbox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  manageoutstandingbox(String action) async {
+    try {
+      if(action == 'open'){
+        outstandingBox = await Hive.openBox('outstandingBox');
+      } else {
+        outstandingBox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  managepiutangbox(String action) async {
+    try {
+      if(action == 'open'){
+        piutangBox = await Hive.openBox('piutangBox');
+      } else {
+        piutangBox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  managemasteritembox(String action) async {
+    try {
+      if(action == 'open'){
+        masteritembox = await Hive.openBox('masteritembox');
+      } else {
+        masteritembox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  manageitemvendorbox(String action) async {
+    try {
+      if(action == 'open'){
+        itemvendorbox = await Hive.openBox('itemVendorBox');
+      } else {
+        itemvendorbox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+ 
+  managevendorbox(String action) async {
+    try {
+      if(action == 'open'){
+        vendorBox = await Hive.openBox('vendorBox');
+      } else {
+        vendorBox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  managemastervendorbox(String action) async{
+    try {
+      if(action == 'open'){
+        mastervendorbox = await Hive.openBox('mastervendorbox');
+      } else {
+        mastervendorbox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
 
   String changeUrl(String originalUrl) {
   Uri originalUri = Uri.parse(originalUrl);

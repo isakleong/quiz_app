@@ -235,7 +235,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     //get shippping address data
     if(!shiptobox.isOpen) await getBox();
     var addressdata = shiptobox.get(custid);
-    print(addressdata);
     if(addressdata == null || addressdata.isEmpty ){
       choosedAddress.value = dataToko.address;
       listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
@@ -256,12 +255,12 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       }
       idvendor =  vendorlist.indexWhere((element) => element.name.toLowerCase() == activevendor);
       globalkeybox = "$salesid|$custid|${vendorlist[idvendor].prefix}|${vendorlist[idvendor].baseApiUrl}";
-      var databox = masteritemvendorbox.get(globalkeybox);
-      if (databox != null){
-        var dataconv = MasterItemVendor.fromJson(databox);
-        totalpiutang.value = dataconv.receivables!;
-        totaljatuhtempo.value = dataconv.overdue_invoices!;
+      try {
+        getpiutangfrom('piutangbox');
+      } catch (e) {
+        getpiutangfrom('masteritemvendorbox');
       }
+
       var itemvendorhive = itemvendorbox.get(globalkeybox);
       if(itemvendorhive != null){
         listProduct.clear();
@@ -280,6 +279,29 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       needtorefresh.value = true;
     }
     await closebox();
+  }
+
+  getpiutangfrom(String boxname) async {
+    if(boxname == 'masteritemvendorbox'){
+      var databox = masteritemvendorbox.get(globalkeybox);
+      if (databox != null){
+        var dataconv = MasterItemVendor.fromJson(databox);
+        totalpiutang.value = dataconv.receivables!;
+        totaljatuhtempo.value = dataconv.overdue_invoices!;
+      }
+    } else {
+      await Utils().managepiutangbox('open');
+      var databox = piutangBox.get(globalkeybox);
+      if (databox != null){
+        var dataconv = jsonDecode(databox);
+        totalpiutang.value = dataconv['receivables'].toString();
+        totaljatuhtempo.value = dataconv['overdueInvoices'].toString();
+      } else {
+        totalpiutang.value = "0";
+        totaljatuhtempo.value = "0";
+      }
+      await Utils().managepiutangbox('close');
+    }
   }
 
   addToCart(){

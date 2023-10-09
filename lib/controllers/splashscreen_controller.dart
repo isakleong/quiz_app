@@ -732,162 +732,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
     }
   }
 
-  managetokenbox(String action) async {
-    try {
-      if(action == 'open'){
-        tokenbox = await Hive.openBox('tokenbox');
-      } else {
-        tokenbox.close();
-      }
-    // ignore: empty_catches
-    } catch (e) {
-    }
-  }
-
-  managecustomerbox(String action) async {
-    try {
-      if(action == "open"){
-        customerBox = await Hive.openBox('customerBox');
-      } else {
-        customerBox.close();
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  manageshipbox(String action) async {
-    try {
-      if(action == "open"){
-        shiptobox = await Hive.openBox('shiptoBox');
-      } else {
-        shiptobox.close();
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  managedevicestatebox(String action) async{
-     try {
-      if(action == 'open'){
-        devicestatebox = await Hive.openBox('devicestatebox');
-      } else {
-        devicestatebox.close();
-      }
-    // ignore: empty_catches
-    } catch (e) {
-    }
-  }
-
-  managebranchinfobox(String action) async {
-    try {
-      if(action == 'open'){
-        branchinfobox = await Hive.openBox('BranchInfoBox');
-      } else {
-        branchinfobox.close();
-      }
-    } catch (e) {
-
-    }
-  }
-
-  managepaymentmethodsbox(String action) async {
-    try {
-      if(action == 'open'){
-        paymentMethodsBox = await Hive.openBox('paymentMethodsBox');
-      } else {
-        paymentMethodsBox.close();
-      }
-    } catch (e) {
-
-    }
-  }
-
-  managebankbox(String action) async {
-    try {
-      if(action == 'open'){
-        bankbox = await Hive.openBox('BankBox');
-      } else {
-        bankbox.close();
-      }
-    } catch (e) {
-
-    }
-  }
-
-  manageoutstandingbox(String action) async {
-    try {
-      if(action == 'open'){
-        outstandingBox = await Hive.openBox('outstandingBox');
-      } else {
-        outstandingBox.close();
-      }
-    } catch (e) {
-
-    }
-  }
-
-  managepiutangbox(String action) async {
-    try {
-      if(action == 'open'){
-        piutangBox = await Hive.openBox('piutangBox');
-      } else {
-        piutangBox.close();
-      }
-    } catch (e) {
-
-    }
-  }
-
-  managemasteritembox(String action) async {
-    try {
-      if(action == 'open'){
-        masteritembox = await Hive.openBox('masteritembox');
-      } else {
-        masteritembox.close();
-      }
-    } catch (e) {
-
-    }
-  }
-
-  manageitemvendorbox(String action) async {
-    try {
-      if(action == 'open'){
-        itemvendorbox = await Hive.openBox('itemVendorBox');
-      } else {
-        itemvendorbox.close();
-      }
-    } catch (e) {
-
-    }
-  }
- 
-  managevendorbox(String action) async {
-    try {
-      if(action == 'open'){
-        vendorBox = await Hive.openBox('vendorBox');
-      } else {
-        vendorBox.close();
-      }
-    } catch (e) {
-
-    }
-  }
-
-  managemastervendorbox(String action) async{
-    try {
-      if(action == 'open'){
-        mastervendorbox = await Hive.openBox('mastervendorbox');
-      } else {
-        mastervendorbox.close();
-      }
-    } catch (e) {
-
-    }
-  }
-
   getVendor() async { 
     await getBox();
     try {
@@ -1109,13 +953,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
             params,
             Options(headers: {HttpHeaders.contentTypeHeader: "application/json"}));
       var dataresp = LoginResponse.fromJson(result);
-      await managetokenbox('open');
+      await Utils().managetokenbox('open');
       if(!tokenbox.isOpen){
         tokenbox = await Hive.openBox('tokenbox');
       }
       tokenbox.delete(salesid);
       tokenbox.put(salesid, dataresp.data!.token);
-      await managetokenbox('close');
+      await Utils().managetokenbox('close');
     // ignore: empty_catches
     } catch (e) {
       
@@ -1228,7 +1072,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
       String urlAPI = arrConnTest[1];
       final response = await http.post(Uri.parse("$urlAPI/getcustbyroute"),headers: {"Content-Type": "application/json",}, body: jsonEncode(postbody),);
-      print("$urlAPI/getcustbyroute");
       var datajson = jsonDecode(response.body);
       progressdownload[0] = 'ok';
       unduhdatacustomer(datajson['data']);
@@ -1254,10 +1097,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
       String urlAPI = arrConnTest[1];
 
       //access api
-      await managetokenbox('open');
+      await Utils().managetokenbox('open');
       var tokenboxdata = await tokenbox.get(salesid);
       var dectoken = Utils().decrypt(tokenboxdata);
-      await managetokenbox('close');
+      await Utils().managetokenbox('close');
       final url = Uri.parse('$urlAPI${AppConfig.apiurlvendorpath}/api/setting/multi-customer-info');
       final request = http.MultipartRequest('POST', url);
       request.headers.addAll({
@@ -1272,15 +1115,15 @@ class SplashscreenController extends GetxController with StateMixin implements W
       var datadecoded = jsonDecode(responseString);
 
       //data customer,outstanding,piutang dan alamat
-      await managecustomerbox('open');
-      await manageshipbox('open');
-      await manageoutstandingbox('open');
-      await managepiutangbox('open');
+      await Utils().managecustomerbox('open');
+      await Utils().manageshipbox('open');
+      await Utils().manageoutstandingbox('open');
+      await Utils().managepiutangbox('open');
 
       //data outstanding
       for (var i = 0; i < datadecoded['customers'].length; i++) {
         Customer datacust = Customer.fromJson(datadecoded['customers'][i]['customer']);
-        if(!customerBox.isOpen) await managecustomerbox('open');
+        if(!customerBox.isOpen) await Utils().managecustomerbox('open');
         await customerBox.delete(datacust.no);
         await customerBox.put(datacust.no,datacust);
         await piutangBox.delete('$salesid|${datacust.no}');
@@ -1306,7 +1149,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         List<ShipToAddress> listaddrcust = <ShipToAddress>[];
         if(datadecoded['customers'][i]['shipToAddresses'].length != 0){
           for (var j = 0; j < datadecoded['customers'][i]['shipToAddresses'].length; j++) {
-            if(!shiptobox.isOpen) await manageshipbox('open');
+            if(!shiptobox.isOpen) await Utils().manageshipbox('open');
             await shiptobox.delete(datacust.no);
             if(datadecoded['customers'][i]['shipToAddresses'][j].length != 0){
               listaddrcust.add(ShipToAddress.fromJson(datadecoded['customers'][i]['shipToAddresses'][j]));
@@ -1314,26 +1157,26 @@ class SplashscreenController extends GetxController with StateMixin implements W
           }
         }
         if(listaddrcust.isNotEmpty){
-          if(!shiptobox.isOpen) await manageshipbox('open');
+          if(!shiptobox.isOpen) await Utils().manageshipbox('open');
           await shiptobox.put(datacust.no,listaddrcust);
         }
       }
-      await managecustomerbox('close');
-      await manageshipbox('close');
-      await manageoutstandingbox('close');
-      await managepiutangbox('close');
+      await Utils().managecustomerbox('close');
+      await Utils().manageshipbox('close');
+      await Utils().manageoutstandingbox('close');
+      await Utils().managepiutangbox('close');
 
       //bank data
-      await managebankbox('open');
+      await Utils().managebankbox('open');
       await bankbox.delete(salesid);
       await bankbox.put(salesid, datadecoded['banks']);
-      await managebankbox('close');
+      await Utils().managebankbox('close');
 
       //payment methods data
-      await managepaymentmethodsbox('open');
+      await Utils().managepaymentmethodsbox('open');
       await paymentMethodsBox.delete(salesid);
       await paymentMethodsBox.put(salesid, datadecoded['paymentMethods']);
-      await managepaymentmethodsbox('close');
+      await Utils().managepaymentmethodsbox('close');
 
       progressdownload[1] = 'ok';
       unduhdataitem();
@@ -1341,14 +1184,14 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } on SocketException{
         progressdownload[1] = 'bad';
         Navigator.pop(keybanner.currentContext!);
-        await managetokenbox('close');
-        await managecustomerbox('close');
+        await Utils().managetokenbox('close');
+        await Utils().managecustomerbox('close');
         return;
     } catch (e) {
         progressdownload[1] = 'bad';
         unduhdataitem();
-        await managetokenbox('close');
-        await managecustomerbox('close');
+        await Utils().managetokenbox('close');
+        await Utils().managecustomerbox('close');
         return;
     }
   }
@@ -1367,10 +1210,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
         return;
       }
       String urlAPI = arrConnTest[1];
-      await managetokenbox('open');
+      await Utils().managetokenbox('open');
       var tokenboxdata = await tokenbox.get(salesid);
       var dectoken = Utils().decrypt(tokenboxdata);
-      await managetokenbox('close');
+      await Utils().managetokenbox('close');
       final url = Uri.parse('$urlAPI${AppConfig.apiurlvendorpath}/api/setting/all-items');
       final request = http.MultipartRequest('POST', url);
       request.headers.addAll({
@@ -1383,18 +1226,18 @@ class SplashscreenController extends GetxController with StateMixin implements W
       for (var i = 0; i < datadecoded['vendors'].length; i++) {
         vendorlistunduhulang.add(Vendor.fromJson(datadecoded['vendors'][i]));
       }
-      await managemastervendorbox('open');
+      await Utils().managemastervendorbox('open');
       await mastervendorbox.delete(salesid);
       await mastervendorbox.put(salesid,vendorlistunduhulang);
-      await managemastervendorbox('close');
+      await Utils().managemastervendorbox('close');
       MasterItemModel itemlist = MasterItemModel.fromJson(datadecoded);
-      await managemasteritembox('open');
+      await Utils().managemasteritembox('open');
       await masteritembox.delete('$salesid|${vendorlistunduhulang[0].name}');
       await masteritembox.put('$salesid|${vendorlistunduhulang[0].name}',datadecoded);
-      await managemasteritembox('close');
-      await managecustomerbox('open');
+      await Utils().managemasteritembox('close');
+      await Utils().managecustomerbox('open');
       Customer listcust = customerBox.get(custid);
-      await managecustomerbox('close');
+      await Utils().managecustomerbox('close');
       List<ProductData> listProduct = <ProductData>[];
       for (var m = 0; m < itemlist.items!.length; m++) {
         for(var k=0; k < itemlist.items![m].subdistricts!.length; k++){
@@ -1409,14 +1252,38 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
 
       if(listProduct.isNotEmpty){
-        await manageitemvendorbox('open');
+        await Utils().manageitemvendorbox('open');
         await itemvendorbox.delete("$salesid|$custid|${vendorlistunduhulang[0].prefix}|${vendorlistunduhulang[0].baseApiUrl}");
         await itemvendorbox.put("$salesid|$custid|${vendorlistunduhulang[0].prefix}|${vendorlistunduhulang[0].baseApiUrl}", listProduct);
-        await manageitemvendorbox('close');
-        await managevendorbox('open');
+        await Utils().manageitemvendorbox('close');
+        await Utils().managevendorbox('open');
         await vendorBox.delete("$salesid|$custid");
         await vendorBox.put("$salesid|$custid", vendorlistunduhulang);
-        await managevendorbox('close');
+        await Utils().managevendorbox('close');
+        await Utils().manageoutstandingbox('open');
+        var dataoutstandingold = await outstandingBox.get("$salesid|$custid|${vendorlistunduhulang[0].prefix}|${vendorlistunduhulang[0].baseApiUrl}");
+        if(dataoutstandingold != null){
+          await outstandingBox.delete("$salesid|$custid|${vendorlistunduhulang[0].prefix}|${vendorlistunduhulang[0].baseApiUrl}");
+        }
+        var dataoutstandingnew = await outstandingBox.get("$salesid|$custid");
+        if(dataoutstandingnew != null){
+          await outstandingBox.delete("$salesid|$custid");
+        }
+        await outstandingBox.put("$salesid|$custid|${vendorlistunduhulang[0].prefix}|${vendorlistunduhulang[0].baseApiUrl}", dataoutstandingnew);
+
+        
+        await Utils().managepiutangbox('open');
+        var datapiutangnew = await piutangBox.get('$salesid|$custid');
+        var datapiutangold = await piutangBox.get('$salesid|$custid|${vendorlistunduhulang[0].prefix}|${vendorlistunduhulang[0].baseApiUrl}');
+        if (datapiutangnew != null){
+          await piutangBox.delete('$salesid|$custid');
+        }
+        if(datapiutangold != null){
+          await piutangBox.delete('$salesid|$custid|${vendorlistunduhulang[0].prefix}|${vendorlistunduhulang[0].baseApiUrl}');
+        }
+        await piutangBox.put('$salesid|$custid|${vendorlistunduhulang[0].prefix}|${vendorlistunduhulang[0].baseApiUrl}',datapiutangnew);
+        await Utils().managepiutangbox('close');
+
         for (var i = 0; i < vendorlistunduhulang.length; i++) {
           moduleList.add(Module(moduleID: "Taking order ${vendorlistunduhulang[i].name}", version: versimodulvendor, orderNumber: ordermodulvendor));
         }
@@ -1432,11 +1299,11 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } on SocketException{
       progressdownload[2] = 'bad';
       Navigator.pop(keybanner.currentContext!);
-      await managetokenbox('close');
+      await Utils().managetokenbox('close');
     } catch (e) {
       progressdownload[2] = 'bad';
       Navigator.pop(keybanner.currentContext!);
-      await managetokenbox('close');
+      await Utils().managetokenbox('close');
     }
   }
 
@@ -1488,9 +1355,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
         ordermodulvendor = moduleList[idx].orderNumber;
         moduleList.removeAt(idx);
         await loginapivendor();
-        await managetokenbox('open');
+        await Utils().managetokenbox('open');
         var tokendata = await tokenbox.get(salesid);
-        await managetokenbox('close');
+        await Utils().managetokenbox('close');
         if (tokendata != null) {
           getstateunduhulang();
         } else {
@@ -1521,11 +1388,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
       String saleid = await Utils().getParameterData('sales');
       String branchcode = saleid.toString().substring(0,3);
       final result = await ApiClient().getData(urlAPI, "/getstate?branch=$branchcode");
-      print("$urlAPI/getstate?branch=$branchcode");
       jsonstate = jsonDecode(result);
-      await managedevicestatebox('open');
+      await Utils().managedevicestatebox('open');
       var datastatebox = await devicestatebox.get(saleid);
-      await managedevicestatebox('close');
+      await Utils().managedevicestatebox('close');
       if(datastatebox != null){
         for (var i = 0; i < jsonstate['datastate'].length; i++) {
           for (var k = 0; k < datastatebox['datastate'].length; k++) {
@@ -1579,10 +1445,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
       if(allok){
         DateTime now = DateTime.now();
         print('end time: $now');
-        await managedevicestatebox('open');
+        await Utils().managedevicestatebox('open');
         await devicestatebox.delete(salesid);
         await devicestatebox.put(salesid, jsonstate);
-        await managedevicestatebox('close');
+        await Utils().managedevicestatebox('close');
         Navigator.pop(keybanner.currentContext!);
         Get.dialog(Dialog(
           backgroundColor: Colors.white,
@@ -1608,7 +1474,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     String branchuser = "";
     String warnauser = "";
     String areauser = "";
-    await managebranchinfobox('open');
+    await Utils().managebranchinfobox('open');
     var databranch = await branchinfobox.get(await Utils().getParameterData("sales"));
     try {
       branchuser = databranch[0]['branch'];
@@ -1618,7 +1484,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } catch (e) {
       
     }
-    await managebranchinfobox('close');
+    await Utils().managebranchinfobox('close');
 
     if (await File('$productdir/$vendor/$informasiconfig').exists()) {
         var res = await File('$productdir/$vendor/$informasiconfig').readAsString();

@@ -252,14 +252,13 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     try {
       var dataosboxjson = jsonDecode(dataosbox);
       if (dataosboxjson['data'] != null) {
-        // print("data not null");
-        var decodetoosdata = OutstandingResponse.fromJson(dataosboxjson['data']);
         listDataOutstanding.clear();
-        for (var i = 0; i < decodetoosdata.data!.length; i++) {
-          listDataOutstanding.add(decodetoosdata.data![i]);
+        for (var i = 0; i < dataosboxjson['data'].length; i++) {
+          var decodetoosdata = OutstandingData.fromJson(dataosboxjson['data'][i]);
+          listDataOutstanding.add(decodetoosdata);
         }
         if (!Utils().isDateNotToday(dataosboxjson['timestamp'])) {
-          // print("here");
+          print("here");
           return true;
         } else {
           return false;
@@ -366,7 +365,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
           listDataOutstanding.add(dataresponse.data![i]);
         }
         var makejson = {
-          "data": getVendoroustanding,
+          "data": getVendoroustanding['data'],
           "timestamp": DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now())
         };
         await getBoxOutStanding();

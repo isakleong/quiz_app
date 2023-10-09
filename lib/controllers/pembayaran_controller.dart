@@ -179,6 +179,7 @@ class PembayaranController extends GetxController {
       if(databox != null){
         if(!Hive.isBoxOpen("masteritemvendorbox")) masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
         var datamaster = masteritemvendorbox.get(globalkeybox);
+        print(datamaster);
         if(datamaster == null){
           await deletepembayaranstate();
           return;
