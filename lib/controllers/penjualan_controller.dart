@@ -19,6 +19,7 @@ import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukserupa.dart';
 import 'package:http/http.dart' as http;
 import 'package:showcaseview/showcaseview.dart';
+import '../common/hivebox_vendor.dart';
 import '../models/cartmodel.dart';
 import '../models/detailproductdata.dart';
 import '../models/loginmodel.dart';
@@ -44,16 +45,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   Rx<TextEditingController> notes = TextEditingController().obs;
   RxString totalpiutang = ''.obs;
   RxString totaljatuhtempo = ''.obs;
-  //box
-  late Box vendorBox; 
-  late Box listaddressbox; 
-  late Box customerBox; 
-  late Box boxpostpenjualan;
-  late Box boxreportpenjualan;
-  late Box itemvendorbox;
-  late Box statePenjualanbox;
-  late Box masteritemvendorbox;
-  late Box tokenbox;
   final keycheckout = GlobalKey();
   var idvendor = -1;
   var globalkeybox = "";
@@ -114,7 +105,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   getBox() async {
     try {
       vendorBox = await Hive.openBox('vendorBox');
-      listaddressbox = await Hive.openBox('shiptoBox');
+      shiptobox = await Hive.openBox('shiptoBox');
       customerBox = await Hive.openBox('customerBox');
       boxpostpenjualan =  await Hive.openBox('penjualanReportpostdata');
       boxreportpenjualan = await Hive.openBox('penjualanReport');
@@ -129,7 +120,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   closebox() async{
     try {
       vendorBox.close();
-      listaddressbox.close();
+      shiptobox.close();
       customerBox.close();
       boxpostpenjualan.close();
       boxreportpenjualan.close();
@@ -242,8 +233,9 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     nmtoko.value = dataToko!.name;
 
     //get shippping address data
-    if(!listaddressbox.isOpen) await getBox();
-    var addressdata = listaddressbox.get(custid);
+    if(!shiptobox.isOpen) await getBox();
+    var addressdata = shiptobox.get(custid);
+    print(addressdata);
     if(addressdata == null || addressdata.isEmpty ){
       choosedAddress.value = dataToko.address;
       listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));

@@ -25,6 +25,7 @@ import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart
 import 'package:sfa_tools/tools/utils.dart';
 import 'package:showcaseview/showcaseview.dart';
 import '../common/app_config.dart';
+import '../common/hivebox_vendor.dart';
 import '../models/cartdetail.dart';
 import '../models/loginmodel.dart';
 import '../models/outstandingdata.dart';
@@ -127,8 +128,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxBool get needtorefresh => _penjualanController.needtorefresh;
   get komisi => _penjualanController.komisi;
   RxString infoos = "".obs;
-  late Box tokenbox;
-  late Box vendorBox;
   GlobalKey keyalamat = GlobalKey();
   GlobalKey keyconfirm = GlobalKey();
 
@@ -240,7 +239,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxBool isFailedLoadOutstanding = false.obs;
   List<Vendor> vendorlist = <Vendor>[];
   int idvendorg = -1;
-  late Box outstandingBox;
 
   getBoxOutStanding() async {
     try {
@@ -255,8 +253,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       var dataosboxjson = jsonDecode(dataosbox);
       if (dataosboxjson['data'] != null) {
         // print("data not null");
-        var decodetoosdata =
-            OutstandingResponse.fromJson(dataosboxjson['data']);
+        var decodetoosdata = OutstandingResponse.fromJson(dataosboxjson['data']);
         listDataOutstanding.clear();
         for (var i = 0; i < decodetoosdata.data!.length; i++) {
           listDataOutstanding.add(decodetoosdata.data![i]);
@@ -653,7 +650,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   List<String> listdir = [];
   RxList<String> pricelistdir = <String>[].obs;
   RxList<String> promodir = <String>[].obs;
-  late Box branchinfobox;
 
   Future<void> downloadConfigFile(String url) async {
     listdir.clear();

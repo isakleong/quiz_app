@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
+import '../common/hivebox_vendor.dart';
 import '../models/reportpembayaranmodel.dart';
 import '../models/reportpenjualanmodel.dart';
 import '../models/vendor.dart';
@@ -15,9 +16,6 @@ class LaporanController extends GetxController {
   RxList<ReportPenjualanModel> listReportPenjualanShow = <ReportPenjualanModel>[].obs;
   List<ReportPembayaranModel> listReportPembayaran = <ReportPembayaranModel>[];
   RxInt allReportlength = 0.obs;
-  late Box boxreportpenjualan;
-  late Box vendorBox;
-  late Box boxPembayaranReport;
   List<Vendor> vendorlist = <Vendor>[];
   var idvendor = -1;
   String activevendor= "";

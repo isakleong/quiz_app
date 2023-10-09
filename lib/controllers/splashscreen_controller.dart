@@ -18,6 +18,7 @@ import 'package:sfa_tools/controllers/background_service_controller.dart';
 import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/loginmodel.dart';
 import 'package:sfa_tools/models/module.dart';
+import 'package:sfa_tools/models/outstandingdata.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/tools/service.dart';
@@ -25,6 +26,10 @@ import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:shimmer/shimmer.dart';
+import '../common/hivebox_vendor.dart';
+import '../models/detailproductdata.dart';
+import '../models/masteritemmodel.dart';
+import '../models/productdata.dart';
 import '../models/vendorinfomodel.dart';
 import '../widgets/dialoginfo.dart';
 import 'package:http/http.dart' as http;
@@ -49,14 +54,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
   
   //about taking order vendor
   RxString selectedVendor = "".obs;
-  late Box vendorBox; 
-  late Box customerBox; 
-  late Box boxpostpenjualan;
-  late Box boxreportpenjualan;
-  late Box shiptobox;
-  late Box tokenbox;
-  late Box branchinfobox;
-  late Box devicestatebox;
   bool retrypermission = false;
   GlobalKey keybanner = GlobalKey();
 
@@ -511,6 +508,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
           final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
+          print(result);
           var data = jsonDecode(result.toString());
           data["AppModule"].map((item) {
             moduleList.add(Module.from(item));
@@ -794,6 +792,102 @@ class SplashscreenController extends GetxController with StateMixin implements W
     }
   }
 
+  managepaymentmethodsbox(String action) async {
+    try {
+      if(action == 'open'){
+        paymentMethodsBox = await Hive.openBox('paymentMethodsBox');
+      } else {
+        paymentMethodsBox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  managebankbox(String action) async {
+    try {
+      if(action == 'open'){
+        bankbox = await Hive.openBox('BankBox');
+      } else {
+        bankbox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  manageoutstandingbox(String action) async {
+    try {
+      if(action == 'open'){
+        outstandingBox = await Hive.openBox('outstandingBox');
+      } else {
+        outstandingBox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  managepiutangbox(String action) async {
+    try {
+      if(action == 'open'){
+        piutangBox = await Hive.openBox('piutangBox');
+      } else {
+        piutangBox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  managemasteritembox(String action) async {
+    try {
+      if(action == 'open'){
+        masteritembox = await Hive.openBox('masteritembox');
+      } else {
+        masteritembox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  manageitemvendorbox(String action) async {
+    try {
+      if(action == 'open'){
+        itemvendorbox = await Hive.openBox('itemVendorBox');
+      } else {
+        itemvendorbox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+ 
+  managevendorbox(String action) async {
+    try {
+      if(action == 'open'){
+        vendorBox = await Hive.openBox('vendorBox');
+      } else {
+        vendorBox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  managemastervendorbox(String action) async{
+    try {
+      if(action == 'open'){
+        mastervendorbox = await Hive.openBox('mastervendorbox');
+      } else {
+        mastervendorbox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
   getVendor() async { 
     await getBox();
     try {
@@ -848,7 +942,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
   }
 
   postTrackingVersion() async {
-    //print("post");
     var trackVersionBox = await Hive.openBox('trackVersionBox');
     var trackVersion = trackVersionBox.get('trackVersion');
     var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
@@ -1033,6 +1126,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
   late dynamic jsonstate;
   RxList<String> progressdownload = <String>[].obs;
   List<Vendor> vendorlistunduhulang = <Vendor>[];
+  var versimodulvendor = '';
+  var ordermodulvendor = '';
 
   int calculateJsonSize(dynamic jsonData) {
     String jsonString = json.encode(jsonData);
@@ -1133,6 +1228,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
       String urlAPI = arrConnTest[1];
       final response = await http.post(Uri.parse("$urlAPI/getcustbyroute"),headers: {"Content-Type": "application/json",}, body: jsonEncode(postbody),);
+      print("$urlAPI/getcustbyroute");
       var datajson = jsonDecode(response.body);
       progressdownload[0] = 'ok';
       unduhdatacustomer(datajson['data']);
@@ -1145,6 +1241,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
   unduhdatacustomer(dynamic listcust) async {
     try {
+      //connection test
       String salesid = await Utils().getParameterData('sales');
       var connTest = await ApiClient().checkConnection(jenis: "vendor");
       var arrConnTest = connTest.split("|");
@@ -1155,6 +1252,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
         return;
       }
       String urlAPI = arrConnTest[1];
+
+      //access api
       await managetokenbox('open');
       var tokenboxdata = await tokenbox.get(salesid);
       var dectoken = Utils().decrypt(tokenboxdata);
@@ -1165,31 +1264,77 @@ class SplashscreenController extends GetxController with StateMixin implements W
         'Accept': 'application/json',
         'Authorization': 'Bearer $dectoken',
       });
-
       for (var i = 0; i < listcust.length; i++) {
         request.fields['customers[$i]'] = listcust[i]['CustID'];
       }
       final response = await request.send();
       final responseString = await response.stream.bytesToString();
       var datadecoded = jsonDecode(responseString);
+
+      //data customer,outstanding,piutang dan alamat
       await managecustomerbox('open');
       await manageshipbox('open');
+      await manageoutstandingbox('open');
+      await managepiutangbox('open');
+
+      //data outstanding
       for (var i = 0; i < datadecoded['customers'].length; i++) {
         Customer datacust = Customer.fromJson(datadecoded['customers'][i]['customer']);
         if(!customerBox.isOpen) await managecustomerbox('open');
         await customerBox.delete(datacust.no);
         await customerBox.put(datacust.no,datacust);
+        await piutangBox.delete('$salesid|${datacust.no}');
+        var makejsonpiutang = {
+          'receivables' : datadecoded['customers'][i]['receivables'],
+          'overdueInvoices': datadecoded['customers'][i]['overdueInvoices']
+        };
+        await piutangBox.put('$salesid|${datacust.no}', jsonEncode(makejsonpiutang));
+        await outstandingBox.delete("$salesid|${datacust.no}");
+        List<OutstandingData> listoutstanding = <OutstandingData>[];
+        if(datadecoded['customers'][i]['outstanding'].length != 0){
+          for (var k = 0; k < datadecoded['customers'][i]['outstanding'].length; k++) {
+            listoutstanding.add(OutstandingData.fromJson(datadecoded['customers'][i]['outstanding'][k]));
+          }
+        }
+        if (listoutstanding.isNotEmpty) {
+          var makejson = {
+            "data": datadecoded['customers'][i]['outstanding'],
+            "timestamp": DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now())
+          };
+          await outstandingBox.put("$salesid|${datacust.no}", jsonEncode(makejson));
+        }
+        List<ShipToAddress> listaddrcust = <ShipToAddress>[];
         if(datadecoded['customers'][i]['shipToAddresses'].length != 0){
           for (var j = 0; j < datadecoded['customers'][i]['shipToAddresses'].length; j++) {
-            ShipToAddress dataaddr = ShipToAddress.fromJson(datadecoded['customers'][i]['shipToAddresses'][j]);
             if(!shiptobox.isOpen) await manageshipbox('open');
             await shiptobox.delete(datacust.no);
-            await shiptobox.put(datacust.no,dataaddr);
+            if(datadecoded['customers'][i]['shipToAddresses'][j].length != 0){
+              listaddrcust.add(ShipToAddress.fromJson(datadecoded['customers'][i]['shipToAddresses'][j]));
+            }
           }
+        }
+        if(listaddrcust.isNotEmpty){
+          if(!shiptobox.isOpen) await manageshipbox('open');
+          await shiptobox.put(datacust.no,listaddrcust);
         }
       }
       await managecustomerbox('close');
       await manageshipbox('close');
+      await manageoutstandingbox('close');
+      await managepiutangbox('close');
+
+      //bank data
+      await managebankbox('open');
+      await bankbox.delete(salesid);
+      await bankbox.put(salesid, datadecoded['banks']);
+      await managebankbox('close');
+
+      //payment methods data
+      await managepaymentmethodsbox('open');
+      await paymentMethodsBox.delete(salesid);
+      await paymentMethodsBox.put(salesid, datadecoded['paymentMethods']);
+      await managepaymentmethodsbox('close');
+
       progressdownload[1] = 'ok';
       unduhdataitem();
       return;
@@ -1212,6 +1357,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     try {
       vendorlistunduhulang.clear();
       String salesid = await Utils().getParameterData('sales');
+      String custid = await Utils().getParameterData('cust');
       var connTest = await ApiClient().checkConnection(jenis: "vendor");
       var arrConnTest = connTest.split("|");
       bool isConnected = arrConnTest[0] == 'true';
@@ -1237,6 +1383,45 @@ class SplashscreenController extends GetxController with StateMixin implements W
       for (var i = 0; i < datadecoded['vendors'].length; i++) {
         vendorlistunduhulang.add(Vendor.fromJson(datadecoded['vendors'][i]));
       }
+      await managemastervendorbox('open');
+      await mastervendorbox.delete(salesid);
+      await mastervendorbox.put(salesid,vendorlistunduhulang);
+      await managemastervendorbox('close');
+      MasterItemModel itemlist = MasterItemModel.fromJson(datadecoded);
+      await managemasteritembox('open');
+      await masteritembox.delete('$salesid|${vendorlistunduhulang[0].name}');
+      await masteritembox.put('$salesid|${vendorlistunduhulang[0].name}',datadecoded);
+      await managemasteritembox('close');
+      await managecustomerbox('open');
+      Customer listcust = customerBox.get(custid);
+      await managecustomerbox('close');
+      List<ProductData> listProduct = <ProductData>[];
+      for (var m = 0; m < itemlist.items!.length; m++) {
+        for(var k=0; k < itemlist.items![m].subdistricts!.length; k++){
+          if(itemlist.items![m].subdistricts![k].name == listcust.city){
+            List<DetailProductData> listdetail = [];
+            for (var j = 0; j < itemlist.items![m].uoms!.length; j++) {
+              listdetail.add(DetailProductData(itemlist.items![m].uoms![j].name!, double.parse(itemlist.items![m].subdistricts![k].price!.toString()), itemlist.items![m].uoms![j].id!, itemlist.items![m].komisi!));
+            }
+            listProduct.add(ProductData(itemlist.items![m].code!, "${itemlist.items![m].merk!} ${itemlist.items![m].volume!} ${itemlist.items![m].color!} ${itemlist.items![m].desc!}", listdetail,DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now()),itemlist.items![m].id!));
+          }
+        }
+      }
+
+      if(listProduct.isNotEmpty){
+        await manageitemvendorbox('open');
+        await itemvendorbox.delete("$salesid|$custid|${vendorlistunduhulang[0].prefix}|${vendorlistunduhulang[0].baseApiUrl}");
+        await itemvendorbox.put("$salesid|$custid|${vendorlistunduhulang[0].prefix}|${vendorlistunduhulang[0].baseApiUrl}", listProduct);
+        await manageitemvendorbox('close');
+        await managevendorbox('open');
+        await vendorBox.delete("$salesid|$custid");
+        await vendorBox.put("$salesid|$custid", vendorlistunduhulang);
+        await managevendorbox('close');
+        for (var i = 0; i < vendorlistunduhulang.length; i++) {
+          moduleList.add(Module(moduleID: "Taking order ${vendorlistunduhulang[i].name}", version: versimodulvendor, orderNumber: ordermodulvendor));
+        }
+      }
+
       progressdownload[2]= "ok";
       if(vendorlistunduhulang.isNotEmpty){
         downloadConfigFile('getinfoproduk');
@@ -1299,6 +1484,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
       await branchinfobox.close();
       var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
       if(idx != -1){
+        versimodulvendor = moduleList[idx].version;
+        ordermodulvendor = moduleList[idx].orderNumber;
         moduleList.removeAt(idx);
         await loginapivendor();
         await managetokenbox('open');
@@ -1312,6 +1499,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
           }
           Navigator.pop(keybanner.currentContext!);
         }
+      } else {
+          Navigator.pop(keybanner.currentContext!);
       }
     }
   }
@@ -1332,6 +1521,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       String saleid = await Utils().getParameterData('sales');
       String branchcode = saleid.toString().substring(0,3);
       final result = await ApiClient().getData(urlAPI, "/getstate?branch=$branchcode");
+      print("$urlAPI/getstate?branch=$branchcode");
       jsonstate = jsonDecode(result);
       await managedevicestatebox('open');
       var datastatebox = await devicestatebox.get(saleid);
@@ -1520,6 +1710,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
           // Download the file
           final response = await http.get(Uri.parse('$urlAPI/$url?vendor=$vendorname'));
+          print('$urlAPI/$url?vendor=$vendorname');
 
           if (response.statusCode == 200) {
             // Write the file
@@ -1547,6 +1738,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
         progressdownload[3] = 'ok';
       }
       Navigator.pop(keybanner.currentContext!);
+      DateTime now = DateTime.now();
+      print('end time: $now');
       return;
       updatestate();
     } catch (e) {
