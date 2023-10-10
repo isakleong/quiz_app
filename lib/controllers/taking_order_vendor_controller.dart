@@ -258,7 +258,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
           listDataOutstanding.add(decodetoosdata);
         }
         if (!Utils().isDateNotToday(dataosboxjson['timestamp'])) {
-          print("here");
           return true;
         } else {
           return false;
@@ -654,10 +653,10 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     listdir.clear();
     pricelistdir.clear();
 
-    // if (await File('$productdir/$activevendor/$informasiconfig').exists()) {
-    //   processfile(false);
-    //   return;
-    // }
+    if (await File('$productdir/$activevendor/$informasiconfig').exists()) {
+      processfile(false);
+      return;
+    }
 
     // Create a folder if it doesn't exist
     Directory directory = Directory('$productdir/$activevendor/');

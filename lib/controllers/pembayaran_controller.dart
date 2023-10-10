@@ -177,10 +177,14 @@ class PembayaranController extends GetxController {
       var databox = boxPembayaranState.get(globalkeybox);
       await boxPembayaranState.close();
       if(databox != null){
-        if(!Hive.isBoxOpen("masteritemvendorbox")) masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
-        var datamaster = masteritemvendorbox.get(globalkeybox);
-        print(datamaster);
-        if(datamaster == null){
+        // if(!Hive.isBoxOpen("masteritemvendorbox")) masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
+        await Utils().managepaymentmethodsbox('open');
+        await Utils().managebankbox('open');
+        var datapayment = paymentMethodsBox.get(globalkeybox);
+        var databank = bankbox.get(globalkeybox);
+        await Utils().managebankbox('close');
+        await Utils().managepaymentmethodsbox('close');
+        if(datapayment == null || databank == null){
           await deletepembayaranstate();
           return;
         }
@@ -413,10 +417,17 @@ class PembayaranController extends GetxController {
 
     if(globalkeybox == "") await getGlobalKeyBox();
     
-    if(!Hive.isBoxOpen('masteritemvendorbox')) masteritemvendorbox = await Hive.openBox('masteritemvendorbox');
-    var databox = masteritemvendorbox.get(globalkeybox);
-    if(databox == null){
-      await refreshmastervendor();
+    // if(!Hive.isBoxOpen('masteritemvendorbox')) masteritemvendorbox = await Hive.openBox('masteritemvendorbox');
+    // var databox = masteritemvendorbox.get(globalkeybox);
+    
+    await Utils().managepaymentmethodsbox('open');
+    await Utils().managebankbox('open');
+    var datapayment = paymentMethodsBox.get(globalkeybox);
+    var databank = bankbox.get(globalkeybox);
+    await Utils().managebankbox('close');
+    await Utils().managepaymentmethodsbox('close');
+    if(datapayment == null || databank == null){
+      // await refreshmastervendor();
       return false;
     }
 
@@ -480,7 +491,7 @@ class PembayaranController extends GetxController {
          "data" : datapembayaranlist
       };
       
-      await savepaymentdatatoapi(noorder, date, custid, salesid,databox);
+      await savepaymentdatatoapi(noorder, date, custid, salesid,datapayment,databank);
       if(listpostsend.isNotEmpty && datajsonsend.isNotEmpty){
         await savepaymenttoreport(globalkeybox, jsonEncode(joinedjson));
         return true;
@@ -539,7 +550,7 @@ class PembayaranController extends GetxController {
       };
 
       //selanjutnya menyimpan data ke hive untuk pengiriman API via background
-      await savepaymentdatatoapi(noorder, date, custid, salesid,databox);
+      await savepaymentdatatoapi(noorder, date, custid, salesid,datapayment,databank);
       if(listpostsend.isNotEmpty && datajsonsend.isNotEmpty){
         await savepaymenttoreport(globalkeybox, jsonEncode(jsondata));
         return true;
@@ -579,12 +590,26 @@ class PembayaranController extends GetxController {
       sendPaymentToApi(datajsonsend,listpostsend);
   }
 
-  savepaymentdatatoapi(String noorder , String datetimes, String custid, String salesid, var datapayment) async {
+  savepaymentdatatoapi(String noorder , String datetimes, String custid, String salesid, var datapayment, var databank) async {
     try {
       datajsonsend.clear();
       listpostsend.clear();
+
+      //unused
       //ambil data informasi payment id dan bank id yang tersimpan di masteritem vendor box (yang di isi pada penjualan controller)
-      var data = MasterItemVendor.fromJson(datapayment);
+      // var data = MasterItemVendor.fromJson(datapayment);
+      // var datapayment = datapayment
+
+      List<PaymentMethods> paymentmethods = <PaymentMethods>[];
+      List<Banks> bankslist = <Banks>[];
+      for (var i = 0; i < datapayment.length; i++) {
+        PaymentMethods _data = PaymentMethods.fromJson(datapayment[i]);
+        paymentmethods.add(_data);
+      }
+      for (var i = 0; i < databank.length; i++) {
+        Banks _data = Banks.fromJson(databank[i]);
+        bankslist.add(_data);
+      }
       
       //membuat data sesuai dengan body yang digunakan untuk request ke API
       for (var i = 0; i < listpaymentdata.length; i++) {
@@ -595,18 +620,18 @@ class PembayaranController extends GetxController {
           bankdata = listpaymentdata[i].tipe;
           serialNum = listpaymentdata[i].nomor;
         }
-        for (var k = 0; k < data.paymentMethods!.length; k++) {
+        for (var k = 0; k < paymentmethods.length; k++) {
           if(listpaymentdata[i].jenis == "Tunai"){
-            if(data.paymentMethods![k].name!.toLowerCase() == listpaymentdata[i].tipe.toLowerCase()){
-              paymentid = data.paymentMethods![k].id.toString();
+            if(paymentmethods[k].name!.toLowerCase() == listpaymentdata[i].tipe.toLowerCase()){
+              paymentid = paymentmethods[k].id.toString();
             }
           } else if (listpaymentdata[i].jenis == "Transfer"){
-            if(data.paymentMethods![k].name!.toLowerCase() == listpaymentdata[i].jenis.toLowerCase()){
-              paymentid = data.paymentMethods![k].id.toString();
+            if(paymentmethods[k].name!.toLowerCase() == listpaymentdata[i].jenis.toLowerCase()){
+              paymentid = paymentmethods[k].id.toString();
             }
           } else if (listpaymentdata[i].jenis == "cek"){
-            if(data.paymentMethods![k].name!.toLowerCase() == "Cek/Giro/Slip".toLowerCase()){
-              paymentid = data.paymentMethods![k].id.toString();
+            if(paymentmethods[k].name!.toLowerCase() == "Cek/Giro/Slip".toLowerCase()){
+              paymentid = paymentmethods[k].id.toString();
             }
           }
         }
@@ -616,7 +641,7 @@ class PembayaranController extends GetxController {
               'entryDate' : datetimes,
               'customerNo' : custid,
               'amount' : listpaymentdata[i].value,
-              'bankId' : listpaymentdata[i].jenis.toString() == "Transfer" ? data.banks![0].id : '',
+              'bankId' : listpaymentdata[i].jenis.toString() == "Transfer" ? bankslist[0].id : '',
               'paymentMethodId' : paymentid,
               'serialNum' : serialNum,
               'bankName' : bankdata,

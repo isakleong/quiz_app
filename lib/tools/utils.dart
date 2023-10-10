@@ -99,6 +99,7 @@ class Utils {
   bool isDateNotToday(String dateTimeString) {
     final inputFormat = DateFormat('dd-MM-yyyy');
     final dateTime = inputFormat.parse(dateTimeString);
+    print(dateTime);
 
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
