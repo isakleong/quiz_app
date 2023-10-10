@@ -8,6 +8,7 @@ import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/textview.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Homepage extends StatelessWidget {
   Homepage({super.key});
@@ -65,10 +66,10 @@ class Homepage extends StatelessWidget {
                             child: ListView.builder(
                               physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount:
-                                  splashscreenController.moduleList.length,
+                              itemCount: splashscreenController.isdoneloading.value ? splashscreenController.moduleList.length : 1,
                               itemBuilder: (BuildContext context, int index) {
-                                return splashscreenController
+                                return splashscreenController.isdoneloading.value ?
+                                splashscreenController
                                             .moduleList[index].moduleID
                                             .toLowerCase() ==
                                         "taking order vendor"
@@ -124,6 +125,19 @@ class Homepage extends StatelessWidget {
                                             ),
                                           ),
                                         ),
+                                      ) 
+                                      : Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Shimmer.fromColors(
+                                            baseColor: Colors.grey.shade400,
+                                            highlightColor: Colors.grey.shade200,
+                                            child: Container(
+                                              width: 0.8 * width,
+                                              height: 0.1 * height,
+                                              color: Colors.white,
+                                              // Add any other child widgets you want inside the shimmering container
+                                            ),
+                                          ),
                                       );
                               },
                             ),
