@@ -477,8 +477,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       } catch (e) {}
       Get.dialog(Dialog(
           backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
           child: DialogInfo(
             judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
             desc: "Data Payment tidak ditemukan, silahkan coba lagi !",

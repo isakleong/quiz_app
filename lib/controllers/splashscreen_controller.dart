@@ -498,6 +498,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     await postTrackingVersion();
   }
 
+/* unused using getmodule all
   getModuleData() async {
     isError(false);
     change(null, status: RxStatus.loading());
@@ -629,7 +630,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         change(null, status: RxStatus.error(errorMessage.value));
       }
     }
-  }
+  }*/
 
   checkofflinevendor() async {
     await getBox();
@@ -668,7 +669,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     await closebox();
   }
 
-  // NOT USED ANYMORE (BECAUSE AUTO UPDATE FROM SFA)
+  /* NOT USED ANYMORE (BECAUSE AUTO UPDATE FROM SFA)
   // checkVersion(var data) async {
   //   isNeedUpdate(false);
 
@@ -712,7 +713,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   //     isError(true);
   //     change(null, status: RxStatus.error(errorMessage.value));
   //   }
-  // }
+   } */
 
   getBox() async {
     try {
@@ -986,12 +987,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
   GlobalKey keyhome = GlobalKey();
   RxBool isdoneloading = false.obs;
 
-  int calculateJsonSize(dynamic jsonData) {
-    String jsonString = json.encode(jsonData);
-    int sizeInBytes = utf8.encode(jsonString).length;
-    return sizeInBytes;
-  }
-
   Future<bool> _onWillPop() async {
     return false;
   }
@@ -1079,7 +1074,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
       var arrConnTest = connTest.split("|");
       bool isConnected = arrConnTest[0] == 'true';
       if(!isConnected){
-        progressdownload[0] = 'bad';
+        for (var i = 0; i < progressdownload.length; i++) {
+          progressdownload[i] = 'bad';
+        }
         isdoneloading.value = true;
         Navigator.pop(keybanner.currentContext!);
         return;
@@ -1096,8 +1093,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
     } catch (e) {
       //error tidak bisa update
+      for (var i = 0; i < progressdownload.length; i++) {
+        progressdownload[i] = 'bad';
+      }
       isdoneloading.value = true;
-      progressdownload[0] = 'bad';
       Navigator.pop(keybanner.currentContext!);
     }
   }
@@ -1110,9 +1109,11 @@ class SplashscreenController extends GetxController with StateMixin implements W
       var arrConnTest = connTest.split("|");
       bool isConnected = arrConnTest[0] == 'true';
       if(!isConnected){
-        isdoneloading.value = true;
+        for (var i = 1; i < progressdownload.length; i++) {
+          progressdownload[i] = 'bad';
+        }
         Navigator.pop(keybanner.currentContext!);
-        progressdownload[1] = 'bad';
+        isdoneloading.value = true;
         return;
       }
       String urlAPI = arrConnTest[1];
@@ -1223,17 +1224,19 @@ class SplashscreenController extends GetxController with StateMixin implements W
       unduhdataitem();
       return;
     } on SocketException{
-        progressdownload[1] = 'bad';
-        Navigator.pop(keybanner.currentContext!);
         await Utils().managetokenbox('close');
         await Utils().managecustomerbox('close');
+        for (var i = 1; i < progressdownload.length; i++) {
+          progressdownload[i] = 'bad';
+        }
+        Navigator.pop(keybanner.currentContext!);
         isdoneloading.value = true;
         return;
     } catch (e) {
         progressdownload[1] = 'bad';
-        unduhdataitem();
         await Utils().managetokenbox('close');
         await Utils().managecustomerbox('close');
+        unduhdataitem();
         return;
     }
   }
@@ -1247,9 +1250,11 @@ class SplashscreenController extends GetxController with StateMixin implements W
       var arrConnTest = connTest.split("|");
       bool isConnected = arrConnTest[0] == 'true';
       if(!isConnected){
-        progressdownload[2] = 'bad';
-        isdoneloading.value = true;
+        for (var i = 2; i < progressdownload.length; i++) {
+          progressdownload[i] = 'bad';
+        }
         Navigator.pop(keybanner.currentContext!);
+        isdoneloading.value = true;
         return;
       }
       String urlAPI = arrConnTest[1];
@@ -1373,19 +1378,21 @@ class SplashscreenController extends GetxController with StateMixin implements W
         downloadConfigFile('getinfoproduk');
       } else {
         progressdownload[3] = 'bad';
-        isdoneloading.value = true;
         Navigator.pop(keybanner.currentContext!);
+        isdoneloading.value = true;
       }
     } on SocketException{
-      progressdownload[2] = 'bad';
-      isdoneloading.value = true;
-      Navigator.pop(keybanner.currentContext!);
       await Utils().managetokenbox('close');
+      for (var i = 2; i < progressdownload.length; i++) {
+        progressdownload[i] = 'bad';
+      }
+      Navigator.pop(keybanner.currentContext!);
+      isdoneloading.value = true;
     } catch (e) {
-      progressdownload[2] = 'bad';
-      isdoneloading.value = true;
-      Navigator.pop(keybanner.currentContext!);
       await Utils().managetokenbox('close');
+      progressdownload[2] = 'bad';
+      Navigator.pop(keybanner.currentContext!);
+      isdoneloading.value = true;
     }
   }
 
@@ -1401,7 +1408,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         vendorlisthive.add(datavendor[i]);
       }
 
-      //simpan list item vendor
+      //get list item vendor
       await Utils().managemasteritembox('open');
       var datadecoded = await masteritembox.get('$salesid|${vendorlisthive[0].name}');
       await Utils().managemasteritembox('close');
@@ -1583,8 +1590,11 @@ class SplashscreenController extends GetxController with StateMixin implements W
       bool isConnected = arrConnTest[0] == 'true';
       if(!isConnected){
       //tidak ada koneksi tidak bisa update
-        isdoneloading.value = true;
+        for (var i = 0; i < progressdownload.length; i++) {
+          progressdownload[i] = 'bad';
+        }
         Navigator.pop(keybanner.currentContext!);
+        isdoneloading.value = true;
         return;
       }
       String urlAPI = arrConnTest[1];
@@ -1629,11 +1639,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
       return;
     } catch (e) {
       //error tidak bisa update
-      isdoneloading.value = true;
       print(e);
       for (var i = 0; i < progressdownload.length; i++) {
         progressdownload[i] = 'bad';
       }
+      Navigator.pop(keybanner.currentContext!);
+      isdoneloading.value = true;
       return;
     }
   }
@@ -1658,8 +1669,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
         };
         await devicestatebox.put(salesid, makejson);
         await Utils().managedevicestatebox('close');
-        isdoneloading.value = true;
         Navigator.pop(keybanner.currentContext!);
+        isdoneloading.value = true;
         Get.dialog(Dialog(
           backgroundColor: Colors.white,
           shape: const RoundedRectangleBorder(
@@ -1671,10 +1682,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
               Get.back();
             },
           )));
-          return;
+        return;
       }
-      isdoneloading.value = true;
       Navigator.pop(keybanner.currentContext!);
+      isdoneloading.value = true;
   }
 
   cekdevicestate() async {
@@ -1806,7 +1817,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
           // Download the file
           final response = await http.get(Uri.parse('$urlAPI/$url?vendor=$vendorname'));
-          print('$urlAPI/$url?vendor=$vendorname');
 
           if (response.statusCode == 200) {
             // Write the file

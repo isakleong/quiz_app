@@ -67,6 +67,12 @@ class Utils {
     final encrypted = encrypter.encrypt(params, iv: initVector);
     return encrypted.base64;
   }
+  
+  int calculateJsonSize(dynamic jsonData) {
+    String jsonString = json.encode(jsonData);
+    int sizeInBytes = utf8.encode(jsonString).length;
+    return sizeInBytes;
+  }
 
   //created for vendor
   String formatNumber(var number) {
@@ -124,7 +130,6 @@ class Utils {
     }
   }
 
-  
   managetokenbox(String action) async {
     try {
       if(action == 'open'){
@@ -280,7 +285,6 @@ class Utils {
 
     }
   }
-
 
   String changeUrl(String originalUrl) {
   Uri originalUri = Uri.parse(originalUrl);

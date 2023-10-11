@@ -164,67 +164,69 @@ class Homepage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50.0)),
                 onPressed: () {
-                  Get.defaultDialog(
-                    radius: 6,
-                    barrierDismissible: true,
-                    title: "",
-                    titlePadding: const EdgeInsets.only(top: 0, bottom: 0),
-                    confirm: Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: OutlinedButton(
-                        onPressed: () async {
-                            Get.back();
-                            splashscreenController.showloadingbanner(context);
-                            splashscreenController.unduhmoduleaccess();
-                            // print(await Utils().getParameterData("sales"));
-                            // splashscreenController.unduhdataitem();
-                            // splashscreenController.unduhdataroute();
-                          },
-                        style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.teal),
-                        child: const Text("YA",
+                  if(splashscreenController.isdoneloading.value == true){
+                    Get.defaultDialog(
+                      radius: 6,
+                      barrierDismissible: true,
+                      title: "",
+                      titlePadding: const EdgeInsets.only(top: 0, bottom: 0),
+                      confirm: Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: OutlinedButton(
+                          onPressed: () async {
+                              Get.back();
+                              splashscreenController.showloadingbanner(context);
+                              splashscreenController.unduhmoduleaccess();
+                              // print(await Utils().getParameterData("sales"));
+                              // splashscreenController.unduhdataitem();
+                              // splashscreenController.unduhdataroute();
+                            },
+                          style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.teal),
+                          child: const Text("YA",
+                              style: TextStyle(
+                                  fontFamily: "Lato",
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                        ),
+                      ),
+                      cancel: OutlinedButton(
+                        onPressed: () => {Get.back()},
+                        style: OutlinedButton.styleFrom(side: BorderSide(color: Colors.teal),
+                            backgroundColor: Colors.white),
+                        child: const Text("BATAL",
                             style: TextStyle(
                                 fontFamily: "Lato",
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white)),
+                                color: Colors.teal)),
                       ),
-                    ),
-                    cancel: OutlinedButton(
-                      onPressed: () => {Get.back()},
-                      style: OutlinedButton.styleFrom(side: BorderSide(color: Colors.teal),
-                          backgroundColor: Colors.white),
-                      child: const Text("BATAL",
-                          style: TextStyle(
-                              fontFamily: "Lato",
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.teal)),
-                    ),
-                    contentPadding: const EdgeInsets.only(bottom: 15, left: 20, right: 20),
-                    content: Column(
-                      children: [
-                        const Text("Informasi",
-                            style: TextStyle(
-                                fontFamily: "Lato",
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
-                        const SizedBox(height: 25),
-                        Lottie.asset('assets/lottie/confirmquestion.json',
-                            width: width * 0.25),
-                        SizedBox(
-                          height: height * 0.02,
-                        ),
-                        Text("Apakah anda ingin unduh ulang data ?",
-                            style: TextStyle(
-                                fontFamily: "Lato",
-                                fontSize: 15,
-                                color: Colors.grey.shade800)),
-                        const SizedBox(height: 6),
-                      ],
-                    ),
-                  );
+                      contentPadding: const EdgeInsets.only(bottom: 15, left: 20, right: 20),
+                      content: Column(
+                        children: [
+                          const Text("Informasi",
+                              style: TextStyle(
+                                  fontFamily: "Lato",
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                          const SizedBox(height: 25),
+                          Lottie.asset('assets/lottie/confirmquestion.json',
+                              width: width * 0.25),
+                          SizedBox(
+                            height: height * 0.02,
+                          ),
+                          Text("Apakah anda ingin unduh ulang data ?",
+                              style: TextStyle(
+                                  fontFamily: "Lato",
+                                  fontSize: 15,
+                                  color: Colors.grey.shade800)),
+                          const SizedBox(height: 6),
+                        ],
+                      ),
+                    );
+                  }
                 },
                 child: Icon(
                   Icons.download,
