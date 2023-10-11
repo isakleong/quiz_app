@@ -1436,7 +1436,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       await Utils().managemasteritembox('close');
       MasterItemModel itemlist = MasterItemModel.fromJson(jsonDecode(datadecoded));
 
-      //mencari item sesuai dengan subdis customer
+      //get data customer dan cek apakah data lebih dari 1 hari
       await Utils().managecustomerbox('open');
       var listcust = await customerBox.get(custid);
       await Utils().managecustomerbox('close');
@@ -1446,8 +1446,18 @@ class SplashscreenController extends GetxController with StateMixin implements W
         await Utils().managecustomerbox('open');
         listcust = await customerBox.get(custid);
         await Utils().managecustomerbox('close');
+      } else if (custid != "" && listcust != null){
+        listcust = listcust as Customer;
+        if(Utils().isDateNotToday(Utils().formatDate(listcust.timestamp))){
+          await loginapivendor();
+          await unduhdatacustomer('', true);
+          await Utils().managecustomerbox('open');
+          listcust = await customerBox.get(custid);
+          await Utils().managecustomerbox('close');
+        }
       }
 
+      //mencari item sesuai dengan subdis customer
       if(listcust != null){
         List<ProductData> listProduct = <ProductData>[];
         for (var m = 0; m < itemlist.items!.length; m++) {
