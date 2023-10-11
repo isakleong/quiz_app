@@ -1215,8 +1215,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
       if(datadecoded['banks'].length != 0){
         await bankbox.put(salesid, datadecoded['banks']);
       } else {
-        progressdownload[1] = 'bad';
-        Navigator.pop(keybanner.currentContext!);
+        if(!issinglecust){
+          progressdownload[1] = 'bad';
+        }
       }
       await Utils().managebankbox('close');
 
@@ -1226,16 +1227,21 @@ class SplashscreenController extends GetxController with StateMixin implements W
       if(datadecoded['paymentMethods'].length != 0){
         await paymentMethodsBox.put(salesid, datadecoded['paymentMethods']);
       } else {
-        progressdownload[1] = 'bad';
+        if(!issinglecust){
+          progressdownload[1] = 'bad';
+        }
       }
       await Utils().managepaymentmethodsbox('close');
-
-      if(progressdownload[1] != 'bad'){
-        progressdownload[1] = 'ok';
-      }
       if(issinglecust){
         return;
       }
+
+      if(!issinglecust){
+        if(progressdownload[1] != 'bad'){
+          progressdownload[1] = 'ok';
+        }
+      }
+      
       unduhdataitem();
       return;
     } on SocketException{
@@ -1251,12 +1257,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
         isdoneloading.value = true;
         return;
     } catch (e) {
-        progressdownload[1] = 'bad';
+        print(e.toString());
         await Utils().managetokenbox('close');
         await Utils().managecustomerbox('close');
         if(issinglecust){
           return;
         }
+        progressdownload[1] = 'bad';
         unduhdataitem();
         return;
     }
