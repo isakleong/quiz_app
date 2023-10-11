@@ -287,7 +287,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
   getListDataOutStanding() async {
     try {
-      await getBoxOutStanding();
       isFailedLoadOutstanding.value = false;
       isLoadingOutstanding.value = true;
       String salescode = await Utils().getParameterData("sales");
@@ -305,6 +304,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
       //membuat key box dan mencoba mengambil data outstanding pada hive jika ada
       String keyos ="$salescode|$custcode|${vendorlist[idvendorg].prefix}|${vendorlist[idvendorg].baseApiUrl}";
+      await getBoxOutStanding();
       if (!outstandingBox.isOpen){
         outstandingBox = await Hive.openBox('outstandingBox');
       }
@@ -316,10 +316,19 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
           isLoadingOutstanding.value = false;
           isFailedLoadOutstanding.value = false;
           return;
+        } else {
+          isLoadingOutstanding.value = false;
+          isFailedLoadOutstanding.value = false;
+          return;
         }
+      } else {
+          isLoadingOutstanding.value = false;
+          isFailedLoadOutstanding.value = false;
+          return;
       }
 
       //proses mengambil data outstanding menggunakan API
+      /* unused fetch data on home
       var connTest = await ApiClient().checkConnection(jenis: "vendor");
       var arrConnTest = connTest.split("|");
       bool isConnected = arrConnTest[0] == 'true';
@@ -374,12 +383,14 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
         await vendorBox.close();
       }
       isLoadingOutstanding.value = false;
+      */
     } catch (e) {
       isLoadingOutstanding.value = false;
       if (listDataOutstanding.isEmpty) {
         isFailedLoadOutstanding.value = true;
       }
-      await loginapivendor();
+      /* unused fetch data on home
+      await loginapivendor();*/
     }
   }
 

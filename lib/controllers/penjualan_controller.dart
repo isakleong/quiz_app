@@ -258,7 +258,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       try {
         getpiutangfrom('piutangbox');
       } catch (e) {
-        getpiutangfrom('masteritemvendorbox');
+        totalpiutang.value = "0";
+        totaljatuhtempo.value = "0";
       }
 
       var itemvendorhive = itemvendorbox.get(globalkeybox);
@@ -267,13 +268,16 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         for (var i = 0; i < itemvendorhive.length; i++) {
           listProduct.add(itemvendorhive[i]);
         }
+        /* unused fetch data on home
         if(Utils().isDateNotToday(Utils().formatDate(listProduct[0].timestamp))){
           listProduct.clear();
           await getproduct(type: 'hivefilled',custid: custid);
-        }
-      } else {
+        }*/
+      } 
+      /* unused fetch data on home
+      else {
         await getproduct(custid: custid);
-      }
+      }*/
     await getpenjualanstate();
     } catch (e) {
       needtorefresh.value = true;

@@ -508,7 +508,7 @@ class PembayaranController extends GetxController {
         await postpembayaranbox.delete(globalkeybox);
         await postpembayaranbox.put(globalkeybox,listpostsend);
         await postpembayaranbox.close();
-        await refreshmastervendor();
+        // await refreshmastervendor();
         return false;
       }
     }
@@ -567,7 +567,7 @@ class PembayaranController extends GetxController {
         await postpembayaranbox.delete(globalkeybox);
         await postpembayaranbox.put(globalkeybox,listpostsend);
         await postpembayaranbox.close();
-        await refreshmastervendor();
+        // await refreshmastervendor();
         return false;
       }
     }

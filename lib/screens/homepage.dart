@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
-import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -175,11 +174,9 @@ class Homepage extends StatelessWidget {
                         child: OutlinedButton(
                           onPressed: () async {
                               Get.back();
+                              splashscreenController.isdoneloading.value = false;
                               splashscreenController.showloadingbanner(context);
                               splashscreenController.unduhmoduleaccess();
-                              // print(await Utils().getParameterData("sales"));
-                              // splashscreenController.unduhdataitem();
-                              // splashscreenController.unduhdataroute();
                             },
                           style: OutlinedButton.styleFrom(
                               backgroundColor: Colors.teal),
