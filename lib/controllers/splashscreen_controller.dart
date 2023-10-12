@@ -981,13 +981,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
         for (var i = 1; i < progressdownload.length; i++) {
           progressdownload[i] = 'bad';
         }
+        isdoneloading.value = true;
         try {
           Navigator.pop(keybanner.currentContext!);
         // ignore: empty_catches
         } catch (e) {
           
         }
-        isdoneloading.value = true;
         return;
     } catch (e) {
         print(e.toString());
@@ -1156,23 +1156,23 @@ class SplashscreenController extends GetxController with StateMixin implements W
       for (var i = 2; i < progressdownload.length; i++) {
         progressdownload[i] = 'bad';
       }
-        try {
-          Navigator.pop(keybanner.currentContext!);
-        // ignore: empty_catches
-        } catch (e) {
-          
-        }
       isdoneloading.value = true;
+      try {
+        Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+      } catch (e) {
+          
+      }
     } catch (e) {
       await Utils().managetokenbox('close');
       progressdownload[2] = 'bad';
-        try {
-          Navigator.pop(keybanner.currentContext!);
-        // ignore: empty_catches
-        } catch (e) {
-          
-        }
       isdoneloading.value = true;
+      try {
+        Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+      } catch (e) {
+          
+      }
     }
   }
 
