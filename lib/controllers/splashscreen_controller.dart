@@ -790,6 +790,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       String urlAPI = arrConnTest[1];
       final response = await http.post(Uri.parse("$urlAPI/getcustbyroute"),headers: {"Content-Type": "application/json",}, body: jsonEncode(postbody),);
       var datajson = jsonDecode(response.body);
+      print(datajson);
       if(datajson['data'].length != 0){
         progressdownload[0] = 'ok';
         unduhDataCustomer(datajson['data'],false);
@@ -859,9 +860,11 @@ class SplashscreenController extends GetxController with StateMixin implements W
       } else if(custtxt != null && custtxt != "" && issinglecust == false){
         request.fields['customers[${listcust.length}]'] = await Utils().getParameterData('cust');
       }
+      print("request maded");
       final response = await request.send();
       final responseString = await response.stream.bytesToString();
       var datadecoded = jsonDecode(responseString);
+      print(datadecoded);
 
       //data customer,outstanding,piutang dan alamat
       await Utils().managecustomerbox('open');
@@ -1376,112 +1379,126 @@ class SplashscreenController extends GetxController with StateMixin implements W
   }
 
   unduhModuleAccess() async{
-    var connTest = await ApiClient().checkConnection();
-    var arrConnTest = connTest.split("|");
-    bool isConnected = arrConnTest[0] == 'true';
-    String urlAPI = arrConnTest[1];
-    if(!isConnected){
+    try {
+      var connTest = await ApiClient().checkConnection();
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
+      if(!isConnected){
+        for (var i = 0; i < progressdownload.length; i++) {
+          progressdownload[i] = 'bad';
+        }
+        String salesid = await Utils().getParameterData('sales');
+        await Utils().managedevicestatebox('open');
+        var datastatebox = await devicestatebox.get(salesid);
+        await Utils().managedevicestatebox('close');
+        if(datastatebox != null){
+          await syncCustomerData(cekstatedevice);
+          try {
+            Navigator.pop(keybanner.currentContext!);
+          // ignore: empty_catches
+          } catch (e) {
+            
+          }
+          Get.dialog(Dialog(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: DialogInfo(
+              desc: "Tidak Ada koneksi internet !",
+              judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
+              ontap: () {
+                Get.back();
+              },
+            )));
+          return;
+        }
+        isdoneloading.value = true;
+          try {
+            Navigator.pop(keybanner.currentContext!);
+          // ignore: empty_catches
+          } catch (e) {
+            
+          }
+          Get.dialog(Dialog(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: DialogInfo(
+              desc: "Tidak Ada koneksi internet !",
+              judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
+              ontap: () {
+                Get.back();
+              },
+            )));
+          return;
+      } else {
+        moduleList.clear();
+        String salesid = await Utils().getParameterData('sales');
+        final encryptedParam = await Utils.encryptData(salesid);
+        final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
+        var data = jsonDecode(result.toString());
+        data["AppModule"].map((item) {
+          moduleList.add(Module.from(item));
+        }).toList();
+
+        var moduleBox = await Hive.openBox('moduleBox');
+        await moduleBox.delete(salesid);
+        await moduleBox.put(salesid, moduleList);
+        await moduleBox.close();
+
+        if(!Hive.isBoxOpen("BranchInfoBox")){
+          branchinfobox = await Hive.openBox('BranchInfoBox');
+        }
+        await branchinfobox.delete(salesid);
+        await branchinfobox.put(salesid, data['BranchInfo']);
+        await branchinfobox.close();
+        var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
+        if(idx != -1){
+          versimodulvendor = moduleList[idx].version;
+          ordermodulvendor = moduleList[idx].orderNumber;
+          moduleList.removeAt(idx);
+          await loginApiVendor();
+          await Utils().managetokenbox('open');
+          var tokendata = await tokenbox.get(salesid);
+          await Utils().managetokenbox('close');
+          if (tokendata != null) {
+            getStateUnduhUlang();
+          } else {
+            for (var i = 0; i < progressdownload.length; i++) {
+              progressdownload[i] = 'bad';
+            }
+            isdoneloading.value = true;
+          try {
+            Navigator.pop(keybanner.currentContext!);
+          // ignore: empty_catches
+          } catch (e) {
+            
+          }
+          }
+        } else {
+            isdoneloading.value = true;
+          try {
+            Navigator.pop(keybanner.currentContext!);
+          // ignore: empty_catches
+          } catch (e) {
+            
+          }
+        }
+      }
+    } catch (e) {
+      isdoneloading.value = true;
       for (var i = 0; i < progressdownload.length; i++) {
         progressdownload[i] = 'bad';
       }
-      String salesid = await Utils().getParameterData('sales');
-      await Utils().managedevicestatebox('open');
-      var datastatebox = await devicestatebox.get(salesid);
-      await Utils().managedevicestatebox('close');
-      if(datastatebox != null){
-        await syncCustomerData(cekstatedevice);
-        try {
-          Navigator.pop(keybanner.currentContext!);
+      try {
+        Navigator.pop(keybanner.currentContext!);
         // ignore: empty_catches
-        } catch (e) {
-          
-        }
-         Get.dialog(Dialog(
-          backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: DialogInfo(
-            desc: "Tidak Ada koneksi internet !",
-            judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
-            ontap: () {
-              Get.back();
-            },
-          )));
-        return;
-      }
-      isdoneloading.value = true;
-        try {
-          Navigator.pop(keybanner.currentContext!);
-        // ignore: empty_catches
-        } catch (e) {
-          
-        }
-         Get.dialog(Dialog(
-          backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: DialogInfo(
-            desc: "Tidak Ada koneksi internet !",
-            judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
-            ontap: () {
-              Get.back();
-            },
-          )));
-        return;
-    } else {
-      moduleList.clear();
-      String salesid = await Utils().getParameterData('sales');
-      final encryptedParam = await Utils.encryptData(salesid);
-      final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
-      var data = jsonDecode(result.toString());
-      data["AppModule"].map((item) {
-        moduleList.add(Module.from(item));
-      }).toList();
-
-      var moduleBox = await Hive.openBox('moduleBox');
-      await moduleBox.delete(salesid);
-      await moduleBox.put(salesid, moduleList);
-      await moduleBox.close();
-
-      if(!Hive.isBoxOpen("BranchInfoBox")){
-        branchinfobox = await Hive.openBox('BranchInfoBox');
-      }
-      await branchinfobox.delete(salesid);
-      await branchinfobox.put(salesid, data['BranchInfo']);
-      await branchinfobox.close();
-      var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
-      if(idx != -1){
-        versimodulvendor = moduleList[idx].version;
-        ordermodulvendor = moduleList[idx].orderNumber;
-        moduleList.removeAt(idx);
-        await loginApiVendor();
-        await Utils().managetokenbox('open');
-        var tokendata = await tokenbox.get(salesid);
-        await Utils().managetokenbox('close');
-        if (tokendata != null) {
-          getStateUnduhUlang();
-        } else {
-          for (var i = 0; i < progressdownload.length; i++) {
-            progressdownload[i] = 'bad';
-          }
-          isdoneloading.value = true;
-        try {
-          Navigator.pop(keybanner.currentContext!);
-        // ignore: empty_catches
-        } catch (e) {
-          
-        }
-        }
-      } else {
-          isdoneloading.value = true;
-        try {
-          Navigator.pop(keybanner.currentContext!);
-        // ignore: empty_catches
-        } catch (e) {
-          
-        }
+      } catch (e) {
+            
       }
     }
+    
   }
 
   getStateUnduhUlang() async {
@@ -1561,7 +1578,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       return;
     } catch (e) {
       //error tidak bisa update
-      // print(e);
+      print(e);
       for (var i = 0; i < progressdownload.length; i++) {
         await Future.delayed(Duration(milliseconds: 250));
         progressdownload[i] = 'bad';
@@ -1628,29 +1645,51 @@ class SplashscreenController extends GetxController with StateMixin implements W
   }
 
   cekDeviceState() async {
-      isdoneloading.value = false;
-      String salesid = await Utils().getParameterData('sales');
-      await Utils().managedevicestatebox('open');
-      var datastatebox = await devicestatebox.get(salesid);
-      await Utils().managedevicestatebox('close');
-      if(datastatebox != null){
-        if(Utils().isDateNotToday(Utils().formatDate(datastatebox['lastdownload']))){
-          var connTest = await ApiClient().checkConnection();
-          var arrConnTest = connTest.split("|");
-          bool isConnected = arrConnTest[0] == 'true';
-          if(!isConnected){
-            syncCustomerData(cekstatedevice);
+    try {
+        isdoneloading.value = false;
+        String salesid = await Utils().getParameterData('sales');
+        await Backgroundservicecontroller().createLogTes(salesid);
+        await Utils().managedevicestatebox('open');
+        await Backgroundservicecontroller().createLogTes('openning box device');
+        var datastatebox = await devicestatebox.get(salesid);
+        await Backgroundservicecontroller().createLogTes('reading box device');
+        await Utils().managedevicestatebox('close');
+        await Backgroundservicecontroller().createLogTes('closing box device');
+        if(datastatebox != null){
+          if(Utils().isDateNotToday(Utils().formatDate(datastatebox['lastdownload']))){
+            var connTest = await ApiClient().checkConnection();
+            var arrConnTest = connTest.split("|");
+            bool isConnected = arrConnTest[0] == 'true';
+            if(!isConnected){
+              syncCustomerData(cekstatedevice);
+            } else {
+              showLoadingBanner(keyhome.currentContext!);
+              unduhModuleAccess();
+            }
           } else {
-            showLoadingBanner(keyhome.currentContext!);
-            unduhModuleAccess();
+            syncCustomerData(cekstatedevice);
           }
-        } else {
-          syncCustomerData(cekstatedevice);
+        }else {
+          await Backgroundservicecontroller().createLogTes('trying to show banner');
+          showLoadingBanner(keyhome.currentContext!);
+          await Backgroundservicecontroller().createLogTes('trying to download module');
+          unduhModuleAccess();
         }
-      }else {
-        showLoadingBanner(keyhome.currentContext!);
-        unduhModuleAccess();
-      }
+    } catch (e) {
+      isdoneloading.value = true;
+      Get.dialog(Dialog(
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: DialogInfo(
+            desc: "Gagal Cek State Gadget ! ${e.toString()}",
+            judul: "Error",lottieasset: "error.json",
+            ontap: () {
+              Get.back();
+            },
+          )));
+    }
+      
   }
 
   processFile(bool download,String vendor) async {
