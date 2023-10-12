@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sfa_tools/common/app_config.dart';
@@ -17,7 +15,6 @@ import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/controllers/background_service_controller.dart';
 import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/loginmodel.dart';
-import 'package:sfa_tools/models/masteritemvendor.dart';
 import 'package:sfa_tools/models/module.dart';
 import 'package:sfa_tools/models/outstandingdata.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
@@ -31,7 +28,6 @@ import '../common/hivebox_vendor.dart';
 import '../models/detailproductdata.dart';
 import '../models/masteritemmodel.dart';
 import '../models/productdata.dart';
-import '../models/vendorinfomodel.dart';
 import '../widgets/dialoginfo.dart';
 import 'package:http/http.dart' as http;
 
@@ -889,9 +885,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
           'receivables' : datadecoded['customers'][i]['receivables'],
           'overdueInvoices': datadecoded['customers'][i]['overdueInvoices']
         };
-        if(datacust.no == custtxt){
-          print(makejsonpiutang);
-        }
         await piutangBox.put('$salesid|${datacust.no}', jsonEncode(makejsonpiutang));
         await outstandingBox.delete("$salesid|${datacust.no}");
         List<OutstandingData> listoutstanding = <OutstandingData>[];
@@ -905,9 +898,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
             "data": datadecoded['customers'][i]['outstanding'],
             "timestamp": DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now())
           };
-        if(datacust.no == custtxt){
-          print(makejson);
-        }
           await outstandingBox.put("$salesid|${datacust.no}", jsonEncode(makejson));
         }
         List<ShipToAddress> listaddrcust = <ShipToAddress>[];
@@ -922,10 +912,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
         if(listaddrcust.isNotEmpty){
           if(!shiptobox.isOpen) await Utils().manageshipbox('open');
-          
-          if(datacust.no == custtxt){
-            print(datadecoded['customers'][i]['shipToAddresses']);
-          }
           await shiptobox.put(datacust.no,listaddrcust);
         }
       }
@@ -1086,15 +1072,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
           
           //isi data outstanding customer
           await Utils().manageoutstandingbox('open');
-          var dataoutstandingold = await outstandingBox.get(globalkeybox);
-          if(dataoutstandingold != null){
-            await outstandingBox.delete(globalkeybox);
-          }
+          await outstandingBox.delete(globalkeybox);
           var dataoutstandingnew = await outstandingBox.get("$salesid|$custid");
           if(dataoutstandingnew != null){
-            await outstandingBox.delete("$salesid|$custid");
+            await outstandingBox.put(globalkeybox, dataoutstandingnew);
           }
-          await outstandingBox.put(globalkeybox, dataoutstandingnew);
+          await Utils().manageoutstandingbox('close');
 
           //isi data piutang customer
           await Utils().managepiutangbox('open');
@@ -1247,13 +1230,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
           //isi data outstanding customer
           await Utils().manageoutstandingbox('open');
           var dataoutstandingvendor = await outstandingBox.get(globalkeybox);
-          if(dataoutstandingvendor != null){
-            await outstandingBox.put(globalkeybox, dataoutstandingvendor);
-          } else {
+          if(dataoutstandingvendor == null){
             var dataoutstanding = await outstandingBox.get("$salesid|$custid");
             if(dataoutstanding != null){
               await outstandingBox.put(globalkeybox, dataoutstanding);
-              await outstandingBox.delete("$salesid|$custid");
             }
           }
           await Utils().manageoutstandingbox('close');
@@ -1261,9 +1241,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           //isi data piutang customer
           await Utils().managepiutangbox('open');
           var datapiutangvendor = await piutangBox.get(globalkeybox);
-          if(datapiutangvendor != null){
-            await piutangBox.put(globalkeybox,datapiutangvendor);
-          } else {
+          if(datapiutangvendor == null){
             var datapiutang = await piutangBox.get("$salesid|$custid");
             if(datapiutang != null){
               await piutangBox.put(globalkeybox, datapiutang);
@@ -1306,7 +1284,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
           await moduleBox.close();
           List<Module> datamoduleconv = <Module>[];
           for (var i = 0; i < datamodule.length; i++) {
-            print(datamodule[i].moduleID);
             datamoduleconv.add(datamodule[i]);
           }
           moduleList.clear();

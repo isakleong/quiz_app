@@ -20,6 +20,7 @@ import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/servicebox.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
+import '../common/hivebox_vendor.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import '../models/detailproductdata.dart';
@@ -436,13 +437,6 @@ class Backgroundservicecontroller {
   //end quiz section
 
   //taking order vendor section
-  late Box boxpostpenjualan;
-  late Box boxreportpenjualan;
-  late Box vendorBox;
-  late Box postpembayaranbox;
-  late Box boxPembayaranReport;
-  late Box tokenbox;
-  late Box branchinfobox;
   List<Vendor> vendorlist = [];
   String productdir = AppConfig().productdir;
   String informasiconfig = AppConfig().informasiconfig;
@@ -644,7 +638,9 @@ class Backgroundservicecontroller {
       List<dynamic> keys = postpembayaranbox.keys.toList();
       return keys;
     } else if (jenis == 'vendor'){
-      List<dynamic> keys = vendorBox.keys.toList();
+      await openmastervendorbox('open');
+      List<dynamic> keys = mastervendorbox.keys.toList();
+      await openmastervendorbox('close');
       return keys;
     }
   }
@@ -708,18 +704,28 @@ class Backgroundservicecontroller {
     }
   }
 
-  openvendorbox() async {
+  openmastervendorbox(String action) async{
     try {
       await hiveInitializer();
       try {
-        vendorBox = await Hive.openBox('vendorBox');
-      // ignore: empty_catches
-      } catch (e) {}
+        if(action == 'open'){
+          mastervendorbox = await Hive.openBox('mastervendorbox');
+        } else {
+          mastervendorbox.close();
+        }
+      } catch (e) {
+
+      }
     } catch (e) {
       try {
-        vendorBox = await Hive.openBox('vendorBox');
-      // ignore: empty_catches
-      } catch (err) {}
+        if(action == 'open'){
+          mastervendorbox = await Hive.openBox('mastervendorbox');
+        } else {
+          mastervendorbox.close();
+        }
+      } catch (e) {
+
+      }
     }
   }
 
@@ -1139,21 +1145,22 @@ class Backgroundservicecontroller {
   }
 
   getlistvendor() async {
-    await openvendorbox();
     var keys = await getListKey('vendor');
     if (keys.isEmpty){
       return;
     }
+    await openmastervendorbox('open');
     for (var i = 0; i < keys.length; i++) {
-      var datavendor = await vendorBox.get(keys[i]);
+      var datavendor = await mastervendorbox.get(keys[i]);
       for (var i = 0; i < datavendor.length; i++) {
+        print(datavendor[i].name.toString());
         int isfound = vendorlist.indexWhere((element) => element.name.toLowerCase() == datavendor[i].name.toString().toLowerCase());
         if(isfound == -1){
           vendorlist.add(datavendor[i]);
         }
       }
     }
-    vendorBox.close();
+    await openmastervendorbox('close');
     for (var i = 0; i < vendorlist.length; i++) {
       await processfile(true, vendorlist[i].name);
     }
