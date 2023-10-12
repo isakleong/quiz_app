@@ -286,6 +286,42 @@ class Utils {
     }
   }
 
+  managemasteritemvendorbox(String action) async{
+    try {
+      if(action == 'open'){
+        masteritemvendorbox = await Hive.openBox('masteritemvendorbox');
+      } else {
+        masteritemvendorbox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  manageboxPembayaranState(String action) async{
+    try {
+      if(action == 'open'){
+        boxPembayaranState = await Hive.openBox('boxPembayaranState');
+      } else {
+        boxPembayaranState.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
+  managestatePenjualanbox(String action) async{
+    try {
+      if(action == 'open'){
+        statePenjualanbox = await Hive.openBox('statepenjualan');
+      } else {
+        statePenjualanbox.close();
+      }
+    } catch (e) {
+
+    }
+  }
+
   String changeUrl(String originalUrl) {
   Uri originalUri = Uri.parse(originalUrl);
   String newPath = originalUri.path; // Keep the original path

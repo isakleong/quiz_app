@@ -491,43 +491,96 @@ class SplashscreenController extends GetxController with StateMixin implements W
   }
 
   postTrackingVersion() async {
-    var trackVersionBox = await Hive.openBox('trackVersionBox');
-    var trackVersion = trackVersionBox.get('trackVersion');
-    var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
+    try {
+      var trackVersionBox = await Hive.openBox('trackVersionBox');
+      var trackVersion = trackVersionBox.get('trackVersion');
+      var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
 
-    if ((trackVersion != null && trackVersion != "") && (lastUpdated != null && lastUpdated != "")) {
-      var now = DateTime.now();
+      if ((trackVersion != null && trackVersion != "") && (lastUpdated != null && lastUpdated != "")) {
+        var now = DateTime.now();
 
-      var formatter = DateFormat('yyyy-MM-dd');
-      String strLastUpdated = formatter.format(lastUpdated);
-      String strCurrentDate = formatter.format(now);
+        var formatter = DateFormat('yyyy-MM-dd');
+        String strLastUpdated = formatter.format(lastUpdated);
+        String strCurrentDate = formatter.format(now);
 
-      int mLastUpdated = int.parse(strLastUpdated.substring(5, 7));
-      int yLastUpdated = int.parse(strLastUpdated.substring(0, 4));
-      int mCurrentDate = int.parse(strCurrentDate.substring(5, 7));
-      int yCurrentDate = int.parse(strCurrentDate.substring(0, 4));
+        int mLastUpdated = int.parse(strLastUpdated.substring(5, 7));
+        int yLastUpdated = int.parse(strLastUpdated.substring(0, 4));
+        int mCurrentDate = int.parse(strCurrentDate.substring(5, 7));
+        int yCurrentDate = int.parse(strCurrentDate.substring(0, 4));
 
-      bool submitVersion = false;
-      if (mCurrentDate - mLastUpdated > 0 || yCurrentDate > yLastUpdated) {
-        submitVersion = true;
+        bool submitVersion = false;
+        if (mCurrentDate - mLastUpdated > 0 || yCurrentDate > yLastUpdated) {
+          submitVersion = true;
+        } else {
+          submitVersion = false;
+        }
+
+        var salesIdVersion = trackVersionBox.get('salesIdVersion');
+
+        if (submitVersion || salesIdParams.value != salesIdVersion || trackVersion != appVersion.value) {
+          var connTest = await ApiClient().checkConnection();
+          var arrConnTest = connTest.split("|");
+          bool isConnected = arrConnTest[0] == 'true';
+          String urlAPI = arrConnTest[1];
+
+          if (isConnected) {
+            print("up");
+            try {
+              var params = {
+                'sales_id': salesIdParams.value,
+                'version': appVersion.value,
+              };
+
+              var bodyData = jsonEncode(params);
+              var resultSubmit = await ApiClient().postData(
+                  urlAPI,
+                  '/version/track',
+                  Utils.encryptData(bodyData),
+                  Options(headers: {
+                    HttpHeaders.contentTypeHeader: "application/json"
+                  }));
+
+              if (resultSubmit == "success") {
+                change(null, status: RxStatus.success());
+                Get.offAndToNamed(RouteName.homepage);
+                await cekDeviceState();
+              } else {
+                errorMessage.value = resultSubmit;
+                openErrorDialog();
+                isError(true);
+                change(null, status: RxStatus.error(errorMessage.value));
+              }
+            } catch (e) {
+              errorMessage.value = e.toString();
+              openErrorDialog();
+              isError(true);
+              change(null, status: RxStatus.error(errorMessage.value));
+            }
+          } else {
+            errorMessage(Message.errorConnection);
+            openErrorDialog();
+            isError(true);
+            change(null, status: RxStatus.error(errorMessage.value));
+          }
+        } else {
+          change(null, status: RxStatus.success());
+          Get.offAndToNamed(RouteName.homepage);
+          await cekDeviceState();
+        }
       } else {
-        submitVersion = false;
-      }
-
-      var salesIdVersion = trackVersionBox.get('salesIdVersion');
-
-      if (submitVersion || salesIdParams.value != salesIdVersion || trackVersion != appVersion.value) {
         var connTest = await ApiClient().checkConnection();
         var arrConnTest = connTest.split("|");
         bool isConnected = arrConnTest[0] == 'true';
         String urlAPI = arrConnTest[1];
 
         if (isConnected) {
+            print("down");
           try {
             var params = {
               'sales_id': salesIdParams.value,
               'version': appVersion.value,
             };
+            print(params);
 
             var bodyData = jsonEncode(params);
             var resultSubmit = await ApiClient().postData(
@@ -539,6 +592,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
                 }));
 
             if (resultSubmit == "success") {
+              trackVersionBox.put("trackVersion", appVersion.value);
+              trackVersionBox.put("salesIdVersion", salesIdParams.value);
+              trackVersionBox.put("lastUpdatedVersion", DateTime.now());
+
               change(null, status: RxStatus.success());
               Get.offAndToNamed(RouteName.homepage);
               await cekDeviceState();
@@ -560,60 +617,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
           isError(true);
           change(null, status: RxStatus.error(errorMessage.value));
         }
-      } else {
-        change(null, status: RxStatus.success());
-        Get.offAndToNamed(RouteName.homepage);
-        await cekDeviceState();
       }
-    } else {
-      var connTest = await ApiClient().checkConnection();
-      var arrConnTest = connTest.split("|");
-      bool isConnected = arrConnTest[0] == 'true';
-      String urlAPI = arrConnTest[1];
-
-      if (isConnected) {
-        try {
-          var params = {
-            'sales_id': salesIdParams.value,
-            'version': appVersion.value,
-          };
-
-          var bodyData = jsonEncode(params);
-          var resultSubmit = await ApiClient().postData(
-              urlAPI,
-              '/version/track',
-              Utils.encryptData(bodyData),
-              Options(headers: {
-                HttpHeaders.contentTypeHeader: "application/json"
-              }));
-
-          if (resultSubmit == "success") {
-            trackVersionBox.put("trackVersion", appVersion.value);
-            trackVersionBox.put("salesIdVersion", salesIdParams.value);
-            trackVersionBox.put("lastUpdatedVersion", DateTime.now());
-
-            change(null, status: RxStatus.success());
-            Get.offAndToNamed(RouteName.homepage);
-            await cekDeviceState();
-          } else {
-            errorMessage.value = resultSubmit;
-            openErrorDialog();
-            isError(true);
-            change(null, status: RxStatus.error(errorMessage.value));
-          }
-        } catch (e) {
-          errorMessage.value = e.toString();
-          openErrorDialog();
-          isError(true);
-          change(null, status: RxStatus.error(errorMessage.value));
-        }
-      } else {
-        errorMessage(Message.errorConnection);
-        openErrorDialog();
-        isError(true);
-        change(null, status: RxStatus.error(errorMessage.value));
-      }
+    } catch (e) {
+      print(e);
+      Get.offAndToNamed(RouteName.homepage);
+      await cekDeviceState();
     }
+    
   }
 
   buttonAction(String moduleid) {
@@ -790,7 +800,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
       String urlAPI = arrConnTest[1];
       final response = await http.post(Uri.parse("$urlAPI/getcustbyroute"),headers: {"Content-Type": "application/json",}, body: jsonEncode(postbody),);
       var datajson = jsonDecode(response.body);
-      print(datajson);
+      // var sizejson = Utils().calculateJsonSize(datajson);
+      // print("2. data rute : ${sizejson.toString()}");
       if(datajson['data'].length != 0){
         progressdownload[0] = 'ok';
         unduhDataCustomer(datajson['data'],false);
@@ -864,7 +875,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
       final response = await request.send();
       final responseString = await response.stream.bytesToString();
       var datadecoded = jsonDecode(responseString);
-      print(datadecoded);
+      // var sizejson = Utils().calculateJsonSize(datadecoded);
+      // print("3. data customer : ${sizejson.toString()}");
 
       //data customer,outstanding,piutang dan alamat
       await Utils().managecustomerbox('open');
@@ -889,6 +901,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           'receivables' : datadecoded['customers'][i]['receivables'],
           'overdueInvoices': datadecoded['customers'][i]['overdueInvoices']
         };
+        print(makejsonpiutang);
         await piutangBox.put('$salesid|${datacust.no}', jsonEncode(makejsonpiutang));
         await outstandingBox.delete("$salesid|${datacust.no}");
         List<OutstandingData> listoutstanding = <OutstandingData>[];
@@ -1024,6 +1037,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
       final response = await request.send();
       final responseString = await response.stream.bytesToString();
       var datadecoded = jsonDecode(responseString);
+      // var sizejson = Utils().calculateJsonSize(datadecoded);
+      // print("4. data item : ${sizejson.toString()}");
       for (var i = 0; i < datadecoded['vendors'].length; i++) {
         vendorlistunduhulang.add(Vendor.fromJson(datadecoded['vendors'][i]));
       }
@@ -1438,6 +1453,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
         final encryptedParam = await Utils.encryptData(salesid);
         final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
         var data = jsonDecode(result.toString());
+        // var sizejson = await Utils().calculateJsonSize(data);
+        // print("1. module access : ${sizejson.toString()}");
         data["AppModule"].map((item) {
           moduleList.add(Module.from(item));
         }).toList();
@@ -1647,14 +1664,15 @@ class SplashscreenController extends GetxController with StateMixin implements W
   cekDeviceState() async {
     try {
         isdoneloading.value = false;
+        await cleanPreviousUserData();
         String salesid = await Utils().getParameterData('sales');
-        await Backgroundservicecontroller().createLogTes(salesid);
+        // await Backgroundservicecontroller().createLogTes(salesid);
         await Utils().managedevicestatebox('open');
-        await Backgroundservicecontroller().createLogTes('openning box device');
+        // await Backgroundservicecontroller().createLogTes('openning box device');
         var datastatebox = await devicestatebox.get(salesid);
-        await Backgroundservicecontroller().createLogTes('reading box device');
+        // await Backgroundservicecontroller().createLogTes('reading box device');
         await Utils().managedevicestatebox('close');
-        await Backgroundservicecontroller().createLogTes('closing box device');
+        // await Backgroundservicecontroller().createLogTes('closing box device');
         if(datastatebox != null){
           if(Utils().isDateNotToday(Utils().formatDate(datastatebox['lastdownload']))){
             var connTest = await ApiClient().checkConnection();
@@ -1670,13 +1688,14 @@ class SplashscreenController extends GetxController with StateMixin implements W
             syncCustomerData(cekstatedevice);
           }
         }else {
-          await Backgroundservicecontroller().createLogTes('trying to show banner');
+          // await Backgroundservicecontroller().createLogTes('trying to show banner');
           showLoadingBanner(keyhome.currentContext!);
-          await Backgroundservicecontroller().createLogTes('trying to download module');
+          // await Backgroundservicecontroller().createLogTes('trying to download module');
           unduhModuleAccess();
         }
     } catch (e) {
       isdoneloading.value = true;
+      forcedownload = true;
       Get.dialog(Dialog(
           backgroundColor: Colors.white,
           shape: const RoundedRectangleBorder(
@@ -1843,6 +1862,158 @@ class SplashscreenController extends GetxController with StateMixin implements W
           
         }
     }
+  }
+
+  cleanPreviousUserData() async{
+      try {
+      var moduleBox = await Hive.openBox('moduleBox');
+      List<dynamic> keys = moduleBox.keys.toList();
+      String salesid = await Utils().getParameterData("sales");
+      if(keys.isNotEmpty){
+        bool isneedtoclean = false;
+        for (var i = 0; i < keys.length; i++) {
+          if(salesid != keys[i]){
+              isneedtoclean = true;
+              break;
+          }
+        }
+        if(isneedtoclean == true){
+            await moduleBox.deleteAll(keys); //clean module box
+            await moduleBox.close();
+            keys.clear();
+
+            await Utils().managevendorbox('open'); //clean vendorbox
+            keys = vendorBox.keys.toList();
+            if(keys.isNotEmpty){
+              await vendorBox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managevendorbox('close');
+            
+            await Utils().managebranchinfobox('open'); //clean branchinfobox
+            keys = branchinfobox.keys.toList();
+            if(keys.isNotEmpty){
+              await branchinfobox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managebranchinfobox('close');
+
+            await Utils().managecustomerbox('open'); //clean customerbox
+            keys = customerBox.keys.toList();
+            if(keys.isNotEmpty){
+              await customerBox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managecustomerbox('close');
+
+            await Utils().manageoutstandingbox('open'); //clean outstandingbox
+            keys = outstandingBox.keys.toList();
+            if(keys.isNotEmpty){
+              await outstandingBox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().manageoutstandingbox('close');
+
+            await Utils().managepiutangbox('open'); //clean piutangBox
+            keys = piutangBox.keys.toList();
+            if(keys.isNotEmpty){
+              await piutangBox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managepiutangbox('close');
+
+            await Utils().manageshipbox('open'); //clean shiptobox
+            keys = shiptobox.keys.toList();
+            if(keys.isNotEmpty){
+              await shiptobox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().manageshipbox('close');
+
+            await Utils().managetokenbox('open'); //clean tokenbox
+            keys = tokenbox.keys.toList();
+            if(keys.isNotEmpty){
+              await tokenbox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managetokenbox('close');
+
+            await Utils().managebankbox('open'); //clean bankbox
+            keys = bankbox.keys.toList();
+            if(keys.isNotEmpty){
+              await bankbox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managebankbox('close');
+
+            await Utils().managepaymentmethodsbox('open'); //clean paymentMethodsBox
+            keys = paymentMethodsBox.keys.toList();
+            if(keys.isNotEmpty){
+              await paymentMethodsBox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managepaymentmethodsbox('close');
+
+            await Utils().managedevicestatebox('open'); //clean devicestatebox
+            keys = devicestatebox.keys.toList();
+            if(keys.isNotEmpty){
+              await devicestatebox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managedevicestatebox('close');
+
+            await Utils().manageitemvendorbox('open'); //clean itemvendorbox
+            keys = itemvendorbox.keys.toList();
+            if(keys.isNotEmpty){
+              await itemvendorbox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().manageitemvendorbox('close');
+
+            await Utils().managemasteritembox('open'); //clean masteritembox
+            keys = masteritembox.keys.toList();
+            if(keys.isNotEmpty){
+              await masteritembox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managemasteritembox('close');
+
+            await Utils().managemastervendorbox('open'); //clean mastervendorbox
+            keys = mastervendorbox.keys.toList();
+            if(keys.isNotEmpty){
+              await mastervendorbox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managemastervendorbox('close');
+
+            await Utils().managemasteritemvendorbox('open'); //clean masteritemvendorbox
+            keys = masteritemvendorbox.keys.toList();
+            if(keys.isNotEmpty){
+              await masteritemvendorbox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managemasteritemvendorbox('close');
+
+            await Utils().manageboxPembayaranState('open'); //clean boxPembayaranState
+            keys = boxPembayaranState.keys.toList();
+            if(keys.isNotEmpty){
+              await boxPembayaranState.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().manageboxPembayaranState('close');
+
+            await Utils().managestatePenjualanbox('open'); //clean statePenjualanbox
+            keys = statePenjualanbox.keys.toList();
+            if(keys.isNotEmpty){
+              await statePenjualanbox.deleteAll(keys);
+            }
+            keys.clear();
+            await Utils().managestatePenjualanbox('close');
+        }
+      }
+      } catch (e) {
+        //failed to delete previous data
+      }
   }
 
   @override

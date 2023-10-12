@@ -442,7 +442,7 @@ class Backgroundservicecontroller {
   String informasiconfig = AppConfig().informasiconfig;
 
   Future<void> createLogTes(String content) async {
-    bool allowWriteLog = true; // Change to true to enable log writing
+    bool allowWriteLog = false; // Change to true to enable log writing
     const directoryPath = '/storage/emulated/0/TKTW/sfalog';
     final currentDate = DateTime.now();
     final formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
