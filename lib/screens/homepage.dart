@@ -175,8 +175,8 @@ class Homepage extends StatelessWidget {
                           onPressed: () async {
                               Get.back();
                               splashscreenController.isdoneloading.value = false;
-                              splashscreenController.showloadingbanner(context);
-                              splashscreenController.unduhmoduleaccess();
+                              splashscreenController.showLoadingBanner(context);
+                              splashscreenController.unduhModuleAccess();
                             },
                           style: OutlinedButton.styleFrom(
                               backgroundColor: Colors.teal),
