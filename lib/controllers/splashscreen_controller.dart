@@ -782,9 +782,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
           progressdownload[i] = 'bad';
         }
         isdoneloading.value = true;
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
         return;
       }
       String urlAPI = arrConnTest[1];
@@ -803,9 +806,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
         progressdownload[i] = 'bad';
       }
       isdoneloading.value = true;
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
     }
   }
 
@@ -823,9 +829,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
         for (var i = 1; i < progressdownload.length; i++) {
           progressdownload[i] = 'bad';
         }
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
         isdoneloading.value = true;
         return;
       }
@@ -969,9 +978,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
         for (var i = 1; i < progressdownload.length; i++) {
           progressdownload[i] = 'bad';
         }
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
         isdoneloading.value = true;
         return;
     } catch (e) {
@@ -999,9 +1011,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
         for (var i = 2; i < progressdownload.length; i++) {
           progressdownload[i] = 'bad';
         }
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
         isdoneloading.value = true;
         return;
       }
@@ -1126,9 +1141,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
         downloadConfigFile('getinfoproduk');
       } else {
         progressdownload[3] = 'bad';
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
         isdoneloading.value = true;
       }
     } on SocketException{
@@ -1136,16 +1154,22 @@ class SplashscreenController extends GetxController with StateMixin implements W
       for (var i = 2; i < progressdownload.length; i++) {
         progressdownload[i] = 'bad';
       }
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
       isdoneloading.value = true;
     } catch (e) {
       await Utils().managetokenbox('close');
       progressdownload[2] = 'bad';
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
       isdoneloading.value = true;
     }
   }
@@ -1352,9 +1376,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
       await Utils().managedevicestatebox('close');
       if(datastatebox != null){
         await syncCustomerData(cekstatedevice);
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
          Get.dialog(Dialog(
           backgroundColor: Colors.white,
           shape: const RoundedRectangleBorder(
@@ -1369,9 +1396,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
         return;
       }
       isdoneloading.value = true;
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
          Get.dialog(Dialog(
           backgroundColor: Colors.white,
           shape: const RoundedRectangleBorder(
@@ -1421,15 +1451,21 @@ class SplashscreenController extends GetxController with StateMixin implements W
             progressdownload[i] = 'bad';
           }
           isdoneloading.value = true;
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
         }
       } else {
           isdoneloading.value = true;
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
       }
     }
   }
@@ -1447,9 +1483,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
           await Future.delayed(Duration(milliseconds: 250));
           progressdownload[i] = 'bad';
         }
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
         isdoneloading.value = true;
         return;
       }
@@ -1480,9 +1519,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
           await Future.delayed(Duration(milliseconds: 250));
           progressdownload[i] = 'ok';
         }
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
         Get.dialog(Dialog(
           backgroundColor: Colors.white,
           shape: const RoundedRectangleBorder(
@@ -1506,9 +1548,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
         await Future.delayed(Duration(milliseconds: 250));
         progressdownload[i] = 'bad';
       }
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
       isdoneloading.value = true;
       return;
     }
@@ -1534,9 +1579,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
         };
         await devicestatebox.put(salesid, makejson);
         await Utils().managedevicestatebox('close');
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
         isdoneloading.value = true;
         Get.dialog(Dialog(
           backgroundColor: Colors.white,
@@ -1551,9 +1599,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
           )));
         return;
       }
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
       isdoneloading.value = true;
   }
 
@@ -1727,9 +1778,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } catch (e) {
       progressdownload[3] = 'bad';
       isdoneloading.value = true;
-      if(keybanner.currentContext != null){
-        Navigator.pop(keybanner.currentContext!);
-      }
+        try {
+          Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+        } catch (e) {
+          
+        }
     }
   }
 
