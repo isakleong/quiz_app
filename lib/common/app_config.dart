@@ -15,7 +15,7 @@ class AppConfig {
   static const String tesPublicUrl = "https://link.tirtakencana.com/SFATools/public/test";
 
   static const String baseUrlVendor = "https://mitra.tirtakencana.com";
-  static const String apiurlvendorpath = "/tangki-air-jerapah";
+  static const String apiurlvendorpath = "/tangki-air-jerapah-dev";
   String unknowerrorvendor = "100";
   String itemcodenotfoundvendor = "101";
   String dateinvalidvendor = "102";
