@@ -62,11 +62,15 @@ class SplashscreenController extends GetxController with StateMixin implements W
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
+      print("resumed");
       if (isOpenSettings.value) {
+        print("after resumed");
         isOpenSettings(false);
         await syncAppsReady('STORAGE');
       } else {
+        print("DANGEROUS");
         if (Get.currentRoute.toString() != "/") {
+          print("AFTER DANGEROUS");
           await Get.deleteAll(force: true);
           // Get.offAndToNamed(RouteName.splashscreen);
           Get.offAllNamed(RouteName.splashscreen);
@@ -118,6 +122,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
     var androidInfo = await DeviceInfoPlugin().androidInfo;
     var sdkInt = androidInfo.version.sdkInt;
 
+    print("SDK INT "+sdkInt.toString());
+
     // ignore: prefer_typing_uninitialized_variables
     var status;
     if (type == 'STORAGE') {
@@ -154,6 +160,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           syncAppsReady('EXTERNAL STORAGE');
         }
       } else {
+        print("BEFORE DIALOG OPEN");
         openPermissionRequestDialog('STORAGE');
       }
     } else if (type == 'EXTERNAL STORAGE') {
@@ -171,9 +178,11 @@ class SplashscreenController extends GetxController with StateMixin implements W
     retrypermission = false;
 
     if (type == 'STORAGE') {
+      print("DIALOG READY");
       try {
         var androidInfo = await DeviceInfoPlugin().androidInfo;
         var sdkInt = androidInfo.version.sdkInt;
+        print("SDK INT DIALOG "+sdkInt.toString());
         appsDialog(
           type: "app_info",
           title: Column(
@@ -363,16 +372,22 @@ class SplashscreenController extends GetxController with StateMixin implements W
           leftBtnMsg: "Ok",
           leftActionClick: () async {
             if (cntStoragePermissionDeny > 0) {
+              print("OPTION 1");
               Get.back();
               await openAppSettings();
               isOpenSettings(true);
               // await syncAppsReady('STORAGE');
             } else {
+              print("OPTION 2");
               Get.back();
               await syncAppsReady('STORAGE');
             }
           });
+
+          
+          print("DIALOG FINISH RENDER");
       } catch (e) {
+        print("MASUK CATCH DIALOG "+e.toString());
         retrypermission = true;
         errorMessage("gagal meminta perizinan penyimpanan ! ${e.toString()}");
         openErrorDialog();
@@ -426,6 +441,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
     var androidInfo = await DeviceInfoPlugin().androidInfo;
     var sdkInt = androidInfo.version.sdkInt;
 
+    print("SDK INT 2 "+sdkInt.toString());
+
     // ignore: prefer_typing_uninitialized_variables
     var status;
     if (type == 'STORAGE') {
@@ -466,10 +483,14 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
     if (status != PermissionStatus.granted) {
       if (status == PermissionStatus.denied) {
+        print("CHECKER 1");
         cntStoragePermissionDeny.value++;
+        print("count deny " + cntStoragePermissionDeny.value.toString());
         return status == PermissionStatus.granted;
       } else if (status == PermissionStatus.permanentlyDenied) {
+        print("CHECKER 2");
         if (type == 'STORAGE') {
+          print("CHECKER 2a");
           status = await Permission.storage.status;
         } else if (type == 'EXTERNAL STORAGE') {
           status = await Permission.manageExternalStorage.status;
@@ -480,6 +501,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         return status == PermissionStatus.granted;
       }
     }
+    print("count deny " + cntStoragePermissionDeny.value.toString());
     return status == PermissionStatus.granted;
   }
 
