@@ -187,8 +187,8 @@ class PromoPage extends StatelessWidget {
                         int differenceInDays = endDate.difference(now).inDays;
                         return InkWell(
                           onTap: () async {
-                            if(await File("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${unpipelined[0].replaceAll("%20", " ")}").exists()){
-                                Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${unpipelined[0].replaceAll("%20", " ")}"));
+                            if(await File("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${unpipelined[0].replaceAll("%20", " ")}").exists()){
+                                Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${unpipelined[0].replaceAll("%20", " ")}"));
                             } else {
                                 Get.defaultDialog(
                                   radius: 6,
@@ -247,10 +247,10 @@ class PromoPage extends StatelessWidget {
                                     height: width < 450 ? 105.sp : 170.sp,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                          image: File('${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${unpipelined[0].replaceAll("%20", " ")}').existsSync()
+                                          image: File('${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${unpipelined[0].replaceAll("%20", " ")}').existsSync()
                                                 ?
                                           DecorationImage(
-                                              image: FileImage(File('${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${unpipelined[0].replaceAll("%20", " ")}')),
+                                              image: FileImage(File('${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${unpipelined[0].replaceAll("%20", " ")}')),
                                               fit: BoxFit.fill) : const DecorationImage(image: AssetImage("assets/images/defaultpromo.jpg")),
                                           borderRadius: const BorderRadius.only(
                                               topLeft: Radius.circular(12),

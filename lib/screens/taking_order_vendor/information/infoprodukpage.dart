@@ -84,13 +84,13 @@ class InfoProdukPage extends StatelessWidget {
                   ? null
                   : () async {
                       var tdir = "${AppConfig().folderProductKnowledge}/${item.fullname}".substring(0, "${AppConfig().folderProductKnowledge}/${item.fullname}".lastIndexOf("/")).replaceAll("%20", " ");
-                      if (await Directory("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/$tdir").exists() && await File("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}").exists()) {
+                      if (await Directory("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/$tdir").exists() && await File("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}").exists()) {
                         if (item.extension == "jpg" || item.extension == "jpeg") {
-                          Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}"));
+                          Get.to(ViewImageScreen("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}"));
                         } else if (item.extension == "pdf") {
-                          Get.to(ViewPDFScreen("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}"));
+                          Get.to(ViewPDFScreen("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}"));
                         } else if (item.extension == "mp4") {
-                          Get.to(ViewVideoScreen("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}"));
+                          Get.to(ViewVideoScreen("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${AppConfig().folderProductKnowledge.replaceAll("%20", " ")}/${item.fullname.replaceAll("%20", " ")}"));
                         }
                       } else {
                         Get.defaultDialog(
