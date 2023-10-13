@@ -1478,6 +1478,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
             )));
           return;
       } else {
+        print("here");
         moduleList.clear();
         String salesid = await Utils().getParameterData('sales');
         final encryptedParam = await Utils.encryptData(salesid);
@@ -1539,7 +1540,77 @@ class SplashscreenController extends GetxController with StateMixin implements W
           }
         }
       }
+    } on SocketException{
+      for (var i = 0; i < progressdownload.length; i++) {
+          await Future.delayed(Duration(milliseconds: 250));
+          progressdownload[i] = 'bad';
+        }
+        String salesid = await Utils().getParameterData('sales');
+        await Utils().managedevicestatebox('open');
+        var datastatebox = await devicestatebox.get(salesid);
+        await Utils().managedevicestatebox('close');
+        if(datastatebox != null){
+          await syncCustomerData(cekstatedevice);
+          try {
+            Navigator.pop(keybanner.currentContext!);
+          // ignore: empty_catches
+          } catch (e) {
+            
+          }
+          Get.dialog(Dialog(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: DialogInfo(
+              desc: "Tidak Ada koneksi internet !",
+              judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
+              ontap: () {
+                Get.back();
+              },
+            )));
+          return;
+        }
+      isdoneloading.value = true;
+      for (var i = 0; i < progressdownload.length; i++) {
+        await Future.delayed(Duration(milliseconds: 250));
+        progressdownload[i] = 'bad';
+      }
+      try {
+        Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+      } catch (e) {
+            
+      }
     } catch (e) {
+      for (var i = 0; i < progressdownload.length; i++) {
+          await Future.delayed(Duration(milliseconds: 250));
+          progressdownload[i] = 'bad';
+        }
+        String salesid = await Utils().getParameterData('sales');
+        await Utils().managedevicestatebox('open');
+        var datastatebox = await devicestatebox.get(salesid);
+        await Utils().managedevicestatebox('close');
+        if(datastatebox != null){
+          await syncCustomerData(cekstatedevice);
+          try {
+            Navigator.pop(keybanner.currentContext!);
+          // ignore: empty_catches
+          } catch (e) {
+            
+          }
+          Get.dialog(Dialog(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: DialogInfo(
+              desc: "Tidak Ada koneksi internet !",
+              judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
+              ontap: () {
+                Get.back();
+              },
+            )));
+          return;
+        }
       isdoneloading.value = true;
       for (var i = 0; i < progressdownload.length; i++) {
         await Future.delayed(Duration(milliseconds: 250));
