@@ -663,13 +663,13 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     listdir.clear();
     pricelistdir.clear();
 
-    if (await File('$productdir/$activevendor/$informasiconfig').exists()) {
+    if (await File('$productdir/${activevendor.toLowerCase()}/$informasiconfig').exists()) {
       processfile(false);
       return;
     }
 
     // Create a folder if it doesn't exist
-    Directory directory = Directory('$productdir/$activevendor/');
+    Directory directory = Directory('$productdir/${activevendor.toLowerCase()}/');
     if (!await directory.exists()) {
       await directory.create(recursive: true);
     }
@@ -683,7 +683,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       return;
     }
     // Create the file path
-    String filePath = '$productdir/$activevendor/$informasiconfig';
+    String filePath = '$productdir/${activevendor.toLowerCase()}/$informasiconfig';
 
     // Download the file
     final response = await http.get(Uri.parse('$urlAPI/$url?vendor=$activevendor'));
@@ -797,8 +797,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       }
     }
     branchinfobox.close();
-    if (await File('$productdir/$activevendor/$informasiconfig').exists() && databranch != null) {
-      var res = await File('$productdir/$activevendor/$informasiconfig').readAsString();
+    if (await File('$productdir/${activevendor.toLowerCase()}/$informasiconfig').exists() && databranch != null) {
+      var res = await File('$productdir/${activevendor.toLowerCase()}/$informasiconfig').readAsString();
       var ls = const LineSplitter();
       var tlist = ls.convert(res);
       for (var i = 0; i < tlist.length; i++) {

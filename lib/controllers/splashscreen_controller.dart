@@ -1780,8 +1780,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
     }
     await Utils().managebranchinfobox('close');
 
-    if (await File('$productdir/$vendor/$informasiconfig').exists()) {
-        var res = await File('$productdir/$vendor/$informasiconfig').readAsString();
+    if (await File('$productdir/${vendor.toLowerCase()}/$informasiconfig').exists()) {
+        var res = await File('$productdir/${vendor.toLowerCase()}/$informasiconfig').readAsString();
         var ls = const LineSplitter();
         var tlist = ls.convert(res);
         for (var i = 0; i < tlist.length; i++) {
@@ -1851,7 +1851,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       for (var m = 0; m < vendorlistunduhulang.length; m++) {
         vendorname = vendorlistunduhulang[m].name.toLowerCase();
         // Create a folder if it doesn't exist
-        Directory directory = Directory('$productdir/$vendorname/');
+        Directory directory = Directory('$productdir/${vendorname.toLowerCase()}/');
         if (!await directory.exists()) {
           await directory.create(recursive: true);
         }
@@ -1861,12 +1861,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
         String urlAPI = arrConnTest[1];
         if (!isConnected) {
           progressdownload[4] = 'bad';
-          if (await File('$productdir/$vendorname/$informasiconfig').exists()) {
+          if (await File('$productdir/${vendorname.toLowerCase()}/$informasiconfig').exists()) {
             processFile(false,vendorname);
           }
         } else {
           // Create the file path
-          String filePath = '$productdir/$vendorname/$informasiconfig';
+          String filePath = '$productdir/${vendorname.toLowerCase()}/$informasiconfig';
 
           // Download the file
           final response = await http.get(Uri.parse('$urlAPI/$url?vendor=$vendorname'));
@@ -1876,7 +1876,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
             try {
               var resp = jsonDecode(response.body);
               if(resp['error'] == 'vendor tidak ditemukan'){
-                if (await File('$productdir/$vendorname/$informasiconfig').exists()) {
+                if (await File('$productdir/${vendorname.toLowerCase()}/$informasiconfig').exists()) {
                   processFile(true,vendorname);
                 }
               }
@@ -1887,7 +1887,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
             }
           } else {
             progressdownload[4] = 'bad';
-            if (await File('$productdir/$vendorname/$informasiconfig').exists()) {
+            if (await File('$productdir/${vendorname.toLowerCase()}/$informasiconfig').exists()) {
               processFile(true,vendorname);
             }
           }
