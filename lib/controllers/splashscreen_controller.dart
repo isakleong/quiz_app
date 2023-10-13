@@ -1633,6 +1633,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   }
 
   updateState() async{
+    try {
       bool allok = true;
       String salesid = await Utils().getParameterData('sales');
       for (var i = 0; i < progressdownload.length; i++) {
@@ -1680,6 +1681,16 @@ class SplashscreenController extends GetxController with StateMixin implements W
           
         }
       isdoneloading.value = true;
+    } catch (e) {
+      isdoneloading.value = true;
+      try {
+        Navigator.pop(keybanner.currentContext!);
+        // ignore: empty_catches
+      } catch (e) {
+          
+      }
+    }
+      
   }
 
   cekDeviceState() async {
