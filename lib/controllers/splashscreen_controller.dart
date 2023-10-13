@@ -673,7 +673,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
   String cekstatedevice = 'cekdevicestate';
   String redownload = 'unduhulang';
   bool forcedownload = false;
-
+  late DateTime bannershowup;
+  
   loginApiVendor() async {
     try {
       var connTest = await ApiClient().checkConnection(jenis: "vendor");
@@ -706,10 +707,24 @@ class SplashscreenController extends GetxController with StateMixin implements W
   }
 
   Future<bool> _onWillPop() async {
+    try {
+    // asumsi banner stuck, maka bisa dispose jika klik back (dengan menunggu selama N)
+    DateTime backclick = DateTime.now();
+    int differenceInSeconds = backclick.isBefore(bannershowup)
+      ? bannershowup.difference(backclick).inSeconds
+      : backclick.difference(bannershowup).inSeconds;
+      print(differenceInSeconds);
+      if (differenceInSeconds > 180){
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
     return false;
   }
 
   showLoadingBanner(BuildContext ctx){
+    bannershowup = DateTime.now();
     progressdownload.clear();
     for (var i = 0; i < 5; i++) {
       progressdownload.add('');
@@ -1682,6 +1697,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
       isdoneloading.value = true;
     } catch (e) {
+      forcedownload = true;
       isdoneloading.value = true;
       try {
         Navigator.pop(keybanner.currentContext!);
