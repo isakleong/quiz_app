@@ -1183,8 +1183,8 @@ class Backgroundservicecontroller {
     }
     branchinfobox.close();
 
-    if (await File('$productdir/$vendor/$informasiconfig').exists()) {
-        var res = await File('$productdir/$vendor/$informasiconfig').readAsString();
+    if (await File('$productdir/${vendor.toLowerCase()}/$informasiconfig').exists()) {
+        var res = await File('$productdir/${vendor.toLowerCase()}/$informasiconfig').readAsString();
         var ls = const LineSplitter();
         var tlist = ls.convert(res);
         for (var i = 0; i < tlist.length; i++) {
