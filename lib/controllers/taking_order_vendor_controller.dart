@@ -32,7 +32,6 @@ import '../models/outstandingdata.dart';
 import '../models/tarikbarangmodel.dart';
 import '../models/treenodedata.dart';
 import '../models/vendor.dart';
-import '../widgets/dialoginfo.dart';
 import '../tools/service.dart';
 import 'package:http/http.dart' as http;
 
@@ -486,16 +485,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
         Navigator.pop(keyconfirm.currentContext!);
         // ignore: empty_catches
       } catch (e) {}
-      Get.dialog(Dialog(
-          backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: DialogInfo(
-            judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
-            desc: "Data Payment tidak ditemukan, silahkan coba lagi !",
-            ontap: () {
-              Get.back();
-            },
-          )));
+      Utils().showDialogSingleButton(null,"Oops, Terjadi kesalahan" ,"Data Payment tidak ditemukan, silahkan coba lagi !","error.json",(){Get.back();});
     }
   }
 

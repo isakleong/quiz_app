@@ -2,10 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:encrypt/encrypt.dart';
+import 'package:encrypt/encrypt.dart' as enc;
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/widgets/customelevatedbutton.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 
 import '../common/hivebox_vendor.dart';
 
@@ -61,9 +66,9 @@ class Utils {
   }
 
   static encryptData(String params){
-    final key = Key.fromUtf8(AppConfig.key);
-    final initVector = IV.fromUtf8(AppConfig.iv);
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+    final key = enc.Key.fromUtf8(AppConfig.key);
+    final initVector = enc.IV.fromUtf8(AppConfig.iv);
+    final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc));
     final encrypted = encrypter.encrypt(params, iv: initVector);
     return encrypted.base64;
   }
@@ -83,10 +88,10 @@ class Utils {
   String encryptsalescodeforvendor(String toencrypt){
     // print("string to encrypt $toencrypt");
     // String salter = (Random().nextInt(900) + 100).toString();
-    final key = Key.fromUtf8("fVkhoDWRAd4Rgj6l");  
-    final iv = IV.fromUtf8("tGYINBYOtJ2tZoZJ");  
+    final key = enc.Key.fromUtf8("fVkhoDWRAd4Rgj6l");  
+    final iv = enc.IV.fromUtf8("tGYINBYOtJ2tZoZJ");  
 
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+    final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc));
     final encrypted = encrypter.encrypt(toencrypt, iv: iv);
 
     return encrypted.base64;
@@ -384,13 +389,51 @@ class Utils {
   }
 
   String decrypt(String encrypted) {
-  final key = Key.fromUtf8("fVkhoDWRAd4Rgj6l"); //hardcode combination of 16 character
-  final iv = IV.fromUtf8("tGYINBYOtJ2tZoZJ"); //hardcode combination of 16 character
+  final key = enc.Key.fromUtf8("fVkhoDWRAd4Rgj6l"); //hardcode combination of 16 character
+  final iv = enc.IV.fromUtf8("tGYINBYOtJ2tZoZJ"); //hardcode combination of 16 character
 
-  final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
-  Encrypted enBase64 = Encrypted.from64(encrypted);
+  final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc));
+  enc.Encrypted enBase64 = enc.Encrypted.from64(encrypted);
   final decrypted = encrypter.decrypt(enBase64, iv: iv);
   return decrypted;
 }
-  //end created for vendor
+
+showDialogSingleButton(var context, String title, String desc, String lottie, var onTap){
+      double width = Get.width;
+      double height = Get.height;
+      if(context != null){
+        width = MediaQuery.of(context).size.width;
+        height = MediaQuery.of(context).size.height;
+      }
+      Get.defaultDialog(
+          radius: 10,
+          barrierDismissible: true,
+          title: '',
+          titlePadding: const EdgeInsets.only(top: 0,bottom: 0),
+          cancel: Padding(
+            padding: EdgeInsets.only(left: 0.25 * width,right: 0.25 * width),
+            child: CustomElevatedButton(
+                        text: "Oke",
+                        onTap: onTap,
+                        width: 0.18 * width,
+                        height: 0.045 * height,
+                        radius: 8,
+                        backgroundColor: AppConfig.mainCyan,
+                        textcolor: Colors.white,
+                        elevation: 2,
+                        bordercolor: AppConfig.mainCyan,
+                        headings: 'H2'),
+          ),contentPadding: EdgeInsets.only(bottom: 0.02 * height),
+          content: Column(children: [
+            TextView(text: title,headings: 'H2',fontSize: 18,),
+            Lottie.asset('assets/lottie/$lottie',width: width * 0.3),
+            Padding(
+              padding:  const EdgeInsets.symmetric(horizontal: 30),
+              child: TextView(text: desc,headings: 'H4',fontSize: 16,),
+            )
+          ],)
+        );
+}
+
+//end created for vendor
 }

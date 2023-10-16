@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sfa_tools/common/app_config.dart';
@@ -21,6 +22,7 @@ import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
+import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:shimmer/shimmer.dart';
@@ -28,7 +30,6 @@ import '../common/hivebox_vendor.dart';
 import '../models/detailproductdata.dart';
 import '../models/masteritemmodel.dart';
 import '../models/productdata.dart';
-import '../widgets/dialoginfo.dart';
 import 'package:http/http.dart' as http;
 
 class SplashscreenController extends GetxController with StateMixin implements WidgetsBindingObserver {
@@ -1405,17 +1406,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           
         }
         forcedownload = true;
-        Get.dialog(Dialog(
-          backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: DialogInfo(
-            desc: "Gagal Load Data ! ${e.toString()}",
-            judul: "Error",lottieasset: "error.json",
-            ontap: () {
-              Get.back();
-            },
-          )));
+        Utils().showDialogSingleButton(keyhome.currentContext!,"Error" ,"Gagal Load Data ! ${e.toString()}","error.json",(){Get.back();});
       } finally{
         isdoneloading.value = true;
       }
@@ -1445,17 +1436,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           } catch (e) {
             
           }
-          Get.dialog(Dialog(
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: DialogInfo(
-              desc: "Tidak Ada koneksi internet !",
-              judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
-              ontap: () {
-                Get.back();
-              },
-            )));
+          Utils().showDialogSingleButton(keyhome.currentContext!,"Oops, Terjadi kesalahan" ,"Tidak Ada koneksi internet !","error.json",(){Get.back();});
           return;
         }
         isdoneloading.value = true;
@@ -1465,17 +1446,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           } catch (e) {
             
           }
-          Get.dialog(Dialog(
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: DialogInfo(
-              desc: "Tidak Ada koneksi internet !",
-              judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
-              ontap: () {
-                Get.back();
-              },
-            )));
+          Utils().showDialogSingleButton(keyhome.currentContext!,"Oops, Terjadi kesalahan" ,"Tidak Ada koneksi internet !","error.json",(){Get.back();});
           return;
       } else {
         print("here");
@@ -1557,17 +1528,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           } catch (e) {
             
           }
-          Get.dialog(Dialog(
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: DialogInfo(
-              desc: "Tidak Ada koneksi internet !",
-              judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
-              ontap: () {
-                Get.back();
-              },
-            )));
+          Utils().showDialogSingleButton(keyhome.currentContext!,"Oops, Terjadi kesalahan" ,"Tidak Ada koneksi internet !","error.json",(){Get.back();});
           return;
         }
       isdoneloading.value = true;
@@ -1585,12 +1546,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
       for (var i = 0; i < progressdownload.length; i++) {
           await Future.delayed(Duration(milliseconds: 250));
           progressdownload[i] = 'bad';
-        }
-        String salesid = await Utils().getParameterData('sales');
-        await Utils().managedevicestatebox('open');
-        var datastatebox = await devicestatebox.get(salesid);
-        await Utils().managedevicestatebox('close');
-        if(datastatebox != null){
+      }
+      String salesid = await Utils().getParameterData('sales');
+      await Utils().managedevicestatebox('open');
+      var datastatebox = await devicestatebox.get(salesid);
+      await Utils().managedevicestatebox('close');
+      if(datastatebox != null){
           await syncCustomerData(cekstatedevice);
           try {
             Navigator.pop(keybanner.currentContext!);
@@ -1598,19 +1559,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
           } catch (e) {
             
           }
-          Get.dialog(Dialog(
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: DialogInfo(
-              desc: "Tidak Ada koneksi internet !",
-              judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
-              ontap: () {
-                Get.back();
-              },
-            )));
+          Utils().showDialogSingleButton(keyhome.currentContext!,"Gagal unduh data" ,e.toString(),"error.json",(){Get.back();});
           return;
-        }
+      }
       isdoneloading.value = true;
       for (var i = 0; i < progressdownload.length; i++) {
         await Future.delayed(Duration(milliseconds: 250));
@@ -1622,6 +1573,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       } catch (e) {
             
       }
+      Utils().showDialogSingleButton(keyhome.currentContext!,"Gagal unduh data" ,e.toString(),"error.json",(){Get.back();});
     }
     
   }
@@ -1685,17 +1637,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         } catch (e) {
           
         }
-        Get.dialog(Dialog(
-          backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: DialogInfo(
-            desc: "Semua data telah diupdate !",
-            judul: "Informasi",lottieasset: "done.json",
-            ontap: () {
-              Get.back();
-            },
-          )));
+        Utils().showDialogSingleButton(keyhome.currentContext!,"Informasi" ,"Semua data telah diupdate !","done.json",(){Get.back();});
         return;
       }
       //belum ada data state, perlu update
@@ -1747,17 +1689,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
         isdoneloading.value = true;
         forcedownload = false;
-        Get.dialog(Dialog(
-          backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: DialogInfo(
-            desc: "Semua data telah diupdate !",
-            judul: "Informasi",lottieasset: "done.json",
-            ontap: () {
-              Get.back();
-            },
-          )));
+        Utils().showDialogSingleButton(keyhome.currentContext!,"Informasi" ,"Semua data telah diupdate !","done.json",(){Get.back();});
         return;
       }
         try {
@@ -1816,17 +1748,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } catch (e) {
       isdoneloading.value = true;
       forcedownload = true;
-      Get.dialog(Dialog(
-          backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: DialogInfo(
-            desc: "Gagal Cek State Gadget ! ${e.toString()}",
-            judul: "Error",lottieasset: "error.json",
-            ontap: () {
-              Get.back();
-            },
-          )));
+      Utils().showDialogSingleButton(keyhome.currentContext!,"Error" ,"Gagal Cek State Gadget ! ${e.toString()}","error.json",(){Get.back();});
     }
       
   }
