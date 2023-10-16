@@ -165,7 +165,7 @@ class BottomSheetTukarWarna extends StatelessWidget {
                             _takingOrderVendorController.produkpenggantifield
                                 .value.text = suggestion.nmProduct;
                             _takingOrderVendorController
-                                .handleProductSearchPp(suggestion.kdProduct);
+                                .handleProductSearchretur(suggestion.kdProduct, 'pp');
                           }
                         },
                       ),
@@ -206,9 +206,9 @@ class BottomSheetTukarWarna extends StatelessWidget {
                                         .listProdukPengganti[index],
                                     onTapEdit: () {
                                       _takingOrderVendorController
-                                          .handleEditProdukPenggantiItem(
+                                          .handleEditItemRetur(
                                               _takingOrderVendorController
-                                                  .listProdukPengganti[index]);
+                                                  .listProdukPengganti[index],'pp');
                                     },
                                     onTapDelete: () {
                                       _takingOrderVendorController

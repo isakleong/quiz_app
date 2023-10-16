@@ -78,12 +78,9 @@ class GantiBarang extends StatelessWidget {
                           _takingOrderVendorController
                               .gantibarangfield.value.text = "";
                         } else {
-                          _takingOrderVendorController
-                              .gantibaranghorizontal.value = true;
-                          _takingOrderVendorController.gantibarangfield.value
-                              .text = suggestion.nmProduct;
-                          _takingOrderVendorController
-                              .handleProductSearchGb(suggestion.kdProduct);
+                          _takingOrderVendorController.gantibaranghorizontal.value = true;
+                          _takingOrderVendorController.gantibarangfield.value.text = suggestion.nmProduct;
+                          _takingOrderVendorController.handleProductSearchretur(suggestion.kdProduct, 'gb');
                         }
                       },
                     ),
@@ -140,9 +137,9 @@ class GantiBarang extends StatelessWidget {
                                           .listGantiBarang[index],
                                       onTapEdit: () {
                                         _takingOrderVendorController
-                                            .handleEditGantiBarangItem(
+                                            .handleEditItemRetur(
                                                 _takingOrderVendorController
-                                                    .listGantiBarang[index]);
+                                                    .listGantiBarang[index],'gb');
                                       },
                                       onTapDelete: () {
                                         _takingOrderVendorController

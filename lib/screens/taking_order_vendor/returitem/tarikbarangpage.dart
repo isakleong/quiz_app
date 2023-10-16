@@ -83,8 +83,7 @@ class TarikBarangPage extends StatelessWidget {
                               .tarikbaranghorizontal.value = true;
                           _takingOrderVendorController.tarikbarangfield.value
                               .text = suggestion.nmProduct;
-                          _takingOrderVendorController
-                              .handleProductSearchTb(suggestion.kdProduct);
+                          _takingOrderVendorController.handleProductSearchretur(suggestion.kdProduct, 'tb');
                         }
                       },
                     ),
@@ -140,10 +139,10 @@ class TarikBarangPage extends StatelessWidget {
                                       data: _takingOrderVendorController
                                           .listTarikBarang[index],
                                       onTapEdit: () {
-                                        _takingOrderVendorController
-                                            .handleEditTarikBarangItem(
-                                                _takingOrderVendorController
-                                                    .listTarikBarang[index]);
+                                      _takingOrderVendorController
+                                          .handleEditItemRetur(
+                                              _takingOrderVendorController
+                                                  .listTarikBarang[index], 'tb');
                                       },
                                       onTapDelete: () {
                                         _takingOrderVendorController

@@ -802,28 +802,16 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxList get listQtytw => _returController.listQtytw;
   RxList get listQtypp => _returController.listQtypp;
 
-  handleProductSearchGb(String val) async {
-    await _returController.handleProductSearchGb(val);
+  handleProductSearchretur(String val,String actionType) async {
+   await _returController.handleProductSearch(val, actionType);
   }
 
-  handleProductSearchPp(String val) async {
-    await _returController.handleProductSearchPp(val);
+  handleEditItemRetur(var data, String actionType){
+    _returController.handleEditItem(data, actionType);
   }
 
-  handleProductSearchTb(String val) async {
-    await _returController.handleProductSearchTb(val);
-  }
-
-  handleProductSearchGk(String val) async {
-    await _returController.handleProductSearchGk(val);
-  }
-
-  handleProductSearchSm(String val) async {
-    await _returController.handleProductSearchSm(val);
-  }
-
-  handleProductSearchTw(String val) async {
-    await _returController.handleProductSearchTw(val);
+  handleDeleteItemRetur(var data, String from) {
+    _returController.handleDeleteItemRetur(data, from);
   }
 
   addToCartTb() {
@@ -860,38 +848,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
 
   handlesaveprodukpengganti(BuildContext context) {
     _returController.handlesaveprodukpengganti(context);
-  }
-
-  handleEditGantiBarangItem(TarikBarangModel data) {
-    _returController.handleEditGantiBarangItem(data);
-  }
-
-  handleEditTukarWarnaItem(TukarWarnaModel data) {
-    _returController.handleEditTukarWarnaItem(data);
-  }
-
-  handleEditProdukPenggantiItem(TarikBarangModel data) {
-    _returController.handleEditProdukPenggantiItem(data);
-  }
-
-  handleEditGantiKemasanItem(TarikBarangModel data) {
-    _returController.handleEditGantiKemasanItem(data);
-  }
-
-  handleEditServisMebelItem(TarikBarangModel data) {
-    _returController.handleEditServisMebelItem(data);
-  }
-
-  handleEditTarikBarangItem(TarikBarangModel data) {
-    _returController.handleEditTarikBarangItem(data);
-  }
-
-  handleDeleteItemRetur(TarikBarangModel data, String from) {
-    _returController.handleDeleteItemRetur(data, from);
-  }
-
-  handleDeleteItemTukarWarna(TukarWarnaModel data) {
-    _returController.handleDeleteItemTukarWarna(data);
   }
 
   showProdukPengganti(BuildContext context) {

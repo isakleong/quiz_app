@@ -82,8 +82,7 @@ class TukarWarnaPage extends StatelessWidget {
                               .tukarwarnahorizontal.value = true;
                           _takingOrderVendorController.tukarwarnafield.value
                               .text = suggestion.nmProduct;
-                          _takingOrderVendorController
-                              .handleProductSearchTw(suggestion.kdProduct);
+                          _takingOrderVendorController.handleProductSearchretur(suggestion.kdProduct, 'tw');
                         }
                       },
                     ),
@@ -128,15 +127,15 @@ class TukarWarnaPage extends StatelessWidget {
                                             .listTukarWarna[index],
                                         onTapEdit: () {
                                           _takingOrderVendorController
-                                              .handleEditTukarWarnaItem(
+                                              .handleEditItemRetur(
                                                   _takingOrderVendorController
-                                                      .listTukarWarna[index]);
+                                                      .listTukarWarna[index],'tw');
                                         },
                                         onTapDelete: () {
                                           _takingOrderVendorController
-                                              .handleDeleteItemTukarWarna(
+                                              .handleDeleteItemRetur(
                                                   _takingOrderVendorController
-                                                      .listTukarWarna[index]);
+                                                      .listTukarWarna[index],'tw');
                                         },
                                       ));
                                 },
