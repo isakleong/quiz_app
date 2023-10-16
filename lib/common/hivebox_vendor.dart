@@ -19,6 +19,7 @@ late Box boxPembayaranReport; //box laporan data pembayaran
 late Box statePenjualanbox; // box state penjualan, untuk menyimpan data input user
 late Box boxPembayaranState; // box state pembayaran, untuk menyimpan data input user
 late Box itemvendorbox; //box item vendor
-late Box masteritemvendorbox; // box master item vendor
 late Box masteritembox; //box item dengan subdis
 late Box mastervendorbox; //box list vendor master
+
+late Box masteritemvendorbox; // box master item vendor {tidak digunakan mulai versi 1.1.1}
