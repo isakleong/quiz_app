@@ -135,21 +135,21 @@ class Utils {
     }
   }
 
-  managetokenbox(String action) async {
+  manageTokenBox(String action) async {
     try {
-      if(action == 'open'){
-        tokenbox = await Hive.openBox('tokenbox');
+      if (action == 'open') {
+        tokenbox = await Hive.openBox('tokenBox');
       } else {
         tokenbox.close();
       }
-    // ignore: empty_catches
     } catch (e) {
+      // ignore: empty_catches
     }
   }
 
-  managecustomerbox(String action) async {
+  manageCustomerBox(String action) async {
     try {
-      if(action == "open"){
+      if (action == 'open') {
         customerBox = await Hive.openBox('customerBox');
       } else {
         customerBox.close();
@@ -159,10 +159,10 @@ class Utils {
     }
   }
 
-  manageshipbox(String action) async {
+  manageShipBox(String action) async {
     try {
-      if(action == "open"){
-        shiptobox = await Hive.openBox('shiptoBox');
+      if (action == 'open') {
+        shiptobox = await Hive.openBox('shipToBox');
       } else {
         shiptobox.close();
       }
@@ -171,159 +171,159 @@ class Utils {
     }
   }
 
-  managedevicestatebox(String action) async{
-     try {
-      if(action == 'open'){
-        devicestatebox = await Hive.openBox('devicestatebox');
+  manageDeviceStateBox(String action) async {
+    try {
+      if (action == 'open') {
+        devicestatebox = await Hive.openBox('deviceStateBox');
       } else {
         devicestatebox.close();
       }
-    // ignore: empty_catches
     } catch (e) {
+      // ignore: empty_catches
     }
   }
 
-  managebranchinfobox(String action) async {
+  manageBranchInfoBox(String action) async {
     try {
-      if(action == 'open'){
-        branchinfobox = await Hive.openBox('BranchInfoBox');
+      if (action == 'open') {
+        branchinfobox = await Hive.openBox('branchInfoBox');
       } else {
         branchinfobox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managepaymentmethodsbox(String action) async {
+  managePaymentMethodsBox(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         paymentMethodsBox = await Hive.openBox('paymentMethodsBox');
       } else {
         paymentMethodsBox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managebankbox(String action) async {
+  manageBankBox(String action) async {
     try {
-      if(action == 'open'){
-        bankbox = await Hive.openBox('BankBox');
+      if (action == 'open') {
+        bankbox = await Hive.openBox('bankBox');
       } else {
         bankbox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  manageoutstandingbox(String action) async {
+  manageOutstandingBox(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         outstandingBox = await Hive.openBox('outstandingBox');
       } else {
         outstandingBox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managepiutangbox(String action) async {
+  managePiutangBox(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         piutangBox = await Hive.openBox('piutangBox');
       } else {
         piutangBox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managemasteritembox(String action) async {
+  manageMasterItemBox(String action) async {
     try {
-      if(action == 'open'){
-        masteritembox = await Hive.openBox('masteritembox');
+      if (action == 'open') {
+        masteritembox = await Hive.openBox('masterItemBox');
       } else {
         masteritembox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  manageitemvendorbox(String action) async {
+  manageItemVendorBox(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         itemvendorbox = await Hive.openBox('itemVendorBox');
       } else {
         itemvendorbox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
- 
-  managevendorbox(String action) async {
+
+  manageVendorBox(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         vendorBox = await Hive.openBox('vendorBox');
       } else {
         vendorBox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managemastervendorbox(String action) async{
+  manageMasterVendorBox(String action) async {
     try {
-      if(action == 'open'){
-        mastervendorbox = await Hive.openBox('mastervendorbox');
+      if (action == 'open') {
+        mastervendorbox = await Hive.openBox('masterVendorBox');
       } else {
         mastervendorbox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managemasteritemvendorbox(String action) async{
+  manageMasterItemVendorBox(String action) async {
     try {
-      if(action == 'open'){
-        masteritemvendorbox = await Hive.openBox('masteritemvendorbox');
+      if (action == 'open') {
+        masteritemvendorbox = await Hive.openBox('masterItemVendorBox');
       } else {
         masteritemvendorbox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  manageboxPembayaranState(String action) async{
+  manageBoxPembayaranState(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         boxPembayaranState = await Hive.openBox('boxPembayaranState');
       } else {
         boxPembayaranState.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managestatePenjualanbox(String action) async{
+  manageStatePenjualanBox(String action) async {
     try {
-      if(action == 'open'){
-        statePenjualanbox = await Hive.openBox('statepenjualan');
+      if (action == 'open') {
+        statePenjualanbox = await Hive.openBox('statePenjualan');
       } else {
         statePenjualanbox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 

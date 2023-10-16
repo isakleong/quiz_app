@@ -294,7 +294,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         totaljatuhtempo.value = dataconv.overdue_invoices!;
       }
     } else {
-      await Utils().managepiutangbox('open');
+      await Utils().managePiutangBox('open');
       var databox = piutangBox.get(globalkeybox);
       if (databox != null){
         var dataconv = jsonDecode(databox);
@@ -304,7 +304,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         totalpiutang.value = "0";
         totaljatuhtempo.value = "0";
       }
-      await Utils().managepiutangbox('close');
+      await Utils().managePiutangBox('close');
     }
   }
 

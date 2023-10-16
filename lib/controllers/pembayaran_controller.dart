@@ -178,12 +178,12 @@ class PembayaranController extends GetxController {
       await boxPembayaranState.close();
       if(databox != null){
         // if(!Hive.isBoxOpen("masteritemvendorbox")) masteritemvendorbox = await Hive.openBox("masteritemvendorbox");
-        await Utils().managepaymentmethodsbox('open');
-        await Utils().managebankbox('open');
+        await Utils().managePaymentMethodsBox('open');
+        await Utils().manageBankBox('open');
         var datapayment = paymentMethodsBox.get(globalkeybox);
         var databank = bankbox.get(globalkeybox);
-        await Utils().managebankbox('close');
-        await Utils().managepaymentmethodsbox('close');
+        await Utils().manageBankBox('close');
+        await Utils().managePaymentMethodsBox('close');
         if(datapayment == null || databank == null){
           await deletepembayaranstate();
           return;
@@ -420,12 +420,12 @@ class PembayaranController extends GetxController {
     // if(!Hive.isBoxOpen('masteritemvendorbox')) masteritemvendorbox = await Hive.openBox('masteritemvendorbox');
     // var databox = masteritemvendorbox.get(globalkeybox);
     
-    await Utils().managepaymentmethodsbox('open');
-    await Utils().managebankbox('open');
+    await Utils().managePaymentMethodsBox('open');
+    await Utils().manageBankBox('open');
     var datapayment = paymentMethodsBox.get(globalkeybox);
     var databank = bankbox.get(globalkeybox);
-    await Utils().managebankbox('close');
-    await Utils().managepaymentmethodsbox('close');
+    await Utils().manageBankBox('close');
+    await Utils().managePaymentMethodsBox('close');
     if(datapayment == null || databank == null){
       // await refreshmastervendor();
       return false;
