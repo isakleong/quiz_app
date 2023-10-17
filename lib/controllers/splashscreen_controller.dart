@@ -67,6 +67,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
         print("after resumed");
         isOpenSettings(false);
         await syncAppsReady('STORAGE');
+        // Future.delayed(const Duration(milliseconds: 500), () {
+        //   syncAppsReady('STORAGE');
+        // });
+
       } else {
         print("DANGEROUS");
         if (Get.currentRoute.toString() != "/") {
@@ -161,7 +165,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
       } else {
         print("BEFORE DIALOG OPEN");
-        openPermissionRequestDialog('STORAGE');
+        await openPermissionRequestDialog('STORAGE');
+        // Future.delayed(const Duration(milliseconds: 800), () {
+        //   openPermissionRequestDialog('STORAGE');
+        // });
       }
     } else if (type == 'EXTERNAL STORAGE') {
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
@@ -384,7 +391,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
             }
           });
 
-          
+
           print("DIALOG FINISH RENDER");
       } catch (e) {
         print("MASUK CATCH DIALOG "+e.toString());
