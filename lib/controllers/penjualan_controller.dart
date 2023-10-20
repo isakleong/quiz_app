@@ -15,6 +15,7 @@ import 'package:sfa_tools/models/penjualanpostmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
+import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogaddress.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogcheckout.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/dialogprodukserupa.dart';
 import 'package:http/http.dart' as http;
@@ -51,6 +52,11 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   RxBool needtorefresh = false.obs;
   String activevendor = "";
   RxString komisi = "".obs;
+  Rx<TextEditingController> addressName = TextEditingController().obs;
+  Rx<TextEditingController> receiverName = TextEditingController().obs;
+  Rx<TextEditingController> phoneNum = TextEditingController().obs;
+  Rx<TextEditingController> phoneNumSecond = TextEditingController().obs;
+  Rx<TextEditingController> notesOtherAddress = TextEditingController().obs;
 
   countKomisi(){
     var komisidata = 0.0;
@@ -238,12 +244,14 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     if(addressdata == null || addressdata.isEmpty ){
       choosedAddress.value = dataToko.address;
       listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
+      listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Lainnya", address: "Pilih Alamat Lainnya", county: "", PostCode: "", City: ""));
     } else {
       listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Pengiriman", address: "Pilih Alamat Pengiriman", county: "", City: "", PostCode: ""));
       listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
       for (var i = 0; i < addressdata.length; i++) {
         listAddress.add(addressdata[i]);
       }
+      listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Lainnya", address: "Pilih Alamat Lainnya", county: "", PostCode: "", City: ""));
     }
     try {
     //get vendor data
@@ -499,6 +507,20 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         child: ShowCaseWidget(
           builder: Builder(builder: (_) => DialogCheckOut()),
           )));
+  }
+
+  addOtherAddress(){
+    try {
+      Navigator.pop(keycheckout.currentContext!);
+    // ignore: empty_catches
+    } catch (e) {
+      
+    }
+    Get.dialog(Dialog(
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: DialogAddress()));
   }
 
   showProdukSerupa(CartDetail data) {

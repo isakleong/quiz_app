@@ -129,6 +129,15 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxString infoos = "".obs;
   GlobalKey keyalamat = GlobalKey();
   GlobalKey keyconfirm = GlobalKey();
+  Rx<TextEditingController> get addressName => _penjualanController.addressName;
+  Rx<TextEditingController> get receiverName => _penjualanController.receiverName;
+  Rx<TextEditingController> get phoneNum => _penjualanController.phoneNum;
+  Rx<TextEditingController> get phoneNumSecond => _penjualanController.phoneNumSecond;
+  Rx<TextEditingController> get notesOtherAddress => _penjualanController.notesOtherAddress;
+
+  addOtherAddress(){
+    _penjualanController.addOtherAddress();
+  }
 
   getListItem() {
     _penjualanController.getListItem();
