@@ -76,7 +76,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   savePenjualanState(dynamic data, {String? morekey}) async {
     if(!Hive.isBoxOpen('statepenjualan')) statePenjualanbox = await Hive.openBox('statepenjualan');
     if(morekey != "" && morekey != null){
-    await statePenjualanbox.delete(globalkeybox+morekey!);
+    await statePenjualanbox.delete(globalkeybox+morekey);
     await statePenjualanbox.put(globalkeybox+morekey, data);
     } else {
     await statePenjualanbox.delete(globalkeybox);
@@ -101,7 +101,6 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     var dataAlamat = await statePenjualanbox.get("${globalkeybox}addr");
     if(dataAlamat != null){
       dataAlamat = jsonDecode(dataAlamat);
-      print(dataAlamat);
       dataOtherAddress = OtherAddressData(dataAlamat['address'], dataAlamat['nama'], dataAlamat['hp'], dataAlamat['hplain'], dataAlamat['note']);
       addressName.value.text = dataAlamat['address'];
       receiverName.value.text = dataAlamat['nama'];
