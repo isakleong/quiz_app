@@ -7,6 +7,7 @@ import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 import '../../../tools/textfieldformatter.dart';
+import '../../../tools/utils.dart';
 
 class DialogAddress extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -26,7 +27,7 @@ class DialogAddress extends StatelessWidget {
             height: height * 0.03,
           ),
           TextView(
-            text: "Alamat Pengiriman Lainnya",
+            text: _takingOrderVendorController.hardcodeOtherAddress,
             headings: 'H3',
             fontSize: 13.sp,
           ),
@@ -99,7 +100,6 @@ class DialogAddress extends StatelessWidget {
             width: 0.7 * width,
             child: TextFormField(
               keyboardType: TextInputType.number,
-              inputFormatters: [NumberInputFormatter()],
               decoration: InputDecoration(
                 labelText: 'Nomor HP',
                 icon: Image.asset(
@@ -123,9 +123,8 @@ class DialogAddress extends StatelessWidget {
             width: 0.7 * width,
             child: TextFormField(
               keyboardType: TextInputType.number,
-              inputFormatters: [NumberInputFormatter()],
               decoration: InputDecoration(
-                labelText: 'Nomor HP lainnya (Optional)',
+                labelText: 'Nomor HP Lainnya (Optional)',
                 icon: Image.asset(
                   'assets/images/telephone.png',
                   width: 35.sp,
@@ -200,12 +199,26 @@ class DialogAddress extends StatelessWidget {
                     size: 14.sp,
                   ),
                   text: "SIMPAN",
-                  onTap: ()  {
-                    // _takingOrderVendorController.handleSaveConfirm( "Yakin untuk simpan penjualan ?",
-                    //    "Konfirmasi Penjualan", 
-                    //    () async {
-                    //       await _takingOrderVendorController.checkout(context);
-                    //   });
+                  onTap: ()  async {
+                    if(_takingOrderVendorController.addressName.value.text.trim() == "" || _takingOrderVendorController.addressName.value.text.trim().length < 10){
+                      Utils().showDialogSingleButton(context,"Peringatan" ,"Alamat penerima tidak boleh kosong dan harus lebih dari 10 karakter","info.json",(){Get.back();});
+                      return;
+                    }
+                    if(_takingOrderVendorController.receiverName.value.text.trim() == "" || _takingOrderVendorController.receiverName.value.text.trim().length < 5){
+                      Utils().showDialogSingleButton(context,"Peringatan" ,"Nama penerima tidak boleh kosong dan harus lebih dari 5 karakter","info.json",(){Get.back();});
+                      return;
+                    }
+                    if(_takingOrderVendorController.phoneNum.value.text.trim() == "" || _takingOrderVendorController.phoneNum.value.text.trim().length < 9){
+                      Utils().showDialogSingleButton(context,"Peringatan" ,"Nomor HP tidak boleh kosong dan harus lebih dari 9 digit","info.json",(){Get.back();});
+                      return;
+                    }
+                    if(_takingOrderVendorController.phoneNumSecond.value.text.trim() != "" && _takingOrderVendorController.phoneNumSecond.value.text.trim().length < 9){
+                      Utils().showDialogSingleButton(context,"Peringatan" ,"Nomor HP Lainnya harus lebih dari 9 digit","info.json",(){Get.back();});
+                      return;
+                    }
+                    _takingOrderVendorController.addOtherAddressData();
+                    Get.back();
+                    _takingOrderVendorController.previewCheckOut();
                   },
                   radius: 4,
                   space: 5,

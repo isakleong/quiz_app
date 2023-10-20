@@ -15,6 +15,7 @@ import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/controllers/retur_controller.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
+import 'package:sfa_tools/models/other_address_data.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/models/productdata.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
@@ -134,9 +135,15 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   Rx<TextEditingController> get phoneNum => _penjualanController.phoneNum;
   Rx<TextEditingController> get phoneNumSecond => _penjualanController.phoneNumSecond;
   Rx<TextEditingController> get notesOtherAddress => _penjualanController.notesOtherAddress;
+  OtherAddressData? get dataOtherAddress => _penjualanController.dataOtherAddress;
+  get hardcodeOtherAddress => _penjualanController.hardcodeOtherAddress;
 
-  addOtherAddress(){
-    _penjualanController.addOtherAddress();
+  addOtherAddressData(){
+    _penjualanController.addOtherAddressData();
+  }
+
+  showDialogAddOtherAddress(){
+    _penjualanController.showDialogAddOtherAddress();
   }
 
   getListItem() {
@@ -226,6 +233,11 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       cnt.value.clear();
       listAnimation.clear();
       choosedAddress.value = "";
+      addressName.value.clear();
+      receiverName.value.clear();
+      phoneNum.value.clear();
+      phoneNumSecond.value.clear();
+      notesOtherAddress.value.clear();
       await _penjualanController.deletestate();
       try {
         Navigator.pop(keychecout.currentContext!);

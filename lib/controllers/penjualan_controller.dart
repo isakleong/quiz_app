@@ -11,6 +11,7 @@ import 'package:sfa_tools/controllers/laporan_controller.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/cartdetail.dart';
 import 'package:sfa_tools/models/masteritemvendor.dart';
+import 'package:sfa_tools/models/other_address_data.dart';
 import 'package:sfa_tools/models/penjualanpostmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
@@ -57,6 +58,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
   Rx<TextEditingController> phoneNum = TextEditingController().obs;
   Rx<TextEditingController> phoneNumSecond = TextEditingController().obs;
   Rx<TextEditingController> notesOtherAddress = TextEditingController().obs;
+  OtherAddressData? dataOtherAddress;
+  String hardcodeOtherAddress = 'Alamat Kiriman Langsung Customer';
 
   countKomisi(){
     var komisidata = 0.0;
@@ -70,17 +73,24 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     komisi.value = komisidata.toString();
   }
 
-  savePenjualanState(dynamic data) async {
+  savePenjualanState(dynamic data, {String? morekey}) async {
     if(!Hive.isBoxOpen('statepenjualan')) statePenjualanbox = await Hive.openBox('statepenjualan');
+    if(morekey != "" && morekey != null){
+    await statePenjualanbox.delete(globalkeybox+morekey!);
+    await statePenjualanbox.put(globalkeybox+morekey, data);
+    } else {
     await statePenjualanbox.delete(globalkeybox);
     await statePenjualanbox.put(globalkeybox, data);
+    }
     await statePenjualanbox.close();
   }
 
   deletestate() async {
     if(!Hive.isBoxOpen('statepenjualan')) statePenjualanbox = await Hive.openBox('statepenjualan');
     await statePenjualanbox.delete(globalkeybox);
+    await statePenjualanbox.delete("${globalkeybox}addr");
     await statePenjualanbox.close();
+    dataOtherAddress = null;
   }
 
   getpenjualanstate() async {
@@ -88,6 +98,17 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       statePenjualanbox = await Hive.openBox('statepenjualan');
     }
     var databox = await statePenjualanbox.get(globalkeybox);
+    var dataAlamat = await statePenjualanbox.get("${globalkeybox}addr");
+    if(dataAlamat != null){
+      dataAlamat = jsonDecode(dataAlamat);
+      print(dataAlamat);
+      dataOtherAddress = OtherAddressData(dataAlamat['address'], dataAlamat['nama'], dataAlamat['hp'], dataAlamat['hplain'], dataAlamat['note']);
+      addressName.value.text = dataAlamat['address'];
+      receiverName.value.text = dataAlamat['nama'];
+      phoneNum.value.text = dataAlamat['hp'];
+      phoneNumSecond.value.text = dataAlamat['hplain'];
+      notesOtherAddress.value.text = dataAlamat['note'];
+    }
     statePenjualanbox.close();
     if(databox != null){
       var datadecoded = json.decode(databox);
@@ -244,14 +265,14 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     if(addressdata == null || addressdata.isEmpty ){
       choosedAddress.value = dataToko.address;
       listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
-      listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Lainnya", address: "Pilih Alamat Lainnya", county: "", PostCode: "", City: ""));
+      listAddress.add(ShipToAddress(code: "AL", name: hardcodeOtherAddress, address: hardcodeOtherAddress, county: "", PostCode: "", City: ""));
     } else {
       listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Pengiriman", address: "Pilih Alamat Pengiriman", county: "", City: "", PostCode: ""));
       listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
       for (var i = 0; i < addressdata.length; i++) {
         listAddress.add(addressdata[i]);
       }
-      listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Lainnya", address: "Pilih Alamat Lainnya", county: "", PostCode: "", City: ""));
+      listAddress.add(ShipToAddress(code: "AL", name: hardcodeOtherAddress, address: hardcodeOtherAddress, county: "", PostCode: "", City: ""));
     }
     try {
     //get vendor data
@@ -406,21 +427,36 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     }
   }
 
-  convertalldatatojson(){
-    List<Map<String, dynamic>> cartListmap = cartList.map((clist) {
-      return {
-        'kdProduct': clist.kdProduct,
-        'nmProduct': clist.nmProduct,
-        'Qty': clist.Qty,
-        'Satuan': clist.Satuan,
-        'hrgPerPieces': clist.hrgPerPieces,
-        'iduom' : clist.iduom,
-        'iditem' : clist.iditem,
-        'komisi' : clist.komisi
+  convertalldatatojson({String? type}){
+    if(type == "" || type == null){
+      //save input item user
+      List<Map<String, dynamic>> cartListmap = cartList.map((clist) {
+        return {
+          'kdProduct': clist.kdProduct,
+          'nmProduct': clist.nmProduct,
+          'Qty': clist.Qty,
+          'Satuan': clist.Satuan,
+          'hrgPerPieces': clist.hrgPerPieces,
+          'iduom' : clist.iduom,
+          'iditem' : clist.iditem,
+          'komisi' : clist.komisi
+        };
+      }).toList();
+      String jsonStrclist = jsonEncode(cartListmap);
+      savePenjualanState(jsonStrclist);
+    } else if (type == "saveAddress"){
+      //save input alamat lain
+      var dataAlamat = {
+        "address" : dataOtherAddress!.alamatPenerima,
+        "nama" : dataOtherAddress!.namaPenerima,
+        "hp" : dataOtherAddress!.NomorHp,
+        "hplain" : dataOtherAddress!.NomorHpOthers,
+        "note" : dataOtherAddress!.notesOthers
       };
-    }).toList();
-    String jsonStrclist = jsonEncode(cartListmap);
-    savePenjualanState(jsonStrclist);
+      String jsonOtherAddress = jsonEncode(dataAlamat);
+      savePenjualanState(jsonOtherAddress, morekey: "addr");
+    }
+    
   }
 
   countTotalDetail(CartDetail data) {
@@ -499,6 +535,11 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
 
   previewCheckOut() async {
     await countKomisi();
+    if(dataOtherAddress != null){
+      choosedAddress.value = hardcodeOtherAddress;
+    } else if (choosedAddress.value == hardcodeOtherAddress && dataOtherAddress == null){
+      choosedAddress.value = "";
+    }
     Get.dialog(Dialog(
       key: keycheckout,
         backgroundColor: Colors.white,
@@ -509,14 +550,16 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
           )));
   }
 
-  addOtherAddress(){
+  showDialogAddOtherAddress(){
     try {
       Navigator.pop(keycheckout.currentContext!);
     // ignore: empty_catches
     } catch (e) {
       
     }
-    Get.dialog(Dialog(
+    Get.dialog(
+      barrierDismissible: false,
+      Dialog(
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -822,6 +865,11 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     } catch (e) {
       
     }
+  }
+
+  addOtherAddressData(){
+    dataOtherAddress = OtherAddressData(addressName.value.text.toString(), receiverName.value.text.toString(), phoneNum.value.text.toString(), phoneNumSecond.value.text.toString(), notesOtherAddress.value.text.toString());
+    convertalldatatojson(type: "saveAddress");
   }
 
 }
