@@ -238,7 +238,6 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       phoneNum.value.clear();
       phoneNumSecond.value.clear();
       notesOtherAddress.value.clear();
-      await _penjualanController.deletestate();
       try {
         Navigator.pop(keychecout.currentContext!);
         Navigator.pop(keyconfirm.currentContext!);

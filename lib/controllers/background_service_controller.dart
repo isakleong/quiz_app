@@ -778,6 +778,11 @@ class Backgroundservicecontroller {
           request.fields['data[$inc][shipTo]'] = data[i].dataList[j]['shipTo'];
           request.fields['data[$inc][salesPersonCode]'] = data[i].dataList[j]['salesPersonCode'];
           request.fields['data[$inc][komisi]'] = data[i].dataList[j]['komisi'];
+          request.fields['data[$inc][receiverName]'] = data[i].dataList[j]['receiverName'] ?? "";
+          request.fields['data[$inc][receiverAddress]'] = data[i].dataList[j]['receiverAddress'] ?? "";
+          request.fields['data[$inc][receiverPhone]'] = data[i].dataList[j]['receiverPhone'] ?? "";
+          request.fields['data[$inc][receiverPhone2]'] = data[i].dataList[j]['receiverPhone2'] ?? "";
+          request.fields['data[$inc][receiverDesc]'] = data[i].dataList[j]['receiverDesc'] ?? "";
           inc = inc + 1;
         } else {
           break;

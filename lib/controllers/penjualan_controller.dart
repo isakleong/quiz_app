@@ -100,13 +100,17 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     var databox = await statePenjualanbox.get(globalkeybox);
     var dataAlamat = await statePenjualanbox.get("${globalkeybox}addr");
     if(dataAlamat != null){
-      dataAlamat = jsonDecode(dataAlamat);
-      dataOtherAddress = OtherAddressData(dataAlamat['address'], dataAlamat['nama'], dataAlamat['hp'], dataAlamat['hplain'], dataAlamat['note']);
-      addressName.value.text = dataAlamat['address'];
-      receiverName.value.text = dataAlamat['nama'];
-      phoneNum.value.text = dataAlamat['hp'];
-      phoneNumSecond.value.text = dataAlamat['hplain'];
-      notesOtherAddress.value.text = dataAlamat['note'];
+      try {
+        dataAlamat = jsonDecode(dataAlamat);
+        dataOtherAddress = OtherAddressData(dataAlamat['address'], dataAlamat['nama'], dataAlamat['hp'], dataAlamat['hplain'], dataAlamat['note']);
+        addressName.value.text = dataAlamat['address'];
+        receiverName.value.text = dataAlamat['nama'];
+        phoneNum.value.text = dataAlamat['hp'];
+        phoneNumSecond.value.text = dataAlamat['hplain'];
+        notesOtherAddress.value.text = dataAlamat['note'];
+      } catch (e) {
+        await statePenjualanbox.delete("${globalkeybox}addr");
+      }
     }
     statePenjualanbox.close();
     if(databox != null){
@@ -448,8 +452,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       var dataAlamat = {
         "address" : dataOtherAddress!.alamatPenerima,
         "nama" : dataOtherAddress!.namaPenerima,
-        "hp" : dataOtherAddress!.NomorHp,
-        "hplain" : dataOtherAddress!.NomorHpOthers,
+        "hp" : dataOtherAddress!.nomorHp,
+        "hplain" : dataOtherAddress!.nomorHpOthers,
         "note" : dataOtherAddress!.notesOthers
       };
       String jsonOtherAddress = jsonEncode(dataAlamat);
@@ -685,12 +689,18 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
               'note' : notestext,
               'shipTo' : listAddress[idx].code,
               'salesPersonCode' : salesid,
-              'komisi' : listdetail[i].itemOrder[k].komisi
+              'komisi' : listdetail[i].itemOrder[k].komisi,
+              'receiverName' : dataOtherAddress == null ? "" : dataOtherAddress!.namaPenerima,
+              'receiverAddress' : dataOtherAddress == null ? "" : dataOtherAddress!.alamatPenerima,
+              'receiverPhone' : dataOtherAddress == null ? "" : dataOtherAddress!.nomorHp,
+              'receiverPhone2' : dataOtherAddress == null ? "" : dataOtherAddress!.nomorHpOthers,
+              'receiverDesc' : dataOtherAddress == null ? "" : dataOtherAddress!.notesOthers,
             }
           );
           inc++;
         }
       }
+      
       var listpostbox = await boxpostpenjualan.get(globalkeybox);
       List<PenjualanPostModel> listpost = <PenjualanPostModel>[];
       if (listpostbox == null){
@@ -704,6 +714,7 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
       await boxpostpenjualan.delete(globalkeybox);
       await boxpostpenjualan.put(globalkeybox,listpost);
       await closebox();
+      await deletestate();
       await postDataOrder(data,salesid,custid,listpost);
   }
 
@@ -763,12 +774,19 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         request.fields['data[$i][shipTo]'] = data[i]['shipTo'];
         request.fields['data[$i][salesPersonCode]'] = data[i]['salesPersonCode'];
         request.fields['data[$i][komisi]'] = data[i]['komisi'];
+        request.fields['data[$i][receiverName]'] = data[i]['receiverName'];
+        request.fields['data[$i][receiverAddress]'] = data[i]['receiverAddress'];
+        request.fields['data[$i][receiverPhone]'] = data[i]['receiverPhone'];
+        request.fields['data[$i][receiverPhone2]'] = data[i]['receiverPhone2'];
+        request.fields['data[$i][receiverDesc]'] = data[i]['receiverDesc'];
       }
+
+      print(request.fields);
       
       try {
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
-
+        print(responseString);
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(responseString);
           if(jsonResponse["success"] == true){
