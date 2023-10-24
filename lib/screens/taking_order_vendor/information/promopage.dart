@@ -79,7 +79,7 @@ class PromoPage extends StatelessWidget {
             ),
           ),
         */
-          const SizedBox(height: 5),
+          // const SizedBox(height: 5),
           Obx(() => _takingOrderVendorController.isSuccess.value == false &&
                   _takingOrderVendorController.promodir.isEmpty
               ? Column(
@@ -137,7 +137,7 @@ class PromoPage extends StatelessWidget {
                 )
               : _takingOrderVendorController.isSuccess.value && _takingOrderVendorController.promodir.isEmpty ? 
               Padding(
-                padding:  EdgeInsets.only(top: 0.2 * height),
+                padding: EdgeInsets.only(top: 0.2 * height),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

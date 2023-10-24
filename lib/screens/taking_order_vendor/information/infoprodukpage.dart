@@ -22,21 +22,31 @@ class InfoProdukPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Obx(()=>_takingOrderVendorController.isSuccess.value == false ? getProgressView(context) : 
       (_takingOrderVendorController.isSuccess.value == true && _takingOrderVendorController.datanodelength.value == 0 ) ? Center(
           child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Lottie.asset('assets/lottie/notfound.json', width: width * 0.35),
-            const TextView(
-              text: "Tidak Ada Info Produk",
-              headings: 'H4',
-              fontSize: 20,
-            )
-          ],
-        )) : getBody(),
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 0.2 * height),
+                child: Center(
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset('assets/lottie/notfound.json', width: width * 0.35),
+                    const TextView(
+                      text: "Tidak Ada Info Produk",
+                      headings: 'H4',
+                      fontSize: 20,
+                    )
+                  ],
+        ),
+                ),
+              ),
+            ],
+          )) : getBody(),
       ) 
     );
   }
