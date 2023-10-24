@@ -266,7 +266,8 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
     if(!shiptobox.isOpen) await getBox();
     var addressdata = shiptobox.get(custid);
     if(addressdata == null || addressdata.isEmpty ){
-      choosedAddress.value = dataToko.address;
+      // choosedAddress.value = dataToko.address;
+      listAddress.add(ShipToAddress(code: "", name: "Pilih Alamat Pengiriman", address: "Pilih Alamat Pengiriman", county: "", City: "", PostCode: ""));
       listAddress.add(ShipToAddress(code: "", name: dataToko.name, address: dataToko.address, county: dataToko.county, City: dataToko.city , PostCode: ""));
       listAddress.add(ShipToAddress(code: "AL", name: hardcodeOtherAddress, address: hardcodeOtherAddress, county: "", PostCode: "", City: ""));
     } else {

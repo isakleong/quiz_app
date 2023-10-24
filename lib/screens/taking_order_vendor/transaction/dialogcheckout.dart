@@ -77,17 +77,9 @@ class DialogCheckOut extends StatelessWidget {
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
                                 isExpanded: true,
-                                value: _takingOrderVendorController
-                                            .listaddress.length >
-                                        1
-                                    ? _takingOrderVendorController
-                                                .choosedAddress.value ==
-                                            ""
+                                value: _takingOrderVendorController.listaddress.length > 1 ? _takingOrderVendorController.choosedAddress.value == ""
                                         ? 'Pilih Alamat Pengiriman'
-                                        : _takingOrderVendorController
-                                            .choosedAddress.value
-                                    : _takingOrderVendorController
-                                        .listaddress[0].address,
+                                        : _takingOrderVendorController.choosedAddress.value : _takingOrderVendorController.listaddress[0].address,
                                 onChanged: (String? newValue) {
                                   _takingOrderVendorController
                                       .choosedAddress.value = newValue!;
