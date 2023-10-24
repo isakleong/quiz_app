@@ -782,12 +782,10 @@ class PenjualanController extends GetxController with GetTickerProviderStateMixi
         request.fields['data[$i][receiverDesc]'] = data[i]['receiverDesc'];
       }
 
-      print(request.fields);
       
       try {
         final response = await request.send();
         final responseString = await response.stream.bytesToString();
-        print(responseString);
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(responseString);
           if(jsonResponse["success"] == true){
