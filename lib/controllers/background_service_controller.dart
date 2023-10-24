@@ -442,7 +442,7 @@ class Backgroundservicecontroller {
   String informasiconfig = AppConfig().informasiconfig;
 
   Future<void> createLogTes(String content) async {
-    bool allowWriteLog = true; // Change to true to enable log writing
+    bool allowWriteLog = false; // Change to true to enable log writing
     const directoryPath = '/storage/emulated/0/TKTW/sfalog';
     final currentDate = DateTime.now();
     final formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
@@ -778,6 +778,11 @@ class Backgroundservicecontroller {
           request.fields['data[$inc][shipTo]'] = data[i].dataList[j]['shipTo'];
           request.fields['data[$inc][salesPersonCode]'] = data[i].dataList[j]['salesPersonCode'];
           request.fields['data[$inc][komisi]'] = data[i].dataList[j]['komisi'];
+          request.fields['data[$inc][receiverName]'] = data[i].dataList[j]['receiverName'] ?? "";
+          request.fields['data[$inc][receiverAddress]'] = data[i].dataList[j]['receiverAddress'] ?? "";
+          request.fields['data[$inc][receiverPhone]'] = data[i].dataList[j]['receiverPhone'] ?? "";
+          request.fields['data[$inc][receiverPhone2]'] = data[i].dataList[j]['receiverPhone2'] ?? "";
+          request.fields['data[$inc][receiverDesc]'] = data[i].dataList[j]['receiverDesc'] ?? "";
           inc = inc + 1;
         } else {
           break;
@@ -1183,8 +1188,8 @@ class Backgroundservicecontroller {
     }
     branchinfobox.close();
 
-    if (await File('$productdir/$vendor/$informasiconfig').exists()) {
-        var res = await File('$productdir/$vendor/$informasiconfig').readAsString();
+    if (await File('$productdir/${vendor.toLowerCase()}/$informasiconfig').exists()) {
+        var res = await File('$productdir/${vendor.toLowerCase()}/$informasiconfig').readAsString();
         var ls = const LineSplitter();
         var tlist = ls.convert(res);
         for (var i = 0; i < tlist.length; i++) {

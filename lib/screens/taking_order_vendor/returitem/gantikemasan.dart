@@ -82,8 +82,7 @@ class GantiKemasan extends StatelessWidget {
                             .gantikemasanhorizontal.value = true;
                         _takingOrderVendorController.gantikemasanfield.value
                             .text = suggestion.nmProduct;
-                        _takingOrderVendorController
-                            .handleProductSearchGk(suggestion.kdProduct);
+                          _takingOrderVendorController.handleProductSearchretur(suggestion.kdProduct, 'gk');
                       }
                     },
                   ),
@@ -140,17 +139,10 @@ class GantiKemasan extends StatelessWidget {
                                     data: _takingOrderVendorController
                                         .listgantikemasan[index],
                                     onTapEdit: () {
-                                      _takingOrderVendorController
-                                          .handleEditGantiKemasanItem(
-                                              _takingOrderVendorController
-                                                  .listgantikemasan[index]);
+                                      _takingOrderVendorController.handleEditItemRetur(_takingOrderVendorController.listgantikemasan[index], 'gk');
                                     },
                                     onTapDelete: () {
-                                      _takingOrderVendorController
-                                          .handleDeleteItemRetur(
-                                              _takingOrderVendorController
-                                                  .listgantikemasan[index],
-                                              "gantikemasan");
+                                      _takingOrderVendorController.handleDeleteItemRetur(_takingOrderVendorController.listgantikemasan[index], "gantikemasan");
                                     },
                                   ));
                             },

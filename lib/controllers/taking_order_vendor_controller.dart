@@ -15,6 +15,7 @@ import 'package:sfa_tools/controllers/penjualan_controller.dart';
 import 'package:sfa_tools/controllers/retur_controller.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
+import 'package:sfa_tools/models/other_address_data.dart';
 import 'package:sfa_tools/models/paymentdata.dart';
 import 'package:sfa_tools/models/productdata.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
@@ -32,7 +33,6 @@ import '../models/outstandingdata.dart';
 import '../models/tarikbarangmodel.dart';
 import '../models/treenodedata.dart';
 import '../models/vendor.dart';
-import '../widgets/dialoginfo.dart';
 import '../tools/service.dart';
 import 'package:http/http.dart' as http;
 
@@ -130,6 +130,21 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   RxString infoos = "".obs;
   GlobalKey keyalamat = GlobalKey();
   GlobalKey keyconfirm = GlobalKey();
+  Rx<TextEditingController> get addressName => _penjualanController.addressName;
+  Rx<TextEditingController> get receiverName => _penjualanController.receiverName;
+  Rx<TextEditingController> get phoneNum => _penjualanController.phoneNum;
+  Rx<TextEditingController> get phoneNumSecond => _penjualanController.phoneNumSecond;
+  Rx<TextEditingController> get notesOtherAddress => _penjualanController.notesOtherAddress;
+  OtherAddressData? get dataOtherAddress => _penjualanController.dataOtherAddress;
+  get hardcodeOtherAddress => _penjualanController.hardcodeOtherAddress;
+
+  addOtherAddressData(){
+    _penjualanController.addOtherAddressData();
+  }
+
+  showDialogAddOtherAddress(){
+    _penjualanController.showDialogAddOtherAddress();
+  }
 
   getListItem() {
     _penjualanController.getListItem();
@@ -218,7 +233,11 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       cnt.value.clear();
       listAnimation.clear();
       choosedAddress.value = "";
-      await _penjualanController.deletestate();
+      addressName.value.clear();
+      receiverName.value.clear();
+      phoneNum.value.clear();
+      phoneNumSecond.value.clear();
+      notesOtherAddress.value.clear();
       try {
         Navigator.pop(keychecout.currentContext!);
         Navigator.pop(keyconfirm.currentContext!);
@@ -486,161 +505,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
         Navigator.pop(keyconfirm.currentContext!);
         // ignore: empty_catches
       } catch (e) {}
-      Get.dialog(Dialog(
-          backgroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: DialogInfo(
-            judul: "Oops, Terjadi kesalahan",lottieasset: "error.json",
-            desc: "Data Payment tidak ditemukan, silahkan coba lagi !",
-            ontap: () {
-              Get.back();
-            },
-          )));
+      Utils().showDialogSingleButton(null,"Oops, Terjadi kesalahan" ,"Data Payment tidak ditemukan, silahkan coba lagi !","error.json",(){Get.back();});
     }
-  }
-
-  //for retur page
-  Rx<TextEditingController> get tarikbarangfield => _returController.tarikbarangfield;
-  Rx<TextEditingController> get tukarwarnafield => _returController.tukarwarnafield;
-  Rx<TextEditingController> get gantikemasanfield => _returController.gantikemasanfield;
-  Rx<TextEditingController> get servismebelfield => _returController.servismebelfield;
-  Rx<TextEditingController> get gantibarangfield => _returController.gantibarangfield;
-  Rx<TextEditingController> get produkpenggantifield => _returController.produkpenggantifield;
-  RxList<ProductData> get selectedProducttarikbarang => _returController.selectedProducttarikbarang;
-  RxList<ProductData> get selectedProductgantikemasan => _returController.selectedProductgantikemasan;
-  RxList<ProductData> get selectedProductservismebel => _returController.selectedProductservismebel;
-  RxList<ProductData> get selectedProductgantibarang => _returController.selectedProductgantibarang;
-  RxList<ProductData> get selectedProductTukarWarna => _returController.selectedProductTukarWarna;
-  RxList<ProductData> get selectedProductProdukPengganti => _returController.selectedProductProdukPengganti;
-  RxList<TarikBarangModel> get listTarikBarang => _returController.listTarikBarang;
-  RxList<TarikBarangModel> get listgantikemasan => _returController.listgantikemasan;
-  RxList<TarikBarangModel> get listServisMebel => _returController.listServisMebel;
-  RxList<TarikBarangModel> get listGantiBarang => _returController.listGantiBarang;
-  RxList<TukarWarnaModel> get listTukarWarna => _returController.listTukarWarna;
-  RxList<TarikBarangModel> get listProdukPengganti => _returController.listProdukPengganti;
-  RxList<TarikBarangModel> get listitemforProdukPengganti => _returController.listitemforProdukPengganti;
-  RxList get listSisa => _returController.listSisa;
-  RxInt get indexSegment => _returController.indexSegment;
-  RxList<bool> get selectedsegment => _returController.selectedsegment;
-  RxBool get tukarwarnahorizontal => _returController.tukarwarnahorizontal;
-  RxBool get tarikbaranghorizontal => _returController.tarikbaranghorizontal;
-  RxBool get gantikemasanhorizontal => _returController.gantikemasanhorizontal;
-  RxBool get servismebelhorizontal => _returController.servismebelhorizontal;
-  RxBool get gantibaranghorizontal => _returController.gantibaranghorizontal;
-  RxString get selectedKdProducttarikbarang => _returController.selectedKdProducttarikbarang;
-  RxString get selectedKdProductgantikemasan => _returController.selectedKdProductgantikemasan;
-  RxString get selectedKdProductservismebel => _returController.selectedKdProductservismebel;
-  RxString get selectedKdProductgantibarang => _returController.selectedKdProductgantibarang;
-  RxString get selectedKdProductTukarWarna => _returController.selectedKdProductTukarWarna;
-  RxString get selectedKdProductProdukPengganti => _returController.selectedKdProductProdukPengganti;
-  RxString get selectedAlasantb => _returController.selectedAlasantb;
-  RxString get selectedAlasangk => _returController.selectedAlasangk;
-  RxBool get isOverfow => _returController.isOverfow;
-  RxList get listQtytb => _returController.listQtytb;
-  RxList get listQtygk => _returController.listQtygk;
-  RxList get listQtysm => _returController.listQtysm;
-  RxList get listQtygb => _returController.listQtygb;
-  RxList get listQtytw => _returController.listQtytw;
-  RxList get listQtypp => _returController.listQtypp;
-
-  handleProductSearchGb(String val) async {
-    await _returController.handleProductSearchGb(val);
-  }
-
-  handleProductSearchPp(String val) async {
-    await _returController.handleProductSearchPp(val);
-  }
-
-  handleProductSearchTb(String val) async {
-    await _returController.handleProductSearchTb(val);
-  }
-
-  handleProductSearchGk(String val) async {
-    await _returController.handleProductSearchGk(val);
-  }
-
-  handleProductSearchSm(String val) async {
-    await _returController.handleProductSearchSm(val);
-  }
-
-  handleProductSearchTw(String val) async {
-    await _returController.handleProductSearchTw(val);
-  }
-
-  addToCartTb() {
-    _returController.addToCartTb();
-  }
-
-  addToCartGk() {
-    _returController.addToCartGk();
-  }
-
-  addToCartGb() {
-    _returController.addToCartGb();
-  }
-
-  addToCartPp() {
-    _returController.addToCartPp();
-  }
-
-  addToCartSm() {
-    _returController.addToCartSm();
-  }
-
-  handleSaveGantiBarang() {
-    _returController.handleSaveGantiBarang();
-  }
-
-  handleSaveServisMebel() {
-    _returController.handleSaveServisMebel();
-  }
-
-  handleSaveTarikBarang() {
-    _returController.handleSaveTarikBarang();
-  }
-
-  handlesaveprodukpengganti(BuildContext context) {
-    _returController.handlesaveprodukpengganti(context);
-  }
-
-  handleEditGantiBarangItem(TarikBarangModel data) {
-    _returController.handleEditGantiBarangItem(data);
-  }
-
-  handleEditTukarWarnaItem(TukarWarnaModel data) {
-    _returController.handleEditTukarWarnaItem(data);
-  }
-
-  handleEditProdukPenggantiItem(TarikBarangModel data) {
-    _returController.handleEditProdukPenggantiItem(data);
-  }
-
-  handleEditGantiKemasanItem(TarikBarangModel data) {
-    _returController.handleEditGantiKemasanItem(data);
-  }
-
-  handleEditServisMebelItem(TarikBarangModel data) {
-    _returController.handleEditServisMebelItem(data);
-  }
-
-  handleEditTarikBarangItem(TarikBarangModel data) {
-    _returController.handleEditTarikBarangItem(data);
-  }
-
-  handleDeleteItemRetur(TarikBarangModel data, String from) {
-    _returController.handleDeleteItemRetur(data, from);
-  }
-
-  handleDeleteItemTukarWarna(TukarWarnaModel data) {
-    _returController.handleDeleteItemTukarWarna(data);
-  }
-
-  showProdukPengganti(BuildContext context) {
-    _returController.showProdukPengganti(context);
-  }
-
-  showEditProdukPengganti(BuildContext context) {
-    _returController.showEditProdukPengganti(context);
   }
 
   // for informasi page
@@ -663,13 +529,13 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     listdir.clear();
     pricelistdir.clear();
 
-    if (await File('$productdir/$activevendor/$informasiconfig').exists()) {
+    if (await File('$productdir/${activevendor.toLowerCase()}/$informasiconfig').exists()) {
       processfile(false);
       return;
     }
 
     // Create a folder if it doesn't exist
-    Directory directory = Directory('$productdir/$activevendor/');
+    Directory directory = Directory('$productdir/${activevendor.toLowerCase()}/');
     if (!await directory.exists()) {
       await directory.create(recursive: true);
     }
@@ -683,7 +549,7 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       return;
     }
     // Create the file path
-    String filePath = '$productdir/$activevendor/$informasiconfig';
+    String filePath = '$productdir/${activevendor.toLowerCase()}/$informasiconfig';
 
     // Download the file
     final response = await http.get(Uri.parse('$urlAPI/$url?vendor=$activevendor'));
@@ -797,8 +663,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
       }
     }
     branchinfobox.close();
-    if (await File('$productdir/$activevendor/$informasiconfig').exists() && databranch != null) {
-      var res = await File('$productdir/$activevendor/$informasiconfig').readAsString();
+    if (await File('$productdir/${activevendor.toLowerCase()}/$informasiconfig').exists() && databranch != null) {
+      var res = await File('$productdir/${activevendor.toLowerCase()}/$informasiconfig').readAsString();
       var ls = const LineSplitter();
       var tlist = ls.convert(res);
       for (var i = 0; i < tlist.length; i++) {
@@ -911,4 +777,105 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
     }
     selectedsegmentcategory[index] = true;
   }
+
+  //for retur page
+  Rx<TextEditingController> get tarikbarangfield => _returController.tarikbarangfield;
+  Rx<TextEditingController> get tukarwarnafield => _returController.tukarwarnafield;
+  Rx<TextEditingController> get gantikemasanfield => _returController.gantikemasanfield;
+  Rx<TextEditingController> get servismebelfield => _returController.servismebelfield;
+  Rx<TextEditingController> get gantibarangfield => _returController.gantibarangfield;
+  Rx<TextEditingController> get produkpenggantifield => _returController.produkpenggantifield;
+  RxList<ProductData> get selectedProducttarikbarang => _returController.selectedProducttarikbarang;
+  RxList<ProductData> get selectedProductgantikemasan => _returController.selectedProductgantikemasan;
+  RxList<ProductData> get selectedProductservismebel => _returController.selectedProductservismebel;
+  RxList<ProductData> get selectedProductgantibarang => _returController.selectedProductgantibarang;
+  RxList<ProductData> get selectedProductTukarWarna => _returController.selectedProductTukarWarna;
+  RxList<ProductData> get selectedProductProdukPengganti => _returController.selectedProductProdukPengganti;
+  RxList<TarikBarangModel> get listTarikBarang => _returController.listTarikBarang;
+  RxList<TarikBarangModel> get listgantikemasan => _returController.listgantikemasan;
+  RxList<TarikBarangModel> get listServisMebel => _returController.listServisMebel;
+  RxList<TarikBarangModel> get listGantiBarang => _returController.listGantiBarang;
+  RxList<TukarWarnaModel> get listTukarWarna => _returController.listTukarWarna;
+  RxList<TarikBarangModel> get listProdukPengganti => _returController.listProdukPengganti;
+  RxList<TarikBarangModel> get listitemforProdukPengganti => _returController.listitemforProdukPengganti;
+  RxList get listSisa => _returController.listSisa;
+  RxInt get indexSegment => _returController.indexSegment;
+  RxList<bool> get selectedsegment => _returController.selectedsegment;
+  RxBool get tukarwarnahorizontal => _returController.tukarwarnahorizontal;
+  RxBool get tarikbaranghorizontal => _returController.tarikbaranghorizontal;
+  RxBool get gantikemasanhorizontal => _returController.gantikemasanhorizontal;
+  RxBool get servismebelhorizontal => _returController.servismebelhorizontal;
+  RxBool get gantibaranghorizontal => _returController.gantibaranghorizontal;
+  RxString get selectedKdProducttarikbarang => _returController.selectedKdProducttarikbarang;
+  RxString get selectedKdProductgantikemasan => _returController.selectedKdProductgantikemasan;
+  RxString get selectedKdProductservismebel => _returController.selectedKdProductservismebel;
+  RxString get selectedKdProductgantibarang => _returController.selectedKdProductgantibarang;
+  RxString get selectedKdProductTukarWarna => _returController.selectedKdProductTukarWarna;
+  RxString get selectedKdProductProdukPengganti => _returController.selectedKdProductProdukPengganti;
+  RxString get selectedAlasantb => _returController.selectedAlasantb;
+  RxString get selectedAlasangk => _returController.selectedAlasangk;
+  RxBool get isOverfow => _returController.isOverfow;
+  RxList get listQtytb => _returController.listQtytb;
+  RxList get listQtygk => _returController.listQtygk;
+  RxList get listQtysm => _returController.listQtysm;
+  RxList get listQtygb => _returController.listQtygb;
+  RxList get listQtytw => _returController.listQtytw;
+  RxList get listQtypp => _returController.listQtypp;
+
+  handleProductSearchretur(String val,String actionType) async {
+   await _returController.handleProductSearch(val, actionType);
+  }
+
+  handleEditItemRetur(var data, String actionType){
+    _returController.handleEditItem(data, actionType);
+  }
+
+  handleDeleteItemRetur(var data, String from) {
+    _returController.handleDeleteItemRetur(data, from);
+  }
+
+  addToCartTb() {
+    _returController.addToCartTb();
+  }
+
+  addToCartGk() {
+    _returController.addToCartGk();
+  }
+
+  addToCartGb() {
+    _returController.addToCartGb();
+  }
+
+  addToCartPp() {
+    _returController.addToCartPp();
+  }
+
+  addToCartSm() {
+    _returController.addToCartSm();
+  }
+
+  handleSaveGantiBarang() {
+    _returController.handleSaveGantiBarang();
+  }
+
+  handleSaveServisMebel() {
+    _returController.handleSaveServisMebel();
+  }
+
+  handleSaveTarikBarang() {
+    _returController.handleSaveTarikBarang();
+  }
+
+  handlesaveprodukpengganti(BuildContext context) {
+    _returController.handlesaveprodukpengganti(context);
+  }
+
+  showProdukPengganti(BuildContext context) {
+    _returController.showProdukPengganti(context);
+  }
+
+  showEditProdukPengganti(BuildContext context) {
+    _returController.showEditProdukPengganti(context);
+  }
+
 }

@@ -82,8 +82,7 @@ class ServisMebel extends StatelessWidget {
                             .servismebelhorizontal.value = true;
                         _takingOrderVendorController
                             .servismebelfield.value.text = suggestion.nmProduct;
-                        _takingOrderVendorController
-                            .handleProductSearchSm(suggestion.kdProduct);
+                          _takingOrderVendorController.handleProductSearchretur(suggestion.kdProduct, 'sm');
                       }
                     },
                   ),
@@ -138,9 +137,9 @@ class ServisMebel extends StatelessWidget {
                                         .listServisMebel[index],
                                     onTapEdit: () {
                                       _takingOrderVendorController
-                                          .handleEditServisMebelItem(
+                                          .handleEditItemRetur(
                                               _takingOrderVendorController
-                                                  .listServisMebel[index]);
+                                                  .listServisMebel[index], 'sm');
                                     },
                                     onTapDelete: () {
                                       _takingOrderVendorController

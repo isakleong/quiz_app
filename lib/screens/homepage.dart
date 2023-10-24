@@ -29,8 +29,8 @@ class Homepage extends StatelessWidget {
           return Future.value(false);
         },
         child: Scaffold(
-          backgroundColor: Colors.white,
           key: splashscreenController.keyhome,
+          backgroundColor: Colors.white,
           body: SafeArea(
             child: Stack(
               children: [

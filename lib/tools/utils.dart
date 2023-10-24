@@ -2,10 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:encrypt/encrypt.dart';
+import 'package:encrypt/encrypt.dart' as enc;
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/widgets/customelevatedbutton.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 
 import '../common/hivebox_vendor.dart';
 
@@ -61,9 +66,9 @@ class Utils {
   }
 
   static encryptData(String params){
-    final key = Key.fromUtf8(AppConfig.key);
-    final initVector = IV.fromUtf8(AppConfig.iv);
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+    final key = enc.Key.fromUtf8(AppConfig.key);
+    final initVector = enc.IV.fromUtf8(AppConfig.iv);
+    final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc));
     final encrypted = encrypter.encrypt(params, iv: initVector);
     return encrypted.base64;
   }
@@ -83,10 +88,10 @@ class Utils {
   String encryptsalescodeforvendor(String toencrypt){
     // print("string to encrypt $toencrypt");
     // String salter = (Random().nextInt(900) + 100).toString();
-    final key = Key.fromUtf8("fVkhoDWRAd4Rgj6l");  
-    final iv = IV.fromUtf8("tGYINBYOtJ2tZoZJ");  
+    final key = enc.Key.fromUtf8("fVkhoDWRAd4Rgj6l");  
+    final iv = enc.IV.fromUtf8("tGYINBYOtJ2tZoZJ");  
 
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
+    final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc));
     final encrypted = encrypter.encrypt(toencrypt, iv: iv);
 
     return encrypted.base64;
@@ -130,21 +135,21 @@ class Utils {
     }
   }
 
-  managetokenbox(String action) async {
+  manageTokenBox(String action) async {
     try {
-      if(action == 'open'){
-        tokenbox = await Hive.openBox('tokenbox');
+      if (action == 'open') {
+        tokenbox = await Hive.openBox('tokenBox');
       } else {
         tokenbox.close();
       }
-    // ignore: empty_catches
     } catch (e) {
+      // ignore: empty_catches
     }
   }
 
-  managecustomerbox(String action) async {
+  manageCustomerBox(String action) async {
     try {
-      if(action == "open"){
+      if (action == 'open') {
         customerBox = await Hive.openBox('customerBox');
       } else {
         customerBox.close();
@@ -154,10 +159,10 @@ class Utils {
     }
   }
 
-  manageshipbox(String action) async {
+  manageShipBox(String action) async {
     try {
-      if(action == "open"){
-        shiptobox = await Hive.openBox('shiptoBox');
+      if (action == 'open') {
+        shiptobox = await Hive.openBox('shipToBox');
       } else {
         shiptobox.close();
       }
@@ -166,123 +171,159 @@ class Utils {
     }
   }
 
-  managedevicestatebox(String action) async{
-     try {
-      if(action == 'open'){
-        devicestatebox = await Hive.openBox('devicestatebox');
+  manageDeviceStateBox(String action) async {
+    try {
+      if (action == 'open') {
+        devicestatebox = await Hive.openBox('deviceStateBox');
       } else {
         devicestatebox.close();
       }
-    // ignore: empty_catches
     } catch (e) {
+      // ignore: empty_catches
     }
   }
 
-  managebranchinfobox(String action) async {
+  manageBranchInfoBox(String action) async {
     try {
-      if(action == 'open'){
-        branchinfobox = await Hive.openBox('BranchInfoBox');
+      if (action == 'open') {
+        branchinfobox = await Hive.openBox('branchInfoBox');
       } else {
         branchinfobox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managepaymentmethodsbox(String action) async {
+  managePaymentMethodsBox(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         paymentMethodsBox = await Hive.openBox('paymentMethodsBox');
       } else {
         paymentMethodsBox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managebankbox(String action) async {
+  manageBankBox(String action) async {
     try {
-      if(action == 'open'){
-        bankbox = await Hive.openBox('BankBox');
+      if (action == 'open') {
+        bankbox = await Hive.openBox('bankBox');
       } else {
         bankbox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  manageoutstandingbox(String action) async {
+  manageOutstandingBox(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         outstandingBox = await Hive.openBox('outstandingBox');
       } else {
         outstandingBox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managepiutangbox(String action) async {
+  managePiutangBox(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         piutangBox = await Hive.openBox('piutangBox');
       } else {
         piutangBox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managemasteritembox(String action) async {
+  manageMasterItemBox(String action) async {
     try {
-      if(action == 'open'){
-        masteritembox = await Hive.openBox('masteritembox');
+      if (action == 'open') {
+        masteritembox = await Hive.openBox('masterItemBox');
       } else {
         masteritembox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  manageitemvendorbox(String action) async {
+  manageItemVendorBox(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         itemvendorbox = await Hive.openBox('itemVendorBox');
       } else {
         itemvendorbox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
- 
-  managevendorbox(String action) async {
+
+  manageVendorBox(String action) async {
     try {
-      if(action == 'open'){
+      if (action == 'open') {
         vendorBox = await Hive.openBox('vendorBox');
       } else {
         vendorBox.close();
       }
     } catch (e) {
-
+      // ignore: empty_catches
     }
   }
 
-  managemastervendorbox(String action) async{
+  manageMasterVendorBox(String action) async {
     try {
-      if(action == 'open'){
-        mastervendorbox = await Hive.openBox('mastervendorbox');
+      if (action == 'open') {
+        mastervendorbox = await Hive.openBox('masterVendorBox');
       } else {
         mastervendorbox.close();
       }
     } catch (e) {
+      // ignore: empty_catches
+    }
+  }
 
+  manageMasterItemVendorBox(String action) async {
+    try {
+      if (action == 'open') {
+        masteritemvendorbox = await Hive.openBox('masterItemVendorBox');
+      } else {
+        masteritemvendorbox.close();
+      }
+    } catch (e) {
+      // ignore: empty_catches
+    }
+  }
+
+  manageBoxPembayaranState(String action) async {
+    try {
+      if (action == 'open') {
+        boxPembayaranState = await Hive.openBox('boxPembayaranState');
+      } else {
+        boxPembayaranState.close();
+      }
+    } catch (e) {
+      // ignore: empty_catches
+    }
+  }
+
+  manageStatePenjualanBox(String action) async {
+    try {
+      if (action == 'open') {
+        statePenjualanbox = await Hive.openBox('statePenjualan');
+      } else {
+        statePenjualanbox.close();
+      }
+    } catch (e) {
+      // ignore: empty_catches
     }
   }
 
@@ -348,13 +389,51 @@ class Utils {
   }
 
   String decrypt(String encrypted) {
-  final key = Key.fromUtf8("fVkhoDWRAd4Rgj6l"); //hardcode combination of 16 character
-  final iv = IV.fromUtf8("tGYINBYOtJ2tZoZJ"); //hardcode combination of 16 character
+  final key = enc.Key.fromUtf8("fVkhoDWRAd4Rgj6l"); //hardcode combination of 16 character
+  final iv = enc.IV.fromUtf8("tGYINBYOtJ2tZoZJ"); //hardcode combination of 16 character
 
-  final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
-  Encrypted enBase64 = Encrypted.from64(encrypted);
+  final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc));
+  enc.Encrypted enBase64 = enc.Encrypted.from64(encrypted);
   final decrypted = encrypter.decrypt(enBase64, iv: iv);
   return decrypted;
 }
-  //end created for vendor
+
+showDialogSingleButton(var context, String title, String desc, String lottie, var onTap){
+      double width = Get.width;
+      double height = Get.height;
+      if(context != null){
+        width = MediaQuery.of(context).size.width;
+        height = MediaQuery.of(context).size.height;
+      }
+      Get.defaultDialog(
+          radius: 10,
+          barrierDismissible: true,
+          title: '',
+          titlePadding: const EdgeInsets.only(top: 0,bottom: 0),
+          cancel: Padding(
+            padding: EdgeInsets.only(left: 0.25 * width,right: 0.25 * width),
+            child: CustomElevatedButton(
+                        text: "Oke",
+                        onTap: onTap,
+                        width: 0.18 * width,
+                        height: 0.045 * height,
+                        radius: 8,
+                        backgroundColor: AppConfig.mainCyan,
+                        textcolor: Colors.white,
+                        elevation: 2,
+                        bordercolor: AppConfig.mainCyan,
+                        headings: 'H2'),
+          ),contentPadding: EdgeInsets.only(bottom: 0.02 * height),
+          content: Column(children: [
+            TextView(text: title,headings: 'H2',fontSize: 18,),
+            Lottie.asset('assets/lottie/$lottie',width: width * 0.3),
+            Padding(
+              padding:  const EdgeInsets.symmetric(horizontal: 30),
+              child: TextView(text: desc,headings: 'H4',fontSize: 16,),
+            )
+          ],)
+        );
+}
+
+//end created for vendor
 }

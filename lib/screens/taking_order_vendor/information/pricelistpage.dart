@@ -60,16 +60,16 @@ class PriceListPage extends StatelessWidget {
                                   lastDotIndex < nmfile.length - 1) {
                                 ext = nmfile.substring(lastDotIndex + 1);
                               }
-                              if (await File("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${filedir.replaceAll("%20", " ")}").exists()) {
+                              if (await File("${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${filedir.replaceAll("%20", " ")}").exists()) {
                                 if (ext == "jpg" || ext == "jpeg") {
                                   Get.to(ViewImageScreen(
-                                      "${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${filedir.replaceAll("%20", " ")}"));
+                                      "${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${filedir.replaceAll("%20", " ")}"));
                                 } else if (ext == "pdf") {
                                   Get.to(ViewPDFScreen(
-                                      "${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${filedir.replaceAll("%20", " ")}"));
+                                      "${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${filedir.replaceAll("%20", " ")}"));
                                 } else if (ext == "mp4") {
                                   Get.to(ViewVideoScreen(
-                                      "${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor}/${filedir.replaceAll("%20", " ")}"));
+                                      "${_takingOrderVendorController.productdir}/${_takingOrderVendorController.activevendor.toLowerCase()}/${filedir.replaceAll("%20", " ")}"));
                                 }
                               } else {
                                 Get.defaultDialog(

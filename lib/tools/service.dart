@@ -167,7 +167,7 @@ class ApiClient {
         String productdir = AppConfig().productdir;
         print("on download");
     
-        if (await Directory('$productdir/$vendorname$dir'.replaceAll("%20", " ")).exists() && await File("$productdir/$vendorname$dir/$fname".replaceAll("%20", " ")).exists()) {
+        if (await Directory('$productdir/${vendorname.toLowerCase()}$dir'.replaceAll("%20", " ")).exists() && await File("$productdir/${vendorname.toLowerCase()}$dir/$fname".replaceAll("%20", " ")).exists()) {
             return;
         }
       
@@ -179,13 +179,13 @@ class ApiClient {
           return;
         }
         // Create a folder if it doesn't exist
-        Directory directory = Directory('$productdir/$vendorname$dir'.replaceAll("%20", " "));
+        Directory directory = Directory('$productdir/${vendorname.toLowerCase()}$dir'.replaceAll("%20", " "));
         if (!await directory.exists()) {
           await directory.create(recursive: true);
         }
 
         // Create the file path
-        String filePath = '$productdir/$vendorname$dir/$fname';
+        String filePath = '$productdir/${vendorname.toLowerCase()}$dir/$fname';
 
         var postbody = {
           'path' : '$dir/$fname',

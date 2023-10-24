@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:sfa_tools/controllers/taking_order_vendor_controller.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/transaction/checkoutlist.dart';
@@ -9,6 +10,7 @@ import 'package:sfa_tools/widgets/textview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/app_config.dart';
 import '../../../tools/utils.dart';
+import 'chipsitem.dart';
 
 class DialogCheckOut extends StatelessWidget {
   final TakingOrderVendorController _takingOrderVendorController = Get.find();
@@ -18,135 +20,245 @@ class DialogCheckOut extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return SizedBox(
-      width: width * 0.9,
-      height: 0.85 * height,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: height * 0.03,
-            ),
-            TextView(
-              text: "Penjualan - ${_takingOrderVendorController.nmtoko.value}",
-              headings: 'H3',
-              fontSize: 13.sp,
-            ),
-            SizedBox(
-              height: height * 0.01,
-            ),
-            TextView(
-              text: "Alamat Pengiriman",
-              headings: 'H3',
-              fontSize: 10.5.sp,
-            ),
-            SizedBox(
-              height: height * 0.01,
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: 0.02 * width, right: 0.01 * width),
-              child: Container(
-                width: 0.8 * width,
-                height: 0.05 * height,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade500),
-                  borderRadius: BorderRadius.circular(8),
+    return SingleChildScrollView(
+      child: SizedBox(
+          width: width * 0.9,
+          height: 0.85 * height,
+          child: Obx(
+            () => Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: height * 0.03,
                 ),
-                child: CustomShowCase(
-                  description: 'Silahkan pilih alamat pengiriman !',
-                  globalkey: _takingOrderVendorController.keyalamat,
-                  fontsize: 12.sp,
-                  child: Row(
-                    children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Icon(Icons.home,
-                          color: AppConfig.mainCyan,
-                          size: 12
-                              .sp), // Use any desired icon from flutter_icons package
-                      const SizedBox(
-                          width: 8), // Adjust the space between icon and text
-                      Obx(
-                        () => Expanded(
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              isExpanded: true,
-                              value:  
-                              _takingOrderVendorController.listaddress.length > 1 ?
-                              _takingOrderVendorController.choosedAddress.value == "" ? 'Pilih Alamat Pengiriman' : _takingOrderVendorController.choosedAddress.value :
-                               _takingOrderVendorController.listaddress[0].address,
-                              onChanged: (String? newValue) {
-                                _takingOrderVendorController.choosedAddress.value = newValue!;
-                              },
-                              items: _takingOrderVendorController.listaddress.map((value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.address,
-                                  child: TextView(
-                                    text: value.address,
-                                    textAlign: TextAlign.left,
-                                    fontSize: 10.sp,
-                                    headings: 'H4',
-                                  ),
-                                );
-                              }).toList(),
+                TextView(
+                  text:
+                      "Penjualan - ${_takingOrderVendorController.nmtoko.value}",
+                  headings: 'H3',
+                  fontSize: 13.sp,
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                TextView(
+                  text: "Alamat Pengiriman",
+                  headings: 'H3',
+                  fontSize: 10.5.sp,
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(left: 0.02 * width, right: 0.02 * width),
+                  child: Container(
+                    width: 0.8 * width,
+                    height: 0.05 * height,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade500),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: CustomShowCase(
+                      description: 'Silahkan pilih alamat pengiriman !',
+                      globalkey: _takingOrderVendorController.keyalamat,
+                      fontsize: 12.sp,
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Icon(Icons.home,
+                              color: AppConfig.mainCyan,
+                              size: 12
+                                  .sp), // Use any desired icon from flutter_icons package
+                          const SizedBox(width: 8),
+                          Container(
+                            width: 0.7 * width,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                isExpanded: true,
+                                value: _takingOrderVendorController
+                                            .listaddress.length >
+                                        1
+                                    ? _takingOrderVendorController
+                                                .choosedAddress.value ==
+                                            ""
+                                        ? 'Pilih Alamat Pengiriman'
+                                        : _takingOrderVendorController
+                                            .choosedAddress.value
+                                    : _takingOrderVendorController
+                                        .listaddress[0].address,
+                                onChanged: (String? newValue) {
+                                  _takingOrderVendorController
+                                      .choosedAddress.value = newValue!;
+                                  if (_takingOrderVendorController
+                                              .choosedAddress.value ==
+                                          _takingOrderVendorController.hardcodeOtherAddress &&
+                                      _takingOrderVendorController
+                                              .dataOtherAddress ==
+                                          null) {
+                                    _takingOrderVendorController
+                                        .showDialogAddOtherAddress();
+                                  }
+                                },
+                                items: _takingOrderVendorController.listaddress
+                                    .map((value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value.address,
+                                    child: TextView(
+                                      text: value.address,
+                                      textAlign: TextAlign.left,
+                                      fontSize: 10.sp,
+                                      headings: 'H4',
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
                             ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                if (_takingOrderVendorController.dataOtherAddress != null &&
+                    _takingOrderVendorController.choosedAddress.value ==
+                        _takingOrderVendorController.hardcodeOtherAddress)
+                  SizedBox(
+                    width: 0.8 * width,
+                    child: InkWell(
+                      onTap: () {
+                        _takingOrderVendorController.showDialogAddOtherAddress();
+                      },
+                      child: Card(
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Stack(
+                            alignment: Alignment.centerRight,
+                            children: [
+                              Chip(
+                                  backgroundColor: Colors.teal,
+                                  label: TextView(
+                                    text: 'Ubah',
+                                    color: Colors.white,
+                                    headings: 'H3',
+                                    fontSize: 10.sp,
+                                  )),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        FontAwesomeIcons.mapPin,
+                                        color: Colors.red,
+                                        size: 12.sp,
+                                      ),
+                                      SizedBox(
+                                        width: 0.02 * width,
+                                      ),
+                                      TextView(
+                                        text: _takingOrderVendorController
+                                            .dataOtherAddress!.alamatPenerima,
+                                        headings: 'H3',
+                                        fontSize: _takingOrderVendorController.dataOtherAddress!.alamatPenerima.length > 60 ? 7.sp : _takingOrderVendorController.dataOtherAddress!.alamatPenerima.length > 45 ? 8.sp : 10.sp,
+                                      ),
+                                    ],
+                                  ),
+                                  if (_takingOrderVendorController
+                                          .dataOtherAddress!.nomorHpOthers ==
+                                      "")
+                                    TextView(
+                                      text:
+                                          "${_takingOrderVendorController.dataOtherAddress!.namaPenerima} , (${_takingOrderVendorController.dataOtherAddress!.nomorHp})",
+                                      headings: 'H5',
+                                      fontSize: "${_takingOrderVendorController.dataOtherAddress!.namaPenerima} , (${_takingOrderVendorController.dataOtherAddress!.nomorHp})".length > 40 ? 8.sp : 9.sp,
+                                    ),
+                                  if (_takingOrderVendorController
+                                          .dataOtherAddress!.nomorHpOthers !=
+                                      "")
+                                    TextView(
+                                      text:
+                                          "${_takingOrderVendorController.dataOtherAddress!.namaPenerima} , (${_takingOrderVendorController.dataOtherAddress!.nomorHp}) / (${_takingOrderVendorController.dataOtherAddress!.nomorHpOthers})",
+                                      headings: 'H5',
+                                      fontSize: "${_takingOrderVendorController.dataOtherAddress!.namaPenerima} , (${_takingOrderVendorController.dataOtherAddress!.nomorHp}) / (${_takingOrderVendorController.dataOtherAddress!.nomorHpOthers})".length > 40 ? 8.sp : 9.sp,
+                                    ),
+                                  if (_takingOrderVendorController
+                                          .dataOtherAddress!.notesOthers !=
+                                      "")
+                                    ChipsItem(
+                                      satuan: _takingOrderVendorController
+                                          .dataOtherAddress!.notesOthers,
+                                      color: const Color(0xFFf5511e),
+                                      fontSize: _takingOrderVendorController
+                                          .dataOtherAddress!.notesOthers.length > 40 ? 8.sp : 8.5.sp,
+                                    ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: height * 0.01,
-            ),
-            Container(
-              width: 0.9 * width,
-              height: 10,
-              color: Colors.grey.shade200,
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 0.05 * width,right: 0.05 * width),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s()!?&%#@/<>,.\-=+_]+')), // Custom character set
-                      ],
-                      decoration: InputDecoration(
-                        labelText: 'Catatan / Keterangan',
-                        icon: Image.asset(
-                          'assets/images/notes.png',
-                          width: 35.sp,
-                          height: 35.sp,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      maxLength: 150,
-                      controller: _takingOrderVendorController.notes.value,
-                      maxLines: null,
-                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(fontSize: 10.sp),
-                      onChanged: (text) {
-                        // Handle text changes here
-                      },
                     ),
                   ),
-                  /* ganti barang button
+                if (_takingOrderVendorController.dataOtherAddress != null &&
+                    _takingOrderVendorController.choosedAddress.value ==
+                        _takingOrderVendorController.hardcodeOtherAddress)
+                  SizedBox(
+                    height: height * 0.01,
+                  ),
+                Container(
+                  width: 0.9 * width,
+                  height: 10,
+                  color: Colors.grey.shade200,
+                ),
+                SizedBox(
+                  height: height * 0.02,
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(left: 0.05 * width, right: 0.05 * width),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 0.7 * width,
+                        child: TextFormField(
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(
+                                r'[a-zA-Z0-9\s()!?&%#@/<>,.\-=+_]+')), // Custom character set
+                          ],
+                          decoration: InputDecoration(
+                            labelText: 'Catatan / Keterangan',
+                            icon: Image.asset(
+                              'assets/images/notes.png',
+                              width: 35.sp,
+                              height: 35.sp,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          maxLength: 150,
+                          controller: _takingOrderVendorController.notes.value,
+                          maxLines: null,
+                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                          keyboardType: TextInputType.multiline,
+                          style: TextStyle(fontSize: 10.sp),
+                          onChanged: (text) {
+                            // Handle text changes here
+                          },
+                        ),
+                      ),
+                      /* ganti barang button
                   ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
@@ -191,175 +303,203 @@ class DialogCheckOut extends StatelessWidget {
                           ],
                         ),
                   )) */
-                ],
-              ),
-            ),
-            SizedBox(
-              width: 0.85 * width,
-              height: height * 0.4,
-              child: ListView.builder(
-                itemCount: _takingOrderVendorController.cartDetailList.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                        left: 0.05 * width,
-                        top: 5,
-                        right: 0.05 * width),
-                    child: CheckoutList(
-                        idx: (index + 1).toString(),
-                        data:_takingOrderVendorController.cartDetailList[index]),
-                  );
-                },
-                physics: const BouncingScrollPhysics(),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: 0.75 * width,
-              // height: 0.06 * height,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey.shade300, width: 1.5),
-                  borderRadius: BorderRadius.circular(8)),
-              child: Row(
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 0.85 * width,
+                  // height: height * 0.4,
+                  height: _takingOrderVendorController.dataOtherAddress != null &&
+                          _takingOrderVendorController.choosedAddress.value ==
+                              _takingOrderVendorController.hardcodeOtherAddress
+                      ? height * 0.3
+                      : height * 0.4,
+                  child: ListView.builder(
+                    itemCount: _takingOrderVendorController.cartDetailList.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                            left: 0.05 * width, top: 8, right: 0.05 * width),
+                        child: CheckoutList(
+                            idx: (index + 1).toString(),
+                            data: _takingOrderVendorController
+                                .cartDetailList[index]),
+                      );
+                    },
+                    physics: const BouncingScrollPhysics(),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: 0.75 * width,
+                  // height: 0.06 * height,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey.shade300, width: 1.5),
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              TextView(
+                                text:
+                                    "${_takingOrderVendorController.cartDetailList.length}",
+                                headings: 'H2',
+                                fontSize: 11.sp,
+                                color: Colors.amber.shade900,
+                              ),
+                              TextView(
+                                text: "Produk",
+                                headings: 'H4',
+                                fontSize: 9.sp,
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 1.5,
+                          height: 0.06 * height,
+                          color: Colors.grey.shade400,
+                        ),
+                        Image.asset(
+                          'assets/images/custorder.png',
+                          width: 25.sp,
+                          height: 25.sp,
+                          fit: BoxFit.fill,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              TextView(
+                                text: Utils().formatNumber(
+                                    _takingOrderVendorController
+                                        .countPriceTotal()),
+                                headings: 'H2',
+                                fontSize: Utils()
+                                            .formatNumber(
+                                                _takingOrderVendorController
+                                                    .countPriceTotal())
+                                            .length >
+                                        12
+                                    ? 8.sp
+                                    : 10.sp,
+                                color: Colors.amber.shade900,
+                              ),
+                              TextView(
+                                text: "Perkiraan Pesanan",
+                                headings: 'H4',
+                                fontSize: 9.sp,
+                              )
+                            ],
+                          ),
+                        ),
+                        if (double.parse(
+                                _takingOrderVendorController.komisi.value) >
+                            0)
+                          Container(
+                            width: 1.5,
+                            height: 0.06 * height,
+                            color: Colors.grey.shade400,
+                          ),
+                        if (double.parse(
+                                _takingOrderVendorController.komisi.value) >
+                            0)
+                          Image.asset(
+                            'assets/images/komisi.png',
+                            width: 25.sp,
+                            height: 25.sp,
+                            fit: BoxFit.fill,
+                          ),
+                        if (double.parse(
+                                _takingOrderVendorController.komisi.value) >
+                            0)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                TextView(
+                                  text: Utils().formatNumber(double.parse(
+                                      _takingOrderVendorController.komisi.value)),
+                                  headings: 'H2',
+                                  fontSize: Utils()
+                                              .formatNumber(double.parse(
+                                                  _takingOrderVendorController
+                                                      .komisi.value))
+                                              .length >
+                                          12
+                                      ? 8.sp
+                                      : 10.sp,
+                                  color: Colors.amber.shade900,
+                                ),
+                                TextView(
+                                  text: "Perkiraan Komisi",
+                                  headings: 'H4',
+                                  fontSize: 9.sp,
+                                )
+                              ],
+                            ),
+                          ),
+                      ]),
+                ),
+                SizedBox(
+                  height: 0.02 * height,
+                ),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          TextView(
-                            text: "${_takingOrderVendorController.cartDetailList.length}",
-                            headings: 'H2',
-                            fontSize: 11.sp,
-                            color: Colors.amber.shade900,
-                          ),
-                          TextView(
-                            text: "Produk",
-                            headings: 'H4',
-                            fontSize: 9.sp,
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 1.5,
-                      height: 0.06 * height,
-                      color: Colors.grey.shade400,
-                    ),
-                    Image.asset(
-                      'assets/images/custorder.png',
-                      width: 25.sp,
-                      height: 25.sp,
-                      fit: BoxFit.fill,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          TextView(
-                            text: Utils().formatNumber(_takingOrderVendorController.countPriceTotal()),
-                            headings: 'H2',
-                            fontSize: Utils().formatNumber(_takingOrderVendorController.countPriceTotal()).length > 12 ? 8.sp : 10.sp,
-                            color: Colors.amber.shade900,
-                          ),
-                          TextView(
-                            text: "Perkiraan Pesanan",
-                            headings: 'H4',
-                            fontSize: 9.sp,
-                          )
-                        ],
-                      ),
-                    ),
-                    if(double.parse(_takingOrderVendorController.komisi.value) > 0)
-                    Container(
-                      width: 1.5,
-                      height: 0.06 * height,
-                      color: Colors.grey.shade400,
-                    ),
-                    if(double.parse(_takingOrderVendorController.komisi.value) > 0)
-                    Image.asset(
-                      'assets/images/komisi.png',
-                      width: 25.sp,
-                      height: 25.sp,
-                      fit: BoxFit.fill,
-                    ),
-                    if(double.parse(_takingOrderVendorController.komisi.value) > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          TextView(
-                            text: Utils().formatNumber(double.parse(_takingOrderVendorController.komisi.value)),
-                            headings: 'H2',
-                            fontSize: Utils().formatNumber(double.parse(_takingOrderVendorController.komisi.value)).length > 12 ? 8.sp : 10.sp,
-                            color: Colors.amber.shade900,
-                          ),
-                          TextView(
-                            text: "Perkiraan Komisi",
-                            headings: 'H4',
-                            fontSize: 9.sp,
-                          )
-                        ],
-                      ),
-                     ), 
-                  ]),
-            ),
-            SizedBox(
-              height: 0.02 * height,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CustomElevatedButton(
-                    icon: Icon(
-                      Icons.cancel_outlined,
-                      color: AppConfig.mainCyan,
-                      size: 14.sp,
-                    ),
-                    text: "BATAL",
-                    onTap: () {
-                      Get.back();
-                    },
-                    radius: 4,
-                    space: 5,
-                    backgroundColor: Colors.white,
-                    bordercolor: AppConfig.mainCyan,
-                    elevation: 0,
-                    fonts: 10.sp,
-                    textcolor: AppConfig.mainCyan,
-                    headings: 'H2'),
-                CustomElevatedButton(
-                    icon: Icon(
-                      Icons.check_circle_outline_rounded,
-                      size: 14.sp,
-                    ),
-                    text: "SIMPAN",
-                    onTap: ()  {
-                      _takingOrderVendorController.handleSaveConfirm( "Yakin untuk simpan penjualan ?",
-                         "Konfirmasi Penjualan", 
-                         () async {
+                    CustomElevatedButton(
+                        icon: Icon(
+                          Icons.cancel_outlined,
+                          color: AppConfig.mainCyan,
+                          size: 14.sp,
+                        ),
+                        text: "BATAL",
+                        onTap: () {
+                          Get.back();
+                        },
+                        radius: 4,
+                        space: 5,
+                        backgroundColor: Colors.white,
+                        bordercolor: AppConfig.mainCyan,
+                        elevation: 0,
+                        fonts: 10.sp,
+                        textcolor: AppConfig.mainCyan,
+                        headings: 'H2'),
+                    CustomElevatedButton(
+                        icon: Icon(
+                          Icons.check_circle_outline_rounded,
+                          size: 14.sp,
+                        ),
+                        text: "SIMPAN",
+                        onTap: () {
+                          _takingOrderVendorController.handleSaveConfirm(
+                              "Yakin untuk simpan penjualan ?",
+                              "Konfirmasi Penjualan", () async {
                             await _takingOrderVendorController.checkout(context);
-                        });
-                    },
-                    radius: 4,
-                    space: 5,
-                    fonts: 10.sp,
-                    backgroundColor: AppConfig.mainCyan,
-                    textcolor: Colors.white,
-                    elevation: 2,
-                    bordercolor: AppConfig.mainCyan,
-                    headings: 'H2')
+                          });
+                        },
+                        radius: 4,
+                        space: 5,
+                        fonts: 10.sp,
+                        backgroundColor: AppConfig.mainCyan,
+                        textcolor: Colors.white,
+                        elevation: 2,
+                        bordercolor: AppConfig.mainCyan,
+                        headings: 'H2')
+                  ],
+                )
               ],
-            )
-          ],
-        ),
-      ),
+            ),
+          )),
     );
   }
 }
