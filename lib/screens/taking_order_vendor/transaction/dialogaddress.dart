@@ -51,7 +51,7 @@ class DialogAddress extends StatelessWidget {
                       r'[a-zA-Z0-9\s()!?&%#@/<>,.\-=+_]+')), // Custom character set
                 ],
                 decoration: InputDecoration(
-                  labelText: 'Alamat Penerima',
+                  labelText: 'Alamat Penerima *',
                   icon: Image.asset(
                     'assets/images/location-pin.png',
                     width: 35.sp,
@@ -78,7 +78,7 @@ class DialogAddress extends StatelessWidget {
                       r'[a-zA-Z0-9\s()!?&%#@/<>,.\-=+_]+')), // Custom character set
                 ],
                 decoration: InputDecoration(
-                  labelText: 'Nama Penerima',
+                  labelText: 'Nama Penerima *',
                   icon: Image.asset(
                     'assets/images/user.png',
                     width: 35.sp,
@@ -102,7 +102,7 @@ class DialogAddress extends StatelessWidget {
               child: TextFormField(
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Nomor HP',
+                  labelText: 'Nomor HP *',
                   icon: Image.asset(
                     'assets/images/telephone.png',
                     width: 35.sp,
