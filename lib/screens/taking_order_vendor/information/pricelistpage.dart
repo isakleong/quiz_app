@@ -159,18 +159,20 @@ class PriceListPage extends StatelessWidget {
                                   SizedBox(
                                     width: 0.02 * width,
                                   ),
-                                  AutoSizeText(
-                                    nmfile,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width <
-                                                450
-                                            ? 9.sp
-                                            : 11.sp,
-                                        fontWeight: FontWeight.normal),
+                                  Expanded(
+                                    child: AutoSizeText(
+                                      nmfile,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width <
+                                                  450
+                                              ? 9.sp
+                                              :  nmfile.length > 45 ? 1.sp : 11.sp,
+                                          fontWeight: FontWeight.normal),
+                                    ),
                                   )
                                 ],
                               ),

@@ -148,11 +148,14 @@ class InfoProdukPage extends StatelessWidget {
                             item.extension == "mp4" ? Image.asset("assets/images/filemp4.png",height: 30) :
                             Image.asset("assets/images/filejpg.png",height: 30),
                           ),
-                          AutoSizeText(
-                            item.name.replaceAll("%20"," "),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: TextStyle(fontSize: MediaQuery.of(context).size.width < 450 ? 9.sp : 11.sp,fontWeight: FontWeight.normal),
+                          Expanded(
+                            child: AutoSizeText(
+                              item.name.replaceAll("%20"," "),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(fontSize: MediaQuery.of(context).size.width < 450 ? 9.sp : 
+                              item.name.replaceAll("%20"," ").length > 45 ? 10.sp : 11.sp, fontWeight: FontWeight.normal),
+                            ),
                           )
                         ],
                       ),
