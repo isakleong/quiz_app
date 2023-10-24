@@ -16,7 +16,7 @@ class AppConfig {
 
   static const String baseUrlVendor = "https://mitra.tirtakencana.com";
   static const String baseUrlVendorLocal = "http://10.11.22.21";
-  static const String apiurlvendorpath = "/tangki-air-jerapah";
+  static const String apiurlvendorpath = "/tangki-air-jerapah-dev";
   String unknowerrorvendor = "100";
   String itemcodenotfoundvendor = "101";
   String dateinvalidvendor = "102";
