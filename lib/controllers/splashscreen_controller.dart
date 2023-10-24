@@ -22,7 +22,6 @@ import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
-import 'package:sfa_tools/widgets/customelevatedbutton.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 import 'package:shimmer/shimmer.dart';
@@ -45,6 +44,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   //permission data
   var cntStoragePermissionDeny = 0.obs;
   var isOpenSettings = false.obs;
+  var isButtonEnabled = false.obs;
 
   //parameter data
   var salesIdParams = "".obs;
@@ -66,6 +66,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
       if (isOpenSettings.value) {
         isOpenSettings(false);
         await syncAppsReady('STORAGE');
+        // Future.delayed(const Duration(milliseconds: 500), () {
+        //   syncAppsReady('STORAGE');
+        // });
+
       } else {
         if (Get.currentRoute.toString() != "/") {
           await Get.deleteAll(force: true);
@@ -96,6 +100,12 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } else {
       await openPermissionRequestDialog('STORAGE');
     }
+  }
+
+  void enableButtonAfterDelay() {
+    Future.delayed(const Duration(seconds: 5), () {
+      isButtonEnabled.value = true;
+    });
   }
 
   openErrorDialog() {
@@ -155,7 +165,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
           syncAppsReady('EXTERNAL STORAGE');
         }
       } else {
-        openPermissionRequestDialog('STORAGE');
+        // await openPermissionRequestDialog('STORAGE');
+        Future.delayed(const Duration(milliseconds: 800), () {
+          openPermissionRequestDialog('STORAGE');
+        });
       }
     } else if (type == 'EXTERNAL STORAGE') {
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
@@ -175,6 +188,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       try {
         var androidInfo = await DeviceInfoPlugin().androidInfo;
         var sdkInt = androidInfo.version.sdkInt;
+
         appsDialog(
           type: "app_info",
           title: Column(
@@ -543,7 +557,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
               if (resultSubmit == "success") {
                 change(null, status: RxStatus.success());
                 Get.offAndToNamed(RouteName.homepage);
-                await Future.delayed(Duration(milliseconds: 250));
+                await Future.delayed(const Duration(milliseconds: 250));
                 await cekDeviceState();
               } else {
                 errorMessage.value = resultSubmit;
@@ -566,7 +580,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         } else {
           change(null, status: RxStatus.success());
           Get.offAndToNamed(RouteName.homepage);
-          await Future.delayed(Duration(milliseconds: 250));
+          await Future.delayed(const Duration(milliseconds: 250));
           await cekDeviceState();
         }
       } else {
@@ -598,7 +612,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
               change(null, status: RxStatus.success());
               Get.offAndToNamed(RouteName.homepage);
-              await Future.delayed(Duration(milliseconds: 250));
+              await Future.delayed(const Duration(milliseconds: 250));
               await cekDeviceState();
             } else {
               errorMessage.value = resultSubmit;
@@ -620,9 +634,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
       }
     } catch (e) {
-      print(e);
       Get.offAndToNamed(RouteName.homepage);
-      await Future.delayed(Duration(milliseconds: 250));
+      await Future.delayed(const Duration(milliseconds: 250));
       await cekDeviceState();
     }
     
@@ -714,7 +727,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
     int differenceInSeconds = backclick.isBefore(bannershowup)
       ? bannershowup.difference(backclick).inSeconds
       : backclick.difference(bannershowup).inSeconds;
-      print(differenceInSeconds);
       if (differenceInSeconds > 180){
         return true;
       }
@@ -809,7 +821,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       bool isConnected = arrConnTest[0] == 'true';
       if(!isConnected){
         for (var i = 1; i < progressdownload.length; i++) {
-          await Future.delayed(Duration(milliseconds: 250));
+          await Future.delayed(const Duration(milliseconds: 250));
           progressdownload[i] = 'bad';
         }
         isdoneloading.value = true;
@@ -836,7 +848,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } catch (e) {
       //error tidak bisa update
       for (var i = 1; i < progressdownload.length; i++) {
-        await Future.delayed(Duration(milliseconds: 250));
+        await Future.delayed(const Duration(milliseconds: 250));
         progressdownload[i] = 'bad';
       }
       isdoneloading.value = true;
@@ -861,7 +873,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           return;
         }
         for (var i = 2; i < progressdownload.length; i++) {
-          await Future.delayed(Duration(milliseconds: 250));
+          await Future.delayed(const Duration(milliseconds: 250));
           progressdownload[i] = 'bad';
         }
         try {
@@ -1003,7 +1015,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           return;
         }
         for (var i = 2; i < progressdownload.length; i++) {
-          await Future.delayed(Duration(milliseconds: 250));
+          await Future.delayed(const Duration(milliseconds: 250));
           progressdownload[i] = 'bad';
         }
         isdoneloading.value = true;
@@ -1015,7 +1027,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
         return;
     } catch (e) {
-        print(e.toString());
         await Utils().manageTokenBox('close');
         await Utils().manageCustomerBox('close');
         if(issinglecust){
@@ -1037,7 +1048,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       bool isConnected = arrConnTest[0] == 'true';
       if(!isConnected){
         for (var i = 3; i < progressdownload.length; i++) {
-          await Future.delayed(Duration(milliseconds: 250));
+          await Future.delayed(const Duration(milliseconds: 250));
           progressdownload[i] = 'bad';
         }
         try {
@@ -1180,7 +1191,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } on SocketException{
       await Utils().manageTokenBox('close');
       for (var i = 3; i < progressdownload.length; i++) {
-        await Future.delayed(Duration(milliseconds: 250));
+        await Future.delayed(const Duration(milliseconds: 250));
         progressdownload[i] = 'bad';
       }
       isdoneloading.value = true;
@@ -1193,7 +1204,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } catch (e) {
       await Utils().manageTokenBox('close');
       for (var i = 3; i < progressdownload.length; i++) {
-        await Future.delayed(Duration(milliseconds: 250));
+        await Future.delayed(const Duration(milliseconds: 250));
         progressdownload[i] = 'bad';
       }
       isdoneloading.value = true;
@@ -1421,7 +1432,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       String urlAPI = arrConnTest[1];
       if(!isConnected){
         for (var i = 0; i < progressdownload.length; i++) {
-          await Future.delayed(Duration(milliseconds: 250));
+          await Future.delayed(const Duration(milliseconds: 250));
           progressdownload[i] = 'bad';
         }
         String salesid = await Utils().getParameterData('sales');
@@ -1449,7 +1460,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
           Utils().showDialogSingleButton(keyhome.currentContext!,"Oops, Terjadi kesalahan" ,"Tidak Ada koneksi internet !","error.json",(){Get.back();});
           return;
       } else {
-        print("here");
         moduleList.clear();
         String salesid = await Utils().getParameterData('sales');
         final encryptedParam = await Utils.encryptData(salesid);
@@ -1486,7 +1496,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
             getStateUnduhUlang();
           } else {
             for (var i = 1; i < progressdownload.length; i++) {
-              await Future.delayed(Duration(milliseconds: 250));
+              await Future.delayed(const Duration(milliseconds: 250));
               progressdownload[i] = 'bad';
             }
             isdoneloading.value = true;
@@ -1499,7 +1509,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
           }
         } else {
           for (var i = 1; i < progressdownload.length; i++) {
-            await Future.delayed(Duration(milliseconds: 250));
+            await Future.delayed(const Duration(milliseconds: 250));
             progressdownload[i] = 'ok';
           }
           isdoneloading.value = true;
@@ -1513,7 +1523,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
     } on SocketException{
       for (var i = 0; i < progressdownload.length; i++) {
-          await Future.delayed(Duration(milliseconds: 250));
+          await Future.delayed(const Duration(milliseconds: 250));
           progressdownload[i] = 'bad';
         }
         String salesid = await Utils().getParameterData('sales');
@@ -1533,7 +1543,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
       isdoneloading.value = true;
       for (var i = 0; i < progressdownload.length; i++) {
-        await Future.delayed(Duration(milliseconds: 250));
+        await Future.delayed(const Duration(milliseconds: 250));
         progressdownload[i] = 'bad';
       }
       try {
@@ -1544,7 +1554,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
     } catch (e) {
       for (var i = 0; i < progressdownload.length; i++) {
-          await Future.delayed(Duration(milliseconds: 250));
+          await Future.delayed(const Duration(milliseconds: 250));
           progressdownload[i] = 'bad';
       }
       String salesid = await Utils().getParameterData('sales');
@@ -1564,7 +1574,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
       isdoneloading.value = true;
       for (var i = 0; i < progressdownload.length; i++) {
-        await Future.delayed(Duration(milliseconds: 250));
+        await Future.delayed(const Duration(milliseconds: 250));
         progressdownload[i] = 'bad';
       }
       try {
@@ -1588,7 +1598,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       if(!isConnected){
       //tidak ada koneksi tidak bisa update
         for (var i = 1; i < progressdownload.length; i++) {
-          await Future.delayed(Duration(milliseconds: 250));
+          await Future.delayed(const Duration(milliseconds: 250));
           progressdownload[i] = 'bad';
         }
         try {
@@ -1628,7 +1638,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
         await syncCustomerData(redownload);
         for (var i = 1; i < progressdownload.length; i++) {
-          await Future.delayed(Duration(milliseconds: 250));
+          await Future.delayed(const Duration(milliseconds: 250));
           progressdownload[i] = 'ok';
         }
         try {
@@ -1646,7 +1656,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
     } catch (e) {
       //error tidak bisa update
       for (var i = 1; i < progressdownload.length; i++) {
-        await Future.delayed(Duration(milliseconds: 250));
+        await Future.delayed(const Duration(milliseconds: 250));
         progressdownload[i] = 'bad';
       }
         try {
@@ -1673,7 +1683,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
       if(allok){
         DateTime now = DateTime.now();
         String date = DateFormat('dd-MM-yyyy HH:mm:ss').format(now);
-        print('end time: $now');
         await Utils().manageDeviceStateBox('open');
         await devicestatebox.delete(salesid);
         var makejson = {
@@ -1756,7 +1765,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
   processFile(bool download,String vendor) async {
     String productdir = AppConfig().productdir;
     String informasiconfig = AppConfig().informasiconfig;
-    print("download");
     //download not using await because efficiency time for parallel download
     String branchuser = "";
     String warnauser = "";
@@ -1890,8 +1898,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
         progressdownload[4] = 'ok';
       }
       // Navigator.pop(keybanner.currentContext!);
-      DateTime now = DateTime.now();
-      print('end time: $now');
       updateState();
       return;
     } catch (e) {
