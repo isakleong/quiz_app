@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/outstanding/outstandingcustcard.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/outstanding/outstandinglist.dart';
+import 'package:sfa_tools/widgets/closeoverlayaction.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 import '../../../widgets/textview.dart';
@@ -36,14 +38,15 @@ class OutStandingMainPage extends StatelessWidget {
                   ),
                   child: Obx(() => OutstandingCustCard(
                         nmtoko: _takingOrderVendorController.nmtoko.value,
-                        isfailed:
-                            _takingOrderVendorController.isLoadingOutstanding.value,
+                        isfailed: _takingOrderVendorController
+                            .isLoadingOutstanding.value,
                         ontap: () {
                           _takingOrderVendorController
                               .overlayactivepenjualan.value = "penjualan";
                         },
                         ontaprefresh: () async {
-                          await _takingOrderVendorController.getListDataOutStanding();
+                          await _takingOrderVendorController
+                              .getListDataOutStanding();
                         },
                       )),
                 ),
@@ -81,7 +84,8 @@ class OutStandingMainPage extends StatelessWidget {
                                 SizedBox(
                                   width: 0.5 * width,
                                   child: TextView(
-                                    text: "Tidak Ada Barang yang belum terkirim.",
+                                    text:
+                                        "Tidak Ada Barang yang belum terkirim.",
                                     headings: 'H5',
                                     fontSize: 14.sp,
                                   ),
@@ -122,4 +126,3 @@ class OutStandingMainPage extends StatelessWidget {
     );
   }
 }
-
