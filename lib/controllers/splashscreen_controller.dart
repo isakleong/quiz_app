@@ -512,6 +512,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
 
       if ((trackVersion != null && trackVersion != "") && (lastUpdated != null && lastUpdated != "")) {
+        print("on if");
         var now = DateTime.now();
 
         var formatter = DateFormat('yyyy-MM-dd');
@@ -531,8 +532,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
 
         var salesIdVersion = trackVersionBox.get('salesIdVersion');
-
+        print(submitVersion.toString()+salesIdVersion+salesIdParams.value+trackVersion+appVersion.value);
         if (submitVersion || salesIdParams.value != salesIdVersion || trackVersion != appVersion.value) {
+          print("on nested if");
           var connTest = await ApiClient().checkConnection();
           var arrConnTest = connTest.split("|");
           bool isConnected = arrConnTest[0] == 'true';
@@ -555,6 +557,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
                   }));
 
               if (resultSubmit == "success") {
+              trackVersionBox.put("trackVersion", appVersion.value);
+              trackVersionBox.put("salesIdVersion", salesIdParams.value);
+              trackVersionBox.put("lastUpdatedVersion", DateTime.now());
                 change(null, status: RxStatus.success());
                 Get.offAndToNamed(RouteName.homepage);
                 await Future.delayed(const Duration(milliseconds: 250));
@@ -1484,13 +1489,32 @@ class SplashscreenController extends GetxController with StateMixin implements W
           Utils().showDialogSingleButton(keyhome.currentContext!,"Oops, Terjadi kesalahan" ,"Tidak Ada koneksi internet !","error.json",(){Get.back();});
           return;
         }
-        isdoneloading.value = true;
-          try {
-            Navigator.pop(keybanner.currentContext!);
-          // ignore: empty_catches
-          } catch (e) {
-            
+          var moduleBox = await Hive.openBox('moduleBox');
+          var databox = await moduleBox.get(salesid);
+          await moduleBox.close();
+          if(databox != null){
+            moduleList.clear();
+            List<Module> datamoduleconv = <Module>[];
+            for (var i = 0; i < databox.length; i++) {
+              datamoduleconv.add(databox[i]);
+            }
+            for (var i = 0; i < datamoduleconv.length; i++) {
+              moduleList.add(datamoduleconv[i]);
+            }
+            var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
+            if(idx != -1){
+              moduleList.removeAt(idx);
+            }
+
           }
+        
+          isdoneloading.value = true;
+            try {
+              Navigator.pop(keybanner.currentContext!);
+            // ignore: empty_catches
+            } catch (e) {
+              
+            }
           Utils().showDialogSingleButton(keyhome.currentContext!,"Oops, Terjadi kesalahan" ,"Tidak Ada koneksi internet !","error.json",(){Get.back();});
           return;
       } else {
@@ -1575,6 +1599,26 @@ class SplashscreenController extends GetxController with StateMixin implements W
           Utils().showDialogSingleButton(keyhome.currentContext!,"Oops, Terjadi kesalahan" ,"Tidak Ada koneksi internet !","error.json",(){Get.back();});
           return;
         }
+      
+        
+        var moduleBox = await Hive.openBox('moduleBox');
+        var databox = await moduleBox.get(salesid);
+        await moduleBox.close();
+        if(databox != null){
+            moduleList.clear();
+            List<Module> datamoduleconv = <Module>[];
+            for (var i = 0; i < databox.length; i++) {
+              datamoduleconv.add(databox[i]);
+            }
+            for (var i = 0; i < datamoduleconv.length; i++) {
+              moduleList.add(datamoduleconv[i]);
+            }
+            var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
+            if(idx != -1){
+              moduleList.removeAt(idx);
+            }
+
+        }
       isdoneloading.value = true;
       for (var i = 0; i < progressdownload.length; i++) {
         await Future.delayed(const Duration(milliseconds: 250));
@@ -1606,6 +1650,25 @@ class SplashscreenController extends GetxController with StateMixin implements W
           Utils().showDialogSingleButton(keyhome.currentContext!,"Gagal unduh data" ,e.toString(),"error.json",(){Get.back();});
           return;
       }
+        
+        var moduleBox = await Hive.openBox('moduleBox');
+        var databox = await moduleBox.get(salesid);
+        await moduleBox.close();
+        if(databox != null){
+            moduleList.clear();
+            List<Module> datamoduleconv = <Module>[];
+            for (var i = 0; i < databox.length; i++) {
+              datamoduleconv.add(databox[i]);
+            }
+            for (var i = 0; i < datamoduleconv.length; i++) {
+              moduleList.add(datamoduleconv[i]);
+            }
+            var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
+            if(idx != -1){
+              moduleList.removeAt(idx);
+            }
+
+        }
       isdoneloading.value = true;
       for (var i = 0; i < progressdownload.length; i++) {
         await Future.delayed(const Duration(milliseconds: 250));
