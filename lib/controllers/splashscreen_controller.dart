@@ -144,7 +144,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
           syncAppsReady('EXTERNAL STORAGE');
         }
       } else {
-        openPermissionRequestDialog('STORAGE');
+        // openPermissionRequestDialog('STORAGE');
+        Future.delayed(const Duration(milliseconds: 800), () {
+          openPermissionRequestDialog('STORAGE');
+        });
       }
     } else if (type == 'EXTERNAL STORAGE') {
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
@@ -152,7 +155,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
         await Backgroundservicecontroller().initializeNotifConfiguration();
         await getModuleData();
       } else {
-        openPermissionRequestDialog('EXTERNAL STORAGE');
+        Future.delayed(const Duration(milliseconds: 800), () {
+          openPermissionRequestDialog('EXTERNAL STORAGE');
+        });
       }
     }
   }
@@ -363,7 +368,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
         try {
           final encryptedParam = await Utils.encryptData(salesIdParams.value);
 
-          final result = await ApiClient().getData(urlAPI, "/data?sales_id=$encryptedParam");
+          // encode the params
+          String encodedEncryptedParam = Uri.encodeComponent(encryptedParam);
+
+          final result = await ApiClient().getData(urlAPI, "/data?sales_id=$encodedEncryptedParam");
           var data = jsonDecode(result.toString());
           data["AppModule"].map((item) {
             moduleList.add(Module.from(item));

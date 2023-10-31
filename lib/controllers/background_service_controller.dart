@@ -292,13 +292,16 @@ class Backgroundservicecontroller {
     try {
       final encryptedParam = await Utils.encryptData(salesid);
 
+      // encode the params
+      String encodedEncryptedParam = Uri.encodeComponent(encryptedParam);
+
       var connTest = await ApiClient().checkConnection();
       var arrConnTest = connTest.split("|");
       bool isConnected = arrConnTest[0] == 'true';
       String urlAPI = arrConnTest[1];
 
       if(isConnected) {
-        var req = await ApiClient().getData(urlAPI, "/quiz/status?sales_id=$encryptedParam");
+        var req = await ApiClient().getData(urlAPI, "/quiz/status?sales_id=$encodedEncryptedParam");
         Map<String, dynamic> jsonResponse = json.decode(req);
         ApiResponse response = ApiResponse.fromJson(jsonResponse);
         if (response.code.toString() == "200") {

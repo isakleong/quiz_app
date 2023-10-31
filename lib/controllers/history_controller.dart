@@ -75,7 +75,10 @@ class HistoryController extends GetxController with StateMixin {
       try {
         final encryptedParam = await Utils.encryptData(params);
 
-        var result = await ApiClient().getData(urlAPI, "/quiz/history?sales_id=$encryptedParam");
+        // encode the params
+        String encodedEncryptedParam = Uri.encodeComponent(encryptedParam);
+
+        var result = await ApiClient().getData(urlAPI, "/quiz/history?sales_id=$encodedEncryptedParam");
         bool isValid = Utils.validateData(result.toString());
 
         if(isValid) {
