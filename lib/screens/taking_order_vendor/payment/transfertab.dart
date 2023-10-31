@@ -30,7 +30,7 @@ class TransferTab extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(left:  0.1 * width,top: 5.sp),
-                    child: TextView(text: !_takingOrderVendorController.itsFineToParse.value ? "" : "${_takingOrderVendorController.infoBankList[0].split('-')[0].toString().trim()} - ${_takingOrderVendorController.infoBankList[0].split('-')[1].toString().trim()}",fontSize: 10.sp,headings: 'H2',),
+                    child: TextView(text: !_takingOrderVendorController.itsFineToParse.value ? "" : "BANK ${_takingOrderVendorController.infoBankList[0].split('-')[0].toString().trim()} - ${_takingOrderVendorController.infoBankList[0].split('-')[1].toString().trim()}",fontSize: 10.sp,headings: 'H2',),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left:  0.1 * width),
