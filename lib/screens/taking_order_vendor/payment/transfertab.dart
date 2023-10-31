@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sfa_tools/screens/taking_order_vendor/payment/buttonpayment.dart';
 import 'package:sfa_tools/tools/textfieldformatter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sfa_tools/widgets/textview.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../controllers/taking_order_vendor_controller.dart';
 
@@ -23,148 +24,162 @@ class TransferTab extends StatelessWidget {
               color: Colors.grey.shade200,
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10),
+              padding: EdgeInsets.only(top: 10.sp),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      /* pilih bank
-                      Container(
-                        width: 0.45 * width,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(color: Colors.grey, width: 1)),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            value: _takingOrderVendorController
-                                        .choosedTransferMethod.value ==
-                                    ""
-                                ? 'Pilih Bank'
-                                : _takingOrderVendorController
-                                    .choosedTransferMethod.value,
-                            onChanged: (String? newValue) {
-                              _takingOrderVendorController
-                                  .choosedTransferMethod.value = newValue!;
-                            },
-                            items: <String>[
-                              'Pilih Bank',
-                              'MANDIRI',
-                              'BCA',
-                              'BRI',
-                            ].map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Icon(
-                                      FontAwesomeIcons.bank,
-                                      color: const Color(0XFF319088),
-                                      size: 12.sp,
-                                    ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    TextView(
-                                      text: value,
-                                      textAlign: TextAlign.left,
-                                      fontSize: 10.sp,
-                                      headings: 'H4',
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),*/
-                      Container(
-                        width: 0.8 * width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: TextField(
-                          controller: _takingOrderVendorController
-                              .nominaltransfer.value,
-                          keyboardType: TextInputType.number,
-                          // onChanged: _takingOrderVendorController
-                          //     .formatMoneyTextField(_takingOrderVendorController
-                          //         .nominaltransfer.value),
-                          // inputFormatters: [
-                          //   FilteringTextInputFormatter.digitsOnly
-                          // ],
-                          inputFormatters: [NumberInputFormatter()],
-                          style: const TextStyle(fontSize: 14),
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.zero,
-                              labelText: 'Nominal Transfer',
-                              labelStyle: TextStyle(
-                                fontSize: 10.sp,
-                              ),
-                              border: const OutlineInputBorder(),
-                              prefixIcon: Icon(
-                                FontAwesomeIcons.calculator,
-                                color: const Color(0XFF319088),
-                                size: 12.sp,
-                              )),
-                        ),
-                      )
-                    ],
+                  Padding(
+                    padding: EdgeInsets.only(left:  0.1 * width,top: 5.sp),
+                    child: TextView(text: !_takingOrderVendorController.itsFineToParse.value ? "" : "${_takingOrderVendorController.infoBankList[0].split('-')[0].toString().trim()} - ${_takingOrderVendorController.infoBankList[0].split('-')[1].toString().trim()}",fontSize: 10.sp,headings: 'H2',),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _takingOrderVendorController.listProduct.isEmpty ?
-                      Shimmer.fromColors(
-                              baseColor: Colors.grey.shade400,
-                              highlightColor: Colors.grey.shade200,
-                              child: Container(
-                                width: 0.3 * width,
-                                height: 0.05 * height,
-                                color: Colors.white,
-                                // Add any other child widgets you want inside the shimmering container
-                              ),
-                            )
-                          :
-                      ButtonPayment(
-                        ontap: () {
-                           _takingOrderVendorController.choosedTransferMethod.value = 'MANDIRI';
-                          if (_takingOrderVendorController
-                                      .choosedTransferMethod.value ==
-                                  "Pilih Bank" ||
+                  Padding(
+                    padding: EdgeInsets.only(left:  0.1 * width),
+                    child: TextView(text: !_takingOrderVendorController.itsFineToParse.value ? "" : _takingOrderVendorController.infoBankList[0].split('-')[2].toString().trim(),fontSize: 10.sp,headings: 'H5',),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.sp),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        /* pilih bank
+                        Container(
+                          width: 0.45 * width,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.grey, width: 1)),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              isExpanded: true,
+                              value: _takingOrderVendorController
+                                          .choosedTransferMethod.value ==
+                                      ""
+                                  ? 'Pilih Bank'
+                                  : _takingOrderVendorController
+                                      .choosedTransferMethod.value,
+                              onChanged: (String? newValue) {
+                                _takingOrderVendorController
+                                    .choosedTransferMethod.value = newValue!;
+                              },
+                              items: <String>[
+                                'Pilih Bank',
+                                'MANDIRI',
+                                'BCA',
+                                'BRI',
+                              ].map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Icon(
+                                        FontAwesomeIcons.bank,
+                                        color: const Color(0XFF319088),
+                                        size: 12.sp,
+                                      ),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      TextView(
+                                        text: value,
+                                        textAlign: TextAlign.left,
+                                        fontSize: 10.sp,
+                                        headings: 'H4',
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),*/
+                        Container(
+                          width: 0.8 * width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: TextField(
+                            controller: _takingOrderVendorController
+                                .nominaltransfer.value,
+                            keyboardType: TextInputType.number,
+                            // onChanged: _takingOrderVendorController
+                            //     .formatMoneyTextField(_takingOrderVendorController
+                            //         .nominaltransfer.value),
+                            // inputFormatters: [
+                            //   FilteringTextInputFormatter.digitsOnly
+                            // ],
+                            inputFormatters: [NumberInputFormatter()],
+                            style: const TextStyle(fontSize: 14),
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.zero,
+                                labelText: 'Nominal Transfer',
+                                labelStyle: TextStyle(
+                                  fontSize: 10.sp,
+                                ),
+                                border: const OutlineInputBorder(),
+                                prefixIcon: Icon(
+                                  FontAwesomeIcons.calculator,
+                                  color: const Color(0XFF319088),
+                                  size: 12.sp,
+                                )),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.sp),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _takingOrderVendorController.listProduct.isEmpty ?
+                        Shimmer.fromColors(
+                                baseColor: Colors.grey.shade400,
+                                highlightColor: Colors.grey.shade200,
+                                child: Container(
+                                  width: 0.3 * width,
+                                  height: 0.05 * height,
+                                  color: Colors.white,
+                                  // Add any other child widgets you want inside the shimmering container
+                                ),
+                              )
+                            :
+                        ButtonPayment(
+                          ontap: () {
+                             _takingOrderVendorController.choosedTransferMethod.value = 'MANDIRI';
+                            if (_takingOrderVendorController
+                                        .choosedTransferMethod.value ==
+                                    "Pilih Bank" ||
+                                _takingOrderVendorController
+                                        .choosedTransferMethod.value ==
+                                    "") {
+                              Get.snackbar(
+                                  "Error", "Pilih Bank Terlebih Dahulu !",
+                                  backgroundColor: Colors.red.withOpacity(0.5));
+                            } else {
                               _takingOrderVendorController
-                                      .choosedTransferMethod.value ==
-                                  "") {
-                            Get.snackbar(
-                                "Error", "Pilih Bank Terlebih Dahulu !",
-                                backgroundColor: Colors.red.withOpacity(0.5));
-                          } else {
-                            _takingOrderVendorController
-                                .insertRecord("Transfer");
-                          }
-                        },
-                        bgcolor: _takingOrderVendorController.listpaymentdata
-                                .any((data) => data.jenis == 'Transfer')
-                            ? const Color(0xFF398e3d)
-                            : const Color(0XFF319088),
-                        icon: _takingOrderVendorController.listpaymentdata
-                                .any((data) => data.jenis == 'Transfer')
-                            ? FontAwesomeIcons.squarePen
-                            : FontAwesomeIcons.squarePlus,
-                        txt: _takingOrderVendorController.listpaymentdata
-                                .any((data) => data.jenis == 'Transfer')
-                            ? "Ganti Pembayaran"
-                            : "Tambah Pembayaran",
-                        fonts: 10.5.sp,
-                        icsize: 14.sp,
-                      )
-                    ],
+                                  .insertRecord("Transfer");
+                            }
+                          },
+                          bgcolor: _takingOrderVendorController.listpaymentdata
+                                  .any((data) => data.jenis == 'Transfer')
+                              ? const Color(0xFF398e3d)
+                              : const Color(0XFF319088),
+                          icon: _takingOrderVendorController.listpaymentdata
+                                  .any((data) => data.jenis == 'Transfer')
+                              ? FontAwesomeIcons.squarePen
+                              : FontAwesomeIcons.squarePlus,
+                          txt: _takingOrderVendorController.listpaymentdata
+                                  .any((data) => data.jenis == 'Transfer')
+                              ? "Ganti Pembayaran"
+                              : "Tambah Pembayaran",
+                          fonts: 10.5.sp,
+                          icsize: 14.sp,
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),

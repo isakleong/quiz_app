@@ -473,6 +473,8 @@ class TakingOrderVendorController extends GetxController with GetTickerProviderS
   get showBanner => _pembayaranController.showBanner;
   get totalpiutang => _penjualanController.totalpiutang;
   get totaljatuhtempo => _penjualanController.totaljatuhtempo;
+  RxList<String> get infoBankList => _pembayaranController.infoBankList;
+  RxBool get itsFineToParse => _pembayaranController.itsFineToParse;
 
   selectDate(BuildContext context) {
     _pembayaranController.selectDate(context);

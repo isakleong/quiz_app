@@ -16,7 +16,7 @@ class PaymentTab extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     return SizedBox(
       width: width,
-      height: 0.23 * height,
+      height: 0.28 * height,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(

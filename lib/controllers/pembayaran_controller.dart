@@ -48,6 +48,8 @@ class PembayaranController extends GetxController {
   List<Vendor> vendorlist = <Vendor>[];
   List<Map<String, dynamic>> datajsonsend = [];
   List<PenjualanPostModel> listpostsend = <PenjualanPostModel>[];
+  RxList<String> infoBankList = <String>[].obs;
+  RxBool itsFineToParse = false.obs;
 
   refreshmastervendor() async {
     try {
@@ -172,7 +174,34 @@ class PembayaranController extends GetxController {
   }
 
   loadpembayaranstate() async{
+      //load info bank
+      infoBankList.clear();
       if(globalkeybox == "") await getGlobalKeyBox();
+      String salesid = await Utils().getParameterData("sales");
+      try {
+        await Utils().manageBankBox('open');
+        var dataInfoBank = bankbox.get("$salesid|infobank");
+        await Utils().manageBankBox('close');
+        var jsonDataInfoBank = jsonDecode(dataInfoBank);
+        for (var i = 0; i < jsonDataInfoBank['databank'].length; i++) {
+          if(activevendor == jsonDataInfoBank['databank'][i]['VendorID']){
+            var splittedBank = jsonDataInfoBank['databank'][i]['BankID'].toString().split("|");
+            for (var j = 0; j < splittedBank.length; j++) {
+              infoBankList.add(splittedBank[j]);
+              var dataBankId = splittedBank[j].split("-");
+              for (var m = 0; m < dataBankId.length; m++) {
+                String checking = dataBankId[m].toString().trim();//assume will go to catch if cant parse to string
+              }
+            }
+          }
+        }
+        if(infoBankList.isNotEmpty){
+          itsFineToParse.value = true;
+        }
+      } catch (e) {
+        itsFineToParse.value = false;
+      }
+
       if (!Hive.isBoxOpen("boxPembayaranState")) boxPembayaranState = await Hive.openBox('boxPembayaranState');
       var databox = boxPembayaranState.get(globalkeybox);
       await boxPembayaranState.close();

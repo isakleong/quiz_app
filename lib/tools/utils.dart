@@ -398,7 +398,7 @@ class Utils {
   return decrypted;
 }
 
-showDialogSingleButton(var context, String title, String desc, String lottie, var onTap){
+ showDialogSingleButton(var context, String title, String desc, String lottie, var onTap){
       double width = Get.width;
       double height = Get.height;
       if(context != null){
@@ -435,5 +435,11 @@ showDialogSingleButton(var context, String title, String desc, String lottie, va
         );
 }
 
+  String stringToHex(String input) {
+  // Convert each character in the string to its hexadecimal representation
+  return input.runes.map((rune) {
+    return rune.toRadixString(16).padLeft(2, '0'); // Ensure each representation is two characters wide
+  }).join(); // Join all the individual hex representations
+}
 //end created for vendor
 }

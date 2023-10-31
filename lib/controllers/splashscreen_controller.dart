@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -1191,6 +1192,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
       }
 
       progressdownload[3]= "ok";
+      await getBankVendor();
       if(vendorlistunduhulang.isNotEmpty){
         downloadConfigFile('getinfoproduk');
       } else {
@@ -2160,6 +2162,29 @@ class SplashscreenController extends GetxController with StateMixin implements W
       } catch (e) {
         //failed to delete previous data
       }
+  }
+
+  getBankVendor() async{
+    try {
+      var connTest = await ApiClient().checkConnection();
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      if(!isConnected){
+        return;
+      }
+      String urlAPI = arrConnTest[1];
+      String salesid = await Utils().getParameterData('sales');
+      final encryptedBranch = await Utils.encryptData(salesid.substring(0,3));
+      String branchEncHex = Utils().stringToHex(encryptedBranch);
+      final response = await http.get(Uri.parse('$urlAPI/getbankvendor?branch=$branchEncHex'));
+      var jsonData = jsonDecode(response.body);
+      await Utils().manageBankBox('open');
+      await bankbox.delete("$salesid|infobank");
+      await bankbox.put("$salesid|infobank",jsonEncode(jsonData));
+      await Utils().manageBankBox('close');
+    } catch (e) {
+      //failed to get info bank data
+    }
   }
 
   @override
