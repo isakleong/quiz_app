@@ -352,6 +352,13 @@ class SplashscreenController extends GetxController with StateMixin implements W
     return status == PermissionStatus.granted;
   }
 
+  getModuleDataAll() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String currentVersion = packageInfo.version;
+    appVersion.value = currentVersion;
+
+  }
+
   getModuleData() async {
     isError(false);
     change(null, status: RxStatus.loading());
@@ -381,27 +388,11 @@ class SplashscreenController extends GetxController with StateMixin implements W
           await moduleBox.clear();
           await moduleBox.addAll(moduleList);
 
-          await checkVersion(data["AppVersion"]);
+          PackageInfo packageInfo = await PackageInfo.fromPlatform();
+          String currentVersion = packageInfo.version;
+          appVersion.value = currentVersion;
 
-          if (isNeedUpdate.value) {
-            change(null, status: RxStatus.success());
-            appsDialog(
-              type: "app_info",
-              title: TextView(
-                headings: "H4",
-                text: "Terdapat versi aplikasi yang lebih baru.\n\nIkuti langkah-langkah berikut :\n1. Tekan OK untuk kembali ke aplikasi SFA.\n2. Tekan menu Pengaturan.\n3. Tekan tombol Unduh Aplikasi ${appName.value}.\n4. Tunggu hingga proses update selesai.",
-                textAlign: TextAlign.start,
-              ),
-              leftBtnMsg: "ok",
-              isAnimated: true,
-              leftActionClick: () {
-                Get.back();
-                SystemNavigator.pop();
-              }
-            );
-          } else {
-            await postTrackingVersion();
-          }
+          await postTrackingVersion();
         } catch (e) {
           errorMessage(e.toString());
           openErrorDialog();
@@ -431,140 +422,18 @@ class SplashscreenController extends GetxController with StateMixin implements W
     }
   }
 
-  checkVersion(var data) async {
-    isNeedUpdate(false);
-
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String currentVersion = packageInfo.version;
-    appVersion.value = currentVersion;
-
-     try {
-      String latestVersion = data[0]["Value"];
-      appName.value = data[0]["AppName"];
-
-      int currentVersionConverted = Utils().convertVersionNumber(currentVersion);
-      int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
-
-      //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
-      bool moduleVersionStatus = true;
-      int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
-
-      Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
-      var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
-      retrySubmitQuizBox.close();
-
-      if (isRetrySubmit != null && isRetrySubmit.value == "true") {
-        cntPendingData = 1;
-      }
-
-      for (int i = 0; i < moduleList.length; i++) {
-        int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
-        if (moduleVersionConverted > currentVersionConverted) {
-          moduleVersionStatus = false;
-          break;
-        }
-      }
-
-      if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
-        isNeedUpdate(true);
-      }
-    } catch (e) {
-      errorMessage.value = e.toString();
-      openErrorDialog();
-      isError(true);
-      change(null, status: RxStatus.error(errorMessage.value));
-    }
-  }
-
-  // checkVersion() async {
-  //   isNeedUpdate(false);
-
-  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  //   String currentVersion = packageInfo.version;
-  //   appVersion.value = currentVersion;
-
-  //   var connTest = await ApiClient().checkConnection();
-  //   var arrConnTest = connTest.split("|");
-  //   bool isConnected = arrConnTest[0] == 'true';
-  //   String urlAPI = arrConnTest[1];
-
-  //   if (salesIdParams.value != "") {
-  //     if (isConnected) {
-  //       try {
-  //         final encryptedParam = await Utils.encryptData(salesIdParams.value);
-
-  //         final result = await ApiClient().getData(urlAPI, "/version?sales_id=$encryptedParam");
-  //         var data = jsonDecode(result.toString());
-
-  //         String latestVersion = data[0]["Value"];
-  //         appName.value = data[0]["AppName"];
-
-  //         int currentVersionConverted = Utils().convertVersionNumber(currentVersion);
-  //         int latestVersionConverted = Utils().convertVersionNumber(latestVersion);
-
-  //         //compare latest version with module version (if module version is bigger than latest version, then app should be updated)
-  //         bool moduleVersionStatus = true;
-  //         int cntPendingData = 0; //count pending data (if there is pending data, then app should not be updated)
-
-  //         Box retrySubmitQuizBox = await Hive.openBox<ServiceBox>(AppConfig.boxSubmitQuiz);
-  //         var isRetrySubmit = retrySubmitQuizBox.get(AppConfig.keyStatusBoxSubmitQuiz);
-  //         retrySubmitQuizBox.close();
-
-  //         if (isRetrySubmit != null && isRetrySubmit.value == "true") {
-  //           cntPendingData = 1;
-  //         }
-
-  //         for (int i = 0; i < moduleList.length; i++) {
-  //           int moduleVersionConverted = Utils().convertVersionNumber(moduleList[i].version);
-  //           if (moduleVersionConverted > currentVersionConverted) {
-  //             moduleVersionStatus = false;
-  //             break;
-  //           }
-  //         }
-
-  //         if (latestVersionConverted > currentVersionConverted && !moduleVersionStatus && cntPendingData == 0) {
-  //           isNeedUpdate(true);
-  //         }
-  //       } catch (e) {
-  //         errorMessage.value = e.toString();
-  //         openErrorDialog();
-  //         isError(true);
-  //         change(null, status: RxStatus.error(errorMessage.value));
-  //       }
-  //     } else {
-  //       var moduleBox = await Hive.openBox<Module>('moduleBox');
-  //       if (moduleBox.length > 0) {
-  //         moduleList.clear();
-  //         moduleList.addAll(moduleBox.values);
-
-  //         change(null, status: RxStatus.success());
-  //         Get.offAndToNamed(RouteName.homepage);
-  //       } else {
-  //         errorMessage(Message.errorConnection);
-  //         openErrorDialog();
-  //         isError(true);
-  //         change(null, status: RxStatus.error(errorMessage.value));
-  //       }
-  //     }
-  //   } else {
-  //     errorMessage(Message.errorParameterData);
-  //     openErrorDialog();
-  //     isError(true);
-  //     change(null, status: RxStatus.error(errorMessage.value));
-  //   }
-  // }
-
   postTrackingVersion() async {
     var trackVersionBox = await Hive.openBox('trackVersionBox');
     var trackVersion = trackVersionBox.get('trackVersion');
+    var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
 
-    if (trackVersion != null && trackVersion != "") {
+    if ((trackVersion != null && trackVersion != "") && (lastUpdated != null && lastUpdated != "")) {
       var now = DateTime.now();
-      var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
-      var formatter = DateFormat('yyyy-MM-dd');
 
+      var formatter = DateFormat('yyyy-MM-dd');
       String strLastUpdated = formatter.format(lastUpdated);
       String strCurrentDate = formatter.format(now);
+
       int mLastUpdated = int.parse(strLastUpdated.substring(5, 7));
       int yLastUpdated = int.parse(strLastUpdated.substring(0, 4));
       int mCurrentDate = int.parse(strCurrentDate.substring(5, 7));
