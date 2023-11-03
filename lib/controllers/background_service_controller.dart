@@ -58,7 +58,7 @@ void onStart(ServiceInstance service) async {
       if (await service.isForegroundService()) {
         service.setForegroundNotificationInfo(
           title: "SFA Tools Service",
-          content: "Updated at ${DateTime.now()}",
+          content: "quiz status at ${DateTime.now()}",
         );
       }
     }
@@ -91,7 +91,7 @@ void onStart(ServiceInstance service) async {
       if (await service.isForegroundService()) {
         service.setForegroundNotificationInfo(
           title: "SFA Tools Service",
-          content: "Updated at ${DateTime.now()}",
+          content: "retry quiz at ${DateTime.now()}",
         );
       }
     }
@@ -313,19 +313,16 @@ class Backgroundservicecontroller {
       try {
         String _filequiz = await readFileQuiz();
         DateTime now = DateTime.now();
-        DateTime datetimefilequiz = DateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS")
-            .parse(_filequiz.split(";")[3]);
-        Duration difference = datetimefilequiz.difference(now);
+        DateTime datetimefilequiz = DateFormat("yyyy-MM-dd").parse(_filequiz.split(";")[3]);
+        Duration difference = DateFormat("yyyy-MM-dd").parse(now.toString()).difference(datetimefilequiz);
         var dataBox = await accessBox("read", "retryApi", "");
-        if (difference.inDays >= 1 ||
-            (dataBox != null && dataBox.value == "1")) {
+        if (difference.inDays >= 1 || (dataBox != null && dataBox.value == "1")) {
           //sudah melewati 1 hari
           String status = await getLatestStatusQuiz(_filequiz.split(";")[1]);
           if (status != "err") {
             //status;salesid;service time;last hit api time
             await accessBox("create", "retryApi", "0");
-            await writeText(
-                "${status};${_filequiz.split(";")[1]};${DateTime.now()};${DateTime.now()}");
+            await writeText("${status};${_filequiz.split(";")[1]};${DateTime.now()};${DateTime.now()}");
           } else if (status == "err") {
             await writeText(
                 "${status};${_filequiz.split(";")[1]};${DateTime.now()};${_filequiz.split(";")[3]}");
@@ -342,12 +339,10 @@ class Backgroundservicecontroller {
         String _salesidVendor = await Utils().readParameter();
         if (_salesidVendor != "") {
           //hit api only when there is salesid from vendor
-          String status =
-              await getLatestStatusQuiz(_salesidVendor.split(';')[0]);
+          String status = await getLatestStatusQuiz(_salesidVendor.split(';')[0]);
           if (status != "err") {
             //status;salesid;service time;last hit api time
-            await writeText(
-                "${status};${_salesidVendor.split(';')[0]};${DateTime.now()};${DateTime.now()}");
+            await writeText("${status};${_salesidVendor.split(';')[0]};${DateTime.now()};${DateTime.now()}");
           } else {
             await writeText(";;${DateTime.now()};");
           }
