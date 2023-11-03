@@ -51,6 +51,9 @@ void onStart(ServiceInstance service) async {
     service.stopSelf();
   });
 
+  //on ready (EXECUTED ONLY ONCE WHEN BACKROUND SERVICE STARTED)
+  onReady(service);
+
   Timer.periodic(const Duration(hours: 1), (timer) async {
     await Backgroundservicecontroller().cekQuiz();
 
@@ -150,6 +153,39 @@ void onStart(ServiceInstance service) async {
       },
     );
   });
+}
+
+Future<void> onReady(ServiceInstance service) async {
+  Backgroundservicecontroller().cekQuiz();
+  if (service is AndroidServiceInstance) {
+    if (await service.isForegroundService()) {
+       service.setForegroundNotificationInfo(
+        title: "SFA Tools Service",
+        content: "wake up task at ${DateTime.now()}",
+      );
+    }
+  }
+
+  final deviceInfo = DeviceInfoPlugin();
+  String? device;
+  if (Platform.isAndroid) {
+    final androidInfo = await deviceInfo.androidInfo;
+    device = androidInfo.model;
+  }
+
+  if (Platform.isIOS) {
+    final iosInfo = await deviceInfo.iosInfo;
+    device = iosInfo.model;
+  }
+
+  service.invoke(
+    'update',
+    {
+      "current_date": DateTime.now().toIso8601String(),
+      "device": device,
+    },
+  );
+  //
 }
 
 class Backgroundservicecontroller {
