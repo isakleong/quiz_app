@@ -558,9 +558,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
                   }));
 
               if (resultSubmit == "success") {
-              trackVersionBox.put("trackVersion", appVersion.value);
-              trackVersionBox.put("salesIdVersion", salesIdParams.value);
-              trackVersionBox.put("lastUpdatedVersion", DateTime.now());
                 change(null, status: RxStatus.success());
                 Get.offAndToNamed(RouteName.homepage);
                 await Future.delayed(const Duration(milliseconds: 250));
@@ -612,10 +609,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
                 }));
 
             if (resultSubmit == "success") {
-              trackVersionBox.put("trackVersion", appVersion.value);
-              trackVersionBox.put("salesIdVersion", salesIdParams.value);
-              trackVersionBox.put("lastUpdatedVersion", DateTime.now());
-
               change(null, status: RxStatus.success());
               Get.offAndToNamed(RouteName.homepage);
               await Future.delayed(const Duration(milliseconds: 250));
