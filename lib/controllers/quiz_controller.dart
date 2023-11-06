@@ -131,8 +131,9 @@ class QuizController extends GetxController with StateMixin {
     if (isConnected) {
       try {
         final encryptedParam = await Utils.encryptData(params);
+        final encodeParam = Uri.encodeComponent(encryptedParam);
 
-        var result = await ApiClient().getData(urlAPI, "/quiz/config?sales_id=$encryptedParam");
+        var result = await ApiClient().getData(urlAPI, "/quiz/config?sales_id=$encodeParam");
         bool isValid = Utils.validateData(result.toString());
 
         if (isValid) {
@@ -182,14 +183,16 @@ class QuizController extends GetxController with StateMixin {
     if(isConnected) {
       try {
         final encryptedSalesID = await Utils.encryptData(params);
+        final encodeSalesID = Uri.encodeComponent(encryptedSalesID);
 
         var now = DateTime.now();
         var formatter = DateFormat('yyyy-MM-dd');
         String formattedDate = formatter.format(now);
 
         final encryptedDate = await Utils.encryptData(formattedDate);
+        final encodeDate = Uri.encodeComponent(encryptedDate);
 
-        var result = await ApiClient().getData(urlAPI, "/quiz?sales_id=$encryptedSalesID&date=$encryptedDate");
+        var result = await ApiClient().getData(urlAPI, "/quiz?sales_id=$encodeSalesID&date=$encodeDate");
         bool isValid = Utils.validateData(result.toString());
 
         if(isValid) {

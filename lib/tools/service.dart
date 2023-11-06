@@ -14,7 +14,7 @@ class ApiClient {
     try {
       //print(url);
       final dio = Dio(  
-        BaseOptions(baseUrl: url,connectTimeout: Duration(seconds: timeouttime ?? 5 ))
+        BaseOptions(baseUrl: url, connectTimeout: Duration(seconds: timeouttime ?? 5), receiveTimeout: Duration(seconds: timeouttime ?? 10))
       )..interceptors.add(Logging());
 
       dio.httpClientAdapter = IOHttpClientAdapter(
@@ -54,10 +54,10 @@ class ApiClient {
     }
   }
 
-  Future postData(String url, String path, var formData, var options) async {
+  Future postData(String url, String path, var formData, var options, {int? timeouttime}) async {
     try {
       final dio = Dio(
-        BaseOptions(baseUrl: url)
+        BaseOptions(baseUrl: url, connectTimeout: Duration(seconds: timeouttime ?? 5), receiveTimeout: Duration(seconds: timeouttime ?? 10))
       );
       dio.httpClientAdapter = IOHttpClientAdapter(
         createHttpClient: () {

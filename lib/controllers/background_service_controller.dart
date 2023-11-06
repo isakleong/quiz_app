@@ -394,6 +394,7 @@ class Backgroundservicecontroller {
   Future<String> getLatestStatusQuiz(String salesid) async {
     try {
       final encryptedParam = await Utils.encryptData(salesid);
+      final encodeParam = Uri.encodeComponent(encryptedParam);
 
       var connTest = await ApiClient().checkConnection();
       var arrConnTest = connTest.split("|");
@@ -401,7 +402,7 @@ class Backgroundservicecontroller {
       String urlAPI = arrConnTest[1];
 
       if (isConnected) {
-        var req = await ApiClient().getData(urlAPI, "/quiz/status?sales_id=$encryptedParam");
+        var req = await ApiClient().getData(urlAPI, "/quiz/status?sales_id=$encodeParam");
         Map<String, dynamic> jsonResponse = json.decode(req);
         ApiResponse response = ApiResponse.fromJson(jsonResponse);
         if (response.code.toString() == "200") {

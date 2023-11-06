@@ -1523,7 +1523,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
         moduleList.clear();
         String salesid = await Utils().getParameterData('sales');
         final encryptedParam = await Utils.encryptData(salesid);
-        final result = await ApiClient().getData(urlAPI, "/datadev?sales_id=$encryptedParam");
+        final encodeParam = Uri.encodeComponent(encryptedParam);
+        final result = await ApiClient().getData(urlAPI, "/data?sales_id=$encodeParam");
         var data = jsonDecode(result.toString());
         // var sizejson = await Utils().calculateJsonSize(data);
         // print("1. module access : ${sizejson.toString()}");
@@ -2175,8 +2176,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
       String urlAPI = arrConnTest[1];
       String salesid = await Utils().getParameterData('sales');
       final encryptedBranch = await Utils.encryptData(salesid.substring(0,3));
-      String branchEncHex = Utils().stringToHex(encryptedBranch);
-      final response = await http.get(Uri.parse('$urlAPI/getbankvendor?branch=$branchEncHex'));
+      //String branchEncHex = Utils().stringToHex(encryptedBranch);
+      String branchEncode = Uri.encodeComponent(encryptedBranch);
+      final response = await http.get(Uri.parse('$urlAPI/getbankvendor?branch=$branchEncode'));
       var jsonData = jsonDecode(response.body);
       await Utils().manageBankBox('open');
       await bankbox.delete("$salesid|infobank");
