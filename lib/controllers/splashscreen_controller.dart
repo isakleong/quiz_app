@@ -513,7 +513,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
       var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
 
       if ((trackVersion != null && trackVersion != "") && (lastUpdated != null && lastUpdated != "")) {
-        print("on if");
         var now = DateTime.now();
 
         var formatter = DateFormat('yyyy-MM-dd');
@@ -533,9 +532,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
 
         var salesIdVersion = trackVersionBox.get('salesIdVersion');
-        print(submitVersion.toString()+salesIdVersion+salesIdParams.value+trackVersion+appVersion.value);
         if (submitVersion || salesIdParams.value != salesIdVersion || trackVersion != appVersion.value) {
-          print("on nested if");
           var connTest = await ApiClient().checkConnection();
           var arrConnTest = connTest.split("|");
           bool isConnected = arrConnTest[0] == 'true';
