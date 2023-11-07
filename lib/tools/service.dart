@@ -5,13 +5,14 @@ import 'package:dio/io.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/tools/logging.dart';
-// import 'package:http/http.dart' show Client, Request;
+// show Client, Request;
 
 class ApiClient {
-  Future getData(String url, String path) async {
+  Future getData(String url, String path, {int? timeouttime, var options}) async {
     try {
+      //print(url);
       final dio = Dio(  
-        BaseOptions(baseUrl: url)
+        BaseOptions(baseUrl: url, connectTimeout: Duration(seconds: timeouttime ?? 5), receiveTimeout: Duration(seconds: timeouttime ?? 10))
       )..interceptors.add(Logging());
 
       dio.httpClientAdapter = IOHttpClientAdapter(
@@ -33,10 +34,15 @@ class ApiClient {
       // };
 
       dio.interceptors.add(Logging());
+      if(options == null){
+        final response = await dio.get(path);
+        return response.data;
+      }
+      else{
+        final response = await dio.get(path,options: options);
+        return response.data;
+      }
 
-      final response = await dio.get(path);
-
-      return response.data;
     } catch (e) {
       if(url == "") {
         throw Exception(Message.errorConnection);
@@ -46,10 +52,10 @@ class ApiClient {
     }
   }
 
-  Future postData(String url, String path, var formData, var options) async {
+  Future postData(String url, String path, var formData, var options, {int? timeouttime}) async {
     try {
       final dio = Dio(
-        BaseOptions(baseUrl: url)
+        BaseOptions(baseUrl: url, connectTimeout: Duration(seconds: timeouttime ?? 5), receiveTimeout: Duration(seconds: timeouttime ?? 10))
       );
       dio.httpClientAdapter = IOHttpClientAdapter(
         createHttpClient: () {
@@ -87,15 +93,15 @@ class ApiClient {
     //get ip
     var ipAddress = [];
     for (var interface in await NetworkInterface.list()) {
-      // print('== Interface: ${interface.name} ==');
       for (var addr in interface.addresses) {
-        // print('${addr.address} ${addr.host} ${addr.isLoopback} ${addr.rawAddress} ${addr.type.name}');
-        ipAddress = addr.rawAddress;
+        if(addr.type.name == "IPv4"){
+          ipAddress = addr.rawAddress;
+        }
       }
     }
 
     if(ipAddress.isNotEmpty) {
-      if(ipAddress[0] == "10" && ipAddress[1] == "10") {
+      if(ipAddress[0].toString() == "10" && ipAddress[1].toString() == "10") {
         return "true|${AppConfig.baseLocalUrl}";
       } else {
         return "true|${AppConfig.basePublicUrl}";
