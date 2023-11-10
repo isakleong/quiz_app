@@ -508,6 +508,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
   postTrackingVersion() async {
     try {
+      change(null, status: RxStatus.loading());
       var trackVersionBox = await Hive.openBox('trackVersionBox');
       var trackVersion = trackVersionBox.get('trackVersion');
       var lastUpdated = trackVersionBox.get('lastUpdatedVersion');
@@ -572,10 +573,14 @@ class SplashscreenController extends GetxController with StateMixin implements W
               change(null, status: RxStatus.error(errorMessage.value));
             }
           } else {
-            errorMessage(Message.errorConnection);
-            openErrorDialog();
-            isError(true);
-            change(null, status: RxStatus.error(errorMessage.value));
+            // errorMessage(Message.errorConnection);
+            // openErrorDialog();
+            // isError(true);
+            // change(null, status: RxStatus.error(errorMessage.value));
+            change(null, status: RxStatus.success());
+            Get.offAndToNamed(RouteName.homepage);
+            await Future.delayed(const Duration(milliseconds: 250));
+            await cekDeviceState();
           }
         } else {
           change(null, status: RxStatus.success());
@@ -623,10 +628,14 @@ class SplashscreenController extends GetxController with StateMixin implements W
             change(null, status: RxStatus.error(errorMessage.value));
           }
         } else {
-          errorMessage(Message.errorConnection);
-          openErrorDialog();
-          isError(true);
-          change(null, status: RxStatus.error(errorMessage.value));
+          // errorMessage(Message.errorConnection);
+          // openErrorDialog();
+          // isError(true);
+          // change(null, status: RxStatus.error(errorMessage.value));
+          change(null, status: RxStatus.success());
+          Get.offAndToNamed(RouteName.homepage);
+          await Future.delayed(const Duration(milliseconds: 250));
+          await cekDeviceState();
         }
       }
     } catch (e) {
