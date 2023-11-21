@@ -48,7 +48,7 @@ class HistoryPage extends GetView<HistoryController> {
               colors: [
                 AppConfig.lightGrayishGreen,
                 AppConfig.grayishGreen,
-                AppConfig.mainRed,
+                AppConfig.softGreen,
                 AppConfig.softCyan
               ]),
         ),
