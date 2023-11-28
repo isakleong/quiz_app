@@ -33,6 +33,9 @@ class QuizController extends GetxController with StateMixin {
   var quizTarget = 0.obs;
   var isPassed = false.obs;
   var currentQuestion = 0.obs;
+  // bool showFalse = false;
+  List<int> showFalse = [];
+  String allInvalidQuestions = '';
 
   @override
   void onInit() async {
@@ -352,12 +355,16 @@ class QuizController extends GetxController with StateMixin {
         padding: const EdgeInsets.all(10),
         child:  RichText(
           textAlign: TextAlign.center,
-          text: const TextSpan(
+          text: TextSpan(
             text: 'Mohon maaf, Anda dinyatakan ',
-            style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+            style: const TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
             children: <TextSpan>[
-              TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
-              TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
+              const TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+              const TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya\n\n', style: TextStyle(fontFamily: "Poppins")),
+              allInvalidQuestions != '' ?
+              TextSpan(text: 'Pertanyaan yang belum dijawab dengan benar :\n$allInvalidQuestions', style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins"))
+              : const TextSpan(),
+
             ],
           ),
         ),
@@ -376,6 +383,8 @@ class QuizController extends GetxController with StateMixin {
     for (int i = 0; i < quizModel.length; i++) {
       if (quizModel[i].answerSelected == quizModel[i].correctAnswerIndex) {
         score++;
+      } else {
+        showFalse.add(i+1);
       }
     }
 
@@ -386,6 +395,9 @@ class QuizController extends GetxController with StateMixin {
       isPassed(true);
     } else {
       isPassed(false);
+      if (showFalse.length <= 10) {
+        allInvalidQuestions = showFalse.join(", ");
+      }
     }
   }
 
