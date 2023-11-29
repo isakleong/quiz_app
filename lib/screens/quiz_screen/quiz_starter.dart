@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
@@ -17,7 +18,8 @@ class StartQuiz extends GetView<QuizController> {
   // final QuizController quizController = Get.find();
   final quizController = Get.find<QuizController>();
   final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
-
+  
+  
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -51,7 +53,13 @@ class StartQuiz extends GetView<QuizController> {
               ),
             ),
             controller.obx(
-              (state) => const CircularButton(),
+              (state) => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularButton(), 
+                  Text('Repeat ke - ${quizController.tes.value}'),
+                ],
+              ),
               onLoading: Center(
                 child: Lottie.asset('assets/lottie/loading.json', width: 60),
               ),

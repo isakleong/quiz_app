@@ -15,6 +15,7 @@ import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/models/cartdetail.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
 import 'package:sfa_tools/models/customer.dart';
+import 'package:sfa_tools/models/quiz_config.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
 import 'package:sfa_tools/models/reportpenjualanmodel.dart';
 import 'package:sfa_tools/models/servicebox.dart';
@@ -195,6 +196,7 @@ class Backgroundservicecontroller {
     Hive.init(directory.path);
     Hive.registerAdapter(ModuleAdapter());
     Hive.registerAdapter(QuizAdapter());
+    Hive.registerAdapter(QuizConfigAdapter());
     Hive.registerAdapter(ServiceBoxAdapter());
     Hive.registerAdapter(CustomerAdapter());
     Hive.registerAdapter(ShipToAddressAdapter());
