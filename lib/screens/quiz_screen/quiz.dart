@@ -71,79 +71,79 @@ class QuizPage extends GetView<QuizController>{
     }
   }
 
-  quizSummary() async {
-    int score = 0;
-    for(int i=0; i<quizController.quizModel.length; i++) {
-      if(quizController.quizModel[i].answerSelected == quizController.quizModel[i].correctAnswerIndex) {
-        score++;
-      }
-    }
+  // quizSummary() async {
+  //   int score = 0;
+  //   for(int i=0; i<quizController.quizModel.length; i++) {
+  //     if(quizController.quizModel[i].answerSelected == quizController.quizModel[i].correctAnswerIndex) {
+  //       score++;
+  //     }
+  //   }
 
-    var target = ((quizController.quizTarget.value/100) * quizController.quizModel.length);
-    var arrTarget = target.toString().split(".");
+  //   var target = ((int.parse(quizController.quizConfigModel[0].value)/100) * quizController.quizModel.length);
+  //   var arrTarget = target.toString().split(".");
 
-    if(score >= int.parse(arrTarget[0])) {
-      quizController.isPassed(true);
-    } else {
-      quizController.isPassed(false);
-    }
-    await quizController.submitQuiz();
+  //   if(score >= int.parse(arrTarget[0])) {
+  //     quizController.isPassed(true);
+  //   } else {
+  //     quizController.isPassed(false);
+  //   }
+  //   await quizController.submitQuiz();
 
-    if(score >= int.parse(arrTarget[0])) {
-      quizController.isReset(!(quizController.isReset.value));
+  //   if(score >= int.parse(arrTarget[0])) {
+  //     quizController.isReset(!(quizController.isReset.value));
 
-      appsDialog(
-        type: "quiz_passed",
-        title: Padding(
-          padding: const EdgeInsets.all(10),
-          child:  RichText(
-            textAlign: TextAlign.center,
-            text: const TextSpan(
-              text: 'Selamat! Anda dinyatakan ',
-              style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
-              children: <TextSpan>[
-                TextSpan(text: 'LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
-                TextSpan(text: ' kuis periode ini', style: TextStyle(fontFamily: "Poppins")),
-              ],
-            ),
-          ),
-        ),
-        isAnimated: true,
-        leftBtnMsg: "Ok",
-        leftActionClick: () {
-          Get.back();
-          Get.back();
-        },
-      );
-    } else {
-      quizController.isRestart(!(quizController.isRestart.value));
+  //     appsDialog(
+  //       type: "quiz_passed",
+  //       title: Padding(
+  //         padding: const EdgeInsets.all(10),
+  //         child:  RichText(
+  //           textAlign: TextAlign.center,
+  //           text: const TextSpan(
+  //             text: 'Selamat! Anda dinyatakan ',
+  //             style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+  //             children: <TextSpan>[
+  //               TextSpan(text: 'LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+  //               TextSpan(text: ' kuis periode ini', style: TextStyle(fontFamily: "Poppins")),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //       isAnimated: true,
+  //       leftBtnMsg: "Ok",
+  //       leftActionClick: () {
+  //         Get.back();
+  //         Get.back();
+  //       },
+  //     );
+  //   } else {
+  //     quizController.isRestart(!(quizController.isRestart.value));
       
-      appsDialog(
-        type: "quiz_failed",
-        title: Padding(
-          padding: const EdgeInsets.all(10),
-          child:  RichText(
-            textAlign: TextAlign.center,
-            text: const TextSpan(
-              text: 'Mohon maaf, Anda dinyatakan ',
-              style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
-              children: <TextSpan>[
-                TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
-                TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
-              ],
-            ),
-          ),
-        ),
-        isAnimated: true,
-        leftBtnMsg: "Ok",
-        leftActionClick: () {
-          Get.back();
-          Get.back();
-          // Get.offAllNamed(RouteName.quizDashboard);
-        },
-      );
-    }
-  }
+  //     appsDialog(
+  //       type: "quiz_failed",
+  //       title: Padding(
+  //         padding: const EdgeInsets.all(10),
+  //         child:  RichText(
+  //           textAlign: TextAlign.center,
+  //           text: const TextSpan(
+  //             text: 'Mohon maaf, Anda dinyatakan ',
+  //             style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+  //             children: <TextSpan>[
+  //               TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+  //               TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //       isAnimated: true,
+  //       leftBtnMsg: "Ok",
+  //       leftActionClick: () {
+  //         Get.back();
+  //         Get.back();
+  //         // Get.offAllNamed(RouteName.quizDashboard);
+  //       },
+  //     );
+  //   }
+  // }
 
   Widget customRadioButton(String text, int index) {
     return Padding(
@@ -441,8 +441,8 @@ class QuizPage extends GetView<QuizController>{
                                   physics: const BouncingScrollPhysics(),
                                   itemCount: quizController.quizModel[quizController.currentQuestion.value].answerList.length,
                                   itemBuilder: (BuildContext context, int index) {
-                                    // return customRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} (CorrectAnswerIndex is: ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex})", index);
-                                    return customRadioButton(quizController.quizModel[quizController.currentQuestion.value].answerList[index], index);
+                                    return customRadioButton("${quizController.quizModel[quizController.currentQuestion.value].answerList[index]} (CorrectAnswerIndex is: ${quizController.quizModel[quizController.currentQuestion.value].correctAnswerIndex})", index);
+                                    // return customRadioButton(quizController.quizModel[quizController.currentQuestion.value].answerList[index], index);
                                   }),
                                 ), 
                               ),
