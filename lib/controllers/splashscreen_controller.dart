@@ -352,8 +352,8 @@ class SplashscreenController extends GetxController with StateMixin implements W
   getModuleDataAll() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String currentVersion = packageInfo.version;
-    appVersion.value = currentVersion;
-
+    appVersion.value = "1.1.3";
+    // await postTrackingVersionNew();
   }
 
   getModuleData() async {

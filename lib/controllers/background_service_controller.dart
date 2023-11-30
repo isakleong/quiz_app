@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:sfa_tools/common/app_config.dart';
+import 'package:sfa_tools/models/quiz_config.dart';
 import 'package:sfa_tools/models/servicebox.dart';
 import '../models/apiresponse.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -36,6 +37,9 @@ void onStart(ServiceInstance service) async {
   service.on('stopService').listen((event) {
     service.stopSelf();
   });
+
+  //on ready (EXECUTED ONLY ONCE WHEN BACKROUND SERVICE STARTED)
+  onReady(service);
 
   Timer.periodic(const Duration(hours: 1), (timer) async {
     await Backgroundservicecontroller().cekQuiz();
@@ -77,7 +81,7 @@ void onStart(ServiceInstance service) async {
       if (await service.isForegroundService()) {
         service.setForegroundNotificationInfo(
           title: "SFA Tools Service",
-          content: "Updated at ${DateTime.now()}",
+          content: "retry quiz at ${DateTime.now()}",
         );
       }
     }
@@ -104,6 +108,39 @@ void onStart(ServiceInstance service) async {
   });
 }
 
+Future<void> onReady(ServiceInstance service) async {
+  Backgroundservicecontroller().cekQuiz();
+  if (service is AndroidServiceInstance) {
+    if (await service.isForegroundService()) {
+       service.setForegroundNotificationInfo(
+        title: "SFA Tools Service",
+        content: "wake up task at ${DateTime.now()}",
+      );
+    }
+  }
+
+  final deviceInfo = DeviceInfoPlugin();
+  String? device;
+  if (Platform.isAndroid) {
+    final androidInfo = await deviceInfo.androidInfo;
+    device = androidInfo.model;
+  }
+
+  if (Platform.isIOS) {
+    final iosInfo = await deviceInfo.iosInfo;
+    device = iosInfo.model;
+  }
+
+  service.invoke(
+    'update',
+    {
+      "current_date": DateTime.now().toIso8601String(),
+      "device": device,
+    },
+  );
+  //
+}
+
 class Backgroundservicecontroller {
   Future hiveInitializer() async {
     Directory directory =
@@ -111,6 +148,7 @@ class Backgroundservicecontroller {
     Hive.init(directory.path);
     Hive.registerAdapter(ModuleAdapter());
     Hive.registerAdapter(QuizAdapter());
+    Hive.registerAdapter(QuizConfigAdapter());
     Hive.registerAdapter(ServiceBoxAdapter());
   }
 
@@ -247,8 +285,8 @@ class Backgroundservicecontroller {
       try {
         String _filequiz = await readFileQuiz();
         DateTime now = DateTime.now();
-        DateTime datetimefilequiz = DateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS").parse(_filequiz.split(";")[3]);
-        Duration difference = datetimefilequiz.difference(now);
+        DateTime datetimefilequiz = DateFormat("yyyy-MM-dd").parse(_filequiz.split(";")[3]);
+        Duration difference = DateFormat("yyyy-MM-dd").parse(now.toString()).difference(datetimefilequiz);
         var dataBox = await accessBox("read", "retryApi", "");
         if (difference.inDays >= 1 || (dataBox != null && dataBox.value == "1")) {
           //sudah melewati 1 hari

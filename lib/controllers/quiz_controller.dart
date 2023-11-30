@@ -14,6 +14,7 @@ import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/controllers/background_service_controller.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/quiz.dart';
+import 'package:sfa_tools/models/quiz_config.dart';
 import 'package:sfa_tools/models/servicebox.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
@@ -30,9 +31,13 @@ class QuizController extends GetxController with StateMixin {
   var errorMessage = "".obs;
 
   var quizModel = <Quiz>[].obs;
-  var quizTarget = 0.obs;
+  var quizConfigModel = <QuizConfig>[].obs;
+  // var quizTarget = 0.obs;
   var isPassed = false.obs;
   var currentQuestion = 0.obs;
+
+  List<int> showFalse = [];
+  String allInvalidQuestions = '';
 
   @override
   void onInit() async {
@@ -48,8 +53,12 @@ class QuizController extends GetxController with StateMixin {
       if(Get.currentRoute == RouteName.starter) {
         getQuizConfig(salesIdParams.value);
       } else {
-        var quizConfigBox = await Hive.openBox('quizConfigBox');
-        quizTarget.value = quizConfigBox.get("target");
+        // var quizConfigBox = await Hive.openBox('quizConfigBox');
+        // quizTarget.value = quizConfigBox.get("target");
+
+        quizConfigModel.clear();
+        var quizConfigModelBox = await Hive.openBox<QuizConfig>('quizConfigBox');
+        quizConfigModel.addAll(quizConfigModelBox.values);
 
         quizModel.clear();
         var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
@@ -121,6 +130,7 @@ class QuizController extends GetxController with StateMixin {
   }
 
   getQuizConfig(String params) async {
+    quizConfigModel.clear();
     change(null, status: RxStatus.loading());
 
     var connTest = await ApiClient().checkConnection();
@@ -135,21 +145,43 @@ class QuizController extends GetxController with StateMixin {
         // encode the params
         String encodedEncryptedParam = Uri.encodeComponent(encryptedParam);
 
-        var result = await ApiClient().getData(urlAPI, "/quiz/config?sales_id=$encodedEncryptedParam");
+        var result = await ApiClient().getData(urlAPI, "/quiz/configdev?sales_id=$encodedEncryptedParam");
         bool isValid = Utils.validateData(result.toString());
 
         if (isValid) {
           var data = jsonDecode(result.toString());
+
           if (data.length > 0) {
-            quizTarget.value = int.parse(data[0]["Value"].toString());
-            var quizConfigBox = await Hive.openBox('quizConfigBox');
-            if (quizConfigBox.get("target") != data[0]["Value"].toString()) {
-              quizConfigBox.put("target", quizTarget.value);
+            List<QuizConfig> tempQuizConfigList = [];
+            data.map((item) {
+              tempQuizConfigList.add(QuizConfig.from(item));
+            }).toList();
+
+            var quizConfigBox = await Hive.openBox<QuizConfig>('quizConfigBox');
+
+            if(tempQuizConfigList.length < 2) { // 0: target, 1: tolerance
+              errorMessage.value = Message.errorQuizConfig;
+              change(null, status: RxStatus.error(errorMessage.value));
             } else {
-              quizTarget.value = quizConfigBox.get("target");
+              if(quizConfigBox.values.length != tempQuizConfigList.length) {
+                await quizConfigBox.clear();
+                await quizConfigBox.addAll(tempQuizConfigList);
+              } else {
+                if(quizConfigBox.values.isNotEmpty) { // sudah ada data di hive, 
+                  if (quizConfigBox.get(0)?.value != tempQuizConfigList[0].value || quizConfigBox.get(1)?.value != tempQuizConfigList[1].value) {
+                    await quizConfigBox.clear(); // Selalu kosongkan dulu sebelum insert yang baru agar tidak isi hive tdk double
+                    await quizConfigBox.addAll(tempQuizConfigList);
+                  }
+                } else {
+                  await quizConfigBox.clear();
+                  await quizConfigBox.addAll(tempQuizConfigList);    
+                }
+              }
             }
 
-            getQuizData(params);
+            if(!status.isError) {
+              getQuizData(params); 
+            }
           } else {
             errorMessage.value = Message.errorQuizConfig;
             change(null, status: RxStatus.error(errorMessage.value));
@@ -247,8 +279,9 @@ class QuizController extends GetxController with StateMixin {
       //check if draft is exist or not
       var quizModelBox = await Hive.openBox<Quiz>('quizModelBox');
       if(quizModelBox.length > 0) {
-        var quizConfigBox = await Hive.openBox('quizConfigBox');
-        quizTarget.value = quizConfigBox.get("target");
+        // Sudah tidak dipakai karena target kuis langsung ambil dari hive quizConfigModel
+        // var quizConfigBox = await Hive.openBox('quizConfigBox');
+        // quizTarget.value = quizConfigBox.get("target");
         quizModel.addAll(quizModelBox.values);
 
         change(null, status: RxStatus.success());
@@ -356,12 +389,15 @@ class QuizController extends GetxController with StateMixin {
         padding: const EdgeInsets.all(10),
         child:  RichText(
           textAlign: TextAlign.center,
-          text: const TextSpan(
+          text: TextSpan(
             text: 'Mohon maaf, Anda dinyatakan ',
             style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
             children: <TextSpan>[
-              TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
-              TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
+              const TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
+              const TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
+              allInvalidQuestions != '' ?
+              TextSpan(text: 'Pertanyaan yang belum dijawab dengan benar :\n$allInvalidQuestions', style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins"))
+              : const TextSpan(),
             ],
           ),
         ),
@@ -375,21 +411,41 @@ class QuizController extends GetxController with StateMixin {
     );
   }
 
-  scoreCalculation() {
+  scoreCalculation() async {
     int score = 0;
+    showFalse = [];
+    var tolerance = quizConfigModel[1].value.split("|");
+    int toleranceRepeat = int.parse(tolerance[0]);
+    int toleranceWrong = int.parse(tolerance[1]);
+    int cntRepeat = 0;
+
+    // Counter berapa kali gagal, untuk keperluan di tolerance
+    Box cntRepeatBox = await Hive.openBox('counterRepeat');
+    if (cntRepeatBox.get('counterRepeat') != null) {
+      cntRepeat = cntRepeatBox.get('counterRepeat');
+    } else {
+      cntRepeatBox.put('counterRepeat',0);
+    }
+
     for (int i = 0; i < quizModel.length; i++) {
       if (quizModel[i].answerSelected == quizModel[i].correctAnswerIndex) {
         score++;
+      } else {
+        showFalse.add(i+1);
       }
     }
 
-    var target = ((quizTarget.value / 100) * quizModel.length);
+    var target = ((int.parse(quizConfigModel[0].value) / 100) * quizModel.length);
     var arrTarget = target.toString().split(".");
 
     if (score >= int.parse(arrTarget[0])) {
       isPassed(true);
     } else {
+      cntRepeatBox.put('counterRepeat',cntRepeat+1);
       isPassed(false);
+      if (cntRepeatBox.get('counterRepeat') >= toleranceRepeat && showFalse.length <= toleranceWrong) {
+        allInvalidQuestions = showFalse.join(", ");
+      }
     }
   }
 
