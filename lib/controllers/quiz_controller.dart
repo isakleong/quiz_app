@@ -157,22 +157,32 @@ class QuizController extends GetxController with StateMixin {
             data.map((item) {
               tempQuizConfigList.add(QuizConfig.from(item));
             }).toList();
-
-            // print("debug "+ data.toString());
-            // print("quizTarget "+tempQuizConfigList[0].value);
-            // print("quizTolerance "+tempQuizConfigList[1].value);
-
+            
             var quizConfigBox = await Hive.openBox<QuizConfig>('quizConfigBox');
-            if(quizConfigBox.length > 0) { // sudah ada data di hive, 
-              if (quizConfigBox.get(0)?.value != tempQuizConfigList[0].value || quizConfigBox.get(1)?.value != tempQuizConfigList[1].value) {
-                quizConfigBox.clear(); // Selalu kosongkan dulu sebelum insert yang baru agar tidak isi hive tdk double
-                quizConfigBox.addAll(tempQuizConfigList);
-              }
+
+            if(tempQuizConfigList.length < 2) { // 0: target, 1: tolerance
+              errorMessage.value = Message.errorQuizConfig;
+              change(null, status: RxStatus.error(errorMessage.value));
             } else {
-              quizConfigBox.addAll(tempQuizConfigList);
+              if(quizConfigBox.values.length != tempQuizConfigList.length) {
+                await quizConfigBox.clear();
+                await quizConfigBox.addAll(tempQuizConfigList);
+              } else {
+                if(quizConfigBox.values.isNotEmpty) { // sudah ada data di hive, 
+                  if (quizConfigBox.get(0)?.value != tempQuizConfigList[0].value || quizConfigBox.get(1)?.value != tempQuizConfigList[1].value) {
+                    await quizConfigBox.clear(); // Selalu kosongkan dulu sebelum insert yang baru agar tidak isi hive tdk double
+                    await quizConfigBox.addAll(tempQuizConfigList);
+                  }
+                } else {
+                  await quizConfigBox.clear();
+                  await quizConfigBox.addAll(tempQuizConfigList);    
+                }
+              }
             }
 
-            getQuizData(params);
+            if(!status.isError) {
+              getQuizData(params); 
+            }
           } else {
             errorMessage.value = Message.errorQuizConfig;
             change(null, status: RxStatus.error(errorMessage.value));
@@ -397,6 +407,7 @@ class QuizController extends GetxController with StateMixin {
       leftBtnMsg: "Ok",
       leftActionClick: () {
         if (allInvalidQuestions != '') {
+          Get.back();
           Get.back();
         } else {
           Get.back();

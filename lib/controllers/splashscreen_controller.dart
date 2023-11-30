@@ -1,18 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sfa_tools/common/app_config.dart';
-import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/common/route_config.dart';
 import 'package:sfa_tools/controllers/background_service_controller.dart';
 import 'package:sfa_tools/models/customer.dart';
@@ -502,7 +499,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
   getmoduledataall() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String currentVersion = packageInfo.version;
-    appVersion.value = currentVersion;
+    appVersion.value = "1.1.3";
     await postTrackingVersion();
   }
 

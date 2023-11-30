@@ -53,13 +53,7 @@ class StartQuiz extends GetView<QuizController> {
               ),
             ),
             controller.obx(
-              (state) => Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircularButton(), 
-                  Text('Repeat ke - ${quizController.tes.value}'),
-                ],
-              ),
+              (state) => const CircularButton(),
               onLoading: Center(
                 child: Lottie.asset('assets/lottie/loading.json', width: 60),
               ),
