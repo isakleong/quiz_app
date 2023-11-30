@@ -44,7 +44,7 @@ class QuizController extends GetxController with StateMixin {
   void onInit() async {
     super.onInit();
 
-    repeatKe();
+    // repeatKe();
 
     final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
 
@@ -446,6 +446,7 @@ class QuizController extends GetxController with StateMixin {
 
     if (score >= int.parse(arrTarget[0])) {
       isPassed(true);
+      cntRepeatBox.put('counterRepeat',0);
     } else {
       cntRepeatBox.put('counterRepeat',cntRepeat+1);
       isPassed(false);
