@@ -391,10 +391,10 @@ class QuizController extends GetxController with StateMixin {
           textAlign: TextAlign.center,
           text: TextSpan(
             text: 'Mohon maaf, Anda dinyatakan ',
-            style: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
+            style: const TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Poppins"),
             children: <TextSpan>[
               const TextSpan(text: 'BELUM LULUS', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins")),
-              const TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya', style: TextStyle(fontFamily: "Poppins")),
+              const TextSpan(text: ' kuis periode ini, silakan mencoba mengerjakan ulang kuisnya\n\n', style: TextStyle(fontFamily: "Poppins")),
               allInvalidQuestions != '' ?
               TextSpan(text: 'Pertanyaan yang belum dijawab dengan benar :\n$allInvalidQuestions', style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins"))
               : const TextSpan(),

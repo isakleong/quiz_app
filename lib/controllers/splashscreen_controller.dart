@@ -349,13 +349,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
     return status == PermissionStatus.granted;
   }
 
-  getModuleDataAll() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String currentVersion = packageInfo.version;
-    appVersion.value = "1.1.3";
-    // await postTrackingVersionNew();
-  }
-
   getModuleData() async {
     isError(false);
     change(null, status: RxStatus.loading());
