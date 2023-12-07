@@ -378,9 +378,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
           await moduleBox.clear();
           await moduleBox.addAll(moduleList);
 
-          PackageInfo packageInfo = await PackageInfo.fromPlatform();
-          String currentVersion = packageInfo.version;
-          appVersion.value = currentVersion;
+          // PackageInfo packageInfo = await PackageInfo.fromPlatform();
+          // String currentVersion = packageInfo.version;
+          appVersion.value = "1.1.3"; //hardcode because there is bug package failed to get version
 
           await postTrackingVersion();
         } catch (e) {
