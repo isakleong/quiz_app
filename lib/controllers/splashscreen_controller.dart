@@ -643,12 +643,14 @@ class SplashscreenController extends GetxController with StateMixin implements W
     
   }
 
-  buttonAction(String moduleid) {
-    if (moduleid == 'Kuis') {
+  buttonAction(String moduleId) {
+    if (moduleId == 'Kuis') {
       Get.toNamed(RouteName.quizDashboard);
+    } else if(moduleId == 'Approval Insentif MAB / Karyawan Toko') {
+      Get.toNamed(RouteName.couponMAB);
     } else {
       String pattern = "Taking order ";
-      selectedVendor.value = moduleid.substring(pattern.length);
+      selectedVendor.value = moduleId.substring(pattern.length);
       Get.toNamed(RouteName.takingOrderVendor);
     }
   }
@@ -1520,13 +1522,15 @@ class SplashscreenController extends GetxController with StateMixin implements W
         String salesid = await Utils().getParameterData('sales');
         final encryptedParam = await Utils.encryptData(salesid);
         final encodeParam = Uri.encodeComponent(encryptedParam);
-        final result = await ApiClient().getData(urlAPI, "/data?sales_id=$encodeParam");
+        final result = await ApiClient().getData(urlAPI, "/datatry?sales_id=$encodeParam");
         var data = jsonDecode(result.toString());
         // var sizejson = await Utils().calculateJsonSize(data);
         // print("1. module access : ${sizejson.toString()}");
         data["AppModule"].map((item) {
           moduleList.add(Module.from(item));
         }).toList();
+
+        print(data.toString());
 
         var moduleBox = await Hive.openBox('moduleBox');
         await moduleBox.delete(salesid);
@@ -1542,6 +1546,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
         progressdownload[0] = 'ok';
         var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
         if(idx != -1){
+          print("haha");
           versimodulvendor = moduleList[idx].version;
           ordermodulvendor = moduleList[idx].orderNumber;
           moduleList.removeAt(idx);
@@ -1565,6 +1570,7 @@ class SplashscreenController extends GetxController with StateMixin implements W
             }
           }
         } else {
+          print("hehe");
           for (var i = 1; i < progressdownload.length; i++) {
             await Future.delayed(const Duration(milliseconds: 250));
             progressdownload[i] = 'ok';
