@@ -32,7 +32,6 @@ class CouponMABController extends GetxController with StateMixin {
     String urlAPI = arrConnTest[1];
 
     if(isConnected) {
-
       try {
         final encryptedParam = await Utils.encryptData(params);
         final encodeParam = Uri.encodeComponent(encryptedParam);
@@ -43,32 +42,29 @@ class CouponMABController extends GetxController with StateMixin {
         if(isValid) {
           var data = jsonDecode(result.toString());
 
-          print(data.toString());
-          print(data.length.toString());
-
           if(data.length > 0) {
-            print("HAHAHA");
-            var response = CouponMABData.fromJson(result);
-            // listDataMAB.add(response);
+            listDataMAB.clear();
 
-            // print(listDataMAB[0].id.toString());
-            
-            // var boxCouponMAB = await Hive.openBox('moduleBox');
-            // await boxCouponMAB.clear();
-            // await boxCouponMAB.put("salesid", response);
-            // await boxCouponMAB.close();
+            data.map((item) {
+              listDataMAB.add(CouponMABData.fromJson(item));
+            }).toList();
+
+            var dataMABBox = await Hive.openBox('dataMABBox');
+            await dataMABBox.clear();
+            await dataMABBox.addAll(listDataMAB);
+            await dataMABBox.close();
 
           } else {
             change(null, status: RxStatus.empty());
           }
 
         } else {
-
+          errorMessage.value = result.toString();
+          change(null, status: RxStatus.error(errorMessage.value));
         }
-
-
       } catch (e) {
-        print("masuk catch "+e.toString());
+        errorMessage.value = e.toString();
+        change(null, status: RxStatus.error(errorMessage.value));
       }
 
     } else {

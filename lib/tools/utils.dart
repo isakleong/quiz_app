@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -25,6 +26,23 @@ class Utils {
     }
 
     return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
+  }
+
+  static Widget decodeImage(String base64Image, {double width = 200, double height = 220}) {
+    if (base64Image.isNotEmpty) {
+      // Remove the data:image/...;base64, prefix before decoding
+      String encoded = base64Image.split(',').last;
+      Uint8List bytes = base64.decode(encoded);
+
+      return Image.memory(
+        bytes,
+        width: width,
+        height: height,
+        fit: BoxFit.cover, // You can adjust the BoxFit as needed
+      );
+    } else {
+      return Text('Invalid Base64 image string');
+    }
   }
 
   static validateData(var data) {
