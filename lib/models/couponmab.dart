@@ -3,8 +3,10 @@ class CouponMABData {
   String? namaDepan;
   String? namaBelakang;
   String? tempatLahir;
+  String? tanggalLahir;
   String? jenisKelamin;
   String? noHp;
+  String? noLama;
   String? alamat;
   String? provinsi;
   String? kota;
@@ -21,6 +23,7 @@ class CouponMABData {
   String? approvedOn;
   String? jenis;
   String? createdBy;
+  String? salesName;
   String? createdOn;
 
   CouponMABData(
@@ -28,8 +31,10 @@ class CouponMABData {
       this.namaDepan,
       this.namaBelakang,
       this.tempatLahir,
+      this.tanggalLahir,
       this.jenisKelamin,
       this.noHp,
+      this.noLama,
       this.alamat,
       this.provinsi,
       this.kota,
@@ -46,6 +51,7 @@ class CouponMABData {
       this.approvedOn,
       this.jenis,
       this.createdBy,
+      this.salesName,
       this.createdOn});
 
   CouponMABData.fromJson(Map<String, dynamic> json) {
@@ -53,8 +59,10 @@ class CouponMABData {
     namaDepan = json['NamaDepan'];
     namaBelakang = json['NamaBelakang'];
     tempatLahir = json['TempatLahir'];
+    tanggalLahir = json['TanggalLahir'];
     jenisKelamin = json['JenisKelamin'];
     noHp = json['NoHp'];
+    noLama = json['NoLama'];
     alamat = json['Alamat'];
     provinsi = json['Provinsi'];
     kota = json['Kota'];
@@ -71,6 +79,7 @@ class CouponMABData {
     approvedOn = json['ApprovedOn'];
     jenis = json['Jenis'];
     createdBy = json['CreatedBy'];
+    salesName = json['SalesName'];
     createdOn = json['CreatedOn'];
   }
 
@@ -80,8 +89,10 @@ class CouponMABData {
     data['NamaDepan'] = this.namaDepan;
     data['NamaBelakang'] = this.namaBelakang;
     data['TempatLahir'] = this.tempatLahir;
+    data['TanggalLahir'] = this.tanggalLahir;
     data['JenisKelamin'] = this.jenisKelamin;
     data['NoHp'] = this.noHp;
+    data['NoLama'] = this.noLama;
     data['Alamat'] = this.alamat;
     data['Provinsi'] = this.provinsi;
     data['Kota'] = this.kota;
@@ -98,6 +109,7 @@ class CouponMABData {
     data['ApprovedOn'] = this.approvedOn;
     data['Jenis'] = this.jenis;
     data['CreatedBy'] = this.createdBy;
+    data['SalesName'] = this.salesName;
     data['CreatedOn'] = this.createdOn;
     return data;
   }

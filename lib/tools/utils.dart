@@ -28,8 +28,8 @@ class Utils {
     return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
 
-  static Widget decodeImage(String base64Image, {double width = 200, double height = 220}) {
-    if (base64Image.isNotEmpty) {
+  static Widget decodeImage(String base64Image, {double width = 160, double height = 180}) {
+    try {
       // Remove the data:image/...;base64, prefix before decoding
       String encoded = base64Image.split(',').last;
       Uint8List bytes = base64.decode(encoded);
@@ -38,10 +38,20 @@ class Utils {
         bytes,
         width: width,
         height: height,
-        fit: BoxFit.cover, // You can adjust the BoxFit as needed
+        fit: BoxFit.cover,
       );
-    } else {
-      return Text('Invalid Base64 image string');
+    } catch (e) {
+      return Container(
+        width: width,
+        height: height,
+        decoration: const BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/defaultpromo.jpg"), fit: BoxFit.cover),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12)
+          ),
+        ),
+      );
     }
   }
 
