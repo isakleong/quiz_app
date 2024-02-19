@@ -1,21 +1,14 @@
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/controllers/coupon_mab_controller.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/screens/coupon_mab/approval_item.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
-import 'package:sfa_tools/tools/utils.dart';
-import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 class CouponMAB extends GetView<CouponMABController> {
@@ -78,26 +71,86 @@ class CouponMAB extends GetView<CouponMABController> {
                             ? null
                             : (int i) async {
                               await controller.applyFilter(i);
-                              controller.filterlistDataMAB.refresh();
+                              controller.searchListDataMAB.refresh();
+
+                              controller.searchController.clear();
+                              // ignore: use_build_context_synchronously
+                              FocusScope.of(context).unfocus();
                             },
-                            children: const <Widget>[
-                              TextView(headings: "H3", text: "Kupon MAB"),
-                              TextView(headings: "H3", text: "Karyawan Toko"),
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const TextView(headings: "H3", text: "Kupon MAB"),
+                                  const SizedBox(width: 10,),
+                                  controller.isLoading.value 
+                                  ? 
+                                  Container() 
+                                  :
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.deepOrange.shade600,
+                                    ),
+                                    child: Obx(() => TextView(headings: "H3", text: "${controller.cntMAB}", color:Colors.white)),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const TextView(headings: "H3", text: "Karyawan Toko"),
+                                  const SizedBox(width: 10,),
+                                  controller.isLoading.value 
+                                  ? 
+                                  Container() 
+                                  :
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.deepOrange.shade600,
+                                    ),
+                                    child: Obx(() => TextView(headings: "H3", text: "${controller.cntKaryawanToko}", color: Colors.white,)),
+                                  ),
+                                ],
+                              ),
                             ],
                         ),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 30,),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextField(
+                      controller: controller.searchController,
+                      onChanged: (value) => controller.searchData(value),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          labelText: 'Cari Data',
+                          border: const OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 2, color: AppConfig.mainGreen),
+                          ),
+                          prefixIcon: const Icon(
+                            FontAwesomeIcons.magnifyingGlass,
+                            color: Color(0XFF319088),
+                            size: 16,
+                          )),
+                    ),
+                  ),
                   Expanded(
                     child: controller.obx(
                     (state) =>  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      child: Obx(() => controller.filterlistDataMAB.isNotEmpty
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      child: Obx(() => controller.searchListDataMAB.isNotEmpty
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              itemCount: controller.filterlistDataMAB.length,
+                              itemCount: controller.searchListDataMAB.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return ApprovalItem(index: index, listDataMAB: controller.filterlistDataMAB);
+                                return ApprovalItem(index: index, listDataMAB: controller.searchListDataMAB);
                               })
                           : Center(
                               child: Column(
@@ -125,7 +178,7 @@ class CouponMAB extends GetView<CouponMABController> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Lottie.asset(
-                              'assets/lottie/quiz-retry.json',
+                              'assets/lottie/empty.json',
                               width: Get.width * 0.5,
                             ),
                             const SizedBox(height: 15),
@@ -133,7 +186,7 @@ class CouponMAB extends GetView<CouponMABController> {
                               padding: EdgeInsets.symmetric(horizontal: 30),
                               child: TextView(
                                   headings: "H3",
-                                  text: Message.warningQuizNotSent,
+                                  text: Message.emptyData,
                                   textAlign: TextAlign.center),
                             ),
                             const SizedBox(height: 30),

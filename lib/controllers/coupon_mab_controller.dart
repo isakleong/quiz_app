@@ -12,7 +12,6 @@ import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/couponmab.dart';
 import 'package:sfa_tools/models/servicebox.dart';
-import 'package:sfa_tools/screens/coupon_mab/approval.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/dialog.dart';
@@ -28,6 +27,13 @@ class CouponMABController extends GetxController with StateMixin {
   var filterlistDataMAB = <CouponMABData>[].obs;
   var listDataMAB = <CouponMABData>[].obs;
 
+  var searchListDataMAB = <CouponMABData>[].obs;
+
+  var cntMAB = 0.obs;
+  var cntKaryawanToko = 0.obs;
+
+  final TextEditingController searchController = TextEditingController();
+
   @override
   void onInit() {
     super.onInit();
@@ -41,7 +47,54 @@ class CouponMABController extends GetxController with StateMixin {
     fetchData(salesIdParams.value, selectedFilter);
   }
 
+  searchData(String query) {
+    if(selectedFilter[0]) {
+      cntMAB.value = 0;
+    }
+
+    if(selectedFilter[1]) {
+      cntKaryawanToko.value = 0;
+    }
+
+    searchListDataMAB.value = filterlistDataMAB
+    .where((item) =>
+        (item.id?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.namaDepan?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.tempatLahir?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.tanggalLahir?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.jenisKelamin?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.noHp?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.noLama?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.alamat?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.provinsi?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.kota?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.kecamatan?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.kelurahan?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.kodePos?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.custID?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.custName?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.salesName?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.createdBy?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+          (item.createdOn?.toLowerCase().contains(query.toLowerCase()) ?? false))
+    .toList();
+
+    for(int i=0; i<searchListDataMAB.length; i++) {
+      if(searchListDataMAB[i].jenis.toString().toLowerCase().contains("mab") || listDataMAB[i].jenis.toString() == null) {
+        cntMAB.value++;
+      }
+
+      if(searchListDataMAB[i].jenis.toString().toLowerCase().contains("karyawan toko")) {
+        cntKaryawanToko.value++;
+      }
+    }
+
+    update();
+  }
+
   applyFilter(int index) {
+    cntMAB.value = 0;
+    cntKaryawanToko.value = 0;
+
     for (int i=0; i<selectedFilter.length; i++) {
       if (i == index) {
         selectedFilter[i] = true;
@@ -54,6 +107,14 @@ class CouponMABController extends GetxController with StateMixin {
     List<CouponMABData> tempData = [];
 
     for(int i=0; i<listDataMAB.length; i++) {
+      if(listDataMAB[i].jenis.toString().toLowerCase().contains("mab") || listDataMAB[i].jenis.toString() == null) {
+        cntMAB.value++;
+      }
+
+      if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan toko")) {
+        cntKaryawanToko.value++;
+      }
+
       if(selectedFilter[0]){
         if(listDataMAB[i].jenis.toString().toLowerCase().contains("mab") || listDataMAB[i].jenis.toString() == null) {
           tempData.add(listDataMAB[i]);
@@ -66,11 +127,16 @@ class CouponMABController extends GetxController with StateMixin {
     }
     filterlistDataMAB.clear();
     filterlistDataMAB.addAll(tempData);
+
+    searchListDataMAB.value = filterlistDataMAB;
   }
 
   fetchData(String params, List<bool> paramsFilter) async {
     isLoading(true);
     change(null, status: RxStatus.loading());
+
+    cntMAB.value = 0;
+    cntKaryawanToko.value = 0;
 
     var connTest = await ApiClient().checkConnection();
     var arrConnTest = connTest.split("|");
@@ -110,22 +176,40 @@ class CouponMABController extends GetxController with StateMixin {
 
             List<CouponMABData> tempData = [];
 
-            if(paramsFilter[0]) {  
-              for(int i=0; i<listDataMAB.length; i++) {
-                if(listDataMAB[i].jenis.toString().toLowerCase().contains("mab")) {
+            for(int i=0; i<listDataMAB.length; i++) {
+              if(listDataMAB[i].jenis.toString().toLowerCase().contains("mab")) {
+                cntMAB.value++;
+
+                if(paramsFilter[0]) {
                   tempData.add(listDataMAB[i]);
                 }
-              }
-            } else if(paramsFilter[1]) {
-              for(int i=0; i<listDataMAB.length; i++) {
-                if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan toko")) {
+              } else if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan toko")) {
+                cntKaryawanToko.value++;
+
+                if(paramsFilter[1]) {
                   tempData.add(listDataMAB[i]);
                 }
               }
             }
 
+            // if(paramsFilter[0]) {  
+            //   for(int i=0; i<listDataMAB.length; i++) {
+            //     if(listDataMAB[i].jenis.toString().toLowerCase().contains("mab")) {
+            //       tempData.add(listDataMAB[i]);
+            //     }
+            //   }
+            // } else if(paramsFilter[1]) {
+            //   for(int i=0; i<listDataMAB.length; i++) {
+            //     if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan toko")) {
+            //       tempData.add(listDataMAB[i]);
+            //     }
+            //   }
+            // }
+
             filterlistDataMAB.clear();
             filterlistDataMAB.addAll(tempData);
+
+            searchListDataMAB.value = filterlistDataMAB;
 
             isLoading(false);
             change(null, status: RxStatus.success());
@@ -229,53 +313,57 @@ class CouponMABController extends GetxController with StateMixin {
   }
 
   processApproval(String id, bool isApprove) async {
-    final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
-    String salesId = salesIdParams.value;
+    try {
+      final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
+      String salesId = salesIdParams.value;
 
-    var now = DateTime.now();
-    var formatter = DateFormat('yyyy-MM-dd H:m:s');
-    String formattedDate = formatter.format(now);
+      var now = DateTime.now();
+      var formatter = DateFormat('yyyy-MM-dd H:m:s');
+      String formattedDate = formatter.format(now);
 
-    var connTest = await ApiClient().checkConnection();
-    var arrConnTest = connTest.split("|");
-    bool isConnected = arrConnTest[0] == 'true';
-    String urlAPI = arrConnTest[1];
+      var connTest = await ApiClient().checkConnection();
+      var arrConnTest = connTest.split("|");
+      bool isConnected = arrConnTest[0] == 'true';
+      String urlAPI = arrConnTest[1];
 
-    var params =  {
-      'sales_id': salesId,
-      'id': id,
-      'date': formattedDate,
-      'status' : isApprove ? "acc" : "reject",
-    };
+      var params =  {
+        'sales_id': salesId,
+        'id': id,
+        'date': formattedDate,
+        'status' : isApprove ? "acc" : "reject",
+      };
 
-    if (isConnected) {
-      var bodyData = jsonEncode(params);
-      var resultSubmit = await ApiClient().postData(
-        urlAPI,
-        '/mab/process',
-        Utils.encryptData(bodyData),
-        Options(
-          headers: {
-            HttpHeaders.contentTypeHeader: "application/json"
-          }
-        )
-      );
+      if (isConnected) {
+        var bodyData = jsonEncode(params);
+        var resultSubmit = await ApiClient().postData(
+          urlAPI,
+          '/mab/process',
+          Utils.encryptData(bodyData),
+          Options(
+            headers: {
+              HttpHeaders.contentTypeHeader: "application/json"
+            }
+          )
+        );
 
-      var response = jsonDecode(resultSubmit);
+        var response = jsonDecode(resultSubmit);
 
-      print(response.toString());
-      print(response['code']);
+        if(response['code'] == 200) {
+          Get.back();
+          Get.back();
+          openSuccessDialog(isApprove);
+        } else {
+          Get.back();
+          Get.back();
+          openErrorSubmitDialog(response['msg']);
+        }
 
-      if(response['code'] == 200) {
-        Get.back();
-        Get.back();
-        openSuccessDialog(isApprove);
       } else {
-        openErrorSubmitDialog(response['msg']);
+        errorMessage(Message.errorConnection);
+        change(null, status: RxStatus.error(errorMessage.value));
       }
-
-    } else {
-      errorMessage(Message.errorConnection);
+    } catch(e) {
+      errorMessage.value = e.toString();
       change(null, status: RxStatus.error(errorMessage.value));
     }
   }

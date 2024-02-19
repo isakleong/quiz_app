@@ -1,16 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/coupon_mab_controller.dart';
 import 'package:sfa_tools/models/couponmab.dart';
 import 'package:sfa_tools/screens/coupon_mab/approval_item_detail.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
-import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 class ApprovalItem extends StatelessWidget {
@@ -257,7 +253,12 @@ class ApprovalItem extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.teal.shade700),
                               onPressed: () async {
-                                Get.defaultDialog(
+                                controller.searchController.clear();
+                                // ignore: use_build_context_synchronously
+                                FocusScope.of(context).unfocus();
+
+                                Timer(const Duration(milliseconds: 250), () {
+                                  Get.defaultDialog(
                                     radius: 6,
                                     barrierDismissible: false,
                                     title: "",
@@ -265,7 +266,10 @@ class ApprovalItem extends StatelessWidget {
                                         top: 0, bottom: 0),
                                     contentPadding:
                                         const EdgeInsets.only(bottom: 0),
-                                    content: ApprovalItemDetail(index: index, listDataMAB: controller.filterlistDataMAB));
+                                    content: ApprovalItemDetail(index: index, listDataMAB: controller.searchListDataMAB));
+                                });
+                                
+                                
 
                                 // Get.dialog(
                                 //   Dialog(

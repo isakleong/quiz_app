@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/controllers/coupon_mab_controller.dart';
 import 'package:sfa_tools/models/couponmab.dart';
-import 'package:sfa_tools/screens/taking_order_vendor/payment/dialogconfirm.dart';
 import 'package:sfa_tools/tools/utils.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
@@ -111,88 +108,98 @@ class ApprovalItemDetail extends StatelessWidget {
               children: [
                 Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      TextView(
+                    children: [
+                      const TextView(
                           headings: "H3",
                           text: "Nama",
                           fontSize: 14,
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start),
-                      SizedBox(height: 5),
-                      TextView(
+                      const SizedBox(height: 5),
+                      const TextView(
                           headings: "H3",
                           text: "Jenis Kelamin",
                           fontSize: 14,
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start),
-                      SizedBox(height: 5),
-                      TextView(
+                      const SizedBox(height: 5),
+                      const TextView(
                           headings: "H3",
                           text: "Tempat Lahir",
                           fontSize: 14,
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start),
-                      SizedBox(height: 5),
-                      TextView(
+                      const SizedBox(height: 5),
+                      const TextView(
                           headings: "H3",
                           text: "Tanggal Lahir",
                           fontSize: 14,
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start),
-                      SizedBox(height: 5),
-                      TextView(
+                      const SizedBox(height: 5),
+                      const TextView(
                           headings: "H3",
                           text: "Nomor HP",
                           fontSize: 14,
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start),
-                      SizedBox(height: 5),
-                      TextView(
+                      const SizedBox(height: 5),
+                      listDataMAB[index].jenis!.toLowerCase().contains("toko") ?
+                      const TextView(
+                          headings: "H3",
+                          text: "Nomor HP (Lama)",
+                          fontSize: 14,
+                          maxLines: 1,
+                          isAutoSize: true,
+                          textAlign: TextAlign.start) : Container(),
+                      listDataMAB[index].jenis!.toLowerCase().contains("toko") ?
+                      const SizedBox(height: 5):Container(),
+                      const TextView(
                           headings: "H3",
                           text: "Alamat",
                           fontSize: 14,
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start),
-                      SizedBox(height: 5),
-                      TextView(
+                      const SizedBox(height: 5),
+                      const TextView(
                           headings: "H3",
                           text: "Provinsi",
                           fontSize: 14,
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start),
-                      SizedBox(height: 5),
-                      TextView(
+                      const SizedBox(height: 5),
+                      const TextView(
                           headings: "H3",
                           text: "Kota",
                           fontSize: 14,
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start),
-                      SizedBox(height: 5),
-                      TextView(
+                      const SizedBox(height: 5),
+                      const TextView(
                           headings: "H3",
                           text: "Kecamatan",
                           fontSize: 14,
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start),
-                      SizedBox(height: 5),
-                      TextView(
+                      const SizedBox(height: 5),
+                      const TextView(
                           headings: "H3",
                           text: "Kelurahan",
                           fontSize: 14,
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start),
-                      SizedBox(height: 5),
-                      TextView(
+                      const SizedBox(height: 5),
+                      const TextView(
                           headings: "H3",
                           text: "Kode Pos",
                           fontSize: 14,
@@ -254,7 +261,15 @@ class ApprovalItemDetail extends StatelessWidget {
                             maxLines: 1,
                             isAutoSize: true,
                             textAlign: TextAlign.start),
-                        const SizedBox(height: 5),
+                        listDataMAB[index].jenis!.toLowerCase().contains("toko") ?
+                        TextView(
+                            headings: "H3",
+                            text: ":  ${listDataMAB[index].noLama}",
+                            fontSize: 14,
+                            maxLines: 1,
+                            isAutoSize: true,
+                            textAlign: TextAlign.start) : Container(),
+                        listDataMAB[index].jenis!.toLowerCase().contains("toko") ? const SizedBox(height: 5) : Container(),
                         TextView(
                             headings: "H3",
                             text: ":  ${listDataMAB[index].alamat}",
