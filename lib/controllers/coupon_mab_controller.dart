@@ -7,12 +7,15 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/common/message_config.dart';
 import 'package:sfa_tools/controllers/splashscreen_controller.dart';
 import 'package:sfa_tools/models/couponmab.dart';
+import 'package:sfa_tools/models/servicebox.dart';
 import 'package:sfa_tools/screens/coupon_mab/approval.dart';
 import 'package:sfa_tools/tools/service.dart';
 import 'package:sfa_tools/tools/utils.dart';
+import 'package:sfa_tools/widgets/dialog.dart';
 import 'package:sfa_tools/widgets/textview.dart';
 
 class CouponMABController extends GetxController with StateMixin {
@@ -34,9 +37,8 @@ class CouponMABController extends GetxController with StateMixin {
     selectedFilter.clear();
     selectedFilter.add(true);
     selectedFilter.add(false);
-    selectedFilter.add(false);
 
-    fetchData(salesIdParams.value);
+    fetchData(salesIdParams.value, selectedFilter);
   }
 
   applyFilter(int index) {
@@ -64,11 +66,9 @@ class CouponMABController extends GetxController with StateMixin {
     }
     filterlistDataMAB.clear();
     filterlistDataMAB.addAll(tempData);
-
-
   }
 
-  fetchData(String params) async {
+  fetchData(String params, List<bool> paramsFilter) async {
     isLoading(true);
     change(null, status: RxStatus.loading());
 
@@ -101,24 +101,29 @@ class CouponMABController extends GetxController with StateMixin {
               listDataMAB.add(tempItem);
             }).toList();
 
-            // var dataMABBox = await Hive.openBox('dataMABBox');
-            // await dataMABBox.clear();
-            // await dataMABBox.addAll(listDataMAB);
-            // await dataMABBox.close();
+            List<String?> listDocID = listDataMAB.map((data) => data.id).toList();
+            String stateDataMAB = jsonEncode(listDocID);
+
+            Box boxDataMAB = await Hive.openBox<ServiceBox>("boxDataMAB");
+            await boxDataMAB.put("stateDataMAB",ServiceBox(value: stateDataMAB));
+            boxDataMAB.close();
 
             List<CouponMABData> tempData = [];
 
-            for(int i=0; i<listDataMAB.length; i++) {
-              if(selectedFilter[0]){
+            if(paramsFilter[0]) {  
+              for(int i=0; i<listDataMAB.length; i++) {
                 if(listDataMAB[i].jenis.toString().toLowerCase().contains("mab")) {
                   tempData.add(listDataMAB[i]);
                 }
-              } else if(selectedFilter[1]) {
+              }
+            } else if(paramsFilter[1]) {
+              for(int i=0; i<listDataMAB.length; i++) {
                 if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan toko")) {
                   tempData.add(listDataMAB[i]);
                 }
               }
             }
+
             filterlistDataMAB.clear();
             filterlistDataMAB.addAll(tempData);
 
@@ -150,21 +155,59 @@ class CouponMABController extends GetxController with StateMixin {
   openSubmitDialog() {
     Get.dialog(
       AlertDialog(
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Lottie.asset(
-                'assets/lottie/quiz-submit.json',
-                width: 220,
-                height: 220,
-                fit: BoxFit.contain,
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Lottie.asset(
+              'assets/lottie/quiz-submit.json',
+              width: 220,
+              height: 220,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(height: 30),
+            const TextView(
+              headings: "H3",
+              text: "Mohon tunggu, sedang memproses data.",
+              fontSize: 16,
+              color: Colors.black
+            ),
+          ],
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  openSuccessDialog(bool status) {
+    Get.dialog(
+      AlertDialog(
+        content: WillPopScope(
+          onWillPop: () async{
+            return false;
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextView(
+                headings: "H3",
+                text: status == true ? "Data pengajuan berhasil diterima." : "Data pengajuan berhasil ditolak",
+                fontSize: 16,
+                color: Colors.black
               ),
               const SizedBox(height: 30),
-              const TextView(
-                  headings: "H3",
-                  text: Message.submittingQuiz,
-                  fontSize: 16,
-                  color: Colors.black),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: AppConfig.darkGreen),
+                onPressed: () async {
+                  Get.back();
+                  final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
+                  await fetchData(salesIdParams.value, selectedFilter);
+                  filterlistDataMAB.refresh(); 
+                },
+                child: const TextView(headings: "H2", text: "ok", fontSize: 14, color: Colors.white,isCapslock: true),
+              ),
+        
             ],
           ),
         ),
@@ -173,7 +216,19 @@ class CouponMABController extends GetxController with StateMixin {
     );
   }
 
-  approvalData(String id, bool isApprove) async {
+  openErrorSubmitDialog(String message) {
+    appsDialog(
+      type: "app_error",
+      title: TextView(headings: "H3", text: message, fontSize: 16, color: Colors.black),
+      isAnimated: true,
+      leftBtnMsg: "Ok",
+      leftActionClick: () {
+        Get.back();
+      }
+    );
+  }
+
+  processApproval(String id, bool isApprove) async {
     final salesIdParams = Get.find<SplashscreenController>().salesIdParams;
     String salesId = salesIdParams.value;
 
@@ -205,11 +260,30 @@ class CouponMABController extends GetxController with StateMixin {
           }
         )
       );
+
+      var response = jsonDecode(resultSubmit);
+
+      print(response.toString());
+      print(response['code']);
+
+      if(response['code'] == 200) {
+        Get.back();
+        Get.back();
+        openSuccessDialog(isApprove);
+      } else {
+        openErrorSubmitDialog(response['msg']);
+      }
+
     } else {
       errorMessage(Message.errorConnection);
       change(null, status: RxStatus.error(errorMessage.value));
     }
   }
 
+  approvalData(String id, bool isApprove) async {
+    Get.back();
+    openSubmitDialog();
+    await processApproval(id, isApprove);
+  }
 
 }

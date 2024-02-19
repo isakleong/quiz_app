@@ -37,6 +37,7 @@ class AppConfig {
 
   static const String filevendor = '/storage/emulated/0/TKTW/SFATools.txt';
   static const String filequiz = '/storage/emulated/0/TKTW/SFANotif.txt';
+  static const String filemab = '/storage/emulated/0/TKTW/mab.txt';
   static const int connectTimeout = 15000;
   static const int receiveTimeout = 15000;
 

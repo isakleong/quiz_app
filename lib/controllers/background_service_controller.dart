@@ -14,6 +14,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:sfa_tools/common/app_config.dart';
 import 'package:sfa_tools/models/cartdetail.dart';
 import 'package:sfa_tools/models/cartmodel.dart';
+import 'package:sfa_tools/models/couponmab.dart';
 import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/quiz_config.dart';
 import 'package:sfa_tools/models/reportpembayaranmodel.dart';
@@ -121,7 +122,42 @@ void onStart(ServiceInstance service) async {
     );
   });
 
-  Timer.periodic(const Duration(minutes: 3), (timer) async {
+  Timer.periodic(const Duration(minutes: 2), (timer) async {
+    print("check data mab");
+
+    await Backgroundservicecontroller().syncDataMAB();
+
+    if (service is AndroidServiceInstance) {
+      if (await service.isForegroundService()) {
+        service.setForegroundNotificationInfo(
+          title: "SFA Tools Service",
+          content: "check data mab at ${DateTime.now()}",
+        );
+      }
+    }
+
+    final deviceInfo = DeviceInfoPlugin();
+    String? device;
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      device = androidInfo.model;
+    }
+
+    if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      device = iosInfo.model;
+    }
+
+    service.invoke(
+      'update',
+      {
+        "current_date": DateTime.now().toIso8601String(),
+        "device": device,
+      },
+    );
+  });
+
+  Timer.periodic(const Duration(minutes: 30), (timer) async {
     Backgroundservicecontroller().getlistvendor();
     await Backgroundservicecontroller().getPendingData();
 
@@ -230,6 +266,20 @@ class Backgroundservicecontroller {
     }
   }
 
+  initializeMABConfiguration() async {
+    String fileMAB = "";
+    fileMAB = await readFileMAB();
+    if (fileMAB == "") {
+      String _salesidVendor = await Utils().readParameter();
+      if (_salesidVendor != "") {
+        //hit api only when there is salesid from vendor
+        await syncDataMAB();
+      } else {
+        await writeMAB("0;${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())};");
+      }
+    }
+  }
+
   Future<void> initializeService() async {
     final service = FlutterBackgroundService();
     await service.configure(
@@ -251,6 +301,12 @@ class Backgroundservicecontroller {
 
   Future writeText(String teks) async {
     File(join(AppConfig.filequiz))
+      ..createSync(recursive: true)
+      ..writeAsString(teks);
+  }
+
+  Future writeMAB(String teks) async {
+    File(join(AppConfig.filemab))
       ..createSync(recursive: true)
       ..writeAsString(teks);
   }
@@ -297,6 +353,75 @@ class Backgroundservicecontroller {
     } catch (e) {
       return "";
     }
+  }
+
+  Future<String> readFileMAB() async {
+    try {
+      final file = File(AppConfig.filemab);
+
+      // Read the file
+      final contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      return "";
+    }
+  }
+
+  syncDataMAB() async {
+    try {
+      String salesIdParams = await Utils().readParameter();
+
+      if(salesIdParams.toLowerCase().contains("kcc") || salesIdParams.toLowerCase().contains("tcc") || salesIdParams.toLowerCase().contains("c100")) {
+        var connTest = await ApiClient().checkConnection();
+        var arrConnTest = connTest.split("|");
+        bool isConnected = arrConnTest[0] == 'true';
+        String urlAPI = arrConnTest[1];
+
+        if(isConnected) {
+          final encryptedParam = await Utils.encryptData(salesIdParams.split(';')[0]);
+          final encodeParam = Uri.encodeComponent(encryptedParam);
+
+          var result = await ApiClient().getData(urlAPI, "/mab/latest?sales_id=$encodeParam");
+          bool isValid = Utils.validateData(result.toString());
+
+          if(isValid) {
+            var data = jsonDecode(result.toString());
+
+            if(data.length > 0) {
+              var newCheckData = <CouponMABData>[];
+
+              data.map((item) {
+                var tempItem = CouponMABData.fromJson(item);
+                newCheckData.add(tempItem);
+              }).toList();
+
+              List<String?> newDocID = newCheckData.map((data) => data.id).toList();
+
+              var boxDataMAB = await accessBox("read", "stateDataMAB", "", box: "boxDataMAB");
+              if(boxDataMAB.value.isEmpty) {
+                await writeMAB("${newDocID.length};${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}");
+              } else {
+                List<String?> stateDataMAB = (jsonDecode(boxDataMAB.value) as List<dynamic>).cast<String?>();
+
+                if (compareDataMAB(stateDataMAB, newDocID) && compareDataMAB(newDocID, stateDataMAB)){
+                  print("DATA STILL SAME");
+                  //data still same
+                } else {
+                  print("DATA CHANGED !!!!!");
+                  await writeMAB("${newDocID.length};${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}");
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      return;
+    }
+  }
+
+  bool compareDataMAB(List<dynamic> list1, List<dynamic> list2) {
+    return list1.every((element) => list2.contains(element));
   }
 
   retrySubmitQuiz() async {

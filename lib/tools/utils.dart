@@ -55,6 +55,54 @@ class Utils {
     }
   }
 
+  showConfirmationDialog(BuildContext context, String type, String title, String content, Function onTap, {String leftBtnMsg = "Batal", String rightBtnMsg = "Ya, Simpan"}) {
+    double width = Get.width;
+    width = MediaQuery.of(context).size.width;
+
+    Get.defaultDialog(
+      radius: 10,
+      barrierDismissible: false,
+      title: title,
+      titleStyle: const TextStyle(fontSize: 16),
+      titlePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      cancel: OutlinedButton(
+        onPressed: () => Get.back(),
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(
+            width: 1, 
+            color: type == "reject" ? AppConfig.mainRed : AppConfig.mainGreen,
+          ),
+          foregroundColor: type == "reject" ? AppConfig.mainRed : AppConfig.mainGreen
+        ),
+        child: TextView(headings: "H2", text: leftBtnMsg, fontSize: 14, color: type == "reject" ? AppConfig.mainRed : AppConfig.mainGreen, isCapslock: true),
+      ),
+      confirm: Padding(
+        padding: const EdgeInsets.only(left: 30),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: type == "reject" ? AppConfig.mainRed : AppConfig.darkGreen),
+          onPressed: () async => Function.apply(onTap, []),
+          child: TextView(headings: "H2", text: rightBtnMsg, fontSize: 14, color: Colors.white,isCapslock: true),
+        ),
+      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 10),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 5),
+          TextView(headings: "H3", text: title, fontSize: 16, color: Colors.white,isCapslock: true),
+          Lottie.asset('assets/lottie/confirmquestion.json', width: width * 0.3, fit: BoxFit.contain),
+          const SizedBox(height: 5),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            child: TextView(headings: "H3", text: content, fontSize: 14, color: Colors.black),
+          )
+        ],
+      )
+    );
+  }
+
+
+
   static validateData(var data) {
     bool isDecodeSucceed = false;
 
@@ -81,9 +129,15 @@ class Utils {
     return versionNumber;
   }
 
-  Future<String> readParameter() async {
+  Future<String> readParameter({String type = "default"}) async {
     try {
-      final file = File('/storage/emulated/0/TKTW/SFATools.txt');
+      // ignore: prefer_typing_uninitialized_variables
+      var file;
+      if(type == "default") {
+        file = File('/storage/emulated/0/TKTW/SFATools.txt');
+      } else if(type == "mab") {
+        file = File('/storage/emulated/0/TKTW/mab.txt');
+      }
 
       // Read the file
       final contents = await file.readAsString();

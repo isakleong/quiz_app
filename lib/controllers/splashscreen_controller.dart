@@ -172,6 +172,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
         await getParameterData();
         await Backgroundservicecontroller().initializeNotifConfiguration();
+        if(salesIdParams.value.toLowerCase().contains("kcc") || salesIdParams.value.toLowerCase().contains("tcc") || salesIdParams.value.toLowerCase().contains("c100")) {
+          await Backgroundservicecontroller().initializeMABConfiguration();
+        }
         await getmoduledataall();
       } else {
         openPermissionRequestDialog('EXTERNAL STORAGE');
@@ -667,6 +670,21 @@ class SplashscreenController extends GetxController with StateMixin implements W
           customerIdParams.value = arrParameter[i];
         } else {
           isCheckInParams.value = arrParameter[2];
+        }
+      }
+    }
+  }
+
+  getParameterMAB() async {
+    //counter;timestamp;open
+    String parameter = await Utils().readParameter(type: "mab");
+    if (parameter != "") {
+      var arrParameter = parameter.split(';');
+      if(arrParameter.length >= 3) {
+        if(arrParameter[2] == "OPEN") {
+          String fileMAB = await Backgroundservicecontroller().readFileMAB();
+          await Backgroundservicecontroller().writeMAB("${fileMAB.split(";")[0]};${fileMAB.split(";")[1]}");
+          Get.toNamed(RouteName.couponMAB);
         }
       }
     }
@@ -1530,8 +1548,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
           moduleList.add(Module.from(item));
         }).toList();
 
-        print(data.toString());
-
         var moduleBox = await Hive.openBox('moduleBox');
         await moduleBox.delete(salesid);
         await moduleBox.put(salesid, moduleList);
@@ -1584,6 +1600,9 @@ class SplashscreenController extends GetxController with StateMixin implements W
           }
         }
       }
+
+      //redirect mab
+      await getParameterMAB();
     } on SocketException{
       for (var i = 0; i < progressdownload.length; i++) {
           await Future.delayed(const Duration(milliseconds: 250));
