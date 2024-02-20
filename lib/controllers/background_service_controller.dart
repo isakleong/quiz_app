@@ -404,6 +404,8 @@ class Backgroundservicecontroller {
             var boxDataMAB = await accessBox("read", "stateDataMAB", "", box: "boxDataMAB");
             
             if(boxDataMAB == null) {
+              await Backgroundservicecontroller().accessBox("create", "stateDataMAB", jsonEncode(newDocID), box: "boxDataMAB");
+
               await writeMAB("${newDocID.length};${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}");
             } else {
               List<String?> stateDataMAB = (jsonDecode(boxDataMAB.value) as List<dynamic>).cast<String?>();

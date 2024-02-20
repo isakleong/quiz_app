@@ -149,7 +149,7 @@ class ApprovalItemDetail extends StatelessWidget {
                           isAutoSize: true,
                           textAlign: TextAlign.start),
                       const SizedBox(height: 5),
-                      listDataMAB[index].jenis!.toLowerCase().contains("toko") ?
+                      listDataMAB[index].jenis!.toLowerCase().contains("karyawan") ?
                       const TextView(
                           headings: "H3",
                           text: "Nomor HP (Lama)",
@@ -157,7 +157,7 @@ class ApprovalItemDetail extends StatelessWidget {
                           maxLines: 1,
                           isAutoSize: true,
                           textAlign: TextAlign.start) : Container(),
-                      listDataMAB[index].jenis!.toLowerCase().contains("toko") ?
+                      listDataMAB[index].jenis!.toLowerCase().contains("karyawan") ?
                       const SizedBox(height: 5):Container(),
                       const TextView(
                           headings: "H3",
@@ -370,9 +370,15 @@ class ApprovalItemDetail extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      Utils().showConfirmationDialog(context, "reject", "Konfirmasi Tolak Penukaran Kupon MAB", "Apakah Anda yakin tolak pengajuan toko \n${listDataMAB[index].custName} (${listDataMAB[index].custID})?", () {
-                        controller.approvalData(listDataMAB[index].id.toString(), false);
-                      });
+                      if(listDataMAB[index].jenis!.toLowerCase() == 'kupon') {
+                        Utils().showConfirmationDialog(context, "reject", "Konfirmasi Tolak Pendaftaran Insentif Kupon MAB", "Apakah Anda yakin tolak pengajuan toko \n${listDataMAB[index].custName} (${listDataMAB[index].custID})?", () {
+                          controller.approvalData(listDataMAB[index].id.toString(), false);
+                        });
+                      } else {
+                        Utils().showConfirmationDialog(context, "reject", "Konfirmasi Tolak Pendaftaran Insentif Karyawan Toko", "Apakah Anda yakin tolak pengajuan toko \n${listDataMAB[index].custName} (${listDataMAB[index].custID})?", () {
+                          controller.approvalData(listDataMAB[index].id.toString(), false);
+                        });
+                      }
                       // await controller.approvalData(
                       //     listDataMAB[index].id.toString(), false);
                     },
@@ -403,9 +409,15 @@ class ApprovalItemDetail extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      Utils().showConfirmationDialog(context, "accept", "Konfirmasi Terima Penukaran Kupon MAB", "Apakah Anda yakin terima pengajuan toko \n${listDataMAB[index].custName} (${listDataMAB[index].custID})?", () {
-                        controller.approvalData(listDataMAB[index].id.toString(), true);
-                      });
+                      if(listDataMAB[index].jenis!.toLowerCase() == 'kupon') {
+                        Utils().showConfirmationDialog(context, "accept", "Konfirmasi Terima Pendaftaran Insentif Kupon MAB", "Apakah Anda yakin terima pengajuan toko \n${listDataMAB[index].custName} (${listDataMAB[index].custID})?", () {
+                          controller.approvalData(listDataMAB[index].id.toString(), true);
+                        });
+                      } else {
+                        Utils().showConfirmationDialog(context, "accept", "Konfirmasi Terima Pendaftaran Insentif Karyawan Toko", "Apakah Anda yakin terima pengajuan toko \n${listDataMAB[index].custName} (${listDataMAB[index].custID})?", () {
+                          controller.approvalData(listDataMAB[index].id.toString(), true);
+                        });
+                      }
 
                       
                     },

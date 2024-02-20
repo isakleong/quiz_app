@@ -79,11 +79,11 @@ class CouponMABController extends GetxController with StateMixin {
     .toList();
 
     for(int i=0; i<searchListDataMAB.length; i++) {
-      if(searchListDataMAB[i].jenis.toString().toLowerCase().contains("mab") || listDataMAB[i].jenis.toString() == null) {
+      if(searchListDataMAB[i].jenis.toString().toLowerCase().contains("kupon") || listDataMAB[i].jenis.toString() == null) {
         cntMAB.value++;
       }
 
-      if(searchListDataMAB[i].jenis.toString().toLowerCase().contains("karyawan toko")) {
+      if(searchListDataMAB[i].jenis.toString().toLowerCase().contains("karyawan")) {
         cntKaryawanToko.value++;
       }
     }
@@ -107,20 +107,20 @@ class CouponMABController extends GetxController with StateMixin {
     List<CouponMABData> tempData = [];
 
     for(int i=0; i<listDataMAB.length; i++) {
-      if(listDataMAB[i].jenis.toString().toLowerCase().contains("mab") || listDataMAB[i].jenis.toString() == null) {
+      if(listDataMAB[i].jenis.toString().toLowerCase().contains("kupon") || listDataMAB[i].jenis.toString() == null) {
         cntMAB.value++;
       }
 
-      if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan toko")) {
+      if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan")) {
         cntKaryawanToko.value++;
       }
 
       if(selectedFilter[0]){
-        if(listDataMAB[i].jenis.toString().toLowerCase().contains("mab") || listDataMAB[i].jenis.toString() == null) {
+        if(listDataMAB[i].jenis.toString().toLowerCase().contains("kupon") || listDataMAB[i].jenis.toString() == null) {
           tempData.add(listDataMAB[i]);
         }
       } else if(selectedFilter[1]) {
-        if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan toko")) {
+        if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan")) {
           tempData.add(listDataMAB[i]);
         }
       }
@@ -159,11 +159,11 @@ class CouponMABController extends GetxController with StateMixin {
 
             data.map((item) {
               var tempItem = CouponMABData.fromJson(item);
-              if(tempItem.jenis == null) {
-                tempItem.jenis = "Kupon MAB";
-              } else {
-                tempItem.jenis = "Karyawan Toko";
-              }
+              // if(tempItem.jenis == null) {
+              //   tempItem.jenis = "Kupon MAB";
+              // } else {
+              //   tempItem.jenis = "Karyawan Toko";
+              // }
               listDataMAB.add(tempItem);
             }).toList();
 
@@ -177,13 +177,13 @@ class CouponMABController extends GetxController with StateMixin {
             List<CouponMABData> tempData = [];
 
             for(int i=0; i<listDataMAB.length; i++) {
-              if(listDataMAB[i].jenis.toString().toLowerCase().contains("mab")) {
+              if(listDataMAB[i].jenis.toString().toLowerCase().contains("kupon")) {
                 cntMAB.value++;
 
                 if(paramsFilter[0]) {
                   tempData.add(listDataMAB[i]);
                 }
-              } else if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan toko")) {
+              } else if(listDataMAB[i].jenis.toString().toLowerCase().contains("karyawan")) {
                 cntKaryawanToko.value++;
 
                 if(paramsFilter[1]) {
