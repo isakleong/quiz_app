@@ -189,21 +189,21 @@ class CouponMAB extends GetView<CouponMABController> {
                                   text: Message.emptyData,
                                   textAlign: TextAlign.center),
                             ),
-                            const SizedBox(height: 30),
-                            ElevatedButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppConfig.darkGreen,
-                                padding: const EdgeInsets.all(12),
-                              ),
-                              child: const TextView(
-                                  headings: "H3",
-                                  text: "ok",
-                                  color: Colors.white,
-                                  isCapslock: true),
-                            ),
+                            // const SizedBox(height: 30),
+                            // ElevatedButton(
+                            //   onPressed: () {
+                            //     Get.back();
+                            //   },
+                            //   style: ElevatedButton.styleFrom(
+                            //     backgroundColor: AppConfig.darkGreen,
+                            //     padding: const EdgeInsets.all(12),
+                            //   ),
+                            //   child: const TextView(
+                            //       headings: "H3",
+                            //       text: "ok",
+                            //       color: Colors.white,
+                            //       isCapslock: true),
+                            // ),
                           ],
                         ),
                       ),
