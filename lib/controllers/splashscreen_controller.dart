@@ -172,9 +172,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
       if (await checkAppsPermission('EXTERNAL STORAGE')) {
         await getParameterData();
         await Backgroundservicecontroller().initializeNotifConfiguration();
-        if(salesIdParams.value.toLowerCase().contains("kcc") || salesIdParams.value.toLowerCase().contains("tcc") || salesIdParams.value.toLowerCase().contains("c100")) {
-          await Backgroundservicecontroller().initializeMABConfiguration();
-        }
         await getmoduledataall();
       } else {
         openPermissionRequestDialog('EXTERNAL STORAGE');
@@ -1601,8 +1598,14 @@ class SplashscreenController extends GetxController with StateMixin implements W
         }
       }
 
-      //redirect mab
-      await getParameterMAB();
+      int cntMAB = moduleList.where((item) => item.moduleID.toLowerCase().contains("mab")).length;
+      if(cntMAB > 0) {
+        await Backgroundservicecontroller().initializeMABConfiguration();
+
+        //redirect mab
+        await getParameterMAB();
+      }
+
     } on SocketException{
       for (var i = 0; i < progressdownload.length; i++) {
           await Future.delayed(const Duration(milliseconds: 250));
@@ -2051,6 +2054,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
             await moduleBox.deleteAll(keys); //clean module box
             await moduleBox.close();
             keys.clear();
+
+            var boxMAB = await Hive.openBox('boxDataMAB'); //clean mab box
+            await boxMAB.clear();
+            await boxMAB.close();
 
             await Utils().manageVendorBox('open'); //clean vendorbox
             keys = vendorBox.keys.toList();

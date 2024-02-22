@@ -123,12 +123,12 @@ void onStart(ServiceInstance service) async {
   });
 
   Timer.periodic(const Duration(seconds: 63), (timer) async {
-    print("check data mab");
     String salesId = await Utils().readParameter();
 
+    print("check data mab "+salesId + " test");
+
     if (salesId != "") {
-      if(salesId.split(';')[0].toLowerCase().contains("kcc") || salesId.split(';')[0].toLowerCase().contains("tcc") || salesId.split(';')[0].toLowerCase().contains("c100")) {
-        await Backgroundservicecontroller().syncDataMAB();
+      await Backgroundservicecontroller().syncDataMAB();
 
         if (service is AndroidServiceInstance) {
           if (await service.isForegroundService()) {
@@ -158,11 +158,12 @@ void onStart(ServiceInstance service) async {
             "device": device,
           },
         );
-      }
-    }
+    } else {
+      print("haaaa");
+    } 
   });
 
-  Timer.periodic(const Duration(minutes: 30), (timer) async {
+  Timer.periodic(const Duration(minutes: 3), (timer) async {
     Backgroundservicecontroller().getlistvendor();
     await Backgroundservicecontroller().getPendingData();
 
@@ -376,49 +377,60 @@ class Backgroundservicecontroller {
     try {
       String salesIdParams = await Utils().readParameter();
 
-      var connTest = await ApiClient().checkConnection();
-      var arrConnTest = connTest.split("|");
-      bool isConnected = arrConnTest[0] == 'true';
-      String urlAPI = arrConnTest[1];
+      int cntMAB = 0;
+      var moduleBox = await accessBox("read", salesIdParams, "", box: "moduleBox");
+      if(moduleBox != null) {
+        for(var i = 0; i < moduleBox.length; i++) {
+          if(moduleBox[i].toLowerCase().contains("mab")) {
+            cntMAB++;
+            break;
+          }
+        }
+      }
 
-      if(isConnected) {
-        final encryptedParam = await Utils.encryptData(salesIdParams.split(';')[0]);
-        final encodeParam = Uri.encodeComponent(encryptedParam);
+      if(cntMAB > 0) {
+        var connTest = await ApiClient().checkConnection();
+        var arrConnTest = connTest.split("|");
+        bool isConnected = arrConnTest[0] == 'true';
+        String urlAPI = arrConnTest[1];
 
-        var result = await ApiClient().getData(urlAPI, "/mab/latest?sales_id=$encodeParam");
-        bool isValid = Utils.validateData(result.toString());
+        if(isConnected) {
+          final encryptedParam = await Utils.encryptData(salesIdParams.split(';')[0]);
+          final encodeParam = Uri.encodeComponent(encryptedParam);
 
-        if(isValid) {
-          var data = jsonDecode(result.toString());
+          var result = await ApiClient().getData(urlAPI, "/mab/latest?sales_id=$encodeParam");
+          bool isValid = Utils.validateData(result.toString());
 
-          if(data.length > 0) {
-            var newCheckData = <CouponMABData>[];
+          if(isValid) {
+            var data = jsonDecode(result.toString());
 
-            data.map((item) {
-              var tempItem = CouponMABData.fromJson(item);
-              newCheckData.add(tempItem);
-            }).toList();
+            if(data.length > 0) {
+              var newCheckData = <CouponMABData>[];
 
-            List<String?> newDocID = newCheckData.map((data) => data.id).toList();
+              data.map((item) {
+                var tempItem = CouponMABData.fromJson(item);
+                newCheckData.add(tempItem);
+              }).toList();
 
-            var boxDataMAB = await accessBox("read", "stateDataMAB", "", box: "boxDataMAB");
-            
-            if(boxDataMAB == null) {
-              await Backgroundservicecontroller().accessBox("create", "stateDataMAB", jsonEncode(newDocID), box: "boxDataMAB");
+              List<String?> newDocID = newCheckData.map((data) => data.id).toList();
 
-              await writeMAB("${newDocID.length};${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}");
-            } else {
-              List<String?> stateDataMAB = (jsonDecode(boxDataMAB.value) as List<dynamic>).cast<String?>();
-
-              // if (compareDataMAB(stateDataMAB, newDocID) && compareDataMAB(newDocID, stateDataMAB)){
-
-              if (compareDataMAB(newDocID, stateDataMAB)){
-                // print("DATA STILL SAME");
-                //data still same
-              } else {
-                // print("DATA CHANGED !!!!!");
+              var boxDataMAB = await accessBox("read", "stateDataMAB", "", box: "boxDataMAB");
+              
+              if(boxDataMAB == null) {
                 await Backgroundservicecontroller().accessBox("create", "stateDataMAB", jsonEncode(newDocID), box: "boxDataMAB");
+
                 await writeMAB("${newDocID.length};${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}");
+              } else {
+                List<String?> stateDataMAB = (jsonDecode(boxDataMAB.value) as List<dynamic>).cast<String?>();
+
+                if (compareDataMAB(newDocID, stateDataMAB)){
+                  // print("DATA STILL SAME");
+                  //data still same
+                } else {
+                  // print("DATA CHANGED !!!!!");
+                  await Backgroundservicecontroller().accessBox("create", "stateDataMAB", jsonEncode(newDocID), box: "boxDataMAB");
+                  await writeMAB("${newDocID.length};${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}");
+                }
               }
             }
           }
