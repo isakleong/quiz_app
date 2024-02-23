@@ -125,7 +125,7 @@ void onStart(ServiceInstance service) async {
   Timer.periodic(const Duration(seconds: 63), (timer) async {
     String salesId = await Utils().readParameter();
 
-    print("check data mab "+salesId + " test");
+    print("check data mab ");
 
     if (salesId != "") {
       await Backgroundservicecontroller().syncDataMAB();
@@ -378,13 +378,10 @@ class Backgroundservicecontroller {
       String salesIdParams = await Utils().readParameter();
 
       int cntMAB = 0;
-      var moduleBox = await accessBox("read", salesIdParams, "", box: "moduleBox");
-      if(moduleBox != null) {
-        for(var i = 0; i < moduleBox.length; i++) {
-          if(moduleBox[i].toLowerCase().contains("mab")) {
-            cntMAB++;
-            break;
-          }
+      var boxAuthorizeMAB = await accessBox("read", salesIdParams, "", box: "boxAuthorizeMAB");
+      if(boxAuthorizeMAB != null) {
+        if(boxAuthorizeMAB.value == "true") {
+          cntMAB = 1;
         }
       }
 

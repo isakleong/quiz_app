@@ -46,11 +46,7 @@ class ApprovalItemDetail extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  listDataMAB[index].jenis == null ||
-                          listDataMAB[index]
-                              .jenis!
-                              .toLowerCase()
-                              .contains("mab")
+                  listDataMAB[index].jenis!.toLowerCase().contains("kupon")
                       ? Column(
                           children: [
                             const Center(
@@ -69,7 +65,9 @@ class ApprovalItemDetail extends StatelessWidget {
                                     color: Colors.black)),
                           ],
                         )
-                      : Column(
+                      : 
+                      listDataMAB[index].jenis!.toLowerCase().contains("karyawan") ?
+                      Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const Center(
@@ -87,7 +85,27 @@ class ApprovalItemDetail extends StatelessWidget {
                                     fontSize: 16,
                                     color: Colors.black)),
                           ],
-                        ),
+                        )
+                      :
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Center(
+                                child: TextView(
+                                    headings: "H3",
+                                    text: "",
+                                    fontSize: 16,
+                                    color: Colors.black)),
+                            const SizedBox(height: 5),
+                            Center(
+                                child: TextView(
+                                    headings: "H3",
+                                    text:
+                                        "${listDataMAB[index].custID} (${listDataMAB[index].custName})",
+                                    fontSize: 16,
+                                    color: Colors.black)),
+                          ],
+                        )
                   // Utils.decodeImage(listDataMAB[index].stampPhoto.toString())
                 ],
               ),

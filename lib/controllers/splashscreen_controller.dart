@@ -16,6 +16,7 @@ import 'package:sfa_tools/models/customer.dart';
 import 'package:sfa_tools/models/loginmodel.dart';
 import 'package:sfa_tools/models/module.dart';
 import 'package:sfa_tools/models/outstandingdata.dart';
+import 'package:sfa_tools/models/servicebox.dart';
 import 'package:sfa_tools/models/shiptoaddress.dart';
 import 'package:sfa_tools/models/vendor.dart';
 import 'package:sfa_tools/tools/service.dart';
@@ -1559,7 +1560,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
         progressdownload[0] = 'ok';
         var idx = moduleList.indexWhere((element) => element.moduleID.contains("Taking Order"));
         if(idx != -1){
-          print("haha");
           versimodulvendor = moduleList[idx].version;
           ordermodulvendor = moduleList[idx].orderNumber;
           moduleList.removeAt(idx);
@@ -1583,7 +1583,6 @@ class SplashscreenController extends GetxController with StateMixin implements W
             }
           }
         } else {
-          print("hehe");
           for (var i = 1; i < progressdownload.length; i++) {
             await Future.delayed(const Duration(milliseconds: 250));
             progressdownload[i] = 'ok';
@@ -1600,6 +1599,10 @@ class SplashscreenController extends GetxController with StateMixin implements W
 
       int cntMAB = moduleList.where((item) => item.moduleID.toLowerCase().contains("mab")).length;
       if(cntMAB > 0) {
+        Box boxAuthorizeMAB = await Hive.openBox<ServiceBox>("boxAuthorizeMAB");
+        await boxAuthorizeMAB.put(salesIdParams.value, ServiceBox(value: "true"));
+        boxAuthorizeMAB.close();
+
         await Backgroundservicecontroller().initializeMABConfiguration();
 
         //redirect mab
